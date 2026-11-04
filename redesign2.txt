@@ -1,0 +1,1968 @@
+CAMP-02 — Identity, Membership & Authorization Architecture
+Architecture specification v1.0
+ Security foundation
+ India-first · Multi-tenant
+
+
+CAMP-01 established the institutional world: tenants, institutions, campuses, organizational units and institutional relationships.
+
+Now we need to establish the people who operate inside that world.
+
+This is arguably one of the most security-critical domains in our entire platform.
+
+I want us to design it for a university with 50,000 students, multiple campuses, thousands of faculty and staff members, hundreds of administrative responsibilities, and a continuously changing organizational structure.
+
+It must also work for a small college with a principal, a few administrators and a single placement coordinator.
+
+The architecture must not become more complicated to use just because it is powerful underneath.
+
+Our primary design principle:
+One human identity, multiple institutional relationships, multiple responsibilities, context-aware permissions, and a complete history of who was allowed to do what.
+
+
+1. Define the CAMP-02 domain boundary
+First, we must distinguish five concepts that conventional applications frequently combine.
+Concept	What it represents
+Identity	Who is this person or system?
+Account	How does this entity authenticate?
+Membership	What is its relationship with an institution?
+Role assignment	What responsibilities has it been given?
+Permission	Which operations can it perform, and on which resources?
+
+These are not interchangeable.
+
+For instance, a faculty member does not become a placement coordinator simply because they are a faculty member. They receive an additional responsibility with a particular scope and period of validity.
+
+Likewise, a student representative may be authorized to submit certain requests without receiving access to every student record.
+1.1 CAMP-02 modules
+I propose dividing this domain into ten components.
+CAMP-02 domain map
+1
+
+Identity Registry
+
+Person identity and identity references
+
+
+2
+
+Account Management
+
+Login accounts, credentials and authentication methods
+
+
+3
+
+Membership Management
+
+Institutional affiliations and membership lifecycle
+
+
+4
+
+Role Catalogue
+
+Standard and institution-defined roles
+
+
+5
+
+Role Assignment
+
+Responsibility, scope, duration and delegation
+
+
+6
+
+Permission Catalogue
+
+Atomic operations and resource actions
+
+
+7
+
+Authorization Engine
+
+RBAC, ABAC and relationship-based decisions
+
+
+8
+
+Session & Access Management
+
+Session context, MFA and revocation
+
+
+9
+
+Privileged Access
+
+Elevated authority, emergency access and administration
+
+
+10
+
+Identity Audit
+
+Access decisions, grants, revocations and security history
+
+
+
+Explicit ownership boundaries
+CAMP-02 owns identity and access relationships, but it should not own all information about a person.
+Information	Owner
+Login account	CAMP-02
+Authentication methods	CAMP-02
+Person's identity references	Identity Registry
+Institutional membership	CAMP-02
+Student academic records	Student Lifecycle
+Faculty employment records	Faculty & Staff
+Placement coordinator assignment	Role Assignment, with organizational relationship
+Student enrollment	Student Lifecycle
+Permissions	CAMP-02
+Academic and placement eligibility	Relevant business domains
+
+This separation prevents identity records from turning into enormous, unmaintainable user tables.
+
+2. The fundamental identity model
+Let's start with the real-world question:
+
+What happens when the same person is a student, a student representative, an alumnus, a faculty member and a placement coordinator at different points in time?
+
+A conventional system might create separate user accounts or store several role flags in one table.
+
+Neither is sufficient for our platform.
+
+We need a persistent identity model.
+2.1 Proposed identity architecture
+Person
+
+Real-world human identity
+
+
+Account
+
+Authentication and access identity
+
+
+Institution A
+Student
+Student Representative
+Batch 2027 · CSE
+
+
+Institution B
+Faculty
+Placement Coordinator
+Engineering Division
+
+
+
+
+Authorization Context
+
+Membership + active role + scope + resource + requested action
+
+
+Decision
+Allow
+Deny
+Review
+
+
+
+One person may have several accounts or authentication methods, but we should normally aim for one platform account per person, with multiple verified login methods and institutional memberships.
+
+We should not force all institutions to use the same identity provider.
+
+A college might authenticate students using:
+- Platform-managed credentials.
+- Institutional email.
+- Google Workspace.
+- Microsoft Entra ID.
+- Institutional single sign-on.
+- Another authorized identity provider.
+The authentication mechanism can differ while the internal identity and authorization model remains consistent.
+2.2 Separate Person and Account
+Person
+
+Represents the human.
+
+Possible attributes:
+Attribute	Description
+person_id	Stable platform identifier
+legal_name	Name, where needed and verified
+display_name	Preferred display name
+identity_status	Active, disputed, merged, etc.
+created_at	Creation timestamp
+
+Do not store all personal information directly in the identity root.
+
+Addresses, contact methods, verification evidence and sensitive identity information should be maintained in separately controlled records.
+
+Account
+
+Represents the security principal used to authenticate.
+Attribute	Description
+account_id	Stable account identifier
+person_id	Linked human identity, nullable for service accounts
+account_type	Human, service, integration
+status	Active, locked, disabled
+created_at	Account creation timestamp
+last_authenticated_at	Authentication metadata
+
+A service account must not pretend to be a human person.
+
+For example, an ERP integration should authenticate through its own service identity, not through the account of the college administrator who configured it.
+2.3 Authentication identities
+A person may have multiple authentication identities.
+
+Introduce AuthenticationIdentity.
+Field	Description
+identity_id	Identifier
+account_id	Associated account
+provider_type	Local, Google, Microsoft, SAML/OIDC
+provider_subject	Provider-side subject
+identifier_hash	Lookup-safe identifier where applicable
+verification_status	Verified, pending, revoked
+linked_at	Linking timestamp
+
+For an external identity provider, the combination of provider/issuer and subject should uniquely identify the external identity.
+
+Never use an email address as the permanent identity key. Email addresses can change, be shared administratively, or be reassigned.
+
+Also, do not assume a person is unique merely because two accounts have the same phone number or name.
+
+Identity merging needs an explicit, verified process.
+2.4 Global identity versus institution-local privacy
+This is an important decision.
+
+We want one person to use the platform across institutions, but we must not turn that into unrestricted cross-institution visibility.
+
+Therefore, we should maintain:
+- A platform-level person identity.
+- Tenant-scoped person representations or membership references.
+- Institution-scoped profile visibility.
+- Explicit identity-linking and verification procedures.
+The existence of a person in Institution A must not allow users in Institution B to discover that person's membership.
+
+Global deduplication should be a controlled identity-resolution operation, not an automatic lookup available to institutions.
+ADR-C02-001
+Identity is reusable across institutional memberships, but institutional identity and information remain access-scoped.
+
+3. Membership architecture — who belongs where?
+An account by itself does not explain why someone has access to an institution.
+
+We need a membership model.
+
+Consider these examples:
+- A student belongs to an institution.
+- A faculty member works at an institution.
+- An alumnus retains a relationship with an institution.
+- A visiting examiner has temporary access.
+- An external recruiter has a restricted institutional relationship.
+- A parent or guardian may have authorized visibility into a student's information.
+These relationships are not all permanent employment or student enrollment records.
+3.1 Distinguish membership from business affiliation
+We need two separate concepts:
+
+Institutional affiliation: The underlying real-world relationship, such as student enrollment, employment, alumni status or external partnership.
+
+Platform membership: The person's authorized presence within the institution's platform workspace.
+
+For example, someone might have an alumni affiliation but no active platform account. Another person might have a temporary guest membership without being an employee or student.
+
+This distinction prevents an identity system from becoming the source of academic or employment truth.
+3.2 Proposed membership entity
+InstitutionMembership
+Field	Description
+membership_id	Stable membership ID
+tenant_id	Tenant
+institution_id	Institution
+account_id	Associated account
+person_id	Associated person
+membership_type	Student, faculty, staff, alumni, guest, etc.
+status	Membership lifecycle
+valid_from	Start date
+valid_to	End date
+source_reference	Originating domain record
+created_at	Creation timestamp
+
+We should support separate membership scopes for campus-level or institution-level access.
+
+A membership must never imply unrestricted access to the institution.
+3.3 Membership types
+I propose these starting categories.
+Category	Membership types
+Academic	Student, researcher, visiting scholar
+Workforce	Faculty, teaching staff, non-teaching staff
+Alumni	Graduate, alumni member
+External	Recruiter, examiner, visiting professional
+Support	Parent/guardian, authorized representative
+Administrative	Institutional administrator, governing representative
+Temporary	Guest, contractor, temporary collaborator
+
+This should be a controlled taxonomy, not an unrestricted role list.
+
+There is an important distinction between a membership type and a role:
+- FACULTY identifies the person's institutional relationship.
+- HOD identifies a responsibility the person has been assigned.
+- PLACEMENT_COORDINATOR identifies another responsibility.
+- VIEW_STUDENT_RECORDS is a permission.
+We should never use those interchangeably.
+3.4 Membership lifecycle
+INVITED
+   |
+PENDING_ACTIVATION
+   |
+ACTIVE
+   |
+SUSPENDED
+   |
+ACTIVE
+
+ACTIVE
+   |
+EXPIRED / REVOKED / TERMINATED
+   |
+ARCHIVED
+
+
+Possible exceptional cases:
+- Invitation rejected.
+- Identity verification failed.
+- Membership duplicated.
+- Student graduated.
+- Staff contract ended.
+- Guest access revoked.
+The membership lifecycle should be independent of the institutional business lifecycle.
+
+For example, a student can graduate, changing their student affiliation while retaining a separate alumni membership.
+
+Likewise, staff employment can terminate while an alumni or external mentorship relationship remains.
+
+
+4. Roles architecture — model responsibilities, not job titles
+This is where the system becomes interesting.
+
+Indian institutions can have very different titles for people performing similar work.
+
+One institution calls someone a TPO. Another uses Placement Head. Another has Training and Placement Officer. Some have multiple department placement coordinators.
+
+We should support institution-specific titles without breaking the platform's authorization model.
+4.1 Three dimensions of a role
+Every role should have three characteristics:
+1. Role identity: What responsibility does it represent?
+2. Scope: Where does that responsibility apply?
+3. Validity: When does that responsibility apply?
+For example:
+Person: Faculty Member A
+
+Role: Placement Coordinator
+Institution: Institution X
+Scope: CSE Department
+Valid from: 01 July 2026
+Valid until: 30 June 2027
+
+
+This role assignment should not grant the person access to ECE or Mechanical department records unless another permission or responsibility explicitly allows that.
+4.2 System roles versus institutional roles
+We should support two types of role definitions.
+
+Platform-defined roles
+
+Reusable definitions maintained by the platform.
+
+Examples:
+- Institution Administrator.
+- Principal.
+- Registrar.
+- HOD.
+- Faculty.
+- Student.
+- TPO.
+- Placement Coordinator.
+- Alumni Coordinator.
+- Examination Controller.
+Institution-defined roles
+
+Custom definitions created by an institution.
+
+Examples:
+- Deputy Training Coordinator.
+- Department Career Champion.
+- Student Placement Ambassador.
+- Industry Liaison Officer.
+- Hostel Warden.
+The custom role must be based on the platform permission catalogue and must pass authorization constraints.
+
+A college must not be able to create a role that bypasses platform security protections.
+4.3 A role is not a permission bundle forever
+We should version role definitions.
+
+Suppose an institution defines a placement coordinator role that initially has five permissions.
+
+Later, management decides it should have seven.
+
+Changing the role should not silently alter historical access decisions.
+
+Introduce:
+
+RoleDefinition
+Field	Description
+role_id	Stable role ID
+tenant_id	Nullable for platform roles
+institution_id	Nullable for tenant/platform scope
+role_code	Stable operational code
+role_name	Display title
+role_category	Academic, administrative, student, etc.
+role_owner_type	Platform or institution
+status	Draft, active, deprecated
+current_version	Latest approved version
+
+RoleVersion
+Field	Description
+role_version_id	Immutable version
+role_id	Parent role
+version_number	Version
+permission_set	Approved permission associations
+effective_from	Start date
+effective_to	End date
+approved_by	Approving principal
+created_at	Version timestamp
+
+A role assignment should reference a specific role definition version or an explicit version-resolution policy.
+
+My preference: active assignments normally follow an institution's approved current version, but high-risk assignments can be pinned to a specific version. Every authorization decision must record the effective role version used.
+
+5. Role assignment architecture — the real source of authority
+A person might hold multiple responsibilities simultaneously.
+
+Therefore, avoid these designs:
+users.is_admin = true
+users.is_tpo = true
+users.is_hod = true
+
+
+Also avoid:
+users.role = "ADMIN"
+
+
+Both fail once we support multiple responsibilities, scopes and validity periods.
+
+Instead, create a dedicated role assignment entity.
+5.1 Role assignment structure
+RoleAssignment
+Field	Description
+assignment_id	Unique assignment
+tenant_id	Tenant
+institution_id	Institution
+membership_id	Membership receiving responsibility
+role_id	Role definition
+role_version_id	Role definition version
+scope_type	Institution, campus, organizational unit, etc.
+scope_id	Scoped target
+status	Proposed, approved, active, revoked
+valid_from	Start
+valid_to	Expiry
+assigned_by	Granting authority
+approved_by	Approving authority
+assignment_reason	Business justification
+created_at	Audit timestamp
+
+The role assignment must be independent of the person's underlying membership type.
+5.2 Multiple responsibilities example
+Imagine a CSE faculty member.
+Faculty Member A
+
+Institution X · Active membership
+
+
+Faculty
+CSE Department
+
+Separate responsibility and authorization scope
+
+Placement Coordinator
+CSE Department
+
+Separate responsibility and authorization scope
+
+Project Mentor
+Assigned project groups
+
+Separate responsibility and authorization scope
+
+Examination Evaluator
+Specific course and examination
+
+Separate responsibility and authorization scope
+
+
+The person has one account, one relevant institutional membership and several independently managed role assignments.
+
+Revoking the Placement Coordinator assignment should not remove their faculty access.
+5.3 Role assignment lifecycle
+DRAFT
+  |
+SUBMITTED
+  |
+APPROVED
+  |
+SCHEDULED
+  |
+ACTIVE
+  |
+EXPIRED / REVOKED
+
+
+Not every role requires an approval workflow.
+
+A low-risk student club role could be self-service or coordinator-approved.
+
+An institution administrator or principal assignment should require stronger approval, identity verification and separation-of-duties controls.
+
+The role catalogue should define which roles require:
+- Grantor authority.
+- Independent approval.
+- Strong authentication.
+- Fixed maximum duration.
+- Conflict-of-interest checks.
+- Additional verification.
+- Periodic access review.
+5.4 Assignment and revocation must be immediate enough
+Suppose a placement coordinator's assignment is revoked at 10:00.
+
+We cannot wait until the user's authentication token expires several hours later.
+
+The authorization service must recognize that the relevant assignment is no longer valid.
+
+Therefore:
+- Role assignments live in the authoritative authorization database.
+- Access tokens contain identity and session information, not an authoritative permanent copy of every permission.
+- Authorization checks consult current state or a tightly controlled, versioned cache.
+- Revocation events invalidate relevant cached permissions.
+- Sensitive operations can require a fresh authorization check.
+This is especially important for administrative accounts.
+
+6. Scope architecture — where exactly can a responsibility operate?
+A role without a scope is dangerous.
+
+Consider someone who is a HOD.
+
+Do they have authority over:
+- The entire institution?
+- One school?
+- One department?
+- Several departments?
+- A department at one campus?
+- All historical records?
+- Current records only?
+The role name alone cannot answer these questions.
+6.1 Scope types
+We should initially support:
+Scope	Example
+Tenant	Platform-level tenant administration
+Institution	Institution-wide administration
+Institution group	Authorized group-level operations
+Campus	One physical/operational campus
+School	One academic school
+Department	One department
+Organizational unit	Placement or examination office
+Cohort	Batch 2027
+Program	B.Tech CSE
+Section	CSE-A
+Resource	One specific placement drive
+Self	The user's own records
+Assigned resources	Records explicitly allocated to the user
+
+Some of these scopes originate in CAMP-01 or CAMP-03, while others are defined by business domains.
+
+Authorization should resolve references through their owning domains.
+6.2 Scope inheritance
+This is a major decision.
+
+If someone is assigned the role HOD for School A, should they automatically access every department in that school?
+
+Sometimes yes. Sometimes no.
+
+I recommend that scope inheritance must be explicit in the role or permission definition.
+
+For example:
+Role	Scope	Inheritance
+Principal	Institution	Approved institution-wide permissions
+HOD	Department	Department only
+Dean	School	Approved child academic units
+TPO	Institution	Institution-wide placement operations
+Placement Coordinator	Department	Assigned department only
+Faculty	Assigned resources	Explicit courses and classes
+Student	Self	Own records
+
+A role's administrative position must not automatically imply permission inheritance.
+6.3 Prevent upward permission inheritance
+An important safeguard:
+
+A person assigned permissions over CSE must not automatically gain permission over its parent School of Engineering.
+
+Likewise, an HOD should not automatically inherit authority over the principal's office or other departments.
+
+We should support only approved inheritance directions, typically from a higher scope to its explicitly permitted descendants.
+
+Upward inheritance should be disabled by default.
+6.4 Matrix organizations
+Our scope system must handle structures where people have responsibilities across several domains.
+
+Example:
+
+A central TPO may manage placement operations for all campuses but have no access to examination marks.
+
+A campus TPO may manage placement drives for their campus.
+
+A department coordinator might handle registration and student communication only for their department.
+
+These can be represented by separate assignments:
+Role: Central TPO
+Scope: Institution
+Permissions:
+    placement.drive.manage
+    placement.company.manage
+    placement.report.institution.read
+
+Role: Placement Coordinator
+Scope: CSE Department
+Permissions:
+    placement.student.registration.read
+    placement.communication.manage
+    placement.department.report.read
+
+
+The second person does not receive the central TPO's institution-wide permissions.
+
+7. Permission catalogue — define atomic capabilities
+This is where we stop relying on vague role labels.
+
+Instead of asking whether someone is an administrator, the system asks whether they can perform a specific operation on a specific resource.
+7.1 Permission naming convention
+I suggest:
+domain.resource.action
+
+
+Examples:
+institution.profile.read
+institution.profile.update
+
+campus.create
+campus.update
+campus.close
+
+organization.unit.create
+organization.unit.update
+organization.structure.approve
+
+student.profile.read
+student.profile.update
+student.record.export
+
+placement.drive.create
+placement.drive.publish
+placement.student.evaluate
+placement.application.view
+placement.offer.approve
+
+examination.result.read
+examination.result.enter
+examination.result.publish
+
+attendance.record.read
+attendance.record.update
+
+identity.membership.invite
+identity.role.assign
+identity.role.revoke
+identity.access.review
+
+
+The permission catalogue should be owned and versioned centrally.
+
+Institution administrators can select approved capabilities when defining custom roles, but cannot invent arbitrary permission semantics.
+7.2 Separate operation types
+A major mistake would be treating READ and WRITE as sufficient.
+
+We need distinct actions such as:
+Action	Meaning
+Read	View resource
+Create	Create a resource
+Update	Modify permitted fields
+Delete	Remove where allowed
+Publish	Make content available
+Approve	Approve an operation
+Reject	Reject a request
+Assign	Assign a responsibility
+Revoke	Remove authority
+Export	Extract data
+Verify	Confirm authenticity
+Delegate	Transfer defined authority
+
+Permissions should be as granular as operational risk requires, but not so granular that maintaining them becomes impossible.
+7.3 Field-level authorization
+Suppose a faculty member can read a student profile.
+
+That does not mean they should automatically be able to see:
+- Private contact information.
+- Disciplinary records.
+- Financial details.
+- Identity verification documents.
+- Confidential counselling information.
+- Restricted recruiter feedback.
+We should support property-level visibility policies in addition to resource-level permission checks.
+
+Some records should be in separate domains or restricted resources altogether.
+
+For example, a student profile's basic educational information might be available to an authorized placement coordinator, while confidential grievance information remains restricted to the appropriate student-affairs personnel.
+
+A permission to view an object is not automatically a permission to read every field within it.
+
+8. Authorization engine — the combination that makes everything work
+I recommend a hybrid authorization system.
+
+Pure RBAC becomes restrictive when departments, cohorts, committees and temporary assignments interact.
+
+Pure ABAC can become difficult to administer because every decision becomes a collection of attributes and complex policies.
+
+Relationship-based access control is useful for relationships such as:
+- A faculty member mentors this student.
+- An interviewer is assigned to this interview.
+- A coordinator owns this drive.
+- An advisor is responsible for this cohort.
+We should combine the models.
+8.1 The authorization model
+Hybrid authorization architecture
+RBAC
+
+Roles and their assigned permissions
+
+
+ABAC
+
+Identity, resource and contextual attributes
+
+
+ReBAC
+
+Relationships between people and resources
+
+
+
+
+Policy Decision Point
+
+Combines relevant policies and context
+
+
+Decision
+ALLOW
+
+DENY
+
+REVIEW
+
+
+
+
+The critical difference is that roles provide baseline capabilities, but actual authorization also depends on scope, relationships and context.
+8.2 Use the standard authorization components
+I recommend structuring the engine around these components:
+Component	Responsibility
+PEP — Policy Enforcement Point	Intercepts protected operations
+PDP — Policy Decision Point	Makes authorization decision
+PAP — Policy Administration Point	Manages policies and permission definitions
+PIP — Policy Information Point	Supplies identity, membership, resource and relationship attributes
+
+This creates clean boundaries.
+
+For example, a placement API is a PEP. It sends an authorization request to the PDP. The PDP gathers current role assignments and relevant contextual information from the PIP. The PDP returns the decision.
+8.3 Authorization request format
+Conceptually:
+{
+  "subject": {
+    "account_id": "ACC001",
+    "person_id": "PER001",
+    "tenant_id": "TEN001",
+    "institution_id": "INST001",
+    "membership_id": "MEM001"
+  },
+  "action": "placement.application.view",
+  "resource": {
+    "type": "application",
+    "id": "APP001",
+    "institution_id": "INST001",
+    "department_id": "DEPT001"
+  },
+  "context": {
+    "session_assurance": "MFA",
+    "request_channel": "WEB",
+    "request_time": "2026-11-04T10:00:00Z"
+  }
+}
+
+
+The exact fields should be derived from authenticated server context and trusted resource metadata.
+
+A frontend must never be trusted to tell the server:
+{
+  "role": "TPO",
+  "department_id": "CSE"
+}
+
+
+Those claims must be resolved from authoritative server-side records.
+8.4 Authorization evaluation algorithm
+My recommended conceptual sequence:
+1. Authenticate the principal
+        |
+2. Resolve active account and session
+        |
+3. Establish trusted tenant context
+        |
+4. Resolve institutional membership
+        |
+5. Validate membership status
+        |
+6. Resolve active role assignments
+        |
+7. Resolve applicable permission definitions
+        |
+8. Resolve role scope and inheritance
+        |
+9. Evaluate resource relationships
+        |
+10. Evaluate contextual and attribute policies
+        |
+11. Apply explicit deny and security constraints
+        |
+12. Return decision and reason codes
+        |
+13. Record decision where required
+
+
+The order is intentional.
+
+For instance, even if a role assignment exists, a suspended membership should normally prevent its use.
+
+The overall policy should follow:
+- Explicit deny overrides ordinary allow.
+- No matching allow means deny.
+- Invalid or unavailable authorization context means deny for protected actions.
+- A review-required state must never be silently treated as allow.
+- Break-glass access must follow its separate policy.
+8.5 A critical distinction: Authorization policy versus business policy
+Remember CAMP-01's rule engine?
+
+We should not merge it with the authorization engine.
+Authorization policy	Business policy
+Can this person publish a drive?	Can this student register for a drive?
+Can this HOD view departmental results?	Does this student satisfy the CGPA cutoff?
+Can a coordinator approve an exception?	Which exceptions are permitted?
+Can an administrator assign an HOD role?	What makes a student eligible for graduation?
+
+Both can evaluate structured policies, but they have different owners, security implications, audit requirements and lifecycles.
+
+This separation is non-negotiable.
+
+
+9. Delegation architecture — temporary authority without permanent role changes
+This is an essential requirement for actual institutional operations.
+
+Consider these situations:
+- A TPO is on leave and assigns responsibilities to another coordinator.
+- A HOD temporarily delegates approval authority.
+- A principal authorizes a deputy to approve certain institutional operations.
+- A placement coordinator transfers responsibility for a particular recruitment drive.
+- A faculty member appoints another faculty member as a temporary evaluator.
+We should not create permanent role assignments just to handle temporary substitutions.
+
+We need a dedicated delegation system.
+9.1 Delegation entity
+RoleDelegation
+Field	Description
+delegation_id	Unique delegation
+tenant_id	Tenant
+institution_id	Institution
+delegating_assignment_id	Original role assignment
+delegate_membership_id	Recipient
+delegated_permissions	Specific delegated capabilities
+delegated_scope	Permitted scope
+valid_from	Start
+valid_to	Expiry
+status	Pending, active, revoked, expired
+approved_by	Approver
+delegation_reason	Reason
+
+9.2 Delegation constraints
+A delegation must:
+1. Never exceed the original authority.
+2. Never exceed the original scope.
+3. Never last beyond the original assignment's validity.
+4. Support explicit permission exclusions.
+5. Be auditable.
+6. Be immediately revocable.
+7. Prevent unauthorized further delegation.
+8. Respect separation-of-duties rules.
+Example:
+
+A TPO has permission to publish placement drives across the institution.
+
+They delegate permission to manage registration and scheduling for one drive to a coordinator.
+
+The coordinator should not receive the TPO's other institutional permissions.
+9.3 Sub-delegation
+My recommendation is to disable sub-delegation by default.
+
+If allowed for a particular responsibility, it must be explicitly configured and bounded by the original delegation.
+9.4 Delegation is not impersonation
+The delegate acts under their own account.
+
+The audit trail should show:
+- Original authority holder.
+- Delegate.
+- Delegated operation.
+- Delegation reference.
+- Resource and scope.
+- Time of execution.
+We must never obscure who actually performed an operation.
+
+10. Separation of duties and approval governance
+A powerful authorization system must prevent conflicts of interest, not just grant capabilities.
+
+Consider:
+- A person creating and approving their own institutional admin assignment.
+- A result-entry operator approving their own published results.
+- A person submitting and approving their own financial transaction.
+- A recruiter evaluating a close relative.
+- A platform support employee changing their own privileges.
+We need separation-of-duties controls.
+10.1 Four types of separation
+Control	Meaning
+Static separation	Certain roles cannot be held simultaneously
+Dynamic separation	Certain responsibilities cannot be exercised in the same transaction
+Approval separation	Requester and approver must be different where configured
+Contextual separation	Access is blocked because of a specific conflict or relationship
+
+Example:
+
+A role combination might be allowed, but the person cannot use both roles to initiate and approve the same transaction.
+
+This is often more practical than banning the role combination altogether.
+10.2 Approval policy
+For sensitive operations, define separate stages:
+Request
+   |
+Validation
+   |
+Approval assignment
+   |
+Independent approval
+   |
+Activation
+   |
+Audit and notification
+
+
+The approval workflow should be configurable, but important operations should have platform-enforced safeguards.
+
+For example, creating an institutional administrator can require:
+- Verified person identity.
+- Existing authorized requester.
+- Independent approval.
+- MFA.
+- Explicit assignment scope.
+- Audit event.
+10.3 Conflict-of-interest declarations
+For certain workflows, the system can incorporate declared conflicts of interest.
+
+For example, an examiner should not evaluate a candidate when an applicable conflict has been declared.
+
+The domain workflow should supply the conflict information, while CAMP-02 enforces the required access restriction.
+
+We should not use the authorization engine as the only conflict-management system.
+
+11. Privileged access architecture
+Not all users should be treated equally.
+
+A student logging in to view their application is very different from an institution administrator modifying a role or a platform operator accessing customer data.
+
+We need separate protection for privileged accounts and operations.
+11.1 Privilege tiers
+Tier	Example	Controls
+P0	Regular student	Standard authentication
+P1	Faculty and coordinators	MFA based on risk and operation
+P2	Department/institution administrators	Strong MFA and sensitive-operation verification
+P3	Principal, registrar, institution super-admin	Phishing-resistant MFA preferred, privileged audit
+P4	Platform operations and security admins	Dedicated privileged accounts, just-in-time access, monitored actions
+
+These are security tiers, not academic ranks.
+
+The role and the privilege tier should be separate properties.
+11.2 Just-in-time privileged access
+Rather than giving platform operators permanent access to every institutional workspace:
+Support employee requests access
+        |
+Purpose and case reference
+        |
+Approval
+        |
+Temporary privilege activation
+        |
+Restricted access window
+        |
+Activity monitoring and audit
+        |
+Automatic expiration
+
+
+This makes customer support and operational administration safer.
+11.3 Break-glass access
+We also need an emergency mechanism.
+
+Suppose an institution administrator's account becomes inaccessible during a critical operation.
+
+A properly controlled emergency access process should allow designated trusted individuals to restore essential access.
+
+But:
+- It must have a documented emergency reason.
+- It must have limited permissions.
+- It must trigger immediate alerts.
+- It must expire automatically.
+- All actions must be independently reviewed.
+- It must not become an ordinary administrative shortcut.
+Break-glass access should never mean an unlogged global superuser account.
+
+12. Session and authentication architecture
+We have discussed authorization, but authentication also needs a proper design.
+
+The system should support institutional SSO, local authentication and federated identities.
+12.1 Authentication architecture
+Identity authentication pipeline
+Platform login
+
+Password, passkey, MFA
+
+
+Institution SSO
+
+OIDC, SAML or approved provider
+
+
+
+
+Identity provider validation
+
+Issuer, subject, signature, audience, expiry and authentication assurance
+
+
+Account resolution
+
+Find or securely link the internal account
+
+
+Session creation
+
+Account, tenant context, authentication strength and session risk
+
+
+Authorization context established
+
+
+Authentication and authorization should remain different services.
+
+A successful login proves control of an authentication identity. It does not prove that the person is authorized to access a particular institution.
+12.2 Multiple authentication methods
+We should support:
+- Email/password where enabled.
+- Passkeys.
+- TOTP-based MFA.
+- Hardware security keys.
+- Institution-controlled SSO.
+- Recovery codes.
+- Authorized recovery procedures.
+SMS OTP can be supported as a recovery or lower-assurance method where appropriate, but should not be our only strong authentication mechanism for administrators.
+
+We should never require every student to own an institutional email address to have a platform identity.
+12.3 Session management
+Session should record:
+Field	Description
+session_id	Session identifier
+account_id	Authenticated account
+tenant_context	Current tenant context
+identity_provider	Authentication source
+auth_time	Authentication timestamp
+auth_assurance	Authentication strength
+created_at	Session creation
+last_activity_at	Last activity
+expires_at	Expiration
+revoked_at	Revocation timestamp
+
+A user can have several active sessions.
+
+A student might use a laptop and phone simultaneously.
+
+But switching institutions should require establishing a valid institutional context, not trusting a client-supplied institution ID.
+12.4 Session and role changes
+Suppose a faculty member's HOD assignment is revoked.
+
+The platform should:
+1. Commit the revocation.
+2. Publish an authorization invalidation event.
+3. Invalidate relevant access caches.
+4. Make subsequent protected operations fail.
+5. Revoke affected sessions where risk warrants it.
+We should not necessarily terminate every session merely because one role changed; that depends on the active session context and security level.
+
+High-risk account changes, such as account disablement or compromised authentication, should trigger wider session revocation.
+
+13. Temporary actors and special identities
+An institution is not only composed of students and employees.
+
+There are visitors, external examiners, auditors, guest faculty, parents, recruiters and service integrations.
+
+The system must accommodate them without turning them into regular faculty or students.
+13.1 External membership
+Example:
+
+An external examiner needs access to three specific examination records for two weeks.
+
+We create:
+- An account.
+- A person identity if the actor is human.
+- A temporary external membership.
+- A narrowly scoped role assignment.
+- A time-limited access grant.
+- A resource-specific authorization rule.
+When the assignment expires, access automatically stops.
+13.2 Parent and guardian identities
+This is a special case worth treating carefully.
+
+A parent or guardian should not automatically see a student's complete profile merely because they have a relationship with the student.
+
+We need:
+- Verified guardian relationship.
+- Student age and applicable legal context.
+- Institutional policy.
+- Specific data-sharing permissions.
+- Consent or other appropriate legal basis.
+- Revocation and expiry.
+- Audited access.
+The student lifecycle and privacy domains will own the underlying relationship and consent facts. CAMP-02 will enforce the applicable access constraints.
+13.3 Service identities
+We need separate non-human principals for integrations.
+
+Examples:
+- Student ERP sync.
+- Examination result import.
+- Attendance connector.
+- Institutional SSO integration.
+- Bulk document import.
+A service identity should have:
+- One tenant scope.
+- Explicit API permissions.
+- Limited resource access.
+- Credential rotation.
+- Request quotas.
+- Expiry or revocation.
+- Audit history.
+Service accounts must never inherit human administrative roles.
+
+
+14. Canonical entity model and database architecture
+We now need to translate the concepts into entities that developers can implement consistently.
+
+I would separate the database into five logical areas.
+identity.*
+    person
+    person_contact
+    person_identity_reference
+    person_verification
+
+access.*
+    account
+    authentication_identity
+    session
+    account_recovery
+    institutional_membership
+    membership_scope
+
+authorization.*
+    permission
+    role_definition
+    role_version
+    role_permission
+    role_assignment
+    role_delegation
+    scope_reference
+    authorization_policy
+
+security.*
+    privileged_access_request
+    access_review
+    security_event
+    authorization_decision_log
+
+audit.*
+    identity_audit_event
+    access_audit_event
+    role_change_event
+
+
+These are logical schemas. We can combine or distribute them physically as our deployment evolves.
+14.1 Full initial entity catalogue
+Entity	Purpose
+Person	Human identity
+PersonContact	Email, phone and other contact channels
+PersonIdentityReference	External identity or verified reference
+PersonVerification	Identity verification records
+Account	Login account
+AuthenticationIdentity	Password, passkey or external login identity
+Session	Authenticated session
+AccountRecovery	Recovery operation
+InstitutionalMembership	Membership in an institution
+MembershipScope	Permitted institutional scope anchors
+Permission	Atomic operation definition
+RoleDefinition	Role identity
+RoleVersion	Immutable role definition version
+RolePermission	Permissions included in a role version
+RoleAssignment	Responsibility granted to a membership
+RoleDelegation	Temporary delegated authority
+AuthorizationPolicy	Contextual access constraints
+SeparationOfDutyRule	Incompatible roles or actions
+PrivilegedAccessRequest	Elevated access request
+AccessReview	Periodic authorization review
+AuthorizationDecisionLog	Recorded access decision
+
+Later, the model can be extended with committee memberships, resource-specific assignments, external identity linking, authentication assurance and advanced relationship graphs.
+14.2 Entity relationship diagram
+#chatgpt-mermaid-_r_45n_{font-family:-apple-system-body,ui-sans-serif,-apple-system,system-ui,"Segoe UI",Helvetica,"Apple Color Emoji",Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol";font-size:16px;fill:rgb(237, 237, 237);}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#chatgpt-mermaid-_r_45n_ .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#chatgpt-mermaid-_r_45n_ .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#chatgpt-mermaid-_r_45n_ .error-icon{fill:rgb(48, 48, 48);}#chatgpt-mermaid-_r_45n_ .error-text{fill:rgb(237, 237, 237);stroke:rgb(237, 237, 237);}#chatgpt-mermaid-_r_45n_ .edge-thickness-normal{stroke-width:1px;}#chatgpt-mermaid-_r_45n_ .edge-thickness-thick{stroke-width:3.5px;}#chatgpt-mermaid-_r_45n_ .edge-pattern-solid{stroke-dasharray:0;}#chatgpt-mermaid-_r_45n_ .edge-thickness-invisible{stroke-width:0;fill:none;}#chatgpt-mermaid-_r_45n_ .edge-pattern-dashed{stroke-dasharray:3;}#chatgpt-mermaid-_r_45n_ .edge-pattern-dotted{stroke-dasharray:2;}#chatgpt-mermaid-_r_45n_ .marker{fill:rgb(175, 175, 175);stroke:rgb(175, 175, 175);}#chatgpt-mermaid-_r_45n_ .marker.cross{stroke:rgb(175, 175, 175);}#chatgpt-mermaid-_r_45n_ svg{font-family:-apple-system-body,ui-sans-serif,-apple-system,system-ui,"Segoe UI",Helvetica,"Apple Color Emoji",Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol";font-size:16px;}#chatgpt-mermaid-_r_45n_ p{margin:0;}#chatgpt-mermaid-_r_45n_ .entityBox{fill:rgb(17, 40, 19);stroke:rgb(58, 132, 63);}#chatgpt-mermaid-_r_45n_ .relationshipLabelBox{fill:rgb(48, 48, 48);opacity:0.7;background-color:rgb(48, 48, 48);}#chatgpt-mermaid-_r_45n_ .relationshipLabelBox rect{opacity:0.5;}#chatgpt-mermaid-_r_45n_ .labelBkg{background-color:rgba(48, 48, 48, 0.5);}#chatgpt-mermaid-_r_45n_ .edgeLabel{background-color:rgb(0, 0, 0);}#chatgpt-mermaid-_r_45n_ .edgeLabel .label rect{fill:rgb(0, 0, 0);}#chatgpt-mermaid-_r_45n_ .edgeLabel .label text{fill:rgb(237, 237, 237);}#chatgpt-mermaid-_r_45n_ .edgeLabel .label{fill:rgb(58, 132, 63);font-size:14px;}#chatgpt-mermaid-_r_45n_ .label{font-family:-apple-system-body,ui-sans-serif,-apple-system,system-ui,"Segoe UI",Helvetica,"Apple Color Emoji",Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol";color:rgb(237, 237, 237);}#chatgpt-mermaid-_r_45n_ .edge-pattern-dashed{stroke-dasharray:8,8;}#chatgpt-mermaid-_r_45n_ .node rect,#chatgpt-mermaid-_r_45n_ .node circle,#chatgpt-mermaid-_r_45n_ .node ellipse,#chatgpt-mermaid-_r_45n_ .node polygon{fill:rgb(17, 40, 19);stroke:rgb(58, 132, 63);stroke-width:1px;}#chatgpt-mermaid-_r_45n_ .relationshipLine{stroke:rgb(175, 175, 175);stroke-width:1px;fill:none;}#chatgpt-mermaid-_r_45n_ .marker{fill:none!important;stroke:rgb(175, 175, 175)!important;stroke-width:1;}#chatgpt-mermaid-_r_45n_ [data-look=neo].labelBkg{background-color:rgba(48, 48, 48, 0.5);}#chatgpt-mermaid-_r_45n_ .node .neo-node{stroke:rgb(58, 132, 63);}#chatgpt-mermaid-_r_45n_ [data-look="neo"].node rect,#chatgpt-mermaid-_r_45n_ [data-look="neo"].cluster rect,#chatgpt-mermaid-_r_45n_ [data-look="neo"].node polygon{stroke:url(#chatgpt-mermaid-_r_45n_-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_45n_ [data-look="neo"].swimlane.cluster rect{filter:none;}#chatgpt-mermaid-_r_45n_ [data-look="neo"].node path{stroke:url(#chatgpt-mermaid-_r_45n_-gradient);stroke-width:1px;}#chatgpt-mermaid-_r_45n_ [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_45n_ [data-look="neo"].node .neo-line path{stroke:rgb(58, 132, 63);filter:none;}#chatgpt-mermaid-_r_45n_ [data-look="neo"].node circle{stroke:url(#chatgpt-mermaid-_r_45n_-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_45n_ [data-look="neo"].node circle .state-start{fill:#000000;}#chatgpt-mermaid-_r_45n_ [data-look="neo"].icon-shape .icon{fill:url(#chatgpt-mermaid-_r_45n_-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_45n_ [data-look="neo"].icon-shape .icon-neo path{stroke:url(#chatgpt-mermaid-_r_45n_-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_45n_ :root{--mermaid-font-family:-apple-system-body,ui-sans-serif,-apple-system,system-ui,"Segoe UI",Helvetica,"Apple Color Emoji",Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol";}PERSONACCOUNTAUTHENTICATION_IDENTITYSESSIONINSTITUTIONAL_MEMBERSHIPINSTITUTIONMEMBERSHIP_SCOPEROLE_ASSIGNMENTROLE_DEFINITIONROLE_VERSIONROLE_PERMISSIONPERMISSIONROLE_DELEGATIONPRIVILEGED_ACCESS_REQUESTAUTHORIZATION_DECISIONACCESS_REVIEWownsauthenticates_withcreatesholdshasscoped_byreceivesversionsincludesreferenced_byusesdelegatesrequestssubjectreviewed
+
+
+
+
+
+One useful improvement: a delegation does not need to create a duplicate role assignment in its own right. It should reference the original authority and create a restricted authorization grant.
+
+That makes tracing authority back to its origin much easier.
+14.3 Critical database constraints
+Constraint	Requirement
+Account identity	Authentication identity unique within its issuer
+Membership	Account and institution must belong to the same tenant
+Role assignment	Membership and role must belong to a compatible institutional scope
+Role version	Assignment must reference a valid approved version
+Permission mapping	No duplicate permission assignment within a role version
+Validity	End must be after start
+Delegation	Cannot exceed original assignment's scope or validity
+Revocation	Revoked authority cannot become effective again without a new grant
+Role lifecycle	Deprecated roles cannot be assigned to new memberships
+Tenant integrity	All tenant-owned relationships must enforce tenant consistency
+
+14.4 Database schema example
+Let's implement a small part of this properly.
+
+Institutional membership
+CREATE TABLE access.institutional_membership (
+    tenant_id UUID NOT NULL,
+    institution_id UUID NOT NULL,
+    id UUID NOT NULL,
+
+    account_id UUID NOT NULL,
+    person_id UUID NOT NULL,
+
+    membership_type VARCHAR(40) NOT NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'INVITED',
+
+    valid_from TIMESTAMPTZ,
+    valid_to TIMESTAMPTZ,
+
+    source_domain VARCHAR(50),
+    source_record_id UUID,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (tenant_id, institution_id, id),
+
+    FOREIGN KEY (tenant_id, institution_id)
+        REFERENCES institution.institution(
+            tenant_id, id
+        ),
+
+    FOREIGN KEY (account_id)
+        REFERENCES access.account(id),
+
+    FOREIGN KEY (person_id)
+        REFERENCES identity.person(id),
+
+    CHECK (
+        valid_to IS NULL OR
+        valid_from IS NULL OR
+        valid_to > valid_from
+    )
+);
+
+
+The application should additionally verify that the account and person are correctly linked and that the account is permitted to join the tenant. We should not rely on separate independent foreign keys for that relationship.
+
+Role assignment
+CREATE TABLE authorization.role_assignment (
+    tenant_id UUID NOT NULL,
+    institution_id UUID NOT NULL,
+    id UUID NOT NULL,
+
+    membership_id UUID NOT NULL,
+    role_version_id UUID NOT NULL,
+
+    scope_type VARCHAR(50) NOT NULL,
+    scope_id UUID NOT NULL,
+
+    status VARCHAR(30) NOT NULL DEFAULT 'PENDING',
+
+    valid_from TIMESTAMPTZ NOT NULL,
+    valid_to TIMESTAMPTZ,
+
+    assigned_by_account_id UUID NOT NULL,
+    approved_by_account_id UUID,
+
+    reason TEXT,
+
+    version BIGINT NOT NULL DEFAULT 1,
+
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (tenant_id, institution_id, id),
+
+    FOREIGN KEY (
+        tenant_id, institution_id, membership_id
+    )
+    REFERENCES access.institutional_membership(
+        tenant_id, institution_id, id
+    ),
+
+    CHECK (
+        valid_to IS NULL OR
+        valid_to > valid_from
+    )
+);
+
+
+This is a conceptual starting DDL, not yet production-ready.
+
+In production, scope_type + scope_id should be resolved through validated typed scope references. We should not accept arbitrary identifiers simply because the UUID is syntactically valid.
+
+Similarly, role versions, permission references and actor references require tenant-aware foreign keys or properly defined cross-schema ownership constraints.
+14.5 Role scope implementation
+I would introduce a ScopeRegistry interface rather than creating foreign keys from every authorization table to every possible scope table.
+
+It can resolve approved types such as:
+TENANT
+INSTITUTION
+CAMPUS
+INSTITUTION_GROUP
+ORGANIZATIONAL_UNIT
+ACADEMIC_UNIT
+PROGRAM
+COHORT
+RESOURCE
+SELF
+
+
+The owning domain validates the resource's existence and tenant/institution association.
+
+This avoids creating circular database dependencies between CAMP-01, CAMP-02, CAMP-03 and later placement or examination domains.
+
+However, a generic UUID field is not enough for integrity. Each scope type needs its own resolver, validation rules and ownership contract.
+
+15. Identity onboarding and provisioning pipelines
+Now we must define how people actually enter the system.
+
+There will be multiple sources:
+- Institutional administrator invitations.
+- Bulk student imports.
+- ERP synchronization.
+- Faculty and staff imports.
+- Self-registration.
+- Alumni activation.
+- External examiner invitations.
+- Parent or guardian invitations.
+- SSO-based account provisioning.
+All of these should feed a common identity provisioning pipeline.
+15.1 Account and membership creation pipeline
+Identity provisioning pipeline
+01. Identity source
+
+Manual invitation, ERP, SSO, CSV or registration request
+
+
+02. Identity resolution
+
+Find existing account/person, check trusted identity evidence and possible duplicates
+
+
+03. Account validation
+
+Validate authentication identity, provider and account status
+
+
+04. Membership creation
+
+Create institution-scoped membership and bind the source affiliation record
+
+
+05. Role provisioning
+
+Assign only approved baseline roles, scoped responsibilities and permissions
+
+
+06. Activation and notification
+
+Activate membership when prerequisites are met and deliver secure account access instructions
+
+
+07. Domain events
+
+AccountProvisioned · MembershipActivated · RoleAssigned
+
+
+15.2 Bulk student provisioning
+Suppose an institution uploads 8,000 student records.
+
+We should not simply create 8,000 independent accounts and send 8,000 emails without understanding identity duplication.
+
+Instead:
+1. Receive the student import batch.
+2. Validate tenant and institution ownership.
+3. Match existing person records using approved identifiers.
+4. Identify possible duplicate identities.
+5. Create or link accounts.
+6. Create institutional memberships.
+7. Receive or reference authoritative student enrollment records.
+8. Assign the correct baseline student role.
+9. Activate access according to institutional policy.
+10. Send invitations or enable institutional SSO.
+Possible cases:
+Case	Expected result
+New student, no account	Create person, account and membership
+Existing platform account	Reuse account after verified linking
+Existing person with different institution	Add separate membership
+Same institutional registration number	Prevent duplicate enrollment-based membership
+Possible duplicate identity	Hold for identity resolution
+Missing authentication contact	Allow controlled institution-managed activation
+Student already graduated	Use appropriate alumni transition
+Disabled account	Do not reactivate without authorized review
+
+An important distinction: identity matching and student record matching are different operations.
+
+Two students can have similar names and matching initials without being the same person.
+
+We should prefer institution-issued unique identifiers combined with trusted evidence. Ambiguous matches must go into review.
+
+16. Authorization execution pipeline
+Let's make the runtime process concrete.
+
+Suppose a CSE placement coordinator tries to view a student from the ECE department.
+
+What should happen?
+
+We need a controlled decision.
+16.1 Example authorization evaluation
+Incoming request
+    |
+Authenticate account
+    |
+Resolve tenant and institution
+    |
+Load current membership
+    |
+Membership active?
+    |
+Resolve requested resource
+    |
+Determine action
+    |
+Load current role assignments
+    |
+Check department scope
+    |
+Evaluate permission
+    |
+Evaluate contextual restrictions
+    |
+Return decision
+
+
+If the coordinator only has CSE scope, the request should be denied.
+
+Even if the frontend displays a button for it, the backend refuses the operation.
+16.2 Decision output
+Our authorization service should return a structured result.
+{
+  "decision_id": "DEC001",
+  "decision": "DENY",
+  "reason_code": "SCOPE_MISMATCH",
+  "subject_id": "ACC001",
+  "action": "student.profile.read",
+  "resource_id": "STU001",
+  "policy_version": "AUTHZ_V4",
+  "evaluated_at": "2026-11-04T10:00:00Z"
+}
+
+
+For a denial, we should reveal enough information to explain the error without disclosing confidential resource details.
+
+Internally, the audit record can contain richer diagnostics.
+16.3 Authorization cache
+We need high performance, so checking every role assignment with multiple database joins on every operation may eventually become expensive.
+
+But caching authorization blindly is dangerous.
+
+I recommend:
+- Cache role and permission resolution using tenant, membership and scope.
+- Include role-assignment versions.
+- Include policy versions.
+- Use short, controlled cache validity.
+- Invalidate on role changes and revocation.
+- Apply stricter cache policies to high-risk permissions.
+- Re-check sensitive actions against current authoritative state.
+Never cache an ALLOW decision indefinitely.
+
+Also, authorization caches must not be shared across tenants without tenant-aware namespacing.
+16.4 Authorization checkpoints
+Not every request needs the same level of reevaluation.
+Operation	Required check
+View general institutional directory	Standard
+View own student profile	Standard
+View another student's personal data	Membership + resource scope
+Export 5,000 student records	Fresh permission + export policy
+Publish examination results	Fresh authorization + approval state
+Assign institution administrator	Privileged verification + independent approval
+Modify institutional structure	Current role + concurrency/approval validation
+Access confidential records	Fresh authorization and enhanced audit
+
+The security model should scale its checks with the sensitivity and impact of the operation.
+
+17. API and domain contract architecture
+CAMP-02 should expose business operations, not just unrestricted role CRUD.
+17.1 API catalogue
+API	Purpose
+POST /accounts	Create account
+POST /accounts/{id}/authentication-identities	Link authentication method
+GET /accounts/{id}/memberships	List permitted memberships
+POST /institutions/{id}/memberships/invite	Invite a member
+POST /memberships/{id}/activate	Activate membership
+POST /memberships/{id}/suspend	Suspend membership
+GET /roles	Read allowed role definitions
+POST /roles	Create institution-defined role
+POST /roles/{id}/versions	Create role version
+POST /role-assignments	Assign a responsibility
+POST /role-assignments/{id}/revoke	Revoke responsibility
+POST /role-delegations	Create delegation
+POST /role-delegations/{id}/revoke	Revoke delegation
+POST /authorization/evaluate	Evaluate protected operation
+POST /access-reviews	Initiate access review
+
+These should be secured internal APIs where appropriate. The authorization evaluation endpoint should not become a public endpoint through which users can freely probe access to other people's resources.
+17.2 Example commands
+CreatePerson
+CreateAccount
+LinkAuthenticationIdentity
+InviteInstitutionMember
+ActivateMembership
+SuspendMembership
+CreateInstitutionRole
+PublishRoleVersion
+AssignRole
+ApproveRoleAssignment
+RevokeRoleAssignment
+CreateDelegation
+RevokeDelegation
+RequestPrivilegedAccess
+ApprovePrivilegedAccess
+PerformAccessReview
+
+
+Every command should be idempotent where retrying could otherwise create duplicate state.
+17.3 Events
+Initial event catalogue:
+Event	Trigger
+PersonCreated	New identity created
+AccountCreated	Account provisioned
+AuthenticationIdentityLinked	Login method linked
+AccountDisabled	Account disabled
+MembershipInvited	Institution invitation
+MembershipActivated	Membership activated
+MembershipSuspended	Membership suspended
+RoleCreated	New role
+RoleVersionPublished	Role version approved
+RoleAssigned	Responsibility granted
+RoleRevoked	Responsibility removed
+DelegationCreated	Delegated authority granted
+DelegationRevoked	Delegation removed
+PrivilegedAccessGranted	Temporary privilege activated
+AccessReviewCompleted	Periodic review completed
+
+An event must never be interpreted as the complete authorization truth.
+
+The authoritative membership and role assignment state remains in CAMP-02.
+
+
+18. Real institutional scenarios — test the model before implementation
+Let's test our design against complicated combinations.
+
+These are not hypothetical edge cases we should postpone. They are the kinds of combinations we should design the system to handle.
+Scenario A — Central TPO and departmental coordinators
+An institution has four campuses and twelve departments.
+
+The responsibilities are:
+Person	Role	Scope
+Person A	Central TPO	Institution
+Person B	Campus TPO	Campus North
+Person C	Placement Coordinator	CSE, Campus North
+Person D	Placement Coordinator	ECE, Campus North
+Person E	Placement Coordinator	CSE, Campus South
+
+The system should allow:
+- Person A to oversee institution-wide placement operations.
+- Person B to manage campus-level placement operations.
+- Person C to manage CSE placement activities in Campus North.
+- Person D to manage ECE placement activities in Campus North.
+- Person E to manage CSE placement activities in Campus South.
+But the scope hierarchy alone must not decide everything.
+
+For example, Person B might view placement reports for all departments in Campus North but not modify their eligibility policies.
+
+A person's role must resolve to specific permissions.
+Scenario B — Faculty member who is also HOD and examiner
+A faculty member receives three assignments.
+Assignment	Scope	Permission examples
+Faculty	Assigned courses	Attendance and course operations
+HOD	CSE department	Departmental administration
+Examiner	Specific exam	Enter and evaluate marks
+
+When the examination assignment expires, the other two assignments remain active.
+
+This is why roles must be independently assigned and revoked.
+Scenario C — Student representative
+A student has:
+- Student membership.
+- Student role.
+- Student representative assignment.
+The representative can:
+- Submit departmental requests.
+- View aggregated student feedback.
+- Coordinate authorized events.
+- Submit approved announcements for review.
+The representative cannot automatically:
+- View other students' complete records.
+- Edit attendance.
+- Change examination results.
+- Approve placement eligibility.
+- Access confidential grievances.
+A custom student role should not imply access to administrative records merely because the student represents a cohort.
+Scenario D — Faculty transfers between departments
+Suppose a faculty member transfers from CSE to ECE.
+
+The correct process is:
+Old academic/staff assignment closed
+        |
+Old department-scoped role assignments reviewed
+        |
+Required role assignments revoked or transitioned
+        |
+New department assignment recorded
+        |
+New scoped responsibilities granted
+        |
+Authorization caches invalidated
+        |
+Historical access preserved
+
+
+We should not automatically transfer every old permission to the new department.
+Scenario E — One person across two institutions
+Person A is an alumnus of Institution X and a faculty member at Institution Y.
+
+They should have:
+- One linked platform identity where appropriately verified.
+- Separate institutional memberships.
+- Separate role assignments.
+- Separate access contexts.
+- No automatic visibility between the two institutions.
+They should not have to log out of one institution to use the other, but their active authorization context must be explicit.
+Scenario F — Temporary principal delegation
+The principal is away for a week.
+
+A deputy receives temporary authority to approve institutional announcements and selected operational matters.
+
+The deputy does not become principal, and their account must continue to identify them as the actual actor.
+
+The authority is created as a delegation, has a clear expiry and can be revoked immediately.
+Scenario G — Institution administrator leaves
+An administrator's employment ends.
+
+The institution terminates their employment relationship and initiates the corresponding membership and role-revocation process.
+
+The account may remain active for other valid institutional or personal platform memberships.
+
+However, the former administrator must lose the institution's administrative access immediately.
+
+This is a critical example of why Account, Person, Membership and Role Assignment cannot be the same record.
+
+19. Security, compliance and privacy architecture
+Identity and access management must be designed with security as a foundational requirement.
+
+We should include the following controls.
+Area	Controls
+Account security	Credential protection, secure recovery, account lockout
+Authentication	MFA, SSO, passkeys
+Authorization	Least privilege, scoped permissions, deny by default
+Privileged access	Just-in-time access, approvals, strong authentication
+Sessions	Revocation, expiry and session management
+Identity linking	Verified association and duplicate-resolution controls
+Audit	Immutable or tamper-evident security history
+Data privacy	Purpose-based visibility, data minimisation
+Integration security	Scoped service identities and credential rotation
+Abuse detection	Suspicious access and abnormal activity detection
+
+19.1 Protection against privilege escalation
+We should explicitly protect against:
+- Assigning oneself administrative permissions.
+- Creating a custom role with unrestricted permissions.
+- Delegating more authority than one possesses.
+- Accessing a different institution by changing a request parameter.
+- Reusing revoked tokens.
+- Using a service account as a human administrator.
+- Manipulating scope IDs.
+- Exploiting cached authorization decisions after revocation.
+- Creating an administrator through bulk import without authorized approval.
+19.2 Privacy-aware access
+We should make access decisions based on both authorization and data sensitivity.
+
+For example:
+
+An HOD may have access to departmental academic progress but not automatically to private counselling records.
+
+An interviewer may view the candidate information required for an interview but should not have general access to the institution's student database.
+
+A parent may have a verified relationship with a student, but still only see the data covered by valid access permissions.
+19.3 Indian compliance design
+We should design identity and access processing to support applicable Indian privacy requirements, including the Digital Personal Data Protection framework.
+
+In particular, account creation, identity verification, communication and information sharing should not be treated as blanket consent for every future institutional use.
+
+The platform needs purpose-specific processing records, transparent privacy controls, appropriate retention, security safeguards and workflows for applicable individual rights.
+
+The precise legal basis and obligations should be reviewed for each processing context rather than assuming every operation requires the same consent mechanism.
+
+20. Testing strategy and production acceptance
+We need to test the authorization model as rigorously as the underlying database.
+
+A platform can have perfectly designed tables and still have a serious security vulnerability because one endpoint forgot to validate scope.
+20.1 Testing categories
+Test	What we validate
+Identity resolution	Duplicate prevention and account linking
+Membership	Institutional membership lifecycle
+Role versioning	Permission changes and historical decisions
+Scope	Correct department, campus and institution access
+Delegation	Authority cannot exceed original grant
+Authorization	RBAC, ABAC and ReBAC interactions
+Privilege escalation	Unapproved role elevation is blocked
+Session security	Revocation and token handling
+Tenant isolation	No cross-tenant access
+Concurrency	Simultaneous grants and revocations
+Event delivery	Idempotency and eventual consistency
+Audit	Actor, decision, scope and reason traceability
+
+20.2 Important automated test scenarios
+Input	Expected outcome
+Active faculty, valid department scope	Allow permitted operations
+Faculty from Institution A requests Institution B data	Deny
+CSE coordinator requests ECE student record	Deny unless explicit access exists
+HOD with expired assignment	Deny
+Student accesses their own permitted profile	Allow
+Student accesses another student's confidential record	Deny
+Custom role requests unapproved platform permission	Reject role publication
+Delegation requests broader scope than original assignment	Reject
+Revoked TPO uses old session for sensitive operation	Deny
+Administrator attempts self-approval of privileged assignment	Reject
+Guest membership expires	Deny subsequent protected operations
+Two administrators simultaneously modify the same assignment	Prevent lost update
+Same provisioning command is retried	No duplicate membership
+Institutional SSO subject changes unexpectedly	Require controlled re-linking
+Directory lookup reveals another tenant's membership	Deny
+
+20.3 Authorization performance requirements
+We should make performance measurable rather than saying the service must be fast.
+
+Initial engineering targets for load testing could be:
+Operation	Initial target
+Cached standard authorization decision	p95 under 50 ms
+Database-backed authorization decision	p95 under 150 ms
+Bulk role provisioning	Asynchronous
+Revocation propagation	Under 5 seconds
+Privileged access validation	Fresh authoritative check
+
+These are provisional targets, not measured guarantees. We should validate them against realistic workloads, infrastructure and security requirements.
+
+Most importantly, revocation correctness takes priority over cache performance.
+
+21. Architectural decision register — CAMP-02
+Let's formally capture the main decisions.
+ADR	Decision	Status
+C02-001	Person identity is separate from account	Proposed baseline
+C02-002	Multiple authentication methods can belong to one account	Proposed baseline
+C02-003	Institutional memberships are separate from business affiliations	Proposed baseline
+C02-004	One person can have multiple institutional memberships	Proposed baseline
+C02-005	Role assignments are independent records	Proposed baseline
+C02-006	Role definitions are versioned	Proposed baseline
+C02-007	Every role assignment has an explicit scope and validity	Proposed baseline
+C02-008	Hybrid RBAC + ABAC + ReBAC authorization	Proposed baseline
+C02-009	Explicit deny and default deny	Proposed baseline
+C02-010	Delegation is separate from role assignment	Proposed baseline
+C02-011	Separation-of-duties controls are supported	Proposed baseline
+C02-012	Privileged operations require enhanced authorization	Proposed baseline
+C02-013	Tenant and institution context are server-authoritative	Proposed baseline
+C02-014	Revocation invalidates current authorization	Proposed baseline
+C02-015	Authorization decisions are explainable and traceable	Proposed baseline
+C02-016	Service identities are separate from human identities	Proposed baseline
+
+21.1 Decisions to defer
+Some details need a larger platform-wide design.
+Decision	Reason
+Specific authorization engine or policy language	Evaluate implementation complexity and security
+Specific identity provider	Depends on institutional SSO requirements
+Passwordless-first rollout	Depends on user populations and recovery processes
+Full relationship-graph engine	Begin with controlled relationship resolvers
+Exact MFA policy for every role	Requires risk classification
+Detailed access-review workflow	Shared governance and workflow specification
+Identity federation across independent tenants	Needs explicit privacy and trust model
+Data residency and dedicated identity databases	Depends on customer requirements and deployment model
+
+I would not rush to introduce a dedicated authorization graph database or a separate authorization microservice.
+
+We can implement the logical authorization boundary within our modular backend and extract it when operational scale, independent deployment or security isolation justifies the move.
+
+22. Implementation sequence for CAMP-02
+Let's order implementation based on dependencies.
+CAMP-02 implementation roadmap
+1. Identity foundation
+   
+   Person, account, authentication identity, identity resolution and account lifecycle.
+2. Institutional membership
+   
+   Tenant-scoped membership, invitation, activation, suspension and expiry.
+3. Role and permission catalogue
+   
+   Standard roles, custom roles, permission definitions and role versioning.
+4. Role assignment and scope
+   
+   Institutional assignments, organizational scopes and validity.
+5. Authorization engine
+   
+   Permission evaluation, scope checking, contextual authorization and decision records.
+6. Delegation and approval
+   
+   Temporary grants, role assignment approvals and separation of duties.
+7. Authentication and session security
+   
+   SSO, MFA, session management, account recovery and revocation.
+8. Privileged access and governance
+   
+   Emergency access, just-in-time privileges and periodic access reviews.
+9. Production security testing
+   
+   Tenant-isolation testing, privilege-escalation testing, concurrency and performance.
+
+CAMP-02 definition of done
+Identity
+0/4
+
+[ ] Person and account are separate
+[ ] Multiple verified authentication methods are supported
+[ ] Duplicate identity resolution is controlled
+[ ] Service accounts are separate from human accounts
+
+
+Membership
+0/4
+
+[ ] Multiple memberships per person are supported
+[ ] Memberships are institution-scoped
+[ ] Memberships have independent lifecycle and expiry
+[ ] Business affiliation is not confused with platform membership
+
+
+Authorization
+0/5
+
+[ ] Role catalogue and permission catalogue exist
+[ ] Roles are versioned
+[ ] Role assignments have scope and validity
+[ ] RBAC, ABAC and relationship checks work
+[ ] Resource and field-level restrictions are enforced
+
+
+Governance
+0/5
+
+[ ] Delegation is bounded and revocable
+[ ] Separation of duties is enforced
+[ ] Privileged access is protected
+[ ] Access decisions are auditable
+[ ] Role changes trigger authorization invalidation
+
+
+Security and engineering
+0/6
+
+[ ] Cross-tenant access tests pass
+[ ] SSO and authentication linking are secure
+[ ] Session revocation works
+[ ] Service credentials can be rotated
+[ ] Authorization performance is measured
+[ ] Provisioning and events are idempotent
+
+
+Overall completion
+0/24
+
+
+
+Design and engineering acceptance tracker.
+
+23. The most important architectural outcome
+With CAMP-01 and CAMP-02 together, we now have the two foundations on which the entire campus system can operate.
+CAMP-01
+Institutional world
+
+Tenants, institutions, campuses, organizational relationships and institutional configurations.
+
+
+CAMP-02
+People and authority
+
+Identity, accounts, memberships, roles, permissions, scopes, delegation and authorization.
+
+
+CAMPUS PLATFORM FOUNDATION
+A secure, multi-institution environment where every person has a valid identity, every responsibility has a scope, and every protected operation has an authorization decision.
+
+
+CAMP-03 — Academic Structure & Student Lifecycle
+
+Programs, academic calendars, batches, courses, admissions, enrollment, student progression, transfers, academic history and graduation.
+Next domain
+
+
+My recommendation for the next stage
+We should design CAMP-03 with the same depth, particularly because it will become the authoritative foundation for student records and placement eligibility.
+
+I want to make sure it supports different Indian academic systems without assuming every university follows the same semester structure, grading conventions or progression rules.
+
+One additional principle: CAMP-01 and CAMP-02 are currently architecture specifications, not deployed software. Once we finish the domain design, we'll consolidate these specifications into an implementation-ready technical blueprint, including migrations, API contracts, event schemas, test cases and architecture decision records.
+
+We are building an institutional platform whose foundations should survive years of new modules, thousands of institutional configurations and millions of users—not merely a placement application that happens to work today.

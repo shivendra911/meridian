@@ -1,0 +1,2073 @@
+CAMP-03 — Academic Structure & Student Lifecycle Architecture
+Architecture specification v1.0
+ India-first
+ Foundation domain
+
+
+Our next major foundation is the academic world itself.
+
+CAMP-01 tells us what the institution looks like. CAMP-02 tells us who operates within it. CAMP-03 will tell us what an educational institution teaches, how students progress through it, and how their academic history is maintained throughout their educational journey.
+
+I want to make one major architectural decision upfront:
+
+We will not build a B.Tech-specific academic database. We will build a configurable academic system capable of representing B.Tech, BCA, BBA, MBA, diploma, postgraduate, doctoral, vocational and other educational structures.
+
+A B.Tech CSE student is one possible configuration, not the data model.
+1. The academic architecture: six interconnected domains
+I recommend separating CAMP-03 into six areas.
+Academic operating model
+A. Academic Structure
+
+Schools, academic departments, programs, qualifications, academic units and delivery structures.
+
+B. Curriculum & Course Management
+
+Curriculum versions, subjects, courses, electives, prerequisites, credits and learning outcomes.
+
+C. Academic Calendar & Term Management
+
+Academic years, semesters, trimesters, examination periods, registration windows and academic events.
+
+D. Student Lifecycle & Enrollment
+
+Admission handoff, enrollment, program changes, course registration, progression, leave, withdrawal and graduation.
+
+E. Academic Records & Credit Management
+
+Grades, credits, attempts, transcripts, academic standing, transfer credits and historical academic records.
+
+F. Academic Rules & Progression
+
+Prerequisites, course selection, credit requirements, promotion, repeat rules, academic equivalence and graduation eligibility.
+
+
+These are logical subdomains, not necessarily six separately deployed applications.
+2. Important ownership boundary
+We need to avoid creating overlaps with CAMP-01, CAMP-02 and future domains.
+Domain	Owns
+CAMP-01	Institution, campus, organizational and academic-unit identity
+CAMP-02	Person, account, membership and authorization
+CAMP-03	Programs, curricula, academic enrollment and progression
+CAMP-07	Attendance records and attendance processing
+CAMP-08	Examination administration, assessments, result evaluation and publication
+CAMP-09	Placement and recruitment eligibility
+CAMP-18	Institutional governance, approval and compliance
+
+There is an important distinction between academic records and examination operations.
+
+For example:
+- CAMP-08 conducts an examination.
+- CAMP-08 evaluates and publishes results.
+- CAMP-03 receives the authoritative published outcome.
+- CAMP-03 updates the student's academic history and credit ledger.
+- CAMP-03 evaluates academic progression.
+- CAMP-09 consumes authoritative academic facts to determine placement eligibility.
+This prevents examination, academic progression and placement logic from being duplicated.
+
+3. India-first academic flexibility
+Before designing entities, we must understand the academic systems the platform must represent.
+
+India's higher-education environment includes different credit structures, academic calendars, degree models and progression mechanisms.
+
+The UGC's undergraduate Curriculum and Credit Framework supports flexible credit-based study, multidisciplinary learning and multiple entry/exit options. The Academic Bank of Credits provides a mechanism for credit accumulation, recognition, transfer and redemption. The National Credit Framework also discusses academic, vocational and experiential learning. 
+UGC+2
+
+
+These are particularly important to our design because we cannot assume that every student completes a fixed sequence of subjects at one institution.
+
+The UGC's regulations catalogue also includes newer regulatory instruments, including the 2025 Minimum Standards and Procedure for Award of Undergraduate Degree and Postgraduate Degree Regulations. Our regulatory configuration therefore needs to be versioned rather than permanently tied to a particular framework. 
+UGC
+
+3.1 Academic models we must support
+Academic model	Example
+Annual	Year 1, Year 2, Year 3
+Semester	Semester 1 through 8
+Trimester	Three academic terms per year
+Quarter	Four academic periods
+Credit-based	Students accumulate credits
+Choice-based	Students select from elective pools
+Modular	Independent learning modules
+Competency-based	Progression through demonstrated competencies
+Research-based	Research milestones and thesis progression
+Non-credit	Mandatory activities without academic credit
+Mixed	Different structures within the same institution
+
+An institution can even operate several models simultaneously.
+
+For example, B.Tech might use semesters, MBA might use trimesters, and a diploma program might use annual progression.
+
+Therefore, the academic calendar cannot be a global singleton with eight semesters hardcoded into it.
+3.2 Design for standards, not hardcoded regulations
+I suggest a standards-adapter architecture.
+National / Regulatory Frameworks
+       |
+       +-- Applicable UGC framework
+       +-- Applicable AICTE requirements
+       +-- State-level requirements
+       +-- Professional council requirements
+       |
+       v
+Regulatory Reference Registry
+       |
+       v
+Institutional Academic Configuration
+       |
+       v
+Program-Specific Curriculum and Rules
+       |
+       v
+Student Academic Progression
+
+
+We should store:
+- Framework identifier.
+- Issuing authority.
+- Version.
+- Effective dates.
+- Applicability conditions.
+- Source reference.
+- Adopted institutional configuration.
+- Rules derived from the framework.
+- Approval and publication history.
+We should not blindly assume that every UGC guideline, council requirement or national framework applies to every institution.
+
+A regulatory framework may be mandatory, optional, conditional or inapplicable depending on the institution and program.
+
+This distinction must be represented explicitly.
+
+4. Academic structure — the hierarchy of education
+Now we start defining actual entities.
+
+The first thing to understand is that an institution's organizational hierarchy and its academic structure are related but different.
+
+CAMP-01 provides the academic-unit identities. CAMP-03 defines the educational programs and academic offerings operating within them.
+4.1 Proposed academic hierarchy
+Institution
+    |
+    +-- School of Engineering
+    |       |
+    |       +-- Department of Computer Science
+    |       |       |
+    |       |       +-- B.Tech CSE
+    |       |       +-- B.Tech AI & ML
+    |       |       +-- M.Tech CSE
+    |       |
+    |       +-- Department of Electronics
+    |               |
+    |               +-- B.Tech ECE
+    |               +-- M.Tech VLSI
+    |
+    +-- School of Management
+            |
+            +-- Department of Management
+                    |
+                    +-- BBA
+                    +-- MBA
+
+
+The program itself should not be confused with the department delivering it.
+
+A program can be jointly delivered by multiple academic units, and the department responsible for administration can change.
+4.2 AcademicUnit
+CAMP-01 already owns the AcademicUnit identity.
+
+CAMP-03 will use it as a structural reference.
+
+Examples:
+- School.
+- Faculty.
+- Academic department.
+- Research centre.
+- Interdisciplinary centre.
+The academic unit may have:
+Attribute	Purpose
+academic_unit_id	Stable identity
+institution_id	Owning institution
+unit_code	Institution-unique code
+unit_name	Display name
+unit_type	School, department, centre, etc.
+status	Active, inactive, archived
+valid_from / valid_to	Historical validity
+
+The academic unit must have its own history, not just a current parent department.
+4.3 Qualification
+This represents the academic credential a program is designed to award.
+
+Examples:
+- Bachelor of Technology.
+- Bachelor of Computer Applications.
+- Master of Business Administration.
+- Diploma.
+- Postgraduate Diploma.
+- PhD.
+Entity: QualificationDefinition.
+Attribute	Purpose
+qualification_id	Stable qualification ID
+qualification_code	Internal code
+official_title	Official qualification title
+qualification_level	Configurable qualification level
+qualification_category	Degree, diploma, certificate, etc.
+awarding_authority_type	Institution or other authority
+framework_reference	Optional framework mapping
+
+Do not hardcode a qualification solely as a string field inside a program.
+
+Multiple programs can lead to the same qualification, and one program may support different approved exit awards.
+4.4 Program versus Program Offering
+This distinction is essential.
+
+Program: The academic definition of an educational pathway.
+
+Example: B.Tech in Computer Science and Engineering.
+
+Program Offering: An actual instance of that program delivered by an institution at a particular campus, through a particular delivery mode and admission cycle.
+
+Example:
+Program:
+    B.Tech Computer Science and Engineering
+
+Program Offering A:
+    Campus North
+    Regular
+    Admission cycle 2026
+    Active
+
+Program Offering B:
+    Campus South
+    Evening
+    Admission cycle 2026
+    Active
+
+
+Recommended entities:
+Entity	Responsibility
+Program	Program identity
+ProgramVersion	Versioned academic definition
+ProgramOffering	Delivery instance
+ProgramOfferingUnit	Academic units responsible for delivery
+ProgramQualification	Qualification associated with the program
+ProgramSpecialization	Optional specialization definition
+ProgramAccreditationReference	Relevant external reference
+
+A program should not be duplicated simply because it is available at another campus.
+4.5 Program specialization
+We need to support:
+- Computer Science and Engineering.
+- CSE with AI & ML specialization.
+- CSE with Data Science specialization.
+- CSE with Cybersecurity specialization.
+But specialization can appear in different ways depending on institutional curriculum design.
+
+Sometimes it is a separate program.
+
+Sometimes it is a specialization within the same program.
+
+Sometimes it is simply a student-selectable elective pathway.
+
+Therefore, we should support both:
+- Independently defined programs.
+- Versioned specialization pathways within programs.
+Do not assume every specialization has the same effect on the degree title.
+
+5. Curriculum architecture — the heart of the academic system
+This is where we need to be particularly careful.
+
+A common database design would look like this:
+Program
+    |
+    +-- Semester 1
+    |       +-- Mathematics
+    |       +-- Physics
+    |
+    +-- Semester 2
+            +-- Programming
+            +-- Chemistry
+
+
+This is insufficient.
+
+Why?
+
+Because curriculum changes over time, students from different admission batches may follow different curricula, courses may be shared across programs, electives can be selected dynamically, and students can transfer credits.
+
+We need an independently versioned curriculum model.
+5.1 Curriculum structure
+Program
+
+B.Tech CSE
+
+
+Program Version
+
+Curriculum effective for admission cohort 2026
+
+
+Semester 1
+
+Mathematics, Physics, Programming
+
+
+Semester 2
+
+Data Structures, Electronics
+
+
+Semester 3
+
+Algorithms, DBMS
+
+
+Elective pools
+
+Student-selectable courses
+
+
+
+
+Curriculum requirements
+
+Credits, compulsory requirements, elective choices, prerequisites and exit qualifications
+
+
+5.2 ProgramVersion
+A program can have many curriculum versions.
+
+Example:
+Program	Version	Effective cohort
+B.Tech CSE	2023 curriculum	Admission 2023
+B.Tech CSE	2024 curriculum	Admission 2024
+B.Tech CSE	2026 curriculum	Admission 2026
+
+Entity attributes:
+Attribute	Purpose
+program_version_id	Stable version ID
+program_id	Parent program
+version_number	Version identifier
+curriculum_name	Display name
+effective_from	Effective start
+effective_to	Effective end
+applicable_cohorts	Cohorts assigned
+credit_policy_version_id	Applicable credit policy
+status	Draft, approved, active, retired
+approved_by	Approving authority
+approved_at	Approval timestamp
+
+Once published and used for enrollment, a curriculum version should be immutable.
+
+Changes should create a new version or a controlled amendment.
+
+We must preserve the curriculum under which a student entered the program, while allowing explicitly approved migration to a different version.
+5.3 Course catalogue
+We need a reusable course catalogue.
+
+Entity: Course.
+
+Examples:
+- Engineering Mathematics I.
+- Physics.
+- Programming Fundamentals.
+- Data Structures and Algorithms.
+- Database Management Systems.
+- Machine Learning.
+A course should have a stable institutional identity, separate from its specific syllabus version.
+
+CourseVersion should contain:
+Attribute	Purpose
+course_version_id	Immutable version
+course_id	Parent course
+course_code	Academic code
+course_title	Official title
+course_description	Description
+learning_outcomes	Defined outcomes
+credit_value	Credits, where applicable
+instructional_components	Theory, practical, lab, project etc.
+assessment_scheme_ref	Reference to examination configuration
+validity	Effective period
+version	Version number
+
+We need to distinguish a course from its offering.
+
+A course definition may exist for many years, while an actual course offering runs in a particular term.
+5.4 Course categories
+We should not hardcode only theory and lab.
+
+A flexible classification model can include:
+Category	Examples
+Core	Mandatory program subjects
+Discipline-specific elective	Specialized CSE electives
+Open elective	Cross-disciplinary courses
+Minor	Courses for a minor pathway
+Major	Core discipline courses
+Skill-based	Practical skill courses
+Vocational	Vocational learning
+Internship	Industry experience
+Project	Capstone and project work
+Research	Research and thesis
+Audit	Non-credit learning
+Mandatory activity	Institution-required activity
+
+Use configurable classification codes and credit-bearing flags.
+
+Course categories can also have multiple labels where appropriate.
+
+For example, a course may be both an open elective and a skill-oriented course.
+5.5 Curriculum requirement groups
+One of the most important entities should be CurriculumRequirementGroup.
+
+A student does not always have to take the exact same list of courses.
+
+Consider:
+Program Version
+    |
+    +-- Mandatory Mathematics (4 credits)
+    |
+    +-- Mandatory Programming (4 credits)
+    |
+    +-- Choose ANY 2 from:
+    |       +-- Machine Learning
+    |       +-- Computer Vision
+    |       +-- NLP
+    |       +-- Data Mining
+    |
+    +-- Complete 8 credits of Open Electives
+    |
+    +-- Internship requirement
+    |
+    +-- Capstone project
+
+
+We need to represent:
+- Required courses.
+- Minimum courses from a pool.
+- Maximum courses from a pool.
+- Minimum and maximum credit totals.
+- Alternative course groups.
+- Prerequisite requirements.
+- Learning outcome requirements.
+- Mandatory non-credit activities.
+Recommended entities:
+Entity	Purpose
+CurriculumRequirementGroup	Requirement group
+CurriculumCourseRequirement	Courses satisfying it
+CurriculumCreditRequirement	Credit thresholds
+CurriculumChoiceRule	Choose N courses or credits
+CurriculumPrerequisite	Course or requirement dependency
+CurriculumExitAwardRequirement	Requirements for alternative awards
+
+This allows us to model substantially different curricula without creating custom tables per institution.
+5.6 Course prerequisites and co-requisites
+We need to support more than a simple prerequisite string.
+
+Examples:
+- Must pass Mathematics I before Mathematics II.
+- Must complete Data Structures before Algorithms.
+- Must have registered for a lab alongside its associated theory course.
+- Must have completed a specified number of credits before selecting an advanced elective.
+A prerequisite can be a structured expression.
+AND
+    |
+    +-- Passed Course: CS201
+    |
+    +-- Completed Credits >= 40
+    |
+    +-- Academic Standing = GOOD
+
+
+We should support:
+- Course prerequisite.
+- Course co-requisite.
+- Credit threshold.
+- Minimum grade.
+- Program-specific restriction.
+- Completed learning outcome.
+- Approved waiver.
+The evaluator must understand that merely having attempted a prerequisite does not necessarily mean it has been passed.
+
+Approved waivers should also be auditable and should not change the student's historical grade.
+
+6. Credit architecture — a particularly important decision
+We must design our credit model carefully because it affects curricula, student mobility, progression and future job intelligence.
+
+First, distinguish:
+- Credits assigned to a course.
+- Credits registered.
+- Credits attempted.
+- Credits awarded.
+- Credits transferred.
+- Credits recognized.
+- Credits redeemed against a qualification requirement.
+These are different concepts.
+
+For example, a student registering for a four-credit course has not yet earned four credits.
+6.1 Credit types
+Type	Description
+Academic credit	Credit earned through academic study
+Vocational credit	Credit from approved vocational learning
+Experiential credit	Credit awarded for approved experiential learning
+Transfer credit	Credit recognized from another institution
+Prior-learning credit	Credit recognized through an approved assessment
+Non-credit	Learning with no credit allocation
+
+The system should allow institutions to define how each credit category is treated.
+
+The National Credit Framework discusses creditization and the integration of academic, vocational and experiential learning. The model should therefore be extensible to such credit sources, while retaining the authority and evidence behind each award. 
+UGC+1
+
+6.2 Never store only a current credit total
+Suppose a student has completed 72 credits.
+
+We need to know:
+- Which courses generated those credits?
+- Which were transferred?
+- Which were earned through prior learning?
+- Which were recognized through equivalence?
+- Which program requirements did they satisfy?
+- Were any credits later corrected?
+- Were any credits excluded from a particular award?
+A single field such as student.total_credits = 72 loses all of that history.
+
+Instead, use a credit ledger.
+6.3 Academic credit ledger
+AcademicCreditEntry
+Field	Purpose
+credit_entry_id	Entry ID
+student_enrollment_id	Student's program enrollment
+source_type	Course, transfer, prior learning, etc.
+source_record_id	Originating academic record
+credit_amount	Awarded quantity
+credit_type	Academic, vocational, experiential
+awarding_authority	Institution or authorized source
+effective_date	When credit is effective
+recognition_status	Pending, recognized, rejected
+evidence_reference	Supporting evidence
+correction_reference	Reversal or adjustment link
+
+The ledger should be append-only from a business perspective.
+
+If a credit is awarded incorrectly, don't silently edit an old entry.
+
+Instead, record a reversal or adjustment referencing the original transaction, with the required approvals.
+6.4 Course-result and credit-award relationship
+Course Registration
+        |
+Assessment and evaluation
+        |
+Published result
+        |
+Pass/fail decision
+        |
+Credit award policy
+        |
+Academic credit ledger entry
+        |
+Program requirement evaluation
+
+
+The result is owned by CAMP-08. The credit award follows the institution's approved academic policy.
+
+A course can have different outcomes:
+- Passed and awarded credits.
+- Failed with no credits.
+- Passed after a repeat attempt.
+- Exempted.
+- Recognized through equivalence.
+- Transferred from another institution.
+We must not automatically treat every positive grade as a credit award without the applicable policy.
+6.5 Academic Bank of Credits integration
+We should build an AcademicCreditIntegration adapter.
+
+It should eventually support:
+- Student academic account references.
+- Institution participation and registration.
+- Published credit transmission.
+- Credit verification.
+- External credit recognition.
+- Transfer requests.
+- Credit reconciliation.
+- Audit of external acknowledgements.
+The UGC Academic Bank of Credits materials make an important distinction: credits are transmitted by the respective registered institution rather than accepted as authoritative documents directly from the student. This is exactly why our credit ledger needs issuer identity and evidence provenance. 
+Compendium of UGC Regulations 1957-2023+1
+
+
+Our internal credit ledger is the authoritative institutional record for the data our institution owns. ABC remains an external national integration and should not be recreated as our own national credential authority.
+
+7. Academic calendar and term architecture
+Now we need to model time.
+
+We should avoid assumptions such as:
+Semester 1 = January to June
+Semester 2 = July to December
+
+
+Not every institution follows this.
+
+Even within one institution, different programs may operate on different calendars.
+7.1 Separate calendar concepts
+Concept	Meaning
+Academic Calendar	Defines institutional academic periods and events
+Academic Year	An institutional year or cycle
+Term	Semester, trimester, quarter or another academic unit
+Session	Individual instructional activity or period, if needed
+Registration Window	Period when students can register
+Examination Window	Examination scheduling period
+Result Publication Window	Expected/authorized publication period
+
+7.2 AcademicCalendar
+An institution can have multiple calendars.
+
+For example:
+- Engineering academic calendar.
+- MBA academic calendar.
+- Summer-term calendar.
+- Research academic calendar.
+- Distance-learning calendar.
+Entity:
+
+AcademicCalendar
+Attribute	Description
+calendar_id	ID
+tenant_id	Tenant
+institution_id	Institution
+calendar_name	Name
+calendar_type	Semester, trimester, annual, etc.
+applicable_units	Scope
+applicable_programs	Scope
+timezone	Applicable timezone
+version	Version
+status	Draft, approved, active, archived
+
+7.3 AcademicYear
+Academic years must be independently defined.
+
+An academic year does not necessarily begin in January.
+
+Attributes:
+- Academic year ID.
+- Institution.
+- Academic year label.
+- Start date.
+- End date.
+- Status.
+- Applicable calendars.
+- Effective version.
+For example:
+Academic Year 2026–2027
+    Start: 01 July 2026
+    End: 30 June 2027
+
+
+The dates are illustrative.
+7.4 Term
+AcademicTerm
+Field	Purpose
+term_id	Unique period
+calendar_id	Parent calendar
+academic_year_id	Parent year
+term_code	Code
+term_name	Display name
+sequence_number	Ordering
+term_type	Semester, trimester, annual, etc.
+start_date	Term start
+end_date	Term end
+registration_open	Registration start
+registration_close	Registration end
+status	Lifecycle
+
+We should not hardcode term codes such as SEM1, SEM2, SEM3.
+
+Sequence and relationships should be based on actual calendar definitions.
+7.5 Term lifecycle
+DRAFT
+  |
+SCHEDULED
+  |
+REGISTRATION_OPEN
+  |
+REGISTRATION_CLOSED
+  |
+IN_PROGRESS
+  |
+RESULT_PROCESSING
+  |
+RESULTS_PUBLISHED
+  |
+CLOSED
+  |
+ARCHIVED
+
+
+There may be parallel states for registration, instruction, examination and results.
+
+A term can finish teaching before all results are published. Therefore, a single status may eventually become insufficient.
+
+We should model separate lifecycle sub-processes rather than one enormous term status.
+7.6 Time-dependent policies
+An important rule:
+
+Every academic calendar and progression policy should be evaluated against the correct effective academic period.
+
+Suppose a college changes the registration deadline.
+
+Students who registered under the old approved calendar should retain a historical record of the applicable deadline.
+
+Don't retroactively modify old academic events by editing calendar dates.
+
+Create new versions or explicit amendments.
+
+
+8. Student lifecycle architecture
+Now we get to one of the largest parts of the campus system.
+
+We must model the student's complete institutional academic journey.
+
+From the moment an admission decision is accepted, through enrollment, semester registration, academic progression, transfers, backlogs, leaves, re-entry and graduation.
+
+Importantly, we should distinguish a person from their student record and from their enrollment in a particular program.
+8.1 Four independent concepts
+Concept	Meaning
+Person	The actual individual
+Institutional membership	Their platform relationship with an institution
+Student record	Institution's academic identity for that person
+Program enrollment	Their participation in a particular program
+
+A person can hold two program enrollments, such as a permitted dual-degree arrangement.
+
+They can also have different student records at different institutions.
+
+These should not become one enormous record with fields like degree, semester, branch, batch and current_cgpa.
+8.2 Student entity
+A student record should hold institution-specific student identity.
+
+StudentRecord
+Attribute	Description
+student_id	Internal student ID
+tenant_id	Tenant
+institution_id	Institution
+membership_id	CAMP-02 membership
+registration_number	Institutional registration number
+roll_number	Student's operational roll number
+admission_number	Admission reference
+admission_date	Admission date
+student_status	Current summarized status
+created_at	Creation timestamp
+
+The identifiers may have different uniqueness rules.
+
+For example, roll numbers may be unique within a campus or academic cohort rather than across the whole institution.
+
+We must define those rules according to the institution's configuration.
+8.3 Student identifier architecture
+Instead of storing every external ID as a separate column, create StudentIdentifier.
+
+Examples:
+- Registration number.
+- Roll number.
+- Admission number.
+- Examination number.
+- ABC ID reference.
+- DigiLocker-related reference.
+- Legacy ERP identifier.
+Every identifier should have:
+- Scheme.
+- Issuer.
+- Value.
+- Scope.
+- Validity.
+- Verification state.
+- Source.
+Sensitive identifiers should be access-controlled and not exposed in ordinary student searches.
+8.4 ProgramEnrollment
+This represents the student's actual academic engagement with a program.
+
+StudentProgramEnrollment
+Field	Description
+enrollment_id	Program enrollment ID
+student_id	Student record
+program_id	Program
+program_offering_id	Specific delivery instance
+program_version_id	Applicable curriculum version
+cohort_id	Admission/cohort grouping
+admission_type	Regular, lateral entry, transfer, etc.
+entry_level	Initial entry point
+enrollment_status	Academic lifecycle status
+valid_from	Enrollment start
+valid_to	Enrollment end
+expected_completion_date	Expected completion
+actual_completion_date	Actual completion
+
+Notice that we bind the student to a particular program version.
+
+A curriculum update must not silently change the requirements of an existing student.
+8.5 Multiple academic enrollments
+Consider a student pursuing two authorized programs.
+Student
+    |
+    +-- Program Enrollment A
+    |       +-- B.Tech CSE
+    |       +-- Curriculum Version 2026
+    |
+    +-- Program Enrollment B
+            +-- Online Certificate Program
+            +-- Curriculum Version 2026
+
+
+Both enrollments should have independent status, calendars, course registration and academic requirements.
+
+We can later add constraints for simultaneous program combinations, where institutional policy or applicable regulation requires them.
+8.6 Cohort, batch and section are different
+We must not merge these three concepts.
+Entity	Purpose
+Cohort	Students grouped by admission or graduation pathway
+Batch	An institutional operational grouping, depending on local usage
+Section	A specific instructional grouping
+
+An institution may use "batch" to mean different things.
+
+One college might use it for the graduation year. Another might use it for an admission group. Another might use it as a section.
+
+I recommend the canonical model use Cohort for the admission/academic population, with an institution-specific terminology mapping for the word "batch".
+
+Section assignment should be independent and time-bound.
+
+A student can move from CSE-A to CSE-B without creating an entirely new student identity or program enrollment.
+8.7 Cohort model
+AcademicCohort
+Attribute	Purpose
+cohort_id	Unique ID
+institution_id	Institution
+program_offering_id	Relevant offering
+cohort_code	Cohort code
+admission_year	Entry year
+expected_graduation_year	Expected graduation
+program_version_id	Assigned curriculum
+status	Active, completed, archived
+
+A cohort must not automatically be synonymous with an academic year.
+
+An institution may have multiple cohorts progressing through different terms during the same academic year.
+
+9. Student lifecycle states
+A student needs an independently managed academic lifecycle.
+
+Do not use only ACTIVE and INACTIVE.
+
+We need to understand what the student is actually doing in the academic system.
+9.1 Proposed lifecycle
+ADMISSION_ACCEPTED
+
+
+ENROLLED
+
+
+ACTIVE
+
+Regular academic participation
+
+ON_LEAVE
+
+Approved temporary absence
+
+
+ACADEMICALLY_RESTRICTED
+
+Approved restriction on progression
+
+
+
+
+ACTIVE / RE-ENTERED
+
+
+COMPLETED
+
+Academic requirements met
+
+
+WITHDRAWN
+
+Enrollment discontinued
+
+
+
+
+GRADUATED / EXIT AWARD ISSUED
+
+Academic completion followed by formal award processing
+
+
+This is a conceptual lifecycle, not one mandatory linear workflow. Readmission, multiple entry/exit, program transfers and withdrawals create different valid transition paths.
+9.2 Important distinction: completed versus graduated
+These must not be the same state.
+- COMPLETED: The applicable academic requirements have been successfully met.
+- GRADUATED: The awarding institution has formally conferred the qualification or approved exit award.
+Award conferment and ceremony attendance are different matters. We should not make ceremony participation a prerequisite for academic completion.
+
+Similarly, a student may receive an intermediate exit qualification while continuing or returning through an eligible pathway.
+9.3 Lifecycle history
+Introduce StudentLifecycleEvent.
+
+Examples:
+- Admitted.
+- Enrolled.
+- Academic year advanced.
+- Program changed.
+- Campus transferred.
+- On leave.
+- Re-entered.
+- Withdrawn.
+- Program completed.
+- Degree awarded.
+Every transition should be traceable to its origin, effective date, authorizing actor and applicable policy.
+
+The current status is a projection of approved lifecycle events, not a replacement for historical records.
+
+10. Academic registration and course enrollment
+This is another area where we need to avoid mixing different academic objects.
+
+A student being enrolled in B.Tech CSE does not mean they are automatically registered for every course in every term.
+
+We need an independent course registration system.
+10.1 Course catalogue versus course offering
+Let's distinguish:
+
+Course: The institutional academic definition.
+
+Course version: The approved syllabus and course properties for a particular period.
+
+Course offering: The actual delivery of that course in a particular term, possibly for one or more programs.
+
+Course registration: A student's enrollment in that course offering.
+
+Example:
+Course:
+    Database Management Systems
+
+Course Version:
+    DBMS-2026
+
+Course Offering:
+    Semester 4, 2027
+    Campus North
+    Faculty assignment
+
+Sections:
+    CSE-A
+    CSE-B
+    IT-A
+
+Course Registrations:
+    Student 1 -> CSE-A
+    Student 2 -> CSE-B
+    Student 3 -> IT-A
+
+
+This also allows shared courses between programs.
+10.2 CourseOffering
+Field	Purpose
+offering_id	Unique course offering
+course_version_id	Approved course version
+academic_term_id	Parent term
+institution_id	Institution
+campus_id	Delivery campus
+program_scope	Relevant programs
+delivery_mode	Physical, online, hybrid
+capacity	Optional maximum enrollment
+status	Planned, open, active, closed
+
+10.3 CourseRegistration
+Field	Purpose
+registration_id	Unique record
+student_enrollment_id	Program enrollment
+course_offering_id	Course offering
+registration_type	Regular, repeat, audit, etc.
+attempt_number	Course attempt
+registration_status	Lifecycle
+registered_at	Timestamp
+dropped_at	If withdrawn
+result_reference	Published outcome reference
+
+We must preserve previous attempts.
+
+Suppose a student fails a subject in Semester 2 and repeats it in Semester 4.
+
+We should have two registration/attempt records, not overwrite the old result with the new one.
+10.4 Course registration lifecycle
+PENDING
+   |
+ELIGIBILITY_CHECK
+   |
+REGISTERED
+   |
+ACTIVE
+   |
+COMPLETED
+
+
+Alternative outcomes:
+- Dropped.
+- Withdrawn.
+- Cancelled.
+- Not attempted.
+- Incomplete.
+- Failed.
+- Passed.
+The actual academic result remains owned by CAMP-08.
+
+Registration status and result status must be separate.
+
+11. Grade and academic result architecture
+We need a system that supports multiple grading methods.
+
+An institution may use:
+- Percentage marks.
+- Letter grades.
+- Grade points.
+- GPA.
+- SGPA.
+- CGPA.
+- Pass/fail.
+- Competency levels.
+- Qualitative evaluation.
+- Research or thesis assessment.
+Never assume every institution uses a 10-point CGPA system.
+11.1 Grading schemes
+Create GradingScheme and GradingSchemeVersion.
+
+Example:
+Grade	Grade point	Interpretation
+O	10	Outstanding
+A+	9	Excellent
+A	8	Very good
+B+	7	Good
+B	6	Above average
+C	5	Average
+F	0	Fail
+
+These values are illustrative, not a universal Indian grading standard.
+
+The grading scheme should contain:
+- Marks intervals, where applicable.
+- Grade labels.
+- Grade points, where applicable.
+- Pass/fail classification.
+- Award status.
+- Credit eligibility.
+- Grade replacement/attempt rules.
+- Rounding policies.
+- Version and effective dates.
+11.2 Academic result snapshots
+CAMP-08 owns individual result publications.
+
+CAMP-03 should maintain a reference or derived academic record containing:
+- Student.
+- Course attempt.
+- Published result ID.
+- Grade/marks.
+- Credits awarded.
+- Grading scheme version.
+- Publication timestamp.
+- Correction/revision reference.
+We should retain the exact result version used when a progression decision was made.
+
+For example, a revised result should trigger a new academic evaluation, but historical evaluations must continue to show what information was used when they were originally calculated.
+11.3 GPA calculations
+We should configure the formula.
+
+For a weighted grade-point calculation:
+\[
+GPA = \frac{\sum_{i=1}^{n} C_i G_i}{\sum_{i=1}^{n} C_i}
+\]
+
+Where:
+- \(C_i\) is the relevant credit value.
+- \(G_i\) is the applicable grade point.
+But even this formula may vary by institutional grading policy, exclusions, repeated attempts, audit courses and rounding rules.
+
+Therefore, implement configurable calculation strategies.
+
+Store:
+- Raw source results.
+- Grading scheme.
+- Calculation policy.
+- Calculated value.
+- Calculation timestamp.
+- Input record references.
+Never store only cgpa = 8.2 without its calculation lineage.
+
+12. Academic progression and rule engine
+This is the brain of the student lifecycle.
+
+It determines whether a student can move forward through the academic program.
+
+We should not embed progression rules in frontend logic or hardcode them in individual API endpoints.
+
+Use a configurable academic rules engine, building on our shared policy architecture.
+12.1 Types of academic rules
+Rule	Example
+Admission	Accepted qualification and prerequisites
+Course registration	Required prior courses
+Semester progression	Minimum accumulated credits
+Backlog	Permitted number of failed courses
+Academic standing	Minimum CGPA
+Re-registration	Conditions for repeating a course
+Completion	All mandatory program requirements satisfied
+Credit transfer	Conditions for external recognition
+Exit award	Requirements for an intermediate award
+Maximum duration	Maximum permitted completion period
+
+An institution may have different policies for different programs, cohorts and academic years.
+12.2 Progression evaluation pipeline
+Academic progression engine
+01. Trigger
+
+End of term, result publication, transfer request or student re-entry
+
+
+02. Academic context
+
+Student enrollment, program version, cohort, term and previous progression
+
+
+03. Academic facts
+
+Published results, credit ledger, course attempts and verified attendance aggregates where applicable
+
+
+04. Applicable policy resolution
+
+Program, curriculum, cohort and institutional rule versions
+
+
+05. Deterministic rule evaluation
+
+Credits, failed courses, prerequisites, duration and required outcomes
+
+
+Eligible
+Progression permitted
+
+
+Blocked
+Requirement not met
+
+
+Review
+Decision required
+
+
+
+
+06. Decision and history
+
+Decision record, evidence, policy versions, approvals and next action
+
+
+The engine should distinguish:
+- Requirement passed.
+- Requirement not passed.
+- Requirement unknown.
+- Requirement exempted.
+- Requirement awaiting authoritative data.
+Missing results, for example, should not automatically be treated as failures.
+12.3 Progression decisions
+Possible outcomes:
+Decision	Meaning
+ELIGIBLE	All required conditions are met
+NOT_ELIGIBLE	One or more mandatory conditions are not met
+REVIEW_REQUIRED	An authorized human decision is necessary
+INCOMPLETE_DATA	Required academic facts are unavailable
+EXEMPTED	An approved exception applies
+
+A decision should contain:
+- Student enrollment.
+- Academic period.
+- Applicable curriculum version.
+- Policy version.
+- Evaluated facts.
+- Failed conditions.
+- Approved exemptions.
+- Decision timestamp.
+- Reviewer information, if applicable.
+12.4 Never conflate academic progression with placement eligibility
+This is especially important for our broader platform.
+
+A student may:
+- Be academically active but not placement eligible.
+- Have backlogs but still be allowed to register for the next term.
+- Have completed all requirements but await formal graduation.
+- Be graduated but not eligible for a particular company drive.
+Academic progression and placement eligibility must be independent decision systems.
+
+CAMP-09 should consume academic facts from CAMP-03 rather than reimplementing academic rules.
+
+
+13. Student mobility, transfer and re-entry
+A modern academic system cannot assume that a student always studies one program at one institution from beginning to end.
+
+We need to support mobility.
+
+Possible situations:
+- Transfer between campuses.
+- Transfer between programs.
+- Transfer between institutions.
+- Change of specialization.
+- Multiple entry and exit.
+- Recognition of prior learning.
+- Credit transfer.
+- Readmission after a break.
+- Migration from one academic framework to another.
+13.1 Internal transfer
+Suppose a student changes from B.Tech ECE to B.Tech CSE.
+
+We should not simply update:
+student.department_id = CSE
+
+
+Instead:
+Current Program Enrollment
+        |
+Transfer Request
+        |
+Academic Equivalence Evaluation
+        |
+Credit Mapping
+        |
+Approval
+        |
+Close/transition old program enrollment
+        |
+Create or transition new enrollment
+        |
+Assign applicable curriculum version
+        |
+Re-evaluate academic standing
+        |
+Record transition history
+
+
+A transfer can preserve credits, but the receiving program may have different requirements.
+
+Therefore, transfer approval and credit recognition are separate decisions.
+13.2 External institutional transfer
+This should use an external-credit recognition workflow.
+
+The receiving institution needs to evaluate:
+- Issuing institution.
+- Course equivalence.
+- Credit value.
+- Learning outcomes.
+- Academic level.
+- Grading scheme.
+- Completion and evidence.
+- Applicable validity or expiry conditions.
+- Approval authority.
+We should not automatically transfer an external CGPA into the receiving institution's CGPA.
+
+The receiving institution may recognize the credits without treating the original grade points as equivalent.
+13.3 Multiple entry and exit
+A student may complete a certain stage, receive an approved qualification and later return for further study.
+
+Our model should represent this as an award/qualification event associated with a program enrollment, rather than forcing the student enrollment into a single irreversible graduation status.
+
+For example:
+Bachelors Program Enrollment
+        |
+First exit requirement satisfied
+        |
+Approved intermediate qualification
+        |
+Program exit recorded
+        |
+Later readmission / re-entry
+        |
+Further credit and curriculum evaluation
+        |
+Higher qualification completed
+
+
+The applicable rules must be institution- and framework-specific.
+13.4 Academic equivalence engine
+This is a separate capability worth designing.
+
+It compares:
+- Course identities.
+- Learning outcomes.
+- Credit values.
+- Academic levels.
+- Assessment structures.
+- Grading systems.
+- Relevant approval rules.
+An AI model may assist with course-description similarity or outcome comparison, but it must not independently grant academic credit.
+
+Final credit recognition must be governed by authorized institutional decisions.
+
+14. Data architecture — complete initial entity model
+Let's formalize what we have designed.
+14.1 Entity catalogue
+Domain	Entities
+Academic structure	AcademicUnit reference, Program, ProgramVersion, QualificationDefinition, ProgramSpecialization
+Program delivery	ProgramOffering, ProgramOfferingUnit, ProgramCampus
+Curriculum	Course, CourseVersion, CurriculumRequirementGroup, CurriculumCourseRequirement, CurriculumCreditRequirement
+Dependencies	CurriculumPrerequisite, CourseEquivalence, ExitAwardRequirement
+Calendar	AcademicCalendar, AcademicYear, AcademicTerm, AcademicEvent, RegistrationWindow
+Student	StudentRecord, StudentIdentifier, StudentProgramEnrollment
+Grouping	AcademicCohort, StudentCohortAssignment, StudentSectionAssignment
+Registration	CourseOffering, CourseSection, CourseRegistration, CourseAttempt
+Academic records	AcademicOutcomeReference, GradingScheme, GradingSchemeVersion
+Credits	AcademicCreditLedger, CreditTransferRequest, CreditRecognitionDecision
+Progression	AcademicPolicyBinding, ProgressionEvaluation, ProgressionDecision
+Lifecycle	StudentLifecycleEvent, LeaveRecord, TransferRecord, ExitAward, DegreeAward
+Integration	AcademicImportBatch, AcademicImportRecord, ExternalAcademicReference
+
+This is the logical catalogue. We can move entities to separate domains if their ownership grows.
+14.2 Proposed relational architecture
+academic.*
+    academic_year
+    academic_calendar
+    academic_term
+    qualification_definition
+
+    program
+    program_version
+    program_offering
+    program_offering_unit
+    program_specialization
+
+    course
+    course_version
+    course_offering
+    course_section
+
+    curriculum_requirement_group
+    curriculum_course_requirement
+    curriculum_credit_requirement
+    curriculum_prerequisite
+
+students.*
+    student_record
+    student_identifier
+    student_program_enrollment
+    student_cohort_assignment
+    student_section_assignment
+    student_lifecycle_event
+    student_leave
+    student_transfer
+
+registration.*
+    course_registration
+    course_attempt
+
+records.*
+    grading_scheme
+    grading_scheme_version
+    academic_outcome_reference
+    academic_credit_ledger
+    credit_transfer_request
+    credit_recognition_decision
+
+progression.*
+    academic_policy_binding
+    progression_evaluation
+    progression_decision
+
+integration.*
+    academic_import_batch
+    academic_import_record
+    external_academic_reference
+
+
+14.3 Relationship diagram
+#chatgpt-mermaid-_r_4sk_{font-family:-apple-system-body,ui-sans-serif,-apple-system,system-ui,"Segoe UI",Helvetica,"Apple Color Emoji",Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol";font-size:16px;fill:rgb(237, 237, 237);}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#chatgpt-mermaid-_r_4sk_ .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#chatgpt-mermaid-_r_4sk_ .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#chatgpt-mermaid-_r_4sk_ .error-icon{fill:rgb(48, 48, 48);}#chatgpt-mermaid-_r_4sk_ .error-text{fill:rgb(237, 237, 237);stroke:rgb(237, 237, 237);}#chatgpt-mermaid-_r_4sk_ .edge-thickness-normal{stroke-width:1px;}#chatgpt-mermaid-_r_4sk_ .edge-thickness-thick{stroke-width:3.5px;}#chatgpt-mermaid-_r_4sk_ .edge-pattern-solid{stroke-dasharray:0;}#chatgpt-mermaid-_r_4sk_ .edge-thickness-invisible{stroke-width:0;fill:none;}#chatgpt-mermaid-_r_4sk_ .edge-pattern-dashed{stroke-dasharray:3;}#chatgpt-mermaid-_r_4sk_ .edge-pattern-dotted{stroke-dasharray:2;}#chatgpt-mermaid-_r_4sk_ .marker{fill:rgb(175, 175, 175);stroke:rgb(175, 175, 175);}#chatgpt-mermaid-_r_4sk_ .marker.cross{stroke:rgb(175, 175, 175);}#chatgpt-mermaid-_r_4sk_ svg{font-family:-apple-system-body,ui-sans-serif,-apple-system,system-ui,"Segoe UI",Helvetica,"Apple Color Emoji",Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol";font-size:16px;}#chatgpt-mermaid-_r_4sk_ p{margin:0;}#chatgpt-mermaid-_r_4sk_ .entityBox{fill:rgb(17, 40, 19);stroke:rgb(58, 132, 63);}#chatgpt-mermaid-_r_4sk_ .relationshipLabelBox{fill:rgb(48, 48, 48);opacity:0.7;background-color:rgb(48, 48, 48);}#chatgpt-mermaid-_r_4sk_ .relationshipLabelBox rect{opacity:0.5;}#chatgpt-mermaid-_r_4sk_ .labelBkg{background-color:rgba(48, 48, 48, 0.5);}#chatgpt-mermaid-_r_4sk_ .edgeLabel{background-color:rgb(0, 0, 0);}#chatgpt-mermaid-_r_4sk_ .edgeLabel .label rect{fill:rgb(0, 0, 0);}#chatgpt-mermaid-_r_4sk_ .edgeLabel .label text{fill:rgb(237, 237, 237);}#chatgpt-mermaid-_r_4sk_ .edgeLabel .label{fill:rgb(58, 132, 63);font-size:14px;}#chatgpt-mermaid-_r_4sk_ .label{font-family:-apple-system-body,ui-sans-serif,-apple-system,system-ui,"Segoe UI",Helvetica,"Apple Color Emoji",Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol";color:rgb(237, 237, 237);}#chatgpt-mermaid-_r_4sk_ .edge-pattern-dashed{stroke-dasharray:8,8;}#chatgpt-mermaid-_r_4sk_ .node rect,#chatgpt-mermaid-_r_4sk_ .node circle,#chatgpt-mermaid-_r_4sk_ .node ellipse,#chatgpt-mermaid-_r_4sk_ .node polygon{fill:rgb(17, 40, 19);stroke:rgb(58, 132, 63);stroke-width:1px;}#chatgpt-mermaid-_r_4sk_ .relationshipLine{stroke:rgb(175, 175, 175);stroke-width:1px;fill:none;}#chatgpt-mermaid-_r_4sk_ .marker{fill:none!important;stroke:rgb(175, 175, 175)!important;stroke-width:1;}#chatgpt-mermaid-_r_4sk_ [data-look=neo].labelBkg{background-color:rgba(48, 48, 48, 0.5);}#chatgpt-mermaid-_r_4sk_ .node .neo-node{stroke:rgb(58, 132, 63);}#chatgpt-mermaid-_r_4sk_ [data-look="neo"].node rect,#chatgpt-mermaid-_r_4sk_ [data-look="neo"].cluster rect,#chatgpt-mermaid-_r_4sk_ [data-look="neo"].node polygon{stroke:url(#chatgpt-mermaid-_r_4sk_-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_4sk_ [data-look="neo"].swimlane.cluster rect{filter:none;}#chatgpt-mermaid-_r_4sk_ [data-look="neo"].node path{stroke:url(#chatgpt-mermaid-_r_4sk_-gradient);stroke-width:1px;}#chatgpt-mermaid-_r_4sk_ [data-look="neo"].node .outer-path{filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_4sk_ [data-look="neo"].node .neo-line path{stroke:rgb(58, 132, 63);filter:none;}#chatgpt-mermaid-_r_4sk_ [data-look="neo"].node circle{stroke:url(#chatgpt-mermaid-_r_4sk_-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_4sk_ [data-look="neo"].node circle .state-start{fill:#000000;}#chatgpt-mermaid-_r_4sk_ [data-look="neo"].icon-shape .icon{fill:url(#chatgpt-mermaid-_r_4sk_-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_4sk_ [data-look="neo"].icon-shape .icon-neo path{stroke:url(#chatgpt-mermaid-_r_4sk_-gradient);filter:drop-shadow( 1px 2px 2px rgba(185,185,185,1));}#chatgpt-mermaid-_r_4sk_ :root{--mermaid-font-family:-apple-system-body,ui-sans-serif,-apple-system,system-ui,"Segoe UI",Helvetica,"Apple Color Emoji",Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol";}INSTITUTIONPROGRAMACADEMIC_UNITPROGRAM_VERSIONPROGRAM_OFFERINGCURRICULUM_GROUPCURRICULUM_REQUIREMENTCOURSECOURSE_VERSIONACADEMIC_CALENDARACADEMIC_TERMACADEMIC_YEARCOURSE_OFFERINGPERSONSTUDENT_RECORDPROGRAM_ENROLLMENTCOURSE_REGISTRATIONCOURSE_ATTEMPTACADEMIC_OUTCOMECREDIT_LEDGERPROGRESSION_DECISIONownsdeliversversionsoffered_asfollowsdefinescontainsversionsselected_bycontainsorganizesdeliversofferedrepresentsenrollsreceivesfollowsregistersreceivesrecordsresults_inawardsevaluates
+
+
+
+
+
+This diagram describes the logical relationships. The actual schema will also need tenant-aware foreign keys, effective dates, version references and external-authority references.
+
+15. Underlying academic data pipelines
+Now we move from static entities to operations.
+
+A good academic system must continuously process information from admissions, academic departments, examinations, attendance, student records and external sources.
+
+I propose six foundational pipelines.
+Pipeline A — Program and curriculum publication
+Academic program proposed
+        |
+Curriculum designed
+        |
+Course catalogue linked
+        |
+Requirement groups defined
+        |
+Credit requirements validated
+        |
+Prerequisites evaluated
+        |
+Academic authority approval
+        |
+Program version published
+        |
+Applicable cohorts assigned
+        |
+Program offering activated
+        |
+Students enrolled against version
+
+
+Critical rule: a student should not be enrolled against a draft or unapproved curriculum version.
+Pipeline B — Student admission to enrollment
+Admission decision
+        |
+Admission accepted
+        |
+Identity and membership verified
+        |
+Student record created or resolved
+        |
+Program offering selected
+        |
+Program version assigned
+        |
+Cohort assigned
+        |
+Student enrollment activated
+        |
+Initial academic record created
+        |
+Student receives academic access
+
+
+CAMP-03 should receive the approved admission result from the admissions workflow, which can become a separate subdomain later.
+Pipeline C — Semester/term registration
+Registration window opened
+        |
+Student requests courses
+        |
+Program and curriculum resolved
+        |
+Prerequisites checked
+        |
+Required courses evaluated
+        |
+Credit load evaluated
+        |
+Course offering capacity checked
+        |
+Authorized exceptions evaluated
+        |
+Registration confirmed
+        |
+Enrollment records created
+        |
+Student notified
+
+
+A student should not be able to register for a course offering outside their eligible program/curriculum scope unless a valid cross-program registration policy permits it.
+Pipeline D — Results and credit processing
+Examination result published (CAMP-08)
+        |
+Result reference received
+        |
+Validate course attempt and student
+        |
+Identify grade scheme and version
+        |
+Evaluate credit-award rules
+        |
+Create credit ledger entry
+        |
+Recalculate academic totals
+        |
+Re-evaluate progression where required
+        |
+Publish academic history update
+
+
+Credit awards must be linked to source results or approved external recognition records.
+Pipeline E — Student transfer
+Transfer initiated
+        |
+Receiving program / campus identified
+        |
+Existing academic history retrieved
+        |
+Course equivalence evaluated
+        |
+Credit mapping prepared
+        |
+Unmatched requirements identified
+        |
+Authorized review
+        |
+Transfer approved
+        |
+New enrollment / transition recorded
+        |
+Academic progression recalculated
+
+
+Pipeline F — Graduation and award processing
+Completion request
+        |
+All program requirements evaluated
+        |
+Credit total verified
+        |
+Required outcomes checked
+        |
+Outstanding academic obligations checked
+        |
+Authorized review and approval
+        |
+COMPLETED
+        |
+Award conferment process
+        |
+GRADUATED / EXIT AWARD ISSUED
+        |
+Transcript and credential generated
+        |
+Alumni handoff initiated
+
+
+Completion must not be triggered solely by achieving a credit total. All mandatory academic requirements must also be satisfied.
+
+16. Event-driven architecture between academic domains
+CAMP-03 will be a major producer and consumer of domain events.
+16.1 Events from CAMP-03
+Event	Consumers
+ProgramCreated	Analytics, admissions
+ProgramVersionPublished	Student lifecycle, admissions
+AcademicTermOpened	Registration, attendance, examination
+CourseOfferingPublished	Student portal, registration
+StudentEnrollmentActivated	Identity, student services
+StudentProgramTransferred	Placement, analytics
+CourseRegistrationConfirmed	Attendance, examination
+AcademicCreditAwarded	Progression, records
+AcademicStandingChanged	Student portal, placement
+StudentOnLeave	Attendance, student services
+StudentCompletedProgram	Awards, placement, alumni
+StudentGraduated	Alumni, individual career platform
+
+16.2 Events consumed by CAMP-03
+Event	Source
+StudentAdmitted	Admissions
+IdentityVerified	CAMP-02
+MembershipActivated	CAMP-02
+AttendanceAggregatePublished	CAMP-07
+AcademicResultPublished	CAMP-08
+AcademicResultCorrected	CAMP-08
+ExaminationEligibilityChanged	CAMP-08
+CreditTransferVerified	External integration / governance
+InstitutionStructureChanged	CAMP-01
+
+An especially important case is AcademicResultCorrected.
+
+Suppose a grade is corrected after publication.
+
+CAMP-03 should receive the correction, update its academic projection, adjust its credit ledger where required and re-evaluate progression.
+
+The old published result and old decision should remain traceable.
+
+17. Database integrity and transaction rules
+We need to define the critical invariants before implementation.
+Rule	Why
+A program offering belongs to one tenant and institution	Isolation
+A student enrollment follows an approved program version	Curriculum integrity
+A course registration belongs to a valid course offering	Referential integrity
+Course registration must reference an appropriate student enrollment	Academic integrity
+Repeat attempts remain distinct	History
+A published curriculum cannot be silently modified	Version integrity
+Credit awards have evidence and an issuing authority	Traceability
+Credit corrections use reversal/adjustment entries	Ledger integrity
+External credit must be recognized before counting toward requirements	Academic governance
+Progression decisions reference the policy version used	Reproducibility
+Graduate status requires formal award evidence	Credential integrity
+
+Some recommended database constraints
+- Unique institution-scoped program codes.
+- Unique course codes within the applicable catalogue scope.
+- No overlapping active program-version effective periods for the same intended cohort assignment.
+- Unique course registration for a given student enrollment and offering where duplicate registration is prohibited.
+- Non-negative credit values unless an explicit reversal transaction is being recorded.
+- Composite tenant-aware foreign keys.
+- Valid course attempt sequences.
+- Immutable published result references.
+The database should enforce what can be expressed as constraints. Complex academic decisions should be handled by the domain and rules engine.
+
+18. Difficult academic edge cases
+I want to test the model against the kinds of circumstances that commonly break ordinary student-management software.
+Scenario	Expected behaviour
+Student changes department	Historical enrollment preserved; new program/academic relationship evaluated
+Student repeats one subject	New course attempt; old result retained
+Curriculum changes halfway through degree	Existing students retain version unless approved migration occurs
+Two programs share a course	One course definition, appropriate cross-program offerings
+Student takes an elective from another department	Controlled cross-program registration
+Student transfers campuses	Campus transition history, same person and student identity
+Student changes institution	Separate institution membership and receiving enrollment
+Student takes a semester break	Time-bound leave with progression recalculation
+Student has pending examination results	Progression returns incomplete data or review where appropriate
+Student receives a re-evaluated result	New result version and dependent academic recalculation
+Student has a credit from NPTEL or another source	External verification and recognition workflow
+Student uses multiple entry/exit	Separate award and enrollment transitions
+Student has two simultaneous degree programs	Independent enrollment records and applicable combination constraints
+Student loses academic status	Controlled lifecycle transition, not deletion
+Institution adopts a new grading system	New grading-scheme version
+A course is discontinued	Existing student requirements mapped through approved substitutions
+Student graduates but ceremony occurs later	Award status independent of ceremony
+Student's name changes	Identity update with historical academic-document traceability
+
+18.1 The most important exception-handling rule
+Missing or conflicting academic data should not automatically become a failure.
+
+For example:
+- Missing semester result ≠ failed semester.
+- Missing transfer documentation ≠ zero credit.
+- Unmapped external course ≠ accepted equivalence.
+- Missing attendance feed ≠ attendance shortage.
+- Unknown grading conversion ≠ rejected academic performance.
+The system should distinguish NOT_MET, UNKNOWN, PENDING, EXEMPTED and REQUIRES_REVIEW.
+
+That distinction is fundamental to fair and reliable academic decisions.
+
+
+19. Academic permissions and governance
+CAMP-02 provides the authorization machinery. CAMP-03 defines the academic operations to which those permissions apply.
+
+We need role-specific access without assuming that academic seniority automatically grants every type of access.
+19.1 Academic role matrix
+Actor	Typical responsibility
+Chancellor / Management	Institutional oversight
+Registrar	Academic administration
+Dean	School-level oversight
+HOD	Department-level administration
+Program Coordinator	Program configuration and operations
+Course Coordinator	Course-level coordination
+Faculty	Assigned teaching responsibilities
+Academic Advisor	Assigned student guidance
+Examination Controller	Examination domain operations
+Academic Auditor	Authorized read-only audit
+Student	Own academic information
+Guardian	Explicitly authorized limited information
+
+19.2 Examples of scoped authority
+Operation	Principal	Registrar	Dean	HOD	Faculty	Student
+View academic calendar	Institution	Institution	School	Department	Relevant	Relevant
+Create program	Approve	Manage	Propose	Propose	No	No
+Publish curriculum	Approve as configured	Manage	Scoped approval	Propose	Contribute	No
+View department performance	Institution	Institution	School	Department	Assigned	Own
+Register courses	No	No	No	No	No	Own
+Modify student enrollment	Authorized	Authorized	Scoped	Scoped	No	Request
+View academic history	Authorized	Authorized	Scoped	Scoped	Assigned	Own
+Publish examination results	No	Govern	No	No	No	No
+
+These are illustrative responsibilities. The actual permissions should be assigned through institutional configuration and authoritative organizational roles.
+19.3 Separation between academic and placement access
+An important safeguard:
+
+A TPO should not automatically receive examination administration rights.
+
+A HOD should not automatically receive access to confidential student counselling records.
+
+An examination controller should not automatically be authorized to modify the student's original admission record.
+
+Each domain should expose the appropriate data and permission interfaces.
+
+20. API architecture and academic commands
+The API should expose complete academic operations rather than only database CRUD.
+20.1 API catalogue
+Domain	Representative endpoints
+Programs	/programs
+Program versions	/programs/{id}/versions
+Program offerings	/program-offerings
+Qualifications	/qualifications
+Courses	/courses
+Course versions	/courses/{id}/versions
+Curriculum	/program-versions/{id}/curriculum
+Requirement groups	/curriculum-requirement-groups
+Academic calendars	/academic-calendars
+Terms	/academic-calendars/{id}/terms
+Students	/students
+Program enrollment	/student-enrollments
+Course offerings	/course-offerings
+Registrations	/course-registrations
+Academic history	/students/{id}/academic-history
+Credit ledger	/student-enrollments/{id}/credits
+Progression	/student-enrollments/{id}/progression
+Transfers	/student-transfers
+Graduation	/graduation-evaluations
+
+Protected student endpoints must resolve the requested enrollment and academic resource from authoritative records, not trust client-supplied resource ownership.
+20.2 Core domain commands
+CreateProgram
+CreateProgramVersion
+SubmitCurriculumForApproval
+PublishCurriculumVersion
+CreateProgramOffering
+
+CreateAcademicCalendar
+PublishAcademicCalendar
+OpenAcademicTerm
+CloseAcademicTerm
+
+CreateCourse
+CreateCourseVersion
+CreateCourseOffering
+PublishCourseOffering
+
+CreateStudentRecord
+ActivateStudentEnrollment
+ChangeStudentProgram
+AssignStudentCohort
+AssignStudentSection
+
+RegisterStudentForCourse
+DropCourseRegistration
+RecordCourseAttempt
+
+RecordPublishedAcademicOutcome
+AwardAcademicCredit
+ReverseAcademicCredit
+RequestCreditTransfer
+ApproveCreditRecognition
+
+EvaluateAcademicProgression
+ApproveAcademicException
+RecordStudentLeave
+ReadmitStudent
+EvaluateProgramCompletion
+RecordGraduation
+
+
+Each command should have clear preconditions, domain validation, authorization and audit requirements.
+
+21. Scale and performance architecture
+The academic domain is significantly more data-intensive than CAMP-01.
+
+A university can have tens of thousands of students, hundreds of programs, thousands of courses, millions of historical course registrations and a substantial amount of academic history.
+
+We need to separate transactional work from heavy reporting.
+21.1 Workload characteristics
+Workload	Characteristics
+Student profile lookup	Read-heavy
+Academic history	Read-heavy, potentially large
+Course registration	Burst writes
+Result publication	High-volume writes
+Credit-ledger updates	Transactional
+Progression recalculation	Background/batch
+Transcript generation	Background
+Student data import	Large batch
+Department reporting	Analytical
+Placement eligibility refresh	Event-driven/background
+
+21.2 Scaling strategy
+I recommend:
+- PostgreSQL for canonical academic records.
+- Asynchronous workers for bulk import and recalculation.
+- Transactional outbox for reliable event publication.
+- Tenant-aware indexes and partitioning only when measured workloads require it.
+- Versioned read models for student dashboards.
+- Materialized aggregates or analytical warehouse for departmental reporting.
+- Object storage for transcripts and formal documents.
+- Dedicated search infrastructure for complex discovery when needed.
+One important optimization:
+
+Do not recalculate the complete CGPA, all credits, every progression rule and every student's academic history whenever one result changes.
+
+Use incremental projections, but retain the ability to perform full reconciliation against authoritative records.
+21.3 Academic history query design
+Student history is often queried in a chronological structure:
+Student
+    |
+    +-- Program Enrollment
+            |
+            +-- Academic Year 2024-25
+            |       +-- Semester 1
+            |       +-- Semester 2
+            |
+            +-- Academic Year 2025-26
+            |       +-- Semester 3
+            |       +-- Semester 4
+            |
+            +-- Academic Year 2026-27
+                    +-- Semester 5
+                    +-- Semester 6
+
+
+This should be a projection assembled from authoritative enrollment, registration, result and credit records.
+
+We should not force the underlying database itself into that tree.
+
+22. Academic integration ecosystem
+CAMP-03 will need to exchange information with several external systems.
+Integration	Purpose
+College ERP / SIS	Student and academic records
+Examination systems	Results and grading
+Attendance systems	Verified attendance aggregates
+LMS	Course participation and learning activity
+Academic Bank of Credits	Credit records and transfer integration
+DigiLocker / NAD	Academic credential and document integration
+SWAYAM / NPTEL	External course and learning evidence
+Government or university portals	Applicable institutional reporting
+Assessment systems	External assessment outcomes
+
+The UGC's Academic Bank of Credits resource portal provides institutional templates, guidelines and associated material. That suggests we should design an integration layer with explicit field mappings and validation rather than treating external academic data as generic documents. 
+ABC+1
+
+22.1 External academic data pipeline
+External source
+      |
+Connector / API / File ingestion
+      |
+Raw evidence storage
+      |
+Source schema validation
+      |
+Canonical academic mapping
+      |
+Identity and enrollment resolution
+      |
+Academic equivalence evaluation
+      |
+Authorized recognition
+      |
+Credit ledger / academic record
+      |
+Event publication
+
+
+An external transcript should never automatically become an authoritative result merely because the document was uploaded.
+
+It must go through source verification and institutional recognition.
+
+23. Production testing and acceptance criteria
+Before CAMP-03 enters production, we need to prove that it represents real academic workflows correctly.
+23.1 Critical test matrix
+Test	Expected outcome
+Same program offered across two campuses	Independent offerings, shared program definition
+Curriculum version changed	Existing student version retained
+Student registers without prerequisite	Rejected or routed to approved exception
+Student repeats failed course	Historical attempt preserved
+Student transfers program	Old academic record preserved
+Student takes an elective from another department	Permitted only under policy
+External credit submitted	Not accepted until verified and recognized
+Result correction published	New version and dependent records recalculated
+Missing grade input	Evaluation marked incomplete
+Credit ledger reversal	Original award remains traceable
+Progression rules changed	Historical decisions remain reproducible
+Student formally completes program	Completion and award processes remain separate
+Student uses multiple entry/exit	Multiple award/exit history supported
+University uses annual progression	No forced semester model
+Program uses trimester calendar	Independent calendar supported
+Student has multiple concurrent enrollments	Independent academic histories maintained
+
+23.2 Data integrity tests
+We should additionally test:
+- No cross-tenant academic registration.
+- No course enrollment against another institution's course offering.
+- No credit award without valid source evidence.
+- No published curriculum mutation.
+- No duplicate course registration where prohibited.
+- No overlapping invalid student program enrollments.
+- No orphaned result references.
+- No silent deletion of historical academic records.
+- No accidental graduation triggered by credit total alone.
+23.3 Initial engineering performance targets
+These are proposed test targets, not production guarantees.
+Operation	Initial target
+Student academic profile lookup	p95 under 200 ms
+Course catalogue query	p95 under 150 ms
+Course registration transaction	p95 under 300 ms
+Single progression evaluation	p95 under 500 ms
+Bulk result processing	Background processing
+Large transcript generation	Background processing
+Historical data import	Asynchronous, resumable
+
+These will need actual load testing with representative data.
+
+24. Architectural decision register — CAMP-03
+Let's record the proposed decisions.
+ADR	Decision	Status
+C03-001	Academic structure is independent from administrative hierarchy	Proposed baseline
+C03-002	Program and Program Offering are separate entities	Proposed baseline
+C03-003	Programs have immutable curriculum versions	Proposed baseline
+C03-004	Course and Course Offering are separate	Proposed baseline
+C03-005	Curricula support requirement groups and elective pools	Proposed baseline
+C03-006	Academic calendars are independently configurable	Proposed baseline
+C03-007	Student record is separate from person and membership	Proposed baseline
+C03-008	Program enrollment is a time-aware relationship	Proposed baseline
+C03-009	Cohort, batch and section are distinct	Proposed baseline
+C03-010	Course registration preserves attempts	Proposed baseline
+C03-011	Grade schemes and calculation rules are versioned	Proposed baseline
+C03-012	Academic credits use an auditable ledger	Proposed baseline
+C03-013	Academic outcomes are consumed from examination domain	Proposed baseline
+C03-014	Progression uses an explainable policy engine	Proposed baseline
+C03-015	Transfer recognition is separate from transfer itself	Proposed baseline
+C03-016	Completion and graduation are separate states	Proposed baseline
+C03-017	National credit frameworks are supported through adapters	Proposed baseline
+C03-018	Historical academic decisions are reproducible	Proposed baseline
+
+Decisions to defer
+Some details need more research and implementation evidence:
+- The exact supported catalog of Indian qualification frameworks.
+- Regulatory requirement packs for each institution type.
+- Detailed academic credit calculation algorithms.
+- Exact Academic Bank of Credits integration protocol and API access arrangements.
+- Detailed transcript and credential standards.
+- Complex equivalence-engine implementation.
+- Full academic timetable and classroom scheduling architecture.
+- Assessment component structure, which belongs primarily to CAMP-08.
+
+25. CAMP-03 implementation roadmap
+We should implement this in dependency order.
+Academic system development sequence
+1. Academic foundation
+   
+   Academic units, qualification catalogue, programs and program offerings.
+2. Curriculum architecture
+   
+   Program versions, courses, course versions, requirement groups, prerequisites and elective pools.
+3. Calendar infrastructure
+   
+   Academic years, calendars, terms and registration windows.
+4. Student academic identity
+   
+   Student records, identifiers, cohorts and program enrollments.
+5. Academic registration
+   
+   Course offerings, course sections, course registration and repeat attempts.
+6. Academic records and credits
+   
+   Grade schemes, published result references, credit ledger and transfers.
+7. Academic progression
+   
+   Academic policy engine, progression evaluations and student lifecycle transitions.
+8. Mobility and graduation
+   
+   Program changes, credit recognition, multiple entry/exit and award processing.
+9. Integration and scale
+   
+   ERP imports, LMS, ABC, DigiLocker, analytics and large-scale processing.
+
+CAMP-03 definition of done
+Academic structure
+0/4
+
+[ ] Programs and qualifications are separate
+[ ] Programs support multiple offerings and campuses
+[ ] Program versions are immutable after publication
+[ ] Academic units are properly referenced
+
+
+Curriculum
+0/4
+
+[ ] Course and course offering are separate
+[ ] Elective pools and mandatory requirements are supported
+[ ] Prerequisite and co-requisite rules are configurable
+[ ] Curriculum migrations preserve historical records
+
+
+Academic calendar
+0/4
+
+[ ] Annual and semester models work
+[ ] Trimester and custom periods work
+[ ] Registration and examination windows are independent
+[ ] Calendar versions preserve historical dates
+
+
+Student lifecycle
+0/5
+
+[ ] Person and student record are separate
+[ ] Multiple program enrollments are supported
+[ ] Cohort, batch and section are distinct
+[ ] Transfer, leave, withdrawal and readmission are supported
+[ ] Completion and graduation are separate
+
+
+Academic records
+0/5
+
+[ ] Course attempts are preserved
+[ ] Grading schemes are versioned
+[ ] Credit awards have provenance
+[ ] Credit reversals are traceable
+[ ] External credits require institutional recognition
+
+
+Engineering
+0/6
+
+[ ] Progression decisions are reproducible
+[ ] Missing data is not confused with failure
+[ ] Tenant isolation is enforced
+[ ] Academic events are reliable and versioned
+[ ] Bulk import and processing are resumable
+[ ] Historical academic queries are accurate
+
+
+Overall
+0/28
+
+
+
+Design and implementation acceptance tracker.
+
+26. The resulting campus architecture
+We now have a coherent foundation across three domains.
+CAMP-01
+Institutional infrastructure
+
+Tenants, institutions, campuses, academic units, administrative structures and institutional relationships.
+
+CAMP-02
+Identity and access infrastructure
+
+People, accounts, memberships, roles, scopes, delegation, permissions and security.
+
+CAMP-03
+Academic infrastructure
+
+Programs, curricula, calendars, courses, student enrollment, credits, progression and graduation.
+
+
+Campus Operating Foundation
+Institutional identity + people + authority + academic structure + student history
+
+
+27. Five architectural invariants I particularly want to preserve
+These will affect almost every future module:
+1. No hardcoded institutional assumptions. A university's academic structure, calendars, grading rules and workflows must be configurable.
+2. No destruction of history. Transfers, curriculum changes, grade corrections and institutional restructuring must preserve previous states.
+3. No duplicated ownership. Each domain has one authoritative owner for its information.
+4. No unexplained decisions. Eligibility, progression, grading and authorization decisions must be traceable to their inputs and policy versions.
+5. No AI replacing institutional authority. AI can recommend, classify and identify anomalies, but formal academic decisions remain governed by authorized processes.
+28. What comes immediately after this?
+I suggest we don't rush into CAMP-04 yet.
+
+Before expanding the functional domains, let's turn CAMP-01, CAMP-02 and CAMP-03 into an implementation-ready foundation.
+
+Our next engineering design milestone should be:
+
+Campus Foundation — Consolidated Technical Blueprint
+Deliverable	Expected output
+Master ERD	All three domains and cross-domain relationships
+Database specification	Tables, columns, types, constraints and indexes
+Domain contracts	Ownership, commands, queries and interfaces
+Event catalogue	Event schemas, versions and delivery guarantees
+Policy architecture	Authorization, academic and institutional rules
+API specification	OpenAPI contracts and error conventions
+Lifecycle specifications	State machines and permitted transitions
+Security specification	Tenant isolation, access controls and audit
+Test specification	Unit, integration, security and concurrency cases
+
+This will also let us identify any contradictions between the three domain designs before developers start implementing them.
+
+One additional architectural goal: I want every future campus module to plug into this foundation through defined contracts, without having to reinvent identity, authorization, institutional hierarchy, academic records or workflow handling.
+
+That's how we make the platform extensible while maintaining engineering discipline.
+
+The next milestone is the consolidated database and domain architecture for CAMP-01, CAMP-02 and CAMP-03.
