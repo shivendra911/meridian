@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Search,
   ChevronDown,
   Building2,
   Inbox,
   Sparkles,
-  Command,
   Check,
 } from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 import { usePersona } from '../../context/PersonaContext';
+import { findNavItem } from '../../app/navigation';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 
 interface MastheadProps {
-  onSearchStudent: (studentId: string) => void;
+  onSearchStudent?: (studentId: string) => void;
   onOpenCommandPalette: () => void;
   onOpenInbox: () => void;
   onOpenCopilot: () => void;
@@ -22,26 +23,43 @@ interface MastheadProps {
 }
 
 export const Masthead: React.FC<MastheadProps> = ({
-  onSearchStudent,
   onOpenCommandPalette,
   onOpenInbox,
   onOpenCopilot,
   inboxCount = 5,
 }) => {
   const { activePersona, personaConfig } = usePersona();
-  const { activeTenant, activeCampus, institutions, switchTenant } = useTenant();
+  const { activeTenant, switchTenant } = useTenant();
   const [showTenantMenu, setShowTenantMenu] = useState(false);
+  const location = useLocation();
+
+  const navItem = findNavItem(activePersona, location.pathname);
 
   return (
     <header className="h-14 border-b border-line bg-surface px-8 flex items-center justify-between select-none z-30 font-sans">
-      {/* 1. Ctrl+K Search Trigger */}
-      <div className="flex items-center gap-4">
+      {/* 1. Dynamic Breadcrumbs & Search Trigger */}
+      <div className="flex items-center gap-5">
+        {navItem && (
+          <div className="hidden md:flex items-center gap-1.5 text-xs">
+            {navItem.section && (
+              <>
+                <span className="text-ink-muted">{navItem.section}</span>
+                <span className="text-ink-muted">/</span>
+              </>
+            )}
+            <span className="font-semibold text-ink">{navItem.item.label}</span>
+            {navItem.item.status === 'preview' && (
+              <Badge variant="neutral" size="xs">Preview</Badge>
+            )}
+          </div>
+        )}
+
         <button
           onClick={onOpenCommandPalette}
-          className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-line bg-canvas text-xs text-ink-muted hover:text-ink hover:border-slate-300 transition-colors duration-150 w-64 sm:w-72 md:w-80 cursor-pointer"
+          className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-line bg-canvas text-xs text-ink-muted hover:text-ink hover:border-slate-300 transition-colors duration-150 w-56 sm:w-64 cursor-pointer"
         >
           <Search size={14} className="text-ink-muted shrink-0" />
-          <span className="flex-1 text-left truncate">Search candidate, drive, or rule...</span>
+          <span className="flex-1 text-left truncate">Search candidate, drive...</span>
           <kbd className="text-[10px] bg-surface px-1.5 py-0.5 rounded border border-line font-mono font-medium text-ink-muted shrink-0">
             Ctrl+K
           </kbd>

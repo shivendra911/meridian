@@ -1,38 +1,82 @@
 import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
 import { Sidebar } from './components/layout/Sidebar';
 import { Masthead } from './components/layout/Masthead';
 
-// Import Page Modules
-import { OverviewPage } from './pages/OverviewPage';
-import { StudentsPage } from './pages/StudentsPage';
-import { StudentDossierPage } from './pages/StudentDossierPage';
-import { WhatIfPage } from './pages/WhatIfPage';
-import { RecruitmentPage } from './pages/RecruitmentPage';
-import { SuperdayPage } from './pages/SuperdayPage';
-import { RenegeRadarPage } from './pages/RenegeRadarPage';
-import { NirfPage } from './pages/NirfPage';
-import { ConsentPage } from './pages/ConsentPage';
-import { CopilotPage } from './pages/CopilotPage';
-import { AgentRunsPage } from './pages/AgentRunsPage';
-import { FairnessPage } from './pages/FairnessPage';
-import { ReportsPage } from './pages/ReportsPage';
-import { InstitutionalArchitecturePage } from './pages/InstitutionalArchitecturePage';
-import { IdentityAccessPage } from './pages/IdentityAccessPage';
-import { AcademicLifecyclePage } from './pages/AcademicLifecyclePage';
+// Context Providers
 import { TenantProvider } from './context/TenantContext';
 import { PersonaProvider, usePersona } from './context/PersonaContext';
+
+// Navigation Overlays
 import { CampusCopilotDrawer } from './components/ai/CampusCopilotDrawer';
 import { CommandPalette } from './components/navigation/CommandPalette';
 import { UnifiedTaskInbox } from './components/navigation/UnifiedTaskInbox';
+
+// Core Role Workspaces
+import { OverviewPage } from './pages/OverviewPage';
 import { StudentWorkspace } from './pages/workspaces/StudentWorkspace';
 import { FacultyWorkspace } from './pages/workspaces/FacultyWorkspace';
 import { HodWorkspace } from './pages/workspaces/HodWorkspace';
 import { ManagementWorkspace } from './pages/workspaces/ManagementWorkspace';
 
-export const AppContent: React.FC = () => {
+// Split Placement Pages
+import { DrivesPage } from './pages/placement/DrivesPage';
+import { DriveDetailPage } from './pages/placement/DriveDetailPage';
+import { CompaniesPage } from './pages/placement/CompaniesPage';
+import { CompanyDetailPage } from './pages/placement/CompanyDetailPage';
+import { ApplicationsPage } from './pages/placement/ApplicationsPage';
+import { InterviewsPage } from './pages/placement/InterviewsPage';
+import { OffersPage } from './pages/placement/OffersPage';
+
+// People & Student Pages
+import { StudentsPage } from './pages/StudentsPage';
+import { StudentDetailPage } from './pages/students/StudentDetailPage';
+
+// Insights & Governance Pages
+import { RenegeRadarPage } from './pages/RenegeRadarPage';
+import { FairnessPage } from './pages/FairnessPage';
+import { ReportsPage } from './pages/ReportsPage';
+import { NirfPage } from './pages/NirfPage';
+import { ConsentPage } from './pages/ConsentPage';
+import { AgentRunsPage } from './pages/AgentRunsPage';
+
+// Institutional Architecture & Academic Setup (CAMP-01/02/03)
+import { InstitutionalArchitecturePage } from './pages/InstitutionalArchitecturePage';
+import { IdentityAccessPage } from './pages/IdentityAccessPage';
+import { AcademicLifecyclePage } from './pages/AcademicLifecyclePage';
+
+const RoleHome: React.FC<{
+  onNavigate: (path: string) => void;
+  onOpenCopilot: () => void;
+}> = ({ onNavigate, onOpenCopilot }) => {
   const { activePersona } = usePersona();
-  const [currentTab, setCurrentTab] = useState<string>('overview');
-  const [selectedStudentId, setSelectedStudentId] = useState<string>('STU001');
+
+  switch (activePersona) {
+    case 'STUDENT':
+      return <StudentWorkspace onNavigateTab={onNavigate} onOpenCopilot={onOpenCopilot} />;
+    case 'FACULTY':
+      return <FacultyWorkspace onNavigateTab={onNavigate} onOpenCopilot={onOpenCopilot} />;
+    case 'HOD':
+      return <HodWorkspace onNavigateTab={onNavigate} onOpenCopilot={onOpenCopilot} />;
+    case 'MANAGEMENT':
+      return <ManagementWorkspace onNavigateTab={onNavigate} />;
+    case 'ADMIN':
+      return <InstitutionalArchitecturePage />;
+    case 'TPO':
+    default:
+      return <OverviewPage onNavigateTab={onNavigate} />;
+  }
+};
+
+export const AppContent: React.FC = () => {
+  const navigate = useNavigate();
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isInboxOpen, setIsInboxOpen] = useState(false);
@@ -49,128 +93,38 @@ export const AppContent: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleSearchStudent = (query: string) => {
-    setSelectedStudentId(query);
-    setCurrentTab('dossier');
-  };
-
-  const renderActiveView = () => {
-    switch (currentTab) {
-      case 'overview': {
-        if (activePersona === 'STUDENT') {
-          return (
-            <StudentWorkspace
-              onNavigateTab={(tab) => setCurrentTab(tab)}
-              onOpenCopilot={() => setIsCopilotOpen(true)}
-            />
-          );
-        }
-        if (activePersona === 'FACULTY') {
-          return (
-            <FacultyWorkspace
-              onNavigateTab={(tab) => setCurrentTab(tab)}
-              onOpenCopilot={() => setIsCopilotOpen(true)}
-            />
-          );
-        }
-        if (activePersona === 'HOD_DEAN') {
-          return (
-            <HodWorkspace
-              onNavigateTab={(tab) => setCurrentTab(tab)}
-              onOpenCopilot={() => setIsCopilotOpen(true)}
-            />
-          );
-        }
-        if (activePersona === 'MANAGEMENT') {
-          return <ManagementWorkspace onNavigateTab={(tab) => setCurrentTab(tab)} />;
-        }
-        // Default TPO Placement Overview
-        return <OverviewPage onNavigateTab={(tab) => setCurrentTab(tab)} />;
-      }
-      case 'architecture':
-        return <InstitutionalArchitecturePage />;
-      case 'iam':
-        return <IdentityAccessPage />;
-      case 'academic':
-        return <AcademicLifecyclePage />;
-      case 'reports':
-        return <ReportsPage />;
-      case 'students':
-        return (
-          <StudentsPage
-            onSelectStudent={(id) => {
-              setSelectedStudentId(id);
-              setCurrentTab('dossier');
-            }}
-            onOpenWhatIf={(id) => {
-              setSelectedStudentId(id);
-              setCurrentTab('whatif');
-            }}
-            onOpenConsent={(id) => {
-              setSelectedStudentId(id);
-              setCurrentTab('consent');
-            }}
-          />
-        );
-      case 'dossier':
-        return (
-          <StudentDossierPage
-            studentId={selectedStudentId}
-            onBack={() => setCurrentTab('students')}
-            onOpenWhatIf={(id) => {
-              setSelectedStudentId(id);
-              setCurrentTab('whatif');
-            }}
-            onOpenConsent={(id) => {
-              setSelectedStudentId(id);
-              setCurrentTab('consent');
-            }}
-          />
-        );
-      case 'whatif':
-        return (
-          <WhatIfPage
-            studentId={selectedStudentId}
-            onBack={() => setCurrentTab('dossier')}
-          />
-        );
-      case 'companies':
-        return <RecruitmentPage initialTab="companies" />;
-      case 'jobs':
-        return <RecruitmentPage initialTab="jobs" />;
-      case 'applications':
-      case 'interviews':
-        return <RecruitmentPage initialTab="applications" />;
-      case 'placements':
-        return <RecruitmentPage initialTab="placements" />;
-      case 'superday':
-        return <SuperdayPage />;
-      case 'renege':
-        return <RenegeRadarPage />;
-      case 'nirf':
-        return <NirfPage />;
-      case 'consent':
-        return <ConsentPage initialStudentId={selectedStudentId} />;
-      case 'copilot':
-        return <CopilotPage />;
-      case 'agent-runs':
-        return <AgentRunsPage onOpenCopilot={() => setCurrentTab('copilot')} />;
-      case 'fairness':
-        return <FairnessPage />;
-      default:
-        return <OverviewPage />;
-    }
+  const handleNavigate = (pathOrTab: string) => {
+    const tabMap: Record<string, string> = {
+      overview: '/home',
+      jobs: '/placement/drives',
+      companies: '/placement/companies',
+      applications: '/placement/applications',
+      interviews: '/placement/interviews',
+      superday: '/placement/interviews',
+      placements: '/placement/offers',
+      renege: '/insights/retention',
+      students: '/students',
+      academic: '/me/academics',
+      architecture: '/admin/organisation',
+      iam: '/admin/roles',
+      nirf: '/outcomes/accreditation',
+      reports: '/insights/reports',
+      consent: '/compliance/consent',
+      'agent-runs': '/compliance/ai',
+      fairness: '/compliance/fairness',
+    };
+    const target = tabMap[pathOrTab] || pathOrTab;
+    navigate(target);
   };
 
   return (
-    <div className="grid min-h-screen grid-cols-[240px_1fr] bg-canvas text-ink antialiased">
-      {/* 240px Sidebar */}
-      <Sidebar currentTab={currentTab} onSelectTab={(tab) => setCurrentTab(tab)} />
+    <div className="grid min-h-screen grid-cols-[240px_1fr] bg-canvas text-ink antialiased font-sans">
+      {/* 240px App Navigation Sidebar */}
+      <Sidebar />
 
       {/* Main Content Area */}
       <div className="flex flex-col min-h-screen min-w-0">
         <Masthead
-          onSearchStudent={handleSearchStudent}
           onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
           onOpenInbox={() => setIsInboxOpen(true)}
           onOpenCopilot={() => setIsCopilotOpen(true)}
@@ -178,7 +132,83 @@ export const AppContent: React.FC = () => {
 
         <main className="flex-1 px-8 py-8 overflow-y-auto">
           <div className="mx-auto w-full max-w-7xl">
-            {renderActiveView()}
+            <Routes>
+              {/* Home / Role-Scoped Dashboard */}
+              <Route path="/" element={<Navigate to="/home" replace />} />
+              <Route
+                path="/home"
+                element={
+                  <RoleHome
+                    onNavigate={handleNavigate}
+                    onOpenCopilot={() => setIsCopilotOpen(true)}
+                  />
+                }
+              />
+
+              {/* Placement Directorate (TPO Flagship Flow) */}
+              <Route path="/placement/drives" element={<DrivesPage />} />
+              <Route path="/placement/drives/:id" element={<DriveDetailPage />} />
+              <Route path="/placement/companies" element={<CompaniesPage />} />
+              <Route path="/placement/companies/:id" element={<CompanyDetailPage />} />
+              <Route path="/placement/applications" element={<ApplicationsPage />} />
+              <Route path="/placement/interviews" element={<InterviewsPage />} />
+              <Route path="/placement/offers" element={<OffersPage />} />
+
+              {/* People & Student Directory */}
+              <Route path="/students" element={<StudentsPage />} />
+              <Route path="/students/:id" element={<StudentDetailPage />} />
+
+              {/* Insights & Analytics */}
+              <Route path="/insights/analytics" element={<OverviewPage onNavigateTab={handleNavigate} />} />
+              <Route path="/insights/retention" element={<RenegeRadarPage />} />
+              <Route path="/insights/fairness" element={<FairnessPage />} />
+              <Route path="/insights/reports" element={<ReportsPage />} />
+
+              {/* Student Persona Scoped Routes */}
+              <Route path="/opportunities" element={<DrivesPage />} />
+              <Route path="/me/applications" element={<ApplicationsPage />} />
+              <Route path="/me/academics" element={<AcademicLifecyclePage />} />
+              <Route path="/me/profile" element={<StudentDetailPage />} />
+
+              {/* Faculty Persona Routes */}
+              <Route path="/teaching/courses" element={<AcademicLifecyclePage />} />
+              <Route path="/advising" element={<StudentsPage />} />
+
+              {/* Department Persona Routes */}
+              <Route path="/department/students" element={<StudentsPage />} />
+              <Route path="/department/faculty" element={<IdentityAccessPage />} />
+              <Route path="/department/curriculum" element={<AcademicLifecyclePage />} />
+              <Route path="/department/placements" element={<OffersPage />} />
+
+              {/* Management Persona Routes */}
+              <Route path="/outcomes/placements" element={<OffersPage />} />
+              <Route path="/outcomes/accreditation" element={<NirfPage />} />
+              <Route path="/compliance/consent" element={<ConsentPage />} />
+              <Route path="/compliance/fairness" element={<FairnessPage />} />
+              <Route path="/compliance/ai" element={<AgentRunsPage onOpenCopilot={() => setIsCopilotOpen(true)} />} />
+
+              {/* Admin Persona Routes (CAMP-01, 02, 03) */}
+              <Route path="/admin/organisation" element={<InstitutionalArchitecturePage />} />
+              <Route path="/admin/hierarchy" element={<InstitutionalArchitecturePage />} />
+              <Route path="/admin/onboarding" element={<InstitutionalArchitecturePage />} />
+              <Route path="/admin/people" element={<IdentityAccessPage />} />
+              <Route path="/admin/roles" element={<IdentityAccessPage />} />
+              <Route path="/admin/sessions" element={<IdentityAccessPage />} />
+              <Route path="/admin/academics" element={<AcademicLifecyclePage />} />
+              <Route path="/admin/calendars" element={<AcademicLifecyclePage />} />
+              <Route path="/admin/config" element={<InstitutionalArchitecturePage />} />
+              <Route path="/admin/ai" element={<AgentRunsPage onOpenCopilot={() => setIsCopilotOpen(true)} />} />
+
+              {/* Backward Compatibility Redirects */}
+              <Route path="/jobs" element={<Navigate to="/placement/drives" replace />} />
+              <Route path="/companies" element={<Navigate to="/placement/companies" replace />} />
+              <Route path="/applications" element={<Navigate to="/placement/applications" replace />} />
+              <Route path="/interviews" element={<Navigate to="/placement/interviews" replace />} />
+              <Route path="/placements" element={<Navigate to="/placement/offers" replace />} />
+
+              {/* Catch-All */}
+              <Route path="*" element={<Navigate to="/home" replace />} />
+            </Routes>
           </div>
         </main>
       </div>
@@ -187,7 +217,7 @@ export const AppContent: React.FC = () => {
       <CommandPalette
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
-        onNavigateTab={(tab) => setCurrentTab(tab)}
+        onNavigateTab={handleNavigate}
         onOpenCopilot={() => {
           setIsCommandPaletteOpen(false);
           setIsCopilotOpen(true);
@@ -198,7 +228,7 @@ export const AppContent: React.FC = () => {
       <UnifiedTaskInbox
         isOpen={isInboxOpen}
         onClose={() => setIsInboxOpen(false)}
-        onNavigateTab={(tab) => setCurrentTab(tab)}
+        onNavigateTab={handleNavigate}
       />
 
       {/* Global Campus AI Copilot Drawer */}
@@ -212,11 +242,13 @@ export const AppContent: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <TenantProvider>
-      <PersonaProvider>
-        <AppContent />
-      </PersonaProvider>
-    </TenantProvider>
+    <BrowserRouter>
+      <TenantProvider>
+        <PersonaProvider>
+          <AppContent />
+        </PersonaProvider>
+      </TenantProvider>
+    </BrowserRouter>
   );
 };
 

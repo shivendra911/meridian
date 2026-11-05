@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { Persona } from '../app/navigation';
 
-export type UserPersona = 'STUDENT' | 'FACULTY' | 'HOD_DEAN' | 'TPO_PLACEMENT' | 'MANAGEMENT';
+export type UserPersona = Persona;
 
 export interface PersonaConfig {
   id: UserPersona;
@@ -11,40 +12,47 @@ export interface PersonaConfig {
 }
 
 export const PERSONA_CONFIGS: Record<UserPersona, PersonaConfig> = {
+  TPO: {
+    id: 'TPO',
+    title: 'Placement Directorate',
+    badgeLabel: 'TPO Officer',
+    roleDescription: 'Office of Career & Placement Services',
+    avatarInitials: 'TP',
+  },
   STUDENT: {
     id: 'STUDENT',
-    title: 'Student Workspace',
+    title: 'Student Workbench',
     badgeLabel: 'Student',
-    roleDescription: 'B.Tech CSE • Semester 6',
+    roleDescription: 'B.Tech Computer Science & Engineering',
     avatarInitials: 'ST',
   },
   FACULTY: {
     id: 'FACULTY',
-    title: 'Faculty Workspace',
+    title: 'Faculty Teaching Workbench',
     badgeLabel: 'Faculty',
-    roleDescription: 'Senior Assistant Professor • CSE',
+    roleDescription: 'Department of Computing',
     avatarInitials: 'FA',
   },
-  HOD_DEAN: {
-    id: 'HOD_DEAN',
-    title: 'HOD / Dean Workspace',
+  HOD: {
+    id: 'HOD',
+    title: 'Department Leadership',
     badgeLabel: 'HOD / Dean',
-    roleDescription: 'Head of Department • Computing',
+    roleDescription: 'School of Computing & Engineering',
     avatarInitials: 'HD',
-  },
-  TPO_PLACEMENT: {
-    id: 'TPO_PLACEMENT',
-    title: 'TPO Placement Workspace',
-    badgeLabel: 'Placement Officer',
-    roleDescription: 'Directorate of Career Services',
-    avatarInitials: 'TP',
   },
   MANAGEMENT: {
     id: 'MANAGEMENT',
-    title: 'Executive Management',
+    title: 'Executive Institutional Command',
     badgeLabel: 'Leadership',
     roleDescription: 'Office of the Vice Chancellor / Registrar',
     avatarInitials: 'VC',
+  },
+  ADMIN: {
+    id: 'ADMIN',
+    title: 'Institutional Administration',
+    badgeLabel: 'Campus Admin',
+    roleDescription: 'Platform Architecture & IAM Governance',
+    avatarInitials: 'AD',
   },
 };
 
@@ -58,8 +66,10 @@ const PersonaContext = createContext<PersonaContextType | undefined>(undefined);
 
 export const PersonaProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activePersona, setActivePersona] = useState<UserPersona>(() => {
-    const saved = localStorage.getItem('placeflow_persona') as UserPersona;
-    return saved && PERSONA_CONFIGS[saved] ? saved : 'TPO_PLACEMENT';
+    const saved = localStorage.getItem('placeflow_persona') as string;
+    if (saved === 'TPO_PLACEMENT') return 'TPO';
+    if (saved === 'HOD_DEAN') return 'HOD';
+    return (saved && PERSONA_CONFIGS[saved as UserPersona]) ? (saved as UserPersona) : 'TPO';
   });
 
   const switchPersona = (persona: UserPersona) => {
@@ -67,7 +77,7 @@ export const PersonaProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem('placeflow_persona', persona);
   };
 
-  const personaConfig = PERSONA_CONFIGS[activePersona];
+  const personaConfig = PERSONA_CONFIGS[activePersona] || PERSONA_CONFIGS.TPO;
 
   return (
     <PersonaContext.Provider value={{ activePersona, personaConfig, switchPersona }}>
@@ -83,4 +93,3 @@ export const usePersona = () => {
   }
   return context;
 };
-

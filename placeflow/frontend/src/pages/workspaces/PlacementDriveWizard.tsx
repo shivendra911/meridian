@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Building2,
   Briefcase,
@@ -18,7 +18,9 @@ import {
   Check,
   Send,
   X,
+  Loader2,
 } from 'lucide-react';
+import { api } from '../../api';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -37,9 +39,12 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 6;
+  const [isSaving, setIsSaving] = useState(false);
+  const [companiesList, setCompaniesList] = useState<{ company_id: string; name: string }[]>([]);
 
   // Step 1 State: Company & Opportunity
-  const [companyName, setCompanyName] = useState('Google India');
+  const [companyId, setCompanyId] = useState('COMP001');
+  const [customCompanyName, setCustomCompanyName] = useState('Google India');
   const [jobTitle, setJobTitle] = useState('Software Development Engineer - Cloud & Infrastructure');
   const [tier, setTier] = useState('SUPER_DREAM');
   const [ctc, setCtc] = useState('32.5');
@@ -47,6 +52,19 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
   const [jobDescription, setJobDescription] = useState(
     'Seeking engineers to design high-throughput distributed systems, telemetry engines, and cloud fabric solutions.'
   );
+
+  // Load existing corporate partners from database
+  useEffect(() => {
+    api.getCompanies()
+      .then((res) => {
+        if (res.companies && res.companies.length > 0) {
+          setCompaniesList(res.companies);
+          setCompanyId(res.companies[0].company_id);
+          setCustomCompanyName(res.companies[0].name);
+        }
+      })
+      .catch(() => {});
+  }, [isOpen]);
 
   // Step 2 State: Eligibility
   const [minCgpa, setMinCgpa] = useState(7.5);
@@ -114,25 +132,71 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
     }
   };
 
-  const handlePublish = () => {
-    const payload = {
-      companyName,
-      jobTitle,
-      tier,
-      ctc,
-      minCgpa,
-      maxBacklogs,
-      targetBatch,
-      selectedBranches,
-      rounds,
-      driveDate,
-      intakeGoal,
-      qualifyingCount: qualifyingEstimates.finalEligible,
-    };
-    if (onSuccess) {
-      onSuccess(payload);
+  const handlePublish = async () => {
+    setIsSaving(true);
+    try {
+      const tierMap: Record<string, 'Normal' | 'Dream' | 'Super Dream'> = {
+        SUPER_DREAM: 'Super Dream',
+        DREAM: 'Dream',
+        CORE: 'Normal',
+        STANDARD: 'Normal',
+      };
+
+      let activeCompanyId = companyId;
+      let displayName = customCompanyName;
+
+      // If user typed a custom new company name that isn't in DB yet, auto-create it
+      const matched = companiesList.find((c) => c.company_id === companyId);
+      if (matched) {
+        displayName = matched.name;
+      } else if (customCompanyName) {
+        try {
+          const compRes = await api.addCompany({
+            name: customCompanyName,
+            industry: 'Technology',
+            location: location || 'Bengaluru',
+          });
+          if (compRes.company_id) {
+            activeCompanyId = compRes.company_id;
+          }
+        } catch {
+          if (companiesList.length > 0) {
+            activeCompanyId = companiesList[0].company_id;
+            displayName = companiesList[0].name;
+          }
+        }
+      }
+
+      const jobPayload = {
+        company_id: activeCompanyId,
+        title: jobTitle,
+        package_lpa: parseFloat(ctc) || 20.0,
+        tier: tierMap[tier] || 'Super Dream',
+        eligibility: {
+          min_cgpa: Number(minCgpa),
+          max_backlogs: Number(maxBacklogs),
+          departments: selectedBranches,
+        },
+        vacancies: Number(intakeGoal) || 20,
+        status: 'Open' as const,
+      };
+
+      // Call real backend POST /jobs/
+      const res = await api.addJob(jobPayload);
+
+      if (onSuccess) {
+        onSuccess({
+          ...jobPayload,
+          job_id: res.job_id,
+          companyName: displayName,
+        });
+      }
+      onClose();
+    } catch (err: any) {
+      alert(`Error publishing drive: ${err.message || 'Please try again'}`);
+    } finally {
+      setIsSaving(false);
     }
-    onClose();
   };
 
   const progressPct = Math.round((currentStep / totalSteps) * 100);
@@ -183,18 +247,31 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 <label className="block text-xs font-medium text-ink mb-1">
                   Corporate Partner *
                 </label>
-                <select
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
-                >
-                  <option value="Google India">Google India (Tier 1 Global)</option>
-                  <option value="Microsoft IDC">Microsoft IDC (Tier 1 Global)</option>
-                  <option value="Goldman Sachs">Goldman Sachs (FinTech Global)</option>
-                  <option value="Texas Instruments">Texas Instruments (Core Semi)</option>
-                  <option value="Oracle Cloud">Oracle Cloud Infrastructure</option>
-                  <option value="Qualcomm">Qualcomm India</option>
-                </select>
+                {companiesList.length > 0 ? (
+                  <select
+                    value={companyId}
+                    onChange={(e) => {
+                      setCompanyId(e.target.value);
+                      const f = companiesList.find((c) => c.company_id === e.target.value);
+                      if (f) setCustomCompanyName(f.name);
+                    }}
+                    className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
+                  >
+                    {companiesList.map((c) => (
+                      <option key={c.company_id} value={c.company_id}>
+                        {c.name} ({c.company_id})
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    value={customCompanyName}
+                    onChange={(e) => setCustomCompanyName(e.target.value)}
+                    className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
+                    placeholder="e.g. Google India"
+                  />
+                )}
               </div>
 
               <div>
@@ -608,7 +685,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 <span className="text-ink-muted block text-[10px] uppercase font-medium">
                   Partner
                 </span>
-                <span className="font-semibold text-ink">{companyName}</span>
+                <span className="font-semibold text-ink">{customCompanyName}</span>
               </div>
               <div>
                 <span className="text-ink-muted block text-[10px] uppercase font-medium">
@@ -653,11 +730,12 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
               size="sm"
               onClick={() => setCurrentStep(currentStep - 1)}
               leftIcon={<ArrowLeft size={13} />}
+              disabled={isSaving}
             >
               Previous Step
             </Button>
           ) : (
-            <Button variant="ghost" size="sm" onClick={onClose}>
+            <Button variant="ghost" size="sm" onClick={onClose} disabled={isSaving}>
               Cancel
             </Button>
           )}
@@ -676,9 +754,10 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
               variant="primary"
               size="sm"
               onClick={handlePublish}
-              rightIcon={<Send size={13} />}
+              rightIcon={isSaving ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
+              disabled={isSaving}
             >
-              Publish Drive &amp; Notify Candidates
+              {isSaving ? 'Saving to Database...' : 'Publish Drive & Notify Candidates'}
             </Button>
           )}
         </div>

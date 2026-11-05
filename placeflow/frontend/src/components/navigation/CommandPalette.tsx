@@ -73,7 +73,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       description: 'Departmental command, approvals & workload',
       icon: Building2,
       action: () => {
-        switchPersona('HOD_DEAN');
+        switchPersona('HOD');
         onNavigateTab('overview');
       },
       shortcut: 'P 3',
@@ -85,7 +85,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       description: 'Recruitment campaigns, drives & Superdays',
       icon: Briefcase,
       action: () => {
-        switchPersona('TPO_PLACEMENT');
+        switchPersona('TPO');
         onNavigateTab('overview');
       },
       shortcut: 'P 4',

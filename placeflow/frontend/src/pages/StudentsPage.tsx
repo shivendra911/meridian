@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { Student } from '../types';
 import { VtiBadge } from '../components/common/VtiBadge';
@@ -16,9 +17,9 @@ import { AdvancedDataGrid, ColumnDef } from '../components/ui/AdvancedDataGrid';
 import { Button } from '../components/ui/Button';
 
 interface StudentsPageProps {
-  onSelectStudent: (studentId: string) => void;
-  onOpenWhatIf: (studentId: string) => void;
-  onOpenConsent: (studentId: string) => void;
+  onSelectStudent?: (studentId: string) => void;
+  onOpenWhatIf?: (studentId: string) => void;
+  onOpenConsent?: (studentId: string) => void;
 }
 
 export const StudentsPage: React.FC<StudentsPageProps> = ({
@@ -26,6 +27,19 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
   onOpenWhatIf,
   onOpenConsent,
 }) => {
+  const navigate = useNavigate();
+  const handleSelectStudent = (sid: string) => {
+    if (onSelectStudent) onSelectStudent(sid);
+    else navigate('/students/' + sid);
+  };
+  const handleOpenWhatIf = (sid: string) => {
+    if (onOpenWhatIf) onOpenWhatIf(sid);
+    else navigate('/students/' + sid);
+  };
+  const handleOpenConsent = (sid: string) => {
+    if (onOpenConsent) onOpenConsent(sid);
+    else navigate('/compliance/consent');
+  };
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDept, setSelectedDept] = useState('ALL');
@@ -158,7 +172,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
           onClick={(e) => e.stopPropagation()}
         >
           <button
-            onClick={() => onOpenWhatIf(s.student_id)}
+            onClick={() => handleOpenWhatIf(s.student_id)}
             className="px-2 py-1 text-[11px] font-medium text-slate-700 hover:text-cardinal bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex items-center gap-1"
             title="Run What-If Career Simulation"
           >
@@ -166,7 +180,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
             <span>Simulate</span>
           </button>
           <button
-            onClick={() => onOpenConsent(s.student_id)}
+            onClick={() => handleOpenConsent(s.student_id)}
             className="px-2 py-1 text-[11px] font-medium text-slate-700 hover:text-emerald-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex items-center gap-1"
             title="Manage DPDP Consents"
           >
@@ -297,7 +311,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
           rowKey={(s) => s.student_id}
           presetViews={presetViews}
           searchPlaceholder="Search candidate roll, name, department..."
-          onRowClick={(s) => onSelectStudent(s.student_id)}
+          onRowClick={(s) => handleSelectStudent(s.student_id)}
           bulkActions={[
             {
               label: 'Export Selected to CSV',
@@ -388,7 +402,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
 
               <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                 <button
-                  onClick={() => onSelectStudent(student.student_id)}
+                  onClick={() => handleSelectStudent(student.student_id)}
                   className="text-xs font-semibold text-cardinal hover:underline flex items-center gap-1"
                 >
                   <span>Open Dossier</span>
@@ -396,14 +410,14 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
                 </button>
                 <div className="flex items-center gap-1.5">
                   <button
-                    onClick={() => onOpenWhatIf(student.student_id)}
+                    onClick={() => handleOpenWhatIf(student.student_id)}
                     className="p-1.5 text-slate-600 hover:text-cardinal bg-slate-100 hover:bg-slate-200 rounded"
                     title="Run What-If Simulation"
                   >
                     <Sliders size={13} />
                   </button>
                   <button
-                    onClick={() => onOpenConsent(student.student_id)}
+                    onClick={() => handleOpenConsent(student.student_id)}
                     className="p-1.5 text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-slate-200 rounded"
                     title="Manage DPDP Consents"
                   >
