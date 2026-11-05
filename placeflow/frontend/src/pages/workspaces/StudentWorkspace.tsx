@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { api } from '../../api';
+import { toast } from 'sonner';
 import {
   GraduationCap,
   Calendar,
@@ -35,10 +38,18 @@ export const StudentWorkspace: React.FC<StudentWorkspaceProps> = ({
   onNavigateTab,
   onOpenCopilot,
 }) => {
+  const navigate = useNavigate();
   const [activeSubTab, setActiveSubTab] = useState<'overview' | 'registration' | 'gaps' | 'career'>('overview');
   const [registeredCourses, setRegisteredCourses] = useState<string[]>(['CS401', 'AI402']);
   const [isLoading, setIsLoading] = useState(false);
   const [registrationSubmitted, setRegistrationSubmitted] = useState(false);
+  const [studentData, setStudentData] = useState<any>(null);
+
+  useEffect(() => {
+    api.getStudent('STU001')
+      .then((res) => setStudentData(res))
+      .catch(() => {});
+  }, []);
 
   // Available offerings for course registration basket
   const availableCourses = [
@@ -122,7 +133,7 @@ export const StudentWorkspace: React.FC<StudentWorkspaceProps> = ({
       {/* 1. Page Header */}
       <PageHeader
         title="Student Academic & Career Hub"
-        description="Rohan Sharma • Roll: 2023CSB001 • B.Tech Computer Science & Engineering • Semester 6"
+        description={`${studentData?.student?.name || 'Aarav Sharma'} • Roll: ${studentData?.student?.student_id || 'STU001'} • ${studentData?.student?.department || 'CSE'} Engineering • Semester 6`}
         badge={
           <Badge variant="success" size="xs">
             Academic Good Standing
@@ -139,12 +150,20 @@ export const StudentWorkspace: React.FC<StudentWorkspaceProps> = ({
               Ask Advisor AI
             </Button>
             <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/me/applications')}
+              leftIcon={<Briefcase size={14} />}
+            >
+              My Applications ({studentData?.applications?.length || 2})
+            </Button>
+            <Button
               variant="primary"
               size="sm"
-              onClick={() => setActiveSubTab('registration')}
-              leftIcon={<BookOpen size={14} />}
+              onClick={() => navigate('/opportunities')}
+              leftIcon={<Sparkles size={14} />}
             >
-              Course Basket ({registeredCourses.length})
+              Opportunities Feed
             </Button>
           </div>
         }
@@ -154,11 +173,11 @@ export const StudentWorkspace: React.FC<StudentWorkspaceProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Cumulative GPA"
-          value="8.45"
+          value={studentData?.student?.cgpa ? studentData.student.cgpa.toFixed(2) : "8.90"}
           subValue="/ 10.0"
-          hint="Cohort Rank #4 / 240 (Top 5%)"
+          hint="Cohort Rank #2 / 240 (Top 2%)"
           icon={GraduationCap}
-          change="+0.18 from Sem 5"
+          change="+0.22 from Sem 5"
           changeType="up"
         />
         <StatCard
@@ -172,9 +191,9 @@ export const StudentWorkspace: React.FC<StudentWorkspaceProps> = ({
         />
         <StatCard
           label="Active Placement Drives"
-          value="4"
-          subValue="Eligible for 4"
-          hint="Tier-1 & Super Dream Eligible"
+          value={studentData?.eligible_jobs?.length ? String(studentData.eligible_jobs.length) : "3"}
+          subValue="Open Opportunities"
+          hint="Super Dream Marquee Eligible"
           icon={Briefcase}
           change="0 Active Backlogs"
           changeType="up"

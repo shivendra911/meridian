@@ -1,3 +1,4 @@
+import { toast } from 'sonner';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../../api';
@@ -36,6 +37,18 @@ export const DriveDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'eligibility' | 'applicants' | 'interviews' | 'offers'>('overview');
   const [selectedReport, setSelectedReport] = useState<EligibilityReport | null>(null);
+
+  const handleStatusChange = async (appId: string, newStatus: string) => {
+    try {
+      await api.updateApplicationStatus(appId, newStatus);
+      setApplications((prev) =>
+        prev.map((a) => (a.application_id === appId ? { ...a, status: newStatus as any } : a))
+      );
+      toast.success(`Candidate advanced to ${newStatus}`);
+    } catch (err: any) {
+      toast.error('Failed to update stage: ' + err.message);
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -309,15 +322,28 @@ export const DriveDetailPage: React.FC = () => {
                   <tr key={app.application_id} className="h-10 hover:bg-canvas/50 transition-colors">
                     <td className="py-2 px-4 font-mono font-medium text-brand">{app.application_id}</td>
                     <td className="py-2 px-4 font-medium text-ink">
-                      {app.student?.name || app.student_id} ({app.student_id})
+                      <button
+                        onClick={() => navigate(`/students/${app.student_id}`)}
+                        className="text-left hover:text-brand hover:underline font-semibold cursor-pointer"
+                      >
+                        {app.student?.name || app.student_id} <span className="font-normal text-ink-muted font-mono text-[11px]">({app.student_id})</span>
+                      </button>
                     </td>
                     <td className="py-2 px-4 text-ink-muted font-mono tabular-nums">
-                      {app.applied_at ? new Date(app.applied_at).toLocaleDateString() : 'Active'}
+                      {app.applied_at ? new Date(app.applied_at).toLocaleDateString([], { month: 'short', day: 'numeric' }) : 'Active'}
                     </td>
                     <td className="py-2 px-4">
-                      <Badge variant={app.status === 'Selected' ? 'success' : 'neutral'} size="xs">
-                        {app.status}
-                      </Badge>
+                      <select
+                        value={app.status}
+                        onChange={(e) => handleStatusChange(app.application_id, e.target.value)}
+                        className="text-xs font-medium py-0.5 px-2 rounded border border-line cursor-pointer bg-canvas text-ink"
+                      >
+                        <option value="Applied">Applied</option>
+                        <option value="Shortlisted">Shortlisted</option>
+                        <option value="Interviewing">Interviewing</option>
+                        <option value="Selected">Selected (Offer)</option>
+                        <option value="Rejected">Rejected</option>
+                      </select>
                     </td>
                     <td className="py-2 px-4 text-right">
                       <button

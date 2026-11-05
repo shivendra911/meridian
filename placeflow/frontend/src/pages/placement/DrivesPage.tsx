@@ -161,7 +161,12 @@ export const DrivesPage: React.FC = () => {
       <PlacementDriveWizard
         isOpen={isWizardOpen}
         onClose={() => setIsWizardOpen(false)}
-        onSuccess={() => fetchJobs()}
+        onSuccess={(data) => {
+          fetchJobs();
+          if (data?.job_id) {
+            navigate(`/placement/drives/${data.job_id}`);
+          }
+        }}
       />
     </div>
   );

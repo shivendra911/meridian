@@ -7,6 +7,7 @@ import {
   useNavigate,
   useLocation,
 } from 'react-router-dom';
+import { Toaster, toast } from 'sonner';
 import { Sidebar } from './components/layout/Sidebar';
 import { Masthead } from './components/layout/Masthead';
 
@@ -26,7 +27,7 @@ import { FacultyWorkspace } from './pages/workspaces/FacultyWorkspace';
 import { HodWorkspace } from './pages/workspaces/HodWorkspace';
 import { ManagementWorkspace } from './pages/workspaces/ManagementWorkspace';
 
-// Split Placement Pages
+// Split Placement Pages (TPO Flow)
 import { DrivesPage } from './pages/placement/DrivesPage';
 import { DriveDetailPage } from './pages/placement/DriveDetailPage';
 import { CompaniesPage } from './pages/placement/CompaniesPage';
@@ -35,7 +36,12 @@ import { ApplicationsPage } from './pages/placement/ApplicationsPage';
 import { InterviewsPage } from './pages/placement/InterviewsPage';
 import { OffersPage } from './pages/placement/OffersPage';
 
-// People & Student Pages
+// Dedicated Student Pages (Student Flow)
+import { StudentOpportunitiesPage } from './pages/student/StudentOpportunitiesPage';
+import { StudentApplicationsPage } from './pages/student/StudentApplicationsPage';
+import { StudentProfilePage } from './pages/student/StudentProfilePage';
+
+// People & Student Directory (TPO / Admin)
 import { StudentsPage } from './pages/StudentsPage';
 import { StudentDetailPage } from './pages/students/StudentDetailPage';
 
@@ -154,21 +160,21 @@ export const AppContent: React.FC = () => {
               <Route path="/placement/interviews" element={<InterviewsPage />} />
               <Route path="/placement/offers" element={<OffersPage />} />
 
-              {/* People & Student Directory */}
+              {/* People & Student Directory (TPO Perspective) */}
               <Route path="/students" element={<StudentsPage />} />
               <Route path="/students/:id" element={<StudentDetailPage />} />
 
-              {/* Insights & Analytics */}
+              {/* Insights & Governance Pages */}
               <Route path="/insights/analytics" element={<OverviewPage onNavigateTab={handleNavigate} />} />
               <Route path="/insights/retention" element={<RenegeRadarPage />} />
               <Route path="/insights/fairness" element={<FairnessPage />} />
               <Route path="/insights/reports" element={<ReportsPage />} />
 
-              {/* Student Persona Scoped Routes */}
-              <Route path="/opportunities" element={<DrivesPage />} />
-              <Route path="/me/applications" element={<ApplicationsPage />} />
+              {/* Dedicated Student Persona Scoped Routes */}
+              <Route path="/opportunities" element={<StudentOpportunitiesPage />} />
+              <Route path="/me/applications" element={<StudentApplicationsPage />} />
               <Route path="/me/academics" element={<AcademicLifecyclePage />} />
-              <Route path="/me/profile" element={<StudentDetailPage />} />
+              <Route path="/me/profile" element={<StudentProfilePage />} />
 
               {/* Faculty Persona Routes */}
               <Route path="/teaching/courses" element={<AcademicLifecyclePage />} />
@@ -236,6 +242,9 @@ export const AppContent: React.FC = () => {
         isOpen={isCopilotOpen}
         onClose={() => setIsCopilotOpen(false)}
       />
+
+      {/* Crisp Toast Notification Container */}
+      <Toaster richColors position="top-right" closeButton />
     </div>
   );
 };

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { PlacementDriveWizard } from './workspaces/PlacementDriveWizard';
 import { api } from '../api';
 import { OverviewData } from '../types';
 import { useTenant } from '../context/TenantContext';
@@ -29,10 +31,12 @@ interface OverviewPageProps {
 }
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => {
+  const navigate = useNavigate();
   const { activeTenant, activeInstitution, activeCampus } = useTenant();
   const [data, setData] = useState<OverviewData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -99,18 +103,18 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
             <Button
               variant="outline"
               size="sm"
-              onClick={() => onNavigateTab?.('architecture')}
-              rightIcon={<ArrowRight size={13} />}
+              onClick={() => navigate('/placement/interviews')}
+              leftIcon={<Zap size={14} className="text-cardinal" />}
             >
-              Hierarchy Graph
+              Superday Solver
             </Button>
             <Button
               variant="primary"
               size="sm"
-              onClick={() => onNavigateTab?.('jobs')}
+              onClick={() => setIsWizardOpen(true)}
               leftIcon={<Briefcase size={14} />}
             >
-              Manage Drives
+              Create Placement Drive
             </Button>
           </div>
         }
@@ -324,6 +328,16 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
           </Card>
         </div>
       </div>
+
+      <PlacementDriveWizard
+        isOpen={isWizardOpen}
+        onClose={() => setIsWizardOpen(false)}
+        onSuccess={(driveData) => {
+          if (driveData?.job_id) {
+            navigate(`/placement/drives/${driveData.job_id}`);
+          }
+        }}
+      />
     </div>
   );
 };

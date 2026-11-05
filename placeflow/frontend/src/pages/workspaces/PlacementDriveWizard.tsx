@@ -25,6 +25,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
+import { toast } from 'sonner';
 
 interface PlacementDriveWizardProps {
   isOpen: boolean;
@@ -183,6 +184,9 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
 
       // Call real backend POST /jobs/
       const res = await api.addJob(jobPayload);
+      toast.success(`Placement drive published for ${displayName}!`, {
+        description: `JNF Ref: ${res.job_id} • Eligible candidates notified.`,
+      });
 
       if (onSuccess) {
         onSuccess({
@@ -193,7 +197,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
       }
       onClose();
     } catch (err: any) {
-      alert(`Error publishing drive: ${err.message || 'Please try again'}`);
+      toast.error(`Error publishing drive: ${err.message || 'Please try again'}`);
     } finally {
       setIsSaving(false);
     }
