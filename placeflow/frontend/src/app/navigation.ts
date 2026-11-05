@@ -115,7 +115,7 @@ export const NAV: Record<Persona, NavSection[]> = {
 
   /* ---------- Student: every page is "mine", never a ledger of everyone ---------- */
   STUDENT: [
-    { items: [{ label: 'Home', path: '/home', icon: LayoutDashboard, status: 'preview' }] },
+    { items: [{ label: 'Home', path: '/home', icon: LayoutDashboard, status: 'live' }] },
     {
       title: 'Career',
       items: [
@@ -123,14 +123,14 @@ export const NAV: Record<Persona, NavSection[]> = {
           label: 'Opportunities',
           path: '/opportunities',
           icon: Target,
-          status: 'planned',
+          status: 'live',
           tabs: ['Eligible', 'Not eligible (why)'],
         },
         {
           label: 'My applications',
           path: '/me/applications',
           icon: FileText,
-          status: 'planned',
+          status: 'live',
           tabs: ['Applications', 'Interviews', 'Offers'],
         },
       ],

@@ -69,6 +69,14 @@ export interface Application {
   student?: Student;
   job?: Job;
   note?: string;
+  student_name?: string;
+  department?: string;
+  cgpa?: number;
+  job_title?: string;
+  company_name?: string;
+  company_id?: string;
+  package_lpa?: number;
+  application_date?: string;
 }
 
 export interface Interview {

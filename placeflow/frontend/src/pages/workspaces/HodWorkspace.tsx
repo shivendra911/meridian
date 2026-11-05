@@ -12,6 +12,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
+import { toast } from 'sonner';
 import { Badge } from '../../components/ui/Badge';
 import { StatCard } from '../../components/ui/StatCard';
 import { Card } from '../../components/ui/Card';
@@ -134,7 +135,7 @@ export const HodWorkspace: React.FC<HodWorkspaceProps> = ({
                   <Button variant="outline" size="xs" onClick={() => onNavigateTab?.('academic')}>
                     Inspect Diff
                   </Button>
-                  <Button variant="primary" size="xs" onClick={() => alert('Approved B.Tech CSE v2026.1!')}>
+                  <Button variant="primary" size="xs" onClick={() => toast.success('Approved curriculum revision B.Tech CSE v2026.1!')}>
                     Approve Version
                   </Button>
                 </div>
@@ -151,7 +152,7 @@ export const HodWorkspace: React.FC<HodWorkspaceProps> = ({
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="primary" size="xs" onClick={() => alert('Delegation Approved!')}>
+                  <Button variant="primary" size="xs" onClick={() => toast.success('Delegation Authority Approved!')}>
                     Confirm Scope
                   </Button>
                 </div>

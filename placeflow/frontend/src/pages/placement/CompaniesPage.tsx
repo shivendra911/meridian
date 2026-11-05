@@ -8,6 +8,7 @@ import { StatCard } from '../../components/ui/StatCard';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
+import { toast } from 'sonner';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { EmptyState } from '../../components/ui/EmptyState';
 
@@ -50,9 +51,10 @@ export const CompaniesPage: React.FC = () => {
       setIsRegisterOpen(false);
       setName('');
       setContactEmail('');
+      toast.success(`Registered corporate partner: ${name}`);
       fetchCompanies();
     } catch (err: any) {
-      alert(`Failed to register corporate partner: ${err.message}`);
+      toast.error(`Failed to register corporate partner: ${err.message}`);
     } finally {
       setIsSaving(false);
     }

@@ -138,7 +138,17 @@ export const Masthead: React.FC<MastheadProps> = ({
               {personaConfig.badgeLabel}
             </div>
             <div className="text-[10px] text-ink-muted leading-tight truncate max-w-[120px]">
-              {activePersona === 'STUDENT' ? 'Rohan Sharma' : 'Officer V. Iyer'}
+              {activePersona === 'STUDENT'
+                ? 'Aarav Sharma'
+                : activePersona === 'FACULTY'
+                ? 'Dr. Radhakrishnan'
+                : activePersona === 'HOD'
+                ? 'Prof. H. S. Murthy'
+                : activePersona === 'MANAGEMENT'
+                ? 'Vice Chancellor K. Roy'
+                : activePersona === 'ADMIN'
+                ? 'Admin S. Sengupta'
+                : 'Officer V. Iyer'}
             </div>
           </div>
         </div>

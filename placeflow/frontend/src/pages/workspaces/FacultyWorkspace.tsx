@@ -15,11 +15,11 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
+import { toast } from 'sonner';
 import { Badge } from '../../components/ui/Badge';
 import { StatCard } from '../../components/ui/StatCard';
 import { Card } from '../../components/ui/Card';
 import { Tabs } from '../../components/ui/Tabs';
-import { toast } from 'sonner';
 
 interface FacultyWorkspaceProps {
   onNavigateTab?: (tabId: string) => void;
@@ -249,7 +249,7 @@ export const FacultyWorkspace: React.FC<FacultyWorkspaceProps> = ({
                 variant="primary"
                 size="xs"
                 rightIcon={<Send size={11} />}
-                onClick={() => alert('CIE Grade proposal submitted to Dean of Academics for Moderation!')}
+                onClick={() => toast.success('CIE Grade proposal submitted to Dean of Academics for Moderation!')}
               >
                 Submit for Moderation
               </Button>

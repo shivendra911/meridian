@@ -26,6 +26,7 @@ import {
   EligibilityExplainerDrawer,
   EligibilityReport,
 } from '../../components/recruitment/EligibilityExplainerDrawer';
+import { resolveCompanyName } from '../../utils/formatters';
 
 export const DriveDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -96,10 +97,10 @@ export const DriveDetailPage: React.FC = () => {
   const handleOpenEligibilityExplainer = (app?: Application) => {
     const report: EligibilityReport = {
       studentId: app?.student_id || 'STU001',
-      studentName: app?.student?.name || 'Rohan Sharma',
-      department: app?.student?.department || 'Computer Science & Engineering',
-      batch: 'Batch 2027',
-      companyName: job.company_id,
+      studentName: app?.student_name || app?.student?.name || (app?.student_id === 'STU001' ? 'Aarav Sharma' : app?.student_id || 'Aarav Sharma'),
+      department: app?.department || app?.student?.department || 'Computer Science & Engineering',
+      batch: 'Batch 2026',
+      companyName: resolveCompanyName(job.company_id),
       jobTitle: job.title,
       overallStatus: 'ELIGIBLE',
       policyVersion: 'Institutional Placement Charter v3',
@@ -149,7 +150,7 @@ export const DriveDetailPage: React.FC = () => {
 
       <PageHeader
         title={`${job.title}`}
-        description={`${job.company_id} • JNF Reference: ${job.job_id} • Tier: ${job.tier}`}
+        description={`${resolveCompanyName(job.company_id)} • JNF Reference: ${job.job_id} • Tier: ${job.tier}`}
         badge={<Badge variant="success" size="xs">Status: {job.status}</Badge>}
         actions={
           <div className="flex items-center gap-2">
@@ -214,7 +215,7 @@ export const DriveDetailPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <span className="text-ink-muted block">Recruiting Company</span>
-                  <span className="font-semibold text-ink">{job.company_id}</span>
+                  <span className="font-semibold text-ink">{resolveCompanyName(job.company_id)}</span>
                 </div>
                 <div>
                   <span className="text-ink-muted block">Tier Category</span>
@@ -326,11 +327,11 @@ export const DriveDetailPage: React.FC = () => {
                         onClick={() => navigate(`/students/${app.student_id}`)}
                         className="text-left hover:text-brand hover:underline font-semibold cursor-pointer"
                       >
-                        {app.student?.name || app.student_id} <span className="font-normal text-ink-muted font-mono text-[11px]">({app.student_id})</span>
+                        {app.student_name || app.student?.name || (app.student_id === 'STU001' ? 'Aarav Sharma' : app.student_id)} <span className="font-normal text-ink-muted font-mono text-[11px]">({app.student_id})</span>
                       </button>
                     </td>
                     <td className="py-2 px-4 text-ink-muted font-mono tabular-nums">
-                      {app.applied_at ? new Date(app.applied_at).toLocaleDateString([], { month: 'short', day: 'numeric' }) : 'Active'}
+                      {app.application_date || app.applied_at ? new Date(app.application_date || app.applied_at).toLocaleDateString([], { month: 'short', day: 'numeric' }) : 'Active'}
                     </td>
                     <td className="py-2 px-4">
                       <select

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../api';
 import { Student, Application, Interview } from '../../types';
+import { normalizeApplication, resolveCompanyName } from '../../utils/formatters';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { StatCard } from '../../components/ui/StatCard';
 import { Card } from '../../components/ui/Card';
@@ -132,36 +133,37 @@ export const StudentApplicationsPage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {applications.map((app) => {
-            const currentStage = getStageIndex(app.status);
-            const isRejected = app.status === 'Rejected';
-            const matchingInterview = interviews.find((i) => i.application_id === app.application_id);
+            const norm = normalizeApplication(app);
+            const currentStage = getStageIndex(norm.status);
+            const isRejected = norm.status === 'Rejected';
+            const matchingInterview = interviews.find((i) => i.application_id === norm.id || i.application_id === app.application_id);
 
             return (
-              <Card key={app.application_id} className="p-6">
+              <Card key={norm.id || app.application_id} className="p-6">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-line">
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs font-semibold text-brand">
-                        {app.application_id}
+                        {norm.id || app.application_id}
                       </span>
                       <span className="text-ink-muted text-xs">&bull;</span>
                       <span className="text-xs text-ink-muted">
-                        Applied {app.applied_at ? new Date(app.applied_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
+                        Applied {norm.appliedDate}
                       </span>
                     </div>
                     <h3 className="text-base font-semibold text-ink mt-1">
-                      {app.job?.title || 'Software Engineering Role'}
+                      {norm.jobTitle}
                     </h3>
                     <p className="text-xs text-ink-muted mt-0.5">
-                      Recruiting Partner: <strong className="text-ink">{app.job?.company_id || 'Corporate Recruiter'}</strong>
+                      Recruiting Partner: <strong className="text-ink">{norm.companyName}</strong>
                     </p>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    {app.job?.package_lpa && (
+                    {norm.packageLpa && (
                       <div className="text-right">
                         <span className="text-base font-bold text-success font-mono tabular-nums block">
-                          ₹{app.job.package_lpa} LPA
+                          ₹{norm.packageLpa} LPA
                         </span>
                         <span className="text-[10px] text-ink-muted">Compensation</span>
                       </div>

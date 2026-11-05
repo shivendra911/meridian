@@ -28,6 +28,7 @@ import { Tabs } from '../../components/ui/Tabs';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { resolveCompanyName } from '../../utils/formatters';
 
 interface StudentWorkspaceProps {
   onNavigateTab?: (tabId: string) => void;
@@ -491,7 +492,25 @@ export const StudentWorkspace: React.FC<StudentWorkspaceProps> = ({
               {activeSubTab === 'career' && (
                 <Card
                   title="Active Placement Drives & Applications"
-                  subtitle="Campus recruitment opportunities for which student meets all criteria"
+                  subtitle="Campus recruitment opportunities and candidate stage tracking"
+                  actionSlot={
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="xs"
+                        onClick={() => navigate('/opportunities')}
+                      >
+                        Explore Open Drives
+                      </Button>
+                      <Button
+                        variant="primary"
+                        size="xs"
+                        onClick={() => navigate('/me/applications')}
+                      >
+                        View Full Tracker
+                      </Button>
+                    </div>
+                  }
                 >
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs border-collapse">
@@ -500,53 +519,60 @@ export const StudentWorkspace: React.FC<StudentWorkspaceProps> = ({
                           <th className="py-2.5 px-3 font-medium">Company & Role</th>
                           <th className="py-2.5 px-3 font-medium">Package</th>
                           <th className="py-2.5 px-3 font-medium">Criteria Match</th>
-                          <th className="py-2.5 px-3 font-medium">Interview / Test</th>
+                          <th className="py-2.5 px-3 font-medium">Date</th>
                           <th className="py-2.5 px-3 font-medium text-right">Status</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-line">
-                        <tr className="h-12 hover:bg-canvas/50 transition-colors">
-                          <td className="py-2 px-3">
-                            <div className="font-semibold text-ink">Google India</div>
-                            <div className="text-[11px] text-ink-muted">Software Development Engineer</div>
-                          </td>
-                          <td className="py-2 px-3 font-semibold text-ink tabular-nums">₹32.5 LPA</td>
-                          <td className="py-2 px-3">
-                            <span className="text-success font-medium">100% (CGPA 8.45 &gt;= 7.50)</span>
-                          </td>
-                          <td className="py-2 px-3 text-ink-muted">Tomorrow, 10:00 AM</td>
-                          <td className="py-2 px-3 text-right">
-                            <Badge variant="success" size="xs">Interview Scheduled</Badge>
-                          </td>
-                        </tr>
-                        <tr className="h-12 hover:bg-canvas/50 transition-colors">
-                          <td className="py-2 px-3">
-                            <div className="font-semibold text-ink">Microsoft</div>
-                            <div className="text-[11px] text-ink-muted">Cloud &amp; Infrastructure Engineer</div>
-                          </td>
-                          <td className="py-2 px-3 font-semibold text-ink tabular-nums">₹24.0 LPA</td>
-                          <td className="py-2 px-3">
-                            <span className="text-success font-medium">100% (CGPA 8.45 &gt;= 7.00)</span>
-                          </td>
-                          <td className="py-2 px-3 text-ink-muted">Nov 18, 02:00 PM</td>
-                          <td className="py-2 px-3 text-right">
-                            <Badge variant="info" size="xs">Shortlisted</Badge>
-                          </td>
-                        </tr>
-                        <tr className="h-12 hover:bg-canvas/50 transition-colors">
-                          <td className="py-2 px-3">
-                            <div className="font-semibold text-ink">Amazon</div>
-                            <div className="text-[11px] text-ink-muted">Systems Development Engineer</div>
-                          </td>
-                          <td className="py-2 px-3 font-semibold text-ink tabular-nums">₹28.0 LPA</td>
-                          <td className="py-2 px-3">
-                            <span className="text-success font-medium">100% (CGPA 8.45 &gt;= 7.00)</span>
-                          </td>
-                          <td className="py-2 px-3 text-ink-muted">Online Assessment Cleared</td>
-                          <td className="py-2 px-3 text-right">
-                            <Badge variant="neutral" size="xs">Application Submitted</Badge>
-                          </td>
-                        </tr>
+                        {studentData?.applications && studentData.applications.length > 0 ? (
+                          studentData.applications.map((app: any) => {
+                            const comp = resolveCompanyName(app.company_name || app.company_id || app.job?.company_id);
+                            const role = app.job_title || app.job?.title || 'Engineering Role';
+                            const pkg = app.package_lpa || app.job?.package_lpa;
+                            return (
+                              <tr key={app.application_id} className="h-12 hover:bg-canvas/50 transition-colors">
+                                <td className="py-2 px-3">
+                                  <div className="font-semibold text-ink">{comp}</div>
+                                  <div className="text-[11px] text-ink-muted">{role}</div>
+                                </td>
+                                <td className="py-2 px-3 font-semibold text-ink tabular-nums">
+                                  {pkg ? `₹${pkg} LPA` : '—'}
+                                </td>
+                                <td className="py-2 px-3">
+                                  <span className="text-success font-medium">100% Eligible</span>
+                                </td>
+                                <td className="py-2 px-3 text-ink-muted">
+                                  {app.application_date || (app.applied_at ? new Date(app.applied_at).toLocaleDateString([], { month: 'short', day: 'numeric' }) : 'Active')}
+                                </td>
+                                <td className="py-2 px-3 text-right">
+                                  <Badge
+                                    variant={
+                                      app.status === 'Selected'
+                                        ? 'success'
+                                        : app.status === 'Interviewing'
+                                        ? 'info'
+                                        : app.status === 'Rejected'
+                                        ? 'danger'
+                                        : 'institutional'
+                                    }
+                                    size="xs"
+                                  >
+                                    {app.status}
+                                  </Badge>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr className="h-12">
+                            <td colSpan={5} className="py-4 text-center text-ink-muted">
+                              No applications submitted yet.{' '}
+                              <button onClick={() => navigate('/opportunities')} className="text-brand font-medium hover:underline">
+                                Browse open placement drives
+                              </button>
+                            </td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>

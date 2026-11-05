@@ -24,7 +24,7 @@ export const PERSONA_CONFIGS: Record<UserPersona, PersonaConfig> = {
     title: 'Student Workbench',
     badgeLabel: 'Student',
     roleDescription: 'B.Tech Computer Science & Engineering',
-    avatarInitials: 'ST',
+    avatarInitials: 'AS',
   },
   FACULTY: {
     id: 'FACULTY',

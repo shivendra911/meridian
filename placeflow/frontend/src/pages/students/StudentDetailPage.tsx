@@ -13,6 +13,7 @@ import { EmptyState } from '../../components/ui/EmptyState';
 import { VtiBadge } from '../../components/common/VtiBadge';
 import { WhatIfPage } from '../WhatIfPage';
 import { ConsentPage } from '../ConsentPage';
+import { resolveCompanyName } from '../../utils/formatters';
 import {
   User,
   GraduationCap,
@@ -186,10 +187,10 @@ export const StudentDetailPage: React.FC = () => {
                         {app.application_id}
                       </td>
                       <td className="px-4 py-3.5 font-medium text-ink">
-                        {app.job?.title || app.job_id}
+                        {app.job_title || app.job?.title || app.job_id}
                       </td>
                       <td className="px-4 py-3.5 font-mono text-ink">
-                        {app.job?.package_lpa ? `₹${app.job.package_lpa} LPA` : '—'}
+                        {app.package_lpa || app.job?.package_lpa ? `₹${app.package_lpa || app.job?.package_lpa} LPA` : '—'}
                       </td>
                       <td className="px-4 py-3.5">
                         <Badge
@@ -237,7 +238,7 @@ export const StudentDetailPage: React.FC = () => {
                       <h4 className="font-semibold text-ink text-sm">{job.title}</h4>
                       <Badge variant="institutional" size="xs">{job.tier}</Badge>
                     </div>
-                    <p className="text-xs text-ink-muted mt-1">Company: {job.company_id}</p>
+                    <p className="text-xs text-ink-muted mt-1">Company: {resolveCompanyName(job.company_id)}</p>
                     <div className="mt-3 flex items-center gap-3 text-xs text-ink">
                       <span className="font-mono font-semibold text-success">₹{job.package_lpa} LPA</span>
                       <span className="text-ink-muted">•</span>

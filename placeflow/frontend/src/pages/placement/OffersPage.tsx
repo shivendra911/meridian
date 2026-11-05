@@ -10,6 +10,8 @@ import { Tabs } from '../../components/ui/Tabs';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { RenegeRadarPage } from '../RenegeRadarPage';
+import { resolveCompanyName } from '../../utils/formatters';
+import { useNavigate } from 'react-router-dom';
 import {
   Award,
   TrendingUp,
@@ -23,6 +25,7 @@ import {
 } from 'lucide-react';
 
 export const OffersPage: React.FC = () => {
+  const navigate = useNavigate();
   const [placements, setPlacements] = useState<Placement[]>([]);
   const [radarData, setRadarData] = useState<{
     total_placed_monitored: number;
@@ -59,9 +62,11 @@ export const OffersPage: React.FC = () => {
   const criticalRisk = radarData?.critical_count || 0;
 
   const filteredPlacements = placements.filter((p) => {
+    const compName = resolveCompanyName(p.company_id);
     const matchesSearch =
       p.student_id?.toLowerCase().includes(search.toLowerCase()) ||
       p.company_id?.toLowerCase().includes(search.toLowerCase()) ||
+      compName.toLowerCase().includes(search.toLowerCase()) ||
       p.placement_id?.toLowerCase().includes(search.toLowerCase());
     const matchesTier = tierFilter === 'ALL' || p.tier === tierFilter;
     return matchesSearch && matchesTier;
@@ -202,13 +207,13 @@ export const OffersPage: React.FC = () => {
                             <div className="h-6 w-6 rounded-full bg-line text-ink flex items-center justify-center font-mono text-[10px]">
                               {p.student_id?.slice(-2)}
                             </div>
-                            <span className="font-mono text-xs font-semibold">{p.student_id}</span>
+                            <button onClick={() => navigate('/students/' + p.student_id)} className="font-mono text-xs font-semibold text-brand hover:underline cursor-pointer">{p.student_id}</button>
                           </div>
                         </td>
                         <td className="px-4 py-3.5 text-ink">
                           <div className="flex items-center gap-1.5 font-medium">
                             <Building2 className="h-3.5 w-3.5 text-ink-muted" />
-                            <span>{p.company_id}</span>
+                            <span>{resolveCompanyName(p.company_id)}</span>
                           </div>
                         </td>
                         <td className="px-4 py-3.5 font-mono font-semibold text-success tabular-nums">

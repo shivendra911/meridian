@@ -29,6 +29,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { resolveCompanyName } from '../../utils/formatters';
 
 export const StudentOpportunitiesPage: React.FC = () => {
   const [student, setStudent] = useState<Student | null>(null);
@@ -69,7 +70,7 @@ export const StudentOpportunitiesPage: React.FC = () => {
     try {
       await api.applyForJob(student.student_id, job.job_id);
       setAppliedJobIds((prev) => new Set([...prev, job.job_id]));
-      toast.success(`Application submitted for ${job.title} at ${job.company_id}!`, {
+      toast.success(`Application submitted for ${job.title} at ${resolveCompanyName(job.company_id)}!`, {
         description: 'Your profile has been forwarded to the campus recruiter.',
       });
     } catch (err: any) {
@@ -91,7 +92,7 @@ export const StudentOpportunitiesPage: React.FC = () => {
       studentName: student?.name || 'Aarav Sharma',
       department: student?.department || 'Computer Science & Engineering',
       batch: 'Class of 2026',
-      companyName: job.company_id,
+      companyName: resolveCompanyName(job.company_id),
       jobTitle: job.title,
       overallStatus: isEligible ? 'ELIGIBLE' : 'NOT_ELIGIBLE',
       policyVersion: 'Autonomous Placement Charter v3.2',
@@ -129,9 +130,11 @@ export const StudentOpportunitiesPage: React.FC = () => {
 
   const displayList = activeTab === 'eligible' ? eligibleJobs : allJobs;
   const filteredJobs = displayList.filter((j) => {
+    const compName = resolveCompanyName(j.company_id);
     const matchesSearch =
       j.title.toLowerCase().includes(search.toLowerCase()) ||
-      j.company_id.toLowerCase().includes(search.toLowerCase());
+      j.company_id.toLowerCase().includes(search.toLowerCase()) ||
+      compName.toLowerCase().includes(search.toLowerCase());
     const matchesTier = tierFilter === 'ALL' || j.tier === tierFilter;
     return matchesSearch && matchesTier;
   });
@@ -259,8 +262,8 @@ export const StudentOpportunitiesPage: React.FC = () => {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-brand font-mono">
-                          {job.company_id}
+                        <span className="text-xs font-semibold text-brand font-medium">
+                          {resolveCompanyName(job.company_id)}
                         </span>
                         <Badge
                           variant={

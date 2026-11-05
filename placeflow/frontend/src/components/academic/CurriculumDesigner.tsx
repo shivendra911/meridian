@@ -19,6 +19,7 @@ import {
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { toast } from 'sonner';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
 
 interface CourseItem {
@@ -174,7 +175,7 @@ export const CurriculumDesigner: React.FC = () => {
           <Button
             variant="primary"
             size="sm"
-            onClick={() => alert('Gazette version B.Tech CSE v2026.1 published successfully!')}
+            onClick={() => toast.success('Gazette version B.Tech CSE v2026.1 published successfully!')}
             leftIcon={<FileCheck2 size={13} />}
           >
             Publish Gazette Version
@@ -313,7 +314,7 @@ export const CurriculumDesigner: React.FC = () => {
                 variant="outline"
                 size="xs"
                 onClick={() =>
-                  alert('Add Course to Term: Opens institutional course catalogue modal.')
+                  toast.info('Add Course to Term: Institutional course catalogue modal.')
                 }
                 leftIcon={<Plus size={12} />}
               >
@@ -459,7 +460,7 @@ export const CurriculumDesigner: React.FC = () => {
                 size="sm"
                 onClick={() => {
                   setIsDrawerOpen(false);
-                  alert('Gazetted version v2026.1 published!');
+                  toast.success('Gazetted version v2026.1 published!');
                 }}
               >
                 Approve &amp; Gazette v2026.1

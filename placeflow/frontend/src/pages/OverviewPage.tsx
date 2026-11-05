@@ -228,7 +228,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
-                onClick={() => onNavigateTab?.('superday')}
+                onClick={() => { if (onNavigateTab) onNavigateTab('superday'); else navigate('/placement/interviews'); }}
                 className="p-3 rounded-lg border border-line bg-surface hover:bg-canvas text-left transition-colors duration-150 cursor-pointer"
               >
                 <div className="flex items-center justify-between text-xs font-semibold text-ink">
@@ -241,7 +241,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
               </button>
 
               <button
-                onClick={() => onNavigateTab?.('renege')}
+                onClick={() => { if (onNavigateTab) onNavigateTab('renege'); else navigate('/insights/retention'); }}
                 className="p-3 rounded-lg border border-line bg-surface hover:bg-canvas text-left transition-colors duration-150 cursor-pointer"
               >
                 <div className="flex items-center justify-between text-xs font-semibold text-ink">
