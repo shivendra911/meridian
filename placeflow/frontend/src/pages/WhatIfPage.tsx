@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
+import { toast } from 'sonner';
 import { WhatIfResult } from '../types';
 import { Sliders, Activity, AlertCircle, ArrowLeft, CheckCircle2, TrendingUp } from 'lucide-react';
 
@@ -35,6 +36,7 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
         if (res.simulated) {
           setTargetCgpa(res.simulated.cgpa);
           setTargetBacklogs(res.simulated.backlogs);
+          toast.success(`Simulation updated: Expected package ₹${res.simulated.expected_package_lpa} LPA`);
         }
       })
       .catch((err) => {

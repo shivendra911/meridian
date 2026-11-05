@@ -116,10 +116,13 @@ export const StudentWorkspace: React.FC<StudentWorkspaceProps> = ({
   ];
 
   const handleToggleCourse = (code: string) => {
-    if (registeredCourses.includes(code)) {
+    const isRemoving = registeredCourses.includes(code);
+    if (isRemoving) {
       setRegisteredCourses(registeredCourses.filter((c) => c !== code));
+      toast.info(`Course ${code} removed from registration basket.`);
     } else {
       setRegisteredCourses([...registeredCourses, code]);
+      toast.success(`Course ${code} added to registration basket.`);
     }
     setRegistrationSubmitted(false);
   };
@@ -345,7 +348,12 @@ export const StudentWorkspace: React.FC<StudentWorkspaceProps> = ({
                         <Button
                           variant="primary"
                           size="sm"
-                          onClick={() => setRegistrationSubmitted(true)}
+                          onClick={() => {
+                            setRegistrationSubmitted(true);
+                            toast.success('Course basket submitted!', {
+                              description: `${totalRegisteredCredits.toFixed(1)} credits reserved for Semester 7.`,
+                            });
+                          }}
                           disabled={totalRegisteredCredits < 16.0}
                         >
                           Submit Course Basket

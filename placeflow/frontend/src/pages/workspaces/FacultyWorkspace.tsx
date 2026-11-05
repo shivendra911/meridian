@@ -19,6 +19,7 @@ import { Badge } from '../../components/ui/Badge';
 import { StatCard } from '../../components/ui/StatCard';
 import { Card } from '../../components/ui/Card';
 import { Tabs } from '../../components/ui/Tabs';
+import { toast } from 'sonner';
 
 interface FacultyWorkspaceProps {
   onNavigateTab?: (tabId: string) => void;
@@ -93,7 +94,7 @@ export const FacultyWorkspace: React.FC<FacultyWorkspaceProps> = ({
           <Button
             variant="primary"
             size="sm"
-            onClick={() => alert('Attendance & Grade records synchronized with CAMP-03 Academic Record Engine!')}
+            onClick={() => toast.success('Attendance & Grade records synchronized with CAMP-03 Academic Record Engine!')}
             leftIcon={<Save size={13} />}
           >
             Save Session Records

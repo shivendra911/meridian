@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
+import { toast } from 'sonner';
 import { SuperdayConflict, Interview } from '../types';
 import { Zap, AlertTriangle, CheckCircle, Activity, Calendar } from 'lucide-react';
 
@@ -39,6 +40,7 @@ export const SuperdayPage: React.FC = () => {
       .then((res) => {
         setResolving(false);
         setSuccessMsg(res.message);
+        toast.success(res.message || 'Superday interview conflicts resolved!');
         loadData();
       })
       .catch((err) => {

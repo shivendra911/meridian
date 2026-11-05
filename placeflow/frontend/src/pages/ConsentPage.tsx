@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
+import { toast } from 'sonner';
 import { ConsentRecord } from '../types';
 import { Shield, CheckCircle, AlertCircle, Activity, XCircle } from 'lucide-react';
 
@@ -46,6 +47,7 @@ export const ConsentPage: React.FC<ConsentPageProps> = ({ initialStudentId = 'ST
       .recordConsent(studentId, purpose)
       .then(() => {
         setActionMsg({ type: 'success', text: `Explicit consent granted for ${purpose}.` });
+        toast.success(`Explicit consent granted for ${purpose}`);
         loadConsents(studentId);
       })
       .catch((err) => setActionMsg({ type: 'error', text: err.message }));
@@ -66,6 +68,7 @@ export const ConsentPage: React.FC<ConsentPageProps> = ({ initialStudentId = 'ST
           type: 'success',
           text: `Consent withdrawn for ${purpose}. ML opt-out active.`,
         });
+        toast.info(`Consent withdrawn for ${purpose}. ML opt-out active.`);
         loadConsents(studentId);
       })
       .catch((err) => setActionMsg({ type: 'error', text: err.message }));

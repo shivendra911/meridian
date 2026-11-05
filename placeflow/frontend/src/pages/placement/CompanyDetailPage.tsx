@@ -10,6 +10,8 @@ import { Badge } from '../../components/ui/Badge';
 import { Tabs } from '../../components/ui/Tabs';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { EmptyState } from '../../components/ui/EmptyState';
+import { PlacementDriveWizard } from '../workspaces/PlacementDriveWizard';
+import { Sparkles } from 'lucide-react';
 
 export const CompanyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +20,7 @@ export const CompanyDetailPage: React.FC = () => {
   const [drives, setDrives] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'drives' | 'contacts' | 'history'>('overview');
+  const [isWizardOpen, setIsWizardOpen] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -69,14 +72,24 @@ export const CompanyDetailPage: React.FC = () => {
         description={`Company ID: ${company.company_id} • Sector: ${company.industry} • Office: ${company.location}`}
         badge={<Badge variant="success" size="xs">Active Partner</Badge>}
         actions={
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/placement/drives')}
-            leftIcon={<Briefcase size={14} />}
-          >
-            View Open Drives ({drives.length})
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/placement/drives')}
+              leftIcon={<Briefcase size={14} />}
+            >
+              All Drives ({drives.length})
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setIsWizardOpen(true)}
+              leftIcon={<Sparkles size={14} />}
+            >
+              Create Drive
+            </Button>
+          </div>
         }
       />
 
@@ -193,6 +206,16 @@ export const CompanyDetailPage: React.FC = () => {
           </div>
         </Card>
       )}
+
+      <PlacementDriveWizard
+        isOpen={isWizardOpen}
+        onClose={() => setIsWizardOpen(false)}
+        onSuccess={(driveData) => {
+          if (driveData?.job_id) {
+            navigate(`/placement/drives/${driveData.job_id}`);
+          }
+        }}
+      />
     </div>
   );
 };

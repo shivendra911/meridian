@@ -18,6 +18,7 @@ import {
   Search,
 } from 'lucide-react';
 import { api } from '../api';
+import { toast } from 'sonner';
 import { useTenant } from '../context/TenantContext';
 import { RoleAssignmentWizard } from '../components/iam/RoleAssignmentWizard';
 
@@ -97,13 +98,13 @@ export const IdentityAccessPage: React.FC = () => {
       setNewApaar('');
       loadData();
     } catch (err: any) {
-      alert(`Error creating identity: ${err.message}`);
+      toast.error(`Error creating identity: ${err.message}`);
     }
   };
 
   const handleSimulateAuth = async () => {
     if (!simMembershipId) {
-      alert('Please enter or select a membership ID to test authorization.');
+      toast.warning('Please enter or select a membership ID to test authorization.');
       return;
     }
     setSimLoading(true);

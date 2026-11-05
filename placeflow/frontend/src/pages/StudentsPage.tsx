@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { AdvancedDataGrid, ColumnDef } from '../components/ui/AdvancedDataGrid';
 import { Button } from '../components/ui/Button';
+import { toast } from 'sonner';
 
 interface StudentsPageProps {
   onSelectStudent?: (studentId: string) => void;
@@ -316,13 +317,13 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
             {
               label: 'Export Selected to CSV',
               action: (selected) =>
-                alert(`Exporting ${selected.length} candidate dossiers as signed CSV.`),
+                toast.success(`Exporting ${selected.length} candidate dossiers as signed CSV`),
               variant: 'outline',
             },
             {
               label: 'Request DPDP Verification',
               action: (selected) =>
-                alert(`Triggered DigiLocker APAAR consent verification for ${selected.length} students.`),
+                toast.info(`Triggered DigiLocker APAAR consent verification for ${selected.length} students`),
               variant: 'cardinal',
             },
           ]}
