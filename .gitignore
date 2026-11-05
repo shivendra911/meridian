@@ -41,4 +41,8 @@ Desktop.ini
 *.log
 *.sqlite3
 mongo-data/
+backups/
+exports/
+ml/models/
+.git_placeflow_backup/
 
