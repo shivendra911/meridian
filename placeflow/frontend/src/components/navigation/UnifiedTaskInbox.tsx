@@ -105,13 +105,13 @@ export const UnifiedTaskInbox: React.FC<UnifiedTaskInboxProps> = ({
           {/* Header */}
           <div className="p-4 bg-[#090D16] text-white flex items-center justify-between border-b border-slate-800">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded bg-[#8C1515] text-white flex items-center justify-center">
+              <div className="w-8 h-8 rounded bg-cardinal text-white flex items-center justify-center">
                 <Inbox size={16} />
               </div>
               <div>
                 <div className="font-serif font-bold text-sm flex items-center gap-2">
                   <span>My Work &bull; Unified Inbox</span>
-                  <span className="text-[10px] bg-red-100 text-[#8C1515] font-mono font-bold px-1.5 py-0.2 rounded">
+                  <span className="text-[10px] bg-red-100 text-cardinal font-mono font-bold px-1.5 py-0.2 rounded">
                     {tasks.length} Actionable
                   </span>
                 </div>

@@ -231,7 +231,7 @@ export function AdvancedDataGrid<T extends Record<string, any>>({
               setCurrentPage(1);
             }}
             placeholder={searchPlaceholder}
-            className="w-full pl-9 pr-8 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#8C1515]/20 focus:border-[#8C1515] transition-all"
+            className="w-full pl-9 pr-8 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-cardinal/20 focus:border-cardinal transition-all"
           />
           {searchQuery && (
             <button
@@ -323,7 +323,7 @@ export function AdvancedDataGrid<T extends Record<string, any>>({
                   className="text-slate-400 hover:text-slate-700"
                 >
                   {selectedIds.length > 0 && selectedIds.length === paginatedData.length ? (
-                    <CheckSquare size={14} className="text-[#8C1515]" />
+                    <CheckSquare size={14} className="text-cardinal" />
                   ) : (
                     <Square size={14} />
                   )}
@@ -352,7 +352,7 @@ export function AdvancedDataGrid<T extends Record<string, any>>({
                   >
                     <span>{col.header}</span>
                     {sortKey === col.key && (
-                      <span className="text-[#8C1515]">
+                      <span className="text-cardinal">
                         {sortDirection === 'asc' ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                       </span>
                     )}
@@ -390,7 +390,7 @@ export function AdvancedDataGrid<T extends Record<string, any>>({
                     >
                       <button type="button" className="text-slate-400 hover:text-slate-700">
                         {isSelected ? (
-                          <CheckSquare size={14} className="text-[#8C1515]" />
+                          <CheckSquare size={14} className="text-cardinal" />
                         ) : (
                           <Square size={14} />
                         )}

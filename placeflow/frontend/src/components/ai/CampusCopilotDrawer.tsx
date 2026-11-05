@@ -103,7 +103,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
       {/* Drawer Masthead */}
       <div className="p-4 bg-[#090D16] text-white flex items-center justify-between border-b border-slate-800">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded bg-[#8C1515] flex items-center justify-center text-white">
+          <div className="w-8 h-8 rounded bg-cardinal flex items-center justify-center text-white">
             <Sparkles size={16} />
           </div>
           <div>
@@ -127,7 +127,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
       </div>
 
       {/* Safety & Governance Banner */}
-      <div className="bg-[#0B1B3D] text-slate-300 px-4 py-2 text-[11px] flex items-center justify-between border-b border-slate-800">
+      <div className="bg-navy-900 text-slate-300 px-4 py-2 text-[11px] flex items-center justify-between border-b border-slate-800">
         <div className="flex items-center gap-2">
           <Shield size={12} className="text-emerald-400" />
           <span>PIP Protection: Strict Active</span>
@@ -144,7 +144,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
           onClick={() => setActiveMode('rag')}
           className={`flex-1 py-2.5 text-center transition-colors border-b-2 flex items-center justify-center gap-1.5 ${
             activeMode === 'rag'
-              ? 'border-[#8C1515] text-[#8C1515] bg-white'
+              ? 'border-cardinal text-cardinal bg-white'
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
@@ -155,7 +155,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
           onClick={() => setActiveMode('agents')}
           className={`flex-1 py-2.5 text-center transition-colors border-b-2 flex items-center justify-center gap-1.5 ${
             activeMode === 'agents'
-              ? 'border-[#8C1515] text-[#8C1515] bg-white'
+              ? 'border-cardinal text-cardinal bg-white'
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
@@ -166,7 +166,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
           onClick={() => setActiveMode('traces')}
           className={`flex-1 py-2.5 text-center transition-colors border-b-2 flex items-center justify-center gap-1.5 ${
             activeMode === 'traces'
-              ? 'border-[#8C1515] text-[#8C1515] bg-white'
+              ? 'border-cardinal text-cardinal bg-white'
               : 'border-transparent text-slate-600 hover:text-slate-900'
           }`}
         >
@@ -199,7 +199,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
                   onChange={(e) => setQueryInput(e.target.value)}
                   placeholder="e.g. Can a student with a Dream offer apply for Super Dream roles?"
                   rows={3}
-                  className="w-full text-xs p-3 border border-slate-300 rounded focus:border-[#8C1515] focus:outline-none font-mono"
+                  className="w-full text-xs p-3 border border-slate-300 rounded focus:border-cardinal focus:outline-none font-mono"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -226,7 +226,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-4 py-1.5 bg-[#8C1515] hover:bg-[#701010] text-white text-xs font-semibold rounded flex items-center gap-1.5 shadow-sm transition-colors"
+                  className="px-4 py-1.5 bg-cardinal hover:bg-cardinal-dark text-white text-xs font-semibold rounded flex items-center gap-1.5 shadow-sm transition-colors"
                 >
                   {loading ? <Activity size={13} className="animate-spin" /> : <Send size={13} />}
                   <span>Ask Copilot</span>
@@ -282,7 +282,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
                 onClick={() => handleRunAgent('JNFIntelligenceAgent')}
                 className={`p-2.5 text-left rounded border text-xs transition-colors ${
                   selectedAgent === 'JNFIntelligenceAgent'
-                    ? 'border-[#8C1515] bg-red-50/50'
+                    ? 'border-cardinal bg-red-50/50'
                     : 'border-slate-200 bg-white hover:bg-slate-50'
                 }`}
               >
@@ -294,7 +294,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
                 onClick={() => handleRunAgent('SuperdayClashSolverAgent')}
                 className={`p-2.5 text-left rounded border text-xs transition-colors ${
                   selectedAgent === 'SuperdayClashSolverAgent'
-                    ? 'border-[#8C1515] bg-red-50/50'
+                    ? 'border-cardinal bg-red-50/50'
                     : 'border-slate-200 bg-white hover:bg-slate-50'
                 }`}
               >
@@ -306,7 +306,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
                 onClick={() => handleRunAgent('AcademicAdvisorAgent')}
                 className={`p-2.5 text-left rounded border text-xs transition-colors ${
                   selectedAgent === 'AcademicAdvisorAgent'
-                    ? 'border-[#8C1515] bg-red-50/50'
+                    ? 'border-cardinal bg-red-50/50'
                     : 'border-slate-200 bg-white hover:bg-slate-50'
                 }`}
               >
@@ -318,7 +318,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
                 onClick={() => handleRunAgent('NIRFStatutoryAuditAgent')}
                 className={`p-2.5 text-left rounded border text-xs transition-colors ${
                   selectedAgent === 'NIRFStatutoryAuditAgent'
-                    ? 'border-[#8C1515] bg-red-50/50'
+                    ? 'border-cardinal bg-red-50/50'
                     : 'border-slate-200 bg-white hover:bg-slate-50'
                 }`}
               >
@@ -329,7 +329,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
 
             {loading && (
               <div className="p-8 text-center text-slate-500 text-xs flex items-center justify-center gap-2">
-                <Activity size={16} className="animate-spin text-[#8C1515]" />
+                <Activity size={16} className="animate-spin text-cardinal" />
                 <span>Agent executing verified sandbox tools...</span>
               </div>
             )}

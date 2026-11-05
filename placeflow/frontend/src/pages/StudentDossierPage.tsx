@@ -76,7 +76,7 @@ export const StudentDossierPage: React.FC<StudentDossierPageProps> = ({
       {/* Back Button */}
       <button
         onClick={onBack}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-[#8C1515] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-cardinal transition-colors"
       >
         <ArrowLeft size={13} />
         <span>Back to Candidate Directory</span>
@@ -85,7 +85,7 @@ export const StudentDossierPage: React.FC<StudentDossierPageProps> = ({
       {/* Candidate Dossier Header Banner */}
       <div className="bg-white border border-slate-200 rounded p-6 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-[#0B1B3D] text-white flex items-center justify-center font-bold font-serif text-xl border-2 border-slate-200 shadow-xs">
+          <div className="w-14 h-14 rounded-full bg-navy-900 text-white flex items-center justify-center font-bold font-serif text-xl border-2 border-slate-200 shadow-xs">
             {student.name.slice(0, 2).toUpperCase()}
           </div>
           <div>
@@ -94,7 +94,7 @@ export const StudentDossierPage: React.FC<StudentDossierPageProps> = ({
             </div>
             <h1 className="text-2xl font-bold font-serif text-slate-900 m-0">{student.name}</h1>
             <div className="flex items-center gap-3 text-xs text-slate-600 mt-1 font-mono">
-              <span className="font-bold text-[#0B1B3D]">{student.student_id}</span>
+              <span className="font-bold text-navy-900">{student.student_id}</span>
               <span>&bull;</span>
               <span>{student.department} (Class of {student.year})</span>
               <span>&bull;</span>
@@ -115,7 +115,7 @@ export const StudentDossierPage: React.FC<StudentDossierPageProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onOpenWhatIf(student.student_id)}
-              className="px-3 py-1.5 bg-[#8C1515] text-white text-xs font-semibold rounded hover:bg-[#701010] shadow-xs flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 bg-cardinal text-white text-xs font-semibold rounded hover:bg-cardinal-dark shadow-xs flex items-center gap-1.5 transition-colors"
             >
               <Sliders size={13} />
               <span>What-If Simulator</span>
@@ -205,7 +205,7 @@ export const StudentDossierPage: React.FC<StudentDossierPageProps> = ({
         {/* Eligible Job Openings */}
         <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle">
           <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
-            <Briefcase size={15} className="text-[#0B1B3D]" />
+            <Briefcase size={15} className="text-navy-900" />
             <h2 className="text-sm font-bold font-serif text-slate-900 m-0">
               Matching Active Recruitment Drives ({eligibleJobs.length})
             </h2>
@@ -229,7 +229,7 @@ export const StudentDossierPage: React.FC<StudentDossierPageProps> = ({
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xs font-mono font-bold text-[#8C1515]">
+                    <div className="text-xs font-mono font-bold text-cardinal">
                       ₹{job.package_lpa} LPA
                     </div>
                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 font-medium">
@@ -245,7 +245,7 @@ export const StudentDossierPage: React.FC<StudentDossierPageProps> = ({
         {/* Application History */}
         <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle">
           <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
-            <FileText size={15} className="text-[#0B1B3D]" />
+            <FileText size={15} className="text-navy-900" />
             <h2 className="text-sm font-bold font-serif text-slate-900 m-0">
               Candidate Application Ledger ({applications.length})
             </h2>
@@ -292,7 +292,7 @@ export const StudentDossierPage: React.FC<StudentDossierPageProps> = ({
       {interviews.length > 0 && (
         <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle">
           <div className="flex items-center gap-2 mb-3 pb-2 border-b border-slate-100">
-            <Calendar size={15} className="text-[#0B1B3D]" />
+            <Calendar size={15} className="text-navy-900" />
             <h2 className="text-sm font-bold font-serif text-slate-900 m-0">
               Scheduled Interview Loops ({interviews.length})
             </h2>

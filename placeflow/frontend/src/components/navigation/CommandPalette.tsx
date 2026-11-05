@@ -240,14 +240,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   }}
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-colors ${
-                    isSelected ? 'bg-red-50/80 text-[#8C1515]' : 'hover:bg-slate-50 text-slate-700'
+                    isSelected ? 'bg-red-50/80 text-cardinal' : 'hover:bg-slate-50 text-slate-700'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
                       className={`w-7 h-7 rounded flex items-center justify-center shrink-0 border ${
                         isSelected
-                          ? 'bg-[#8C1515] text-white border-red-700'
+                          ? 'bg-cardinal text-white border-red-700'
                           : 'bg-white text-slate-500 border-slate-200'
                       }`}
                     >
@@ -274,7 +274,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                         {cmd.shortcut}
                       </kbd>
                     )}
-                    {isSelected && <ArrowRight size={13} className="text-[#8C1515]" />}
+                    {isSelected && <ArrowRight size={13} className="text-cardinal" />}
                   </div>
                 </div>
               );

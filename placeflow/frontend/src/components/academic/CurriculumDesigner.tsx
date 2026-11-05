@@ -147,13 +147,13 @@ export const CurriculumDesigner: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded-lg p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded-lg p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 font-mono mb-1">
             CAMP-03 &bull; AUTONOMOUS CURRICULUM ARCHITECT
           </div>
           <h2 className="text-xl font-bold font-serif text-slate-900 m-0 flex items-center gap-2">
-            <Layers size={20} className="text-[#8C1515]" />
+            <Layers size={20} className="text-cardinal" />
             Curriculum Designer &amp; Progression Simulator
           </h2>
           <p className="text-xs text-slate-600 mt-1">
@@ -166,7 +166,7 @@ export const CurriculumDesigner: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={handleRunSimulation}
-            leftIcon={<Sparkles size={13} className="text-[#8C1515]" />}
+            leftIcon={<Sparkles size={13} className="text-cardinal" />}
             loading={isSimulating}
           >
             Run Curriculum Simulation
@@ -216,7 +216,7 @@ export const CurriculumDesigner: React.FC = () => {
                       onClick={() => setSelectedTermId(t.id)}
                       className={`w-full text-left p-2.5 rounded-lg text-xs font-medium transition-all flex items-center justify-between ${
                         isSelected
-                          ? 'bg-[#8C1515] text-white shadow-xs'
+                          ? 'bg-cardinal text-white shadow-xs'
                           : 'text-slate-700 hover:bg-slate-50'
                       }`}
                     >
@@ -256,7 +256,7 @@ export const CurriculumDesigner: React.FC = () => {
 
               <div className="text-right">
                 <div className="text-xs text-slate-500">Term Credits</div>
-                <div className="text-xl font-bold font-serif text-[#8C1515]">
+                <div className="text-xl font-bold font-serif text-cardinal">
                   {termTotalCredits.toFixed(1)} Cr
                 </div>
               </div>
@@ -271,7 +271,7 @@ export const CurriculumDesigner: React.FC = () => {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-[#8C1515]">{course.code}</span>
+                        <span className="font-mono font-bold text-cardinal">{course.code}</span>
                         <span className="font-semibold text-slate-900">{course.title}</span>
                       </div>
                       <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-500">
@@ -330,7 +330,7 @@ export const CurriculumDesigner: React.FC = () => {
         <div className="lg:col-span-3 space-y-4">
           <Card className="p-4 space-y-3">
             <div className="flex items-center gap-2">
-              <GraduationCap size={16} className="text-[#8C1515]" />
+              <GraduationCap size={16} className="text-cardinal" />
               <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
                 Autonomous Graduation Meter
               </span>
@@ -344,7 +344,7 @@ export const CurriculumDesigner: React.FC = () => {
               <div className="text-[11px] text-slate-500">Target: 160.0 Credits (UGC NCrF)</div>
               <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-2">
                 <div
-                  className="bg-[#8C1515] h-full rounded-full transition-all"
+                  className="bg-cardinal h-full rounded-full transition-all"
                   style={{ width: `${Math.min((totalProgramCredits / 160) * 100, 100)}%` }}
                 />
               </div>

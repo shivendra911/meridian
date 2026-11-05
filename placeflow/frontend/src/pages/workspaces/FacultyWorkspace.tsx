@@ -63,7 +63,7 @@ export const FacultyWorkspace: React.FC<FacultyWorkspaceProps> = ({
   return (
     <div className="space-y-6 font-sans">
       {/* 1. Faculty Status Ribbon */}
-      <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs border-l-4 border-l-[#0B1B3D] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs border-l-4 border-l-navy-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Badge variant="neutral" size="xs">
@@ -86,7 +86,7 @@ export const FacultyWorkspace: React.FC<FacultyWorkspaceProps> = ({
             variant="outline"
             size="sm"
             onClick={onOpenCopilot}
-            leftIcon={<Sparkles size={13} className="text-[#8C1515]" />}
+            leftIcon={<Sparkles size={13} className="text-cardinal" />}
           >
             Teaching Assistant AI
           </Button>
@@ -147,7 +147,7 @@ export const FacultyWorkspace: React.FC<FacultyWorkspaceProps> = ({
             onClick={() => setSelectedCourse('CS301')}
             className={`px-3 py-1 rounded text-xs font-semibold border transition-colors ${
               selectedCourse === 'CS301'
-                ? 'bg-[#0B1B3D] text-white border-[#0B1B3D]'
+                ? 'bg-navy-900 text-white border-navy-900'
                 : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
             }`}
           >
@@ -157,7 +157,7 @@ export const FacultyWorkspace: React.FC<FacultyWorkspaceProps> = ({
             onClick={() => setSelectedCourse('CS401')}
             className={`px-3 py-1 rounded text-xs font-semibold border transition-colors ${
               selectedCourse === 'CS401'
-                ? 'bg-[#0B1B3D] text-white border-[#0B1B3D]'
+                ? 'bg-navy-900 text-white border-navy-900'
                 : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
             }`}
           >
@@ -225,7 +225,7 @@ export const FacultyWorkspace: React.FC<FacultyWorkspaceProps> = ({
                       <td className="py-2.5 px-3 text-right">
                         <button
                           onClick={() => onNavigateTab?.('students')}
-                          className="text-[11px] font-semibold text-[#8C1515] hover:underline"
+                          className="text-[11px] font-semibold text-cardinal hover:underline"
                         >
                           View Dossier
                         </button>
@@ -275,7 +275,7 @@ export const FacultyWorkspace: React.FC<FacultyWorkspaceProps> = ({
                         <select
                           value={s.grade}
                           onChange={(e) => handleGradeChange(s.id, e.target.value)}
-                          className="bg-white border border-slate-300 rounded px-2 py-0.5 text-xs font-bold text-slate-800 focus:border-[#8C1515]"
+                          className="bg-white border border-slate-300 rounded px-2 py-0.5 text-xs font-bold text-slate-800 focus:border-cardinal"
                         >
                           {['O', 'A+', 'A', 'B+', 'B', 'C', 'P', 'F'].map((g) => (
                             <option key={g} value={g}>{g}</option>

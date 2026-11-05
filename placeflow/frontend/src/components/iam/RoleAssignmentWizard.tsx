@@ -154,7 +154,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
             {step === 2 && 'Define Scope Boundaries & Validity'}
             {step === 3 && 'Effective Permission Preview & Confirm'}
           </span>
-          <span className="font-semibold text-[#8C1515] font-mono">
+          <span className="font-semibold text-cardinal font-mono">
             {step === 1 ? '33%' : step === 2 ? '66%' : '100%'}
           </span>
         </div>
@@ -199,7 +199,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
                       onClick={() => setSelectedRole(r.code)}
                       className={`p-3 rounded-lg border cursor-pointer transition-all ${
                         isSelected
-                          ? 'border-[#8C1515] bg-red-50/20 shadow-xs'
+                          ? 'border-cardinal bg-red-50/20 shadow-xs'
                           : 'border-slate-200 bg-white hover:border-slate-300'
                       }`}
                     >
@@ -299,7 +299,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
                 type="checkbox"
                 checked={allowDelegation}
                 onChange={(e) => setAllowDelegation(e.target.checked)}
-                className="w-4 h-4 text-[#8C1515] rounded"
+                className="w-4 h-4 text-cardinal rounded"
               />
             </div>
           </div>
@@ -319,7 +319,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                   Designated Role
                 </span>
-                <span className="font-bold text-[#8C1515]">
+                <span className="font-bold text-cardinal">
                   {roles.find((r) => r.code === selectedRole)?.title}
                 </span>
               </div>

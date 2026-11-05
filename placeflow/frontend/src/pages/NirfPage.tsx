@@ -29,7 +29,7 @@ export const NirfPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white border-l-4 border-l-[#0B1B3D] border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             SECTION 8 &bull; NIRF GRADUATION OUTCOME (GO) ACCREDITATION
@@ -44,7 +44,7 @@ export const NirfPage: React.FC = () => {
 
         <button
           onClick={() => window.print()}
-          className="px-3.5 py-1.5 bg-[#0B1B3D] text-white text-xs font-semibold rounded hover:bg-[#071126] shadow-xs flex items-center gap-1.5 transition-colors"
+          className="px-3.5 py-1.5 bg-navy-900 text-white text-xs font-semibold rounded hover:bg-navy-950 shadow-xs flex items-center gap-1.5 transition-colors"
         >
           <Download size={13} />
           <span>Print NIRF Dossier</span>
@@ -54,14 +54,14 @@ export const NirfPage: React.FC = () => {
       {/* NIRF Scorecards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* GPH Score */}
-        <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle border-t-3 border-t-[#8C1515]">
+        <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle border-t-3 border-t-cardinal">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               GPH Score (Placement &amp; Higher Studies)
             </span>
-            <Award className="text-[#8C1515]" size={16} />
+            <Award className="text-cardinal" size={16} />
           </div>
-          <div className="text-3xl font-bold font-serif text-[#8C1515]">
+          <div className="text-3xl font-bold font-serif text-cardinal">
             {metrics.gph_score_40}{' '}
             <span className="text-base font-sans font-normal text-slate-400">/ 40.0</span>
           </div>
@@ -98,14 +98,14 @@ export const NirfPage: React.FC = () => {
         </div>
 
         {/* Total NIRF GO */}
-        <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle border-t-3 border-t-[#0B1B3D]">
+        <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle border-t-3 border-t-navy-900">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Combined NIRF GO Score
             </span>
-            <Calculator className="text-[#0B1B3D]" size={16} />
+            <Calculator className="text-navy-900" size={16} />
           </div>
-          <div className="text-3xl font-bold font-serif text-[#0B1B3D]">
+          <div className="text-3xl font-bold font-serif text-navy-900">
             {metrics.total_nirf_go_80}{' '}
             <span className="text-base font-sans font-normal text-slate-400">/ 80.0</span>
           </div>
@@ -152,7 +152,7 @@ export const NirfPage: React.FC = () => {
             <tbody className="divide-y divide-slate-100 font-mono">
               {metrics.company_table.map((row) => (
                 <tr key={row.company_id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-[#0B1B3D] font-sans">
+                  <td className="py-2.5 px-4 font-bold text-navy-900 font-sans">
                     {row.company_id}
                   </td>
                   <td className="py-2.5 px-4">
@@ -167,7 +167,7 @@ export const NirfPage: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-2.5 px-4 text-slate-600">₹{row.min_salary_lpa} LPA</td>
-                  <td className="py-2.5 px-4 text-[#8C1515] font-bold">
+                  <td className="py-2.5 px-4 text-cardinal font-bold">
                     ₹{row.median_salary_lpa} LPA
                   </td>
                   <td className="py-2.5 px-4 text-emerald-700 font-semibold">

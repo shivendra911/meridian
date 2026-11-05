@@ -159,7 +159,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
   return (
     <div className="space-y-6">
       {/* Executive Command Masthead */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-[#8C1515] text-white rounded-xl p-6 shadow-md border border-slate-700">
+      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-cardinal text-white rounded-xl p-6 shadow-md border border-slate-700">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -222,7 +222,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
           className="cursor-pointer group transition-all transform hover:-translate-y-0.5"
           onClick={() => setSelectedMetric(metricExplanations.students)}
         >
-          <Card className="hover:border-[#8C1515] transition-colors relative overflow-hidden">
+          <Card className="hover:border-cardinal transition-colors relative overflow-hidden">
             <div className="flex items-start justify-between">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -239,7 +239,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
               <span className="text-emerald-700 font-medium flex items-center gap-1">
                 <TrendingUp size={12} /> +4.2% YoY
               </span>
-              <span className="text-slate-400 group-hover:text-[#8C1515] flex items-center gap-0.5">
+              <span className="text-slate-400 group-hover:text-cardinal flex items-center gap-0.5">
                 Explain <HelpCircle size={11} />
               </span>
             </div>
@@ -250,7 +250,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
           className="cursor-pointer group transition-all transform hover:-translate-y-0.5"
           onClick={() => setSelectedMetric(metricExplanations.programs)}
         >
-          <Card className="hover:border-[#8C1515] transition-colors relative overflow-hidden">
+          <Card className="hover:border-cardinal transition-colors relative overflow-hidden">
             <div className="flex items-start justify-between">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -265,7 +265,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
             </div>
             <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
               <span className="text-slate-600 font-medium">100% Accredited</span>
-              <span className="text-slate-400 group-hover:text-[#8C1515] flex items-center gap-0.5">
+              <span className="text-slate-400 group-hover:text-cardinal flex items-center gap-0.5">
                 Explain <HelpCircle size={11} />
               </span>
             </div>
@@ -329,7 +329,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
       <Card className="bg-slate-50 border-slate-200">
         <div className="p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-2">
-            <Sparkles size={16} className="text-[#8C1515]" />
+            <Sparkles size={16} className="text-cardinal" />
             <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
               Campus AI Executive Intelligence Query
             </span>
@@ -353,7 +353,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
                   }
                 }}
                 placeholder="Ask Campus AI: 'Show NIRF Criterion 3 status', 'Which departments have curriculum bottlenecks?'..."
-                className="w-full pl-10 pr-4 py-2.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8C1515]/20 focus:border-[#8C1515] transition-all shadow-inner"
+                className="w-full pl-10 pr-4 py-2.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cardinal/20 focus:border-cardinal transition-all shadow-inner"
               />
             </div>
             <Button
@@ -378,7 +378,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
               <button
                 key={chip}
                 onClick={() => handleRunAiQuery(chip)}
-                className="text-[11px] bg-white border border-slate-300 text-slate-700 hover:border-[#8C1515] hover:text-[#8C1515] px-2.5 py-1 rounded transition-colors"
+                className="text-[11px] bg-white border border-slate-300 text-slate-700 hover:border-cardinal hover:text-cardinal px-2.5 py-1 rounded transition-colors"
               >
                 {chip}
               </button>
@@ -387,7 +387,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
 
           {/* AI Response Display */}
           {executiveResponse && (
-            <div className="mt-4 p-4 bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded-lg text-xs space-y-2 relative animate-fade-in shadow-xs">
+            <div className="mt-4 p-4 bg-white border-l-4 border-l-cardinal border border-slate-200 rounded-lg text-xs space-y-2 relative animate-fade-in shadow-xs">
               <button
                 onClick={() => setExecutiveResponse(null)}
                 className="absolute top-3 right-3 text-slate-400 hover:text-slate-600"
@@ -395,7 +395,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
                 <X size={14} />
               </button>
               <div className="flex items-center gap-2 text-slate-800 font-semibold">
-                <Sparkles size={14} className="text-[#8C1515]" />
+                <Sparkles size={14} className="text-cardinal" />
                 Institutional Telemetry Synthesis
               </div>
               <div className="text-slate-700 whitespace-pre-line leading-relaxed">
@@ -573,10 +573,10 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
               <div className="pt-2 border-t border-slate-100">
                 <div className="flex justify-between text-xs mb-1">
                   <span className="text-slate-600 font-medium">Placement Clearance (Batch 2027)</span>
-                  <span className="font-bold text-[#8C1515]">68.4%</span>
+                  <span className="font-bold text-cardinal">68.4%</span>
                 </div>
                 <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div className="bg-[#8C1515] h-full rounded-full" style={{ width: '68.4%' }} />
+                  <div className="bg-cardinal h-full rounded-full" style={{ width: '68.4%' }} />
                 </div>
                 <div className="text-[10px] text-slate-400 mt-1">642 offers across 48 corporate partners</div>
               </div>
@@ -657,9 +657,9 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
             <div className="text-xs uppercase font-bold tracking-wider text-slate-500">
               Placement Operations
             </div>
-            <div className="text-4xl font-serif font-bold text-[#8C1515]">68%</div>
+            <div className="text-4xl font-serif font-bold text-cardinal">68%</div>
             <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-              <div className="bg-[#8C1515] h-full rounded-full" style={{ width: '68%' }} />
+              <div className="bg-cardinal h-full rounded-full" style={{ width: '68%' }} />
             </div>
             <p className="text-[11px] text-slate-500 leading-tight">
               642 offers locked. 22 campus recruitment superdays completed in Cycle 1.
@@ -749,7 +749,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
                     <td className="py-3 px-3 text-slate-600">{row.campus}</td>
                     <td className="py-3 px-3 text-right font-mono">{row.students}</td>
                     <td className="py-3 px-3 text-right font-mono font-medium">{row.gpa}</td>
-                    <td className="py-3 px-3 text-right font-mono font-bold text-[#8C1515]">
+                    <td className="py-3 px-3 text-right font-mono font-bold text-cardinal">
                       {row.placed}
                     </td>
                     <td className="py-3 px-3 text-right font-mono text-emerald-700 font-semibold">
@@ -843,7 +843,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
           <div className="space-y-6">
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
               <div className="text-xs text-slate-500 uppercase font-semibold">Reported Value</div>
-              <div className="text-3xl font-serif font-bold text-[#8C1515] mt-1">
+              <div className="text-3xl font-serif font-bold text-cardinal mt-1">
                 {selectedMetric.value}
               </div>
               <div className="text-xs text-slate-600 mt-1">{selectedMetric.scope}</div>
@@ -881,7 +881,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
                     key={col}
                     className="flex items-center gap-2 text-xs font-mono bg-white border border-slate-200 px-3 py-2 rounded"
                   >
-                    <Database size={13} className="text-[#8C1515]" />
+                    <Database size={13} className="text-cardinal" />
                     <span className="font-semibold text-slate-800">
                       college_placement_db.{col}
                     </span>

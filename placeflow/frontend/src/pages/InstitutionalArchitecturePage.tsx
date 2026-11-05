@@ -224,7 +224,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Directorate Header */}
-      <div className="bg-white border-l-4 border-l-[#0B1B3D] border border-slate-200 rounded p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             CAMP-01 &bull; TENANT &amp; INSTITUTION ARCHITECTURE FOUNDATION
@@ -275,7 +275,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
       {selectedInst && (
         <div className="bg-slate-900 text-white rounded p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded bg-[#8C1515] text-white flex items-center justify-center font-serif font-bold text-lg border border-red-700">
+            <div className="w-10 h-10 rounded bg-cardinal text-white flex items-center justify-center font-serif font-bold text-lg border border-red-700">
               {selectedInst.institution_code.slice(0, 2)}
             </div>
             <div>
@@ -307,7 +307,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
           onClick={() => setActiveTab('hierarchy')}
           className={`px-4 py-2 text-xs font-semibold border-b-2 flex items-center gap-2 transition-all cursor-pointer ${
             activeTab === 'hierarchy'
-              ? 'border-[#8C1515] text-[#8C1515]'
+              ? 'border-cardinal text-cardinal'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -319,7 +319,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
           onClick={() => setActiveTab('campuses')}
           className={`px-4 py-2 text-xs font-semibold border-b-2 flex items-center gap-2 transition-all cursor-pointer ${
             activeTab === 'campuses'
-              ? 'border-[#8C1515] text-[#8C1515]'
+              ? 'border-cardinal text-cardinal'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -331,7 +331,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
           onClick={() => setActiveTab('readiness')}
           className={`px-4 py-2 text-xs font-semibold border-b-2 flex items-center gap-2 transition-all cursor-pointer ${
             activeTab === 'readiness'
-              ? 'border-[#8C1515] text-[#8C1515]'
+              ? 'border-cardinal text-cardinal'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -343,7 +343,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
           onClick={() => setActiveTab('directory')}
           className={`px-4 py-2 text-xs font-semibold border-b-2 flex items-center gap-2 transition-all cursor-pointer ${
             activeTab === 'directory'
-              ? 'border-[#8C1515] text-[#8C1515]'
+              ? 'border-cardinal text-cardinal'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -355,7 +355,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
           onClick={() => setActiveTab('config')}
           className={`px-4 py-2 text-xs font-semibold border-b-2 flex items-center gap-2 transition-all cursor-pointer ${
             activeTab === 'config'
-              ? 'border-[#8C1515] text-[#8C1515]'
+              ? 'border-cardinal text-cardinal'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -367,7 +367,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
           onClick={() => setActiveTab('onboarding')}
           className={`px-4 py-2 text-xs font-semibold border-b-2 flex items-center gap-2 transition-all cursor-pointer ${
             activeTab === 'onboarding'
-              ? 'border-[#8C1515] text-[#8C1515]'
+              ? 'border-cardinal text-cardinal'
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
@@ -509,7 +509,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
                 value={dirQuery}
                 onChange={(e) => setDirQuery(e.target.value)}
                 placeholder="Search university name, AISHE code (e.g. U-0053)..."
-                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-[#8C1515] focus:outline-hidden"
+                className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-cardinal focus:outline-hidden"
               />
             </div>
             <input
@@ -517,11 +517,11 @@ export const InstitutionalArchitecturePage: React.FC = () => {
               value={dirState}
               onChange={(e) => setDirState(e.target.value)}
               placeholder="Filter state (e.g. Maharashtra, Delhi)..."
-              className="w-48 px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-[#8C1515] focus:outline-hidden"
+              className="w-48 px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-cardinal focus:outline-hidden"
             />
             <button
               onClick={() => handleSearchDirectory()}
-              className="px-4 py-2 bg-[#8C1515] text-white text-xs font-semibold rounded hover:bg-[#701010] transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2 bg-cardinal text-white text-xs font-semibold rounded hover:bg-cardinal-dark transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               {dirLoading ? <Activity className="animate-spin" size={14} /> : <Search size={14} />}
               <span>Search Registry</span>
@@ -535,7 +535,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-[#8C1515]">{entry.aishe_code}</span>
+                      <span className="font-mono text-xs font-bold text-cardinal">{entry.aishe_code}</span>
                       {entry.is_verified && (
                         <span className="text-[9px] bg-emerald-100 text-emerald-800 font-semibold px-1.5 py-0.2 rounded border border-emerald-300">
                           VERIFIED
@@ -635,7 +635,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
             <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setShowOnboardingBuilder(true)}
-                className="px-4 py-2 bg-[#8C1515] text-white text-xs font-semibold rounded hover:bg-[#701010] transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
+                className="px-4 py-2 bg-cardinal text-white text-xs font-semibold rounded hover:bg-cardinal-dark transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
               >
                 <Layers size={14} />
                 <span>Launch Visual Hierarchy Wizard</span>
@@ -643,7 +643,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
               <button
                 onClick={handleRunOnboardingDemo}
                 disabled={onboardLoading}
-                className="px-4 py-2 bg-[#0B1B3D] text-white text-xs font-semibold rounded hover:bg-[#071126] transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                className="px-4 py-2 bg-navy-900 text-white text-xs font-semibold rounded hover:bg-navy-950 transition-all flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
               >
                 {onboardLoading ? <Activity className="animate-spin" size={14} /> : <Zap size={14} />}
                 <span>Execute 10-Step Pipeline Demo</span>

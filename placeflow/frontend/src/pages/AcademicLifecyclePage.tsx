@@ -227,7 +227,7 @@ export const AcademicLifecyclePage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setActiveTab('designer')}
-                  className="px-3 py-1.5 bg-[#8C1515] hover:bg-[#701010] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-3 py-1.5 bg-cardinal hover:bg-cardinal-dark text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Layers className="w-3.5 h-3.5" />
                   <span>Open 3-Panel Curriculum Designer &rarr;</span>

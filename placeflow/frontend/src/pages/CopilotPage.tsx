@@ -103,7 +103,7 @@ export const CopilotPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded p-5 shadow-subtle flex items-start justify-between">
+      <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex items-start justify-between">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             SECTION 10 &bull; AUTONOMOUS AGENT RUNTIME (TYPED MCP TOOLS)
@@ -138,14 +138,14 @@ export const CopilotPage: React.FC = () => {
                 onClick={() => setSelectedAgent(aid)}
                 className={`p-3 rounded border cursor-pointer transition-all ${
                   isSelected
-                    ? 'border-[#8C1515] bg-[#FDF2F2] shadow-2xs'
+                    ? 'border-cardinal bg-[#FDF2F2] shadow-2xs'
                     : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
                   <span
                     className={`text-xs font-bold ${
-                      isSelected ? 'text-[#8C1515]' : 'text-slate-900'
+                      isSelected ? 'text-cardinal' : 'text-slate-900'
                     }`}
                   >
                     {aid}
@@ -171,7 +171,7 @@ export const CopilotPage: React.FC = () => {
               value={studentId}
               onChange={(e) => setStudentId(e.target.value.toUpperCase())}
               placeholder="e.g. STU001"
-              className="w-full px-2.5 py-1 text-xs font-mono bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-[#8C1515]"
+              className="w-full px-2.5 py-1 text-xs font-mono bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-cardinal"
             />
           </div>
         </div>
@@ -181,7 +181,7 @@ export const CopilotPage: React.FC = () => {
           {/* Top Chat Bar */}
           <div className="p-3.5 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-[#8C1515] text-white flex items-center justify-center font-bold text-xs">
+              <div className="w-6 h-6 rounded bg-cardinal text-white flex items-center justify-center font-bold text-xs">
                 <Bot size={14} />
               </div>
               <div>
@@ -208,7 +208,7 @@ export const CopilotPage: React.FC = () => {
                 <div
                   className={`max-w-[85%] rounded p-3 text-xs ${
                     msg.sender === 'user'
-                      ? 'bg-[#0B1B3D] text-white'
+                      ? 'bg-navy-900 text-white'
                       : 'bg-slate-100 text-slate-800 border border-slate-200'
                   }`}
                 >
@@ -254,7 +254,7 @@ export const CopilotPage: React.FC = () => {
 
             {loading && (
               <div className="flex items-center gap-2 text-xs text-slate-500 font-mono bg-slate-50 p-2.5 rounded border border-slate-200 w-fit">
-                <Activity className="animate-spin text-[#8C1515]" size={13} />
+                <Activity className="animate-spin text-cardinal" size={13} />
                 <span>Executing plan and scoped MCP tools...</span>
               </div>
             )}
@@ -290,13 +290,13 @@ export const CopilotPage: React.FC = () => {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder={`Ask ${selectedAgent} (${currentMeta.role})...`}
-                className="flex-1 px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-[#8C1515] focus:outline-hidden"
+                className="flex-1 px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-cardinal focus:outline-hidden"
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={loading || !prompt.trim()}
-                className="px-4 py-2 bg-[#8C1515] hover:bg-[#701010] text-white text-xs font-semibold rounded flex items-center gap-1.5 disabled:opacity-50 transition-colors"
+                className="px-4 py-2 bg-cardinal hover:bg-cardinal-dark text-white text-xs font-semibold rounded flex items-center gap-1.5 disabled:opacity-50 transition-colors"
               >
                 <Send size={12} />
                 <span>Execute</span>

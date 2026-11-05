@@ -50,7 +50,7 @@ export const SuperdayPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             ENTERPRISE MOAT &bull; CONSTRAINT-SATISFACTION AUTO-SLOTTER
@@ -70,7 +70,7 @@ export const SuperdayPage: React.FC = () => {
             disabled={resolving || conflicts.length === 0}
             className={`px-4 py-2 text-xs font-semibold rounded shadow-xs flex items-center gap-2 transition-colors ${
               conflicts.length > 0
-                ? 'bg-[#8C1515] hover:bg-[#701010] text-white'
+                ? 'bg-cardinal hover:bg-cardinal-dark text-white'
                 : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
             }`}
           >
@@ -199,7 +199,7 @@ export const SuperdayPage: React.FC = () => {
               <tbody className="divide-y divide-slate-100 font-mono">
                 {interviews.map((iv) => (
                   <tr key={iv.interview_id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-2.5 px-3 font-semibold text-[#0B1B3D]">
+                    <td className="py-2.5 px-3 font-semibold text-navy-900">
                       {iv.interview_id}
                     </td>
                     <td className="py-2.5 px-3 text-slate-800 font-bold">

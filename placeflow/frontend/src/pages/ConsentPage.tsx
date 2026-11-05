@@ -108,11 +108,11 @@ export const ConsentPage: React.FC<ConsentPageProps> = ({ initialStudentId = 'ST
             value={inputSid}
             onChange={(e) => setInputSid(e.target.value)}
             placeholder="STU001"
-            className="w-32 px-3 py-1 text-xs font-mono bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-[#8C1515]"
+            className="w-32 px-3 py-1 text-xs font-mono bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-cardinal"
           />
           <button
             type="submit"
-            className="px-3 py-1 bg-[#0B1B3D] text-white text-xs font-semibold rounded hover:bg-[#071126]"
+            className="px-3 py-1 bg-navy-900 text-white text-xs font-semibold rounded hover:bg-navy-950"
           >
             Inspect Consents
           </button>
@@ -129,7 +129,7 @@ export const ConsentPage: React.FC<ConsentPageProps> = ({ initialStudentId = 'ST
               }}
               className={`px-2 py-0.5 rounded font-mono text-[11px] font-medium border ${
                 studentId === sid
-                  ? 'bg-[#0B1B3D] text-white border-[#0B1B3D]'
+                  ? 'bg-navy-900 text-white border-navy-900'
                   : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
               }`}
             >
@@ -271,7 +271,7 @@ export const ConsentPage: React.FC<ConsentPageProps> = ({ initialStudentId = 'ST
                   ) : (
                     <button
                       onClick={() => handleGrant(c.purpose)}
-                      className="px-3 py-1 text-xs font-semibold text-white bg-[#0B1B3D] hover:bg-[#071126] rounded transition-colors"
+                      className="px-3 py-1 text-xs font-semibold text-white bg-navy-900 hover:bg-navy-950 rounded transition-colors"
                     >
                       Grant Explicit Consent
                     </button>

@@ -43,7 +43,7 @@ export const RenegeRadarPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             ENTERPRISE MOAT &bull; RETENTION &amp; RENEGE EARLY WARNING RADAR
@@ -115,13 +115,13 @@ export const RenegeRadarPage: React.FC = () => {
               {candidates.map((c) => (
                 <tr key={c.student_id} className="hover:bg-slate-50/80 transition-colors">
                   <td className="py-2.5 px-4">
-                    <div className="font-bold text-[#0B1B3D]">{c.name}</div>
+                    <div className="font-bold text-navy-900">{c.name}</div>
                     <div className="text-[10.5px] font-mono text-slate-400">
                       {c.student_id} &bull; {c.department}
                     </div>
                   </td>
                   <td className="py-2.5 px-4 font-semibold text-slate-800">{c.placed_company}</td>
-                  <td className="py-2.5 px-4 font-mono font-bold text-[#8C1515]">
+                  <td className="py-2.5 px-4 font-mono font-bold text-cardinal">
                     ₹{c.package_lpa} LPA
                   </td>
                   <td className="py-2.5 px-4 font-mono text-slate-600">

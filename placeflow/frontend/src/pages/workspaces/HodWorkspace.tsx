@@ -31,7 +31,7 @@ export const HodWorkspace: React.FC<HodWorkspaceProps> = ({
   return (
     <div className="space-y-6 font-sans">
       {/* 1. HOD Status Ribbon */}
-      <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs border-l-4 border-l-[#0B1B3D] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs border-l-4 border-l-navy-900 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Badge variant="neutral" size="xs">
@@ -54,7 +54,7 @@ export const HodWorkspace: React.FC<HodWorkspaceProps> = ({
             variant="outline"
             size="sm"
             onClick={onOpenCopilot}
-            leftIcon={<Sparkles size={13} className="text-[#8C1515]" />}
+            leftIcon={<Sparkles size={13} className="text-cardinal" />}
           >
             Department Intelligence AI
           </Button>

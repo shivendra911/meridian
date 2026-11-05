@@ -61,7 +61,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
       header: 'Roll Number',
       sortable: true,
       render: (s) => (
-        <span className="font-mono font-bold text-[#0B1B3D] text-xs">{s.student_id}</span>
+        <span className="font-mono font-bold text-navy-900 text-xs">{s.student_id}</span>
       ),
     },
     {
@@ -159,7 +159,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
         >
           <button
             onClick={() => onOpenWhatIf(s.student_id)}
-            className="px-2 py-1 text-[11px] font-medium text-slate-700 hover:text-[#8C1515] bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex items-center gap-1"
+            className="px-2 py-1 text-[11px] font-medium text-slate-700 hover:text-cardinal bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex items-center gap-1"
             title="Run What-If Career Simulation"
           >
             <Sliders size={11} />
@@ -210,7 +210,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="bg-white border-l-4 border-l-[#0B1B3D] border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             OFFICIAL REGISTRAR &bull; CANDIDATE DIRECTORY
@@ -257,7 +257,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
               onClick={() => setSelectedDept(dept)}
               className={`px-2.5 py-1 text-xs rounded font-medium transition-all ${
                 selectedDept === dept
-                  ? 'bg-[#0B1B3D] text-white shadow-2xs'
+                  ? 'bg-navy-900 text-white shadow-2xs'
                   : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
               }`}
             >
@@ -274,7 +274,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search candidate name or roll..."
-            className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-[#8C1515] focus:outline-hidden font-mono"
+            className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-cardinal focus:outline-hidden font-mono"
           />
         </form>
       </div>
@@ -324,7 +324,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
               <div>
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-full bg-[#0B1B3D] text-white flex items-center justify-center font-bold font-serif text-sm">
+                    <div className="w-10 h-10 rounded-full bg-navy-900 text-white flex items-center justify-center font-bold font-serif text-sm">
                       {student.name.slice(0, 2).toUpperCase()}
                     </div>
                     <div>
@@ -389,7 +389,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
               <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                 <button
                   onClick={() => onSelectStudent(student.student_id)}
-                  className="text-xs font-semibold text-[#8C1515] hover:underline flex items-center gap-1"
+                  className="text-xs font-semibold text-cardinal hover:underline flex items-center gap-1"
                 >
                   <span>Open Dossier</span>
                   <ChevronRight size={13} />
@@ -397,7 +397,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => onOpenWhatIf(student.student_id)}
-                    className="p-1.5 text-slate-600 hover:text-[#8C1515] bg-slate-100 hover:bg-slate-200 rounded"
+                    className="p-1.5 text-slate-600 hover:text-cardinal bg-slate-100 hover:bg-slate-200 rounded"
                     title="Run What-If Simulation"
                   >
                     <Sliders size={13} />

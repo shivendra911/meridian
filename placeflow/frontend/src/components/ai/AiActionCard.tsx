@@ -54,9 +54,9 @@ export const AiActionCard: React.FC<AiActionCardProps> = ({
       icon: <Layers size={15} className="text-blue-600 shrink-0 mt-0.5" />,
     },
     recommendation: {
-      border: 'border-l-4 border-l-[#8C1515] border-slate-200 bg-white shadow-xs',
+      border: 'border-l-4 border-l-cardinal border-slate-200 bg-white shadow-xs',
       badge: 'ai' as const,
-      icon: <Sparkles size={15} className="text-[#8C1515] shrink-0 mt-0.5" />,
+      icon: <Sparkles size={15} className="text-cardinal shrink-0 mt-0.5" />,
     },
   }[severity];
 

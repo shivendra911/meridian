@@ -127,9 +127,9 @@ export const IdentityAccessPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Institutional Top Bar */}
-      <div className="bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#8C1515] mb-1">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-cardinal mb-1">
             <ShieldCheck size={14} />
             <span>CAMP-02 Institutional Security &amp; Access Governance</span>
           </div>
@@ -144,7 +144,7 @@ export const IdentityAccessPage: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setShowRoleWizard(true)}
-            className="px-3.5 py-1.5 bg-[#0B1B3D] hover:bg-[#071228] text-white text-xs font-semibold rounded shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-3.5 py-1.5 bg-navy-900 hover:bg-[#071228] text-white text-xs font-semibold rounded shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <Shield size={14} />
             <span>Assign Responsibility (Wizard)</span>
@@ -158,7 +158,7 @@ export const IdentityAccessPage: React.FC = () => {
           </button>
           <button
             onClick={() => setShowIdentityModal(true)}
-            className="px-3.5 py-1.5 bg-[#8C1515] hover:bg-[#701010] text-white text-xs font-semibold rounded shadow-xs flex items-center gap-1.5 transition-colors"
+            className="px-3.5 py-1.5 bg-cardinal hover:bg-cardinal-dark text-white text-xs font-semibold rounded shadow-xs flex items-center gap-1.5 transition-colors"
           >
             <Plus size={14} />
             <span>Provision Person</span>
@@ -201,7 +201,7 @@ export const IdentityAccessPage: React.FC = () => {
           onClick={() => setActiveTab('identities')}
           className={`pb-2.5 flex items-center gap-1.5 transition-colors border-b-2 ${
             activeTab === 'identities'
-              ? 'border-[#8C1515] text-[#8C1515] font-semibold'
+              ? 'border-cardinal text-cardinal font-semibold'
               : 'border-transparent hover:text-slate-900'
           }`}
         >
@@ -213,7 +213,7 @@ export const IdentityAccessPage: React.FC = () => {
           onClick={() => setActiveTab('roles')}
           className={`pb-2.5 flex items-center gap-1.5 transition-colors border-b-2 ${
             activeTab === 'roles'
-              ? 'border-[#8C1515] text-[#8C1515] font-semibold'
+              ? 'border-cardinal text-cardinal font-semibold'
               : 'border-transparent hover:text-slate-900'
           }`}
         >
@@ -225,7 +225,7 @@ export const IdentityAccessPage: React.FC = () => {
           onClick={() => setActiveTab('assignments')}
           className={`pb-2.5 flex items-center gap-1.5 transition-colors border-b-2 ${
             activeTab === 'assignments'
-              ? 'border-[#8C1515] text-[#8C1515] font-semibold'
+              ? 'border-cardinal text-cardinal font-semibold'
               : 'border-transparent hover:text-slate-900'
           }`}
         >
@@ -237,7 +237,7 @@ export const IdentityAccessPage: React.FC = () => {
           onClick={() => setActiveTab('delegations')}
           className={`pb-2.5 flex items-center gap-1.5 transition-colors border-b-2 ${
             activeTab === 'delegations'
-              ? 'border-[#8C1515] text-[#8C1515] font-semibold'
+              ? 'border-cardinal text-cardinal font-semibold'
               : 'border-transparent hover:text-slate-900'
           }`}
         >
@@ -249,7 +249,7 @@ export const IdentityAccessPage: React.FC = () => {
           onClick={() => setActiveTab('simulator')}
           className={`pb-2.5 flex items-center gap-1.5 transition-colors border-b-2 ${
             activeTab === 'simulator'
-              ? 'border-[#8C1515] text-[#8C1515] font-semibold'
+              ? 'border-cardinal text-cardinal font-semibold'
               : 'border-transparent hover:text-slate-900'
           }`}
         >
@@ -260,7 +260,7 @@ export const IdentityAccessPage: React.FC = () => {
 
       {loading && (
         <div className="flex items-center justify-center p-12 text-slate-500 text-xs gap-2">
-          <Activity size={18} className="animate-spin text-[#8C1515]" />
+          <Activity size={18} className="animate-spin text-cardinal" />
           <span>Querying CAMP-02 Distributed IAM Registry...</span>
         </div>
       )}
@@ -285,7 +285,7 @@ export const IdentityAccessPage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && loadData()}
-                className="pl-7 pr-3 py-1 bg-white border border-slate-200 rounded text-xs focus:border-[#8C1515]"
+                className="pl-7 pr-3 py-1 bg-white border border-slate-200 rounded text-xs focus:border-cardinal"
               />
             </div>
           </div>
@@ -453,7 +453,7 @@ export const IdentityAccessPage: React.FC = () => {
       {!loading && activeTab === 'simulator' && (
         <div className="bg-white border border-slate-200 rounded p-6 shadow-xs max-w-3xl">
           <div className="flex items-center gap-2 mb-2">
-            <Zap size={16} className="text-[#8C1515]" />
+            <Zap size={16} className="text-cardinal" />
             <h2 className="text-sm font-bold text-slate-900 m-0">13-Step Authorization Decision Pipeline Tester</h2>
           </div>
           <p className="text-xs text-slate-600 mb-6">
@@ -468,7 +468,7 @@ export const IdentityAccessPage: React.FC = () => {
                 placeholder="e.g. paste a membership_id"
                 value={simMembershipId}
                 onChange={(e) => setSimMembershipId(e.target.value)}
-                className="w-full text-xs font-mono p-2 bg-slate-50 border border-slate-200 rounded focus:border-[#8C1515]"
+                className="w-full text-xs font-mono p-2 bg-slate-50 border border-slate-200 rounded focus:border-cardinal"
               />
             </div>
 
@@ -507,7 +507,7 @@ export const IdentityAccessPage: React.FC = () => {
             <button
               onClick={handleSimulateAuth}
               disabled={simLoading}
-              className="w-full py-2 bg-[#8C1515] hover:bg-[#701010] text-white text-xs font-semibold rounded shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              className="w-full py-2 bg-cardinal hover:bg-cardinal-dark text-white text-xs font-semibold rounded shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
             >
               {simLoading ? <Activity size={14} className="animate-spin" /> : <Zap size={14} />}
               <span>Evaluate Authorization Decision</span>
@@ -608,7 +608,7 @@ export const IdentityAccessPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-[#8C1515] hover:bg-[#701010] text-white text-xs font-semibold rounded"
+                  className="px-4 py-1.5 bg-cardinal hover:bg-cardinal-dark text-white text-xs font-semibold rounded"
                 >
                   Confirm &amp; Provision
                 </button>

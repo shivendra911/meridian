@@ -141,11 +141,11 @@ export const InstitutionalOnboardingBuilder: React.FC<{
               {step === 6 && 'Governance Settings & DPDP Act'}
               {step === 7 && 'Readiness Audit & Activation'}
             </span>
-            <span className="font-semibold text-[#8C1515] font-mono">{progressPct}% Complete</span>
+            <span className="font-semibold text-cardinal font-mono">{progressPct}% Complete</span>
           </div>
           <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
             <div
-              className="bg-[#8C1515] h-full transition-all duration-300 rounded-full"
+              className="bg-cardinal h-full transition-all duration-300 rounded-full"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -300,7 +300,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                 <div key={school.id} className="border border-slate-200 rounded-lg bg-slate-50/50 p-3.5">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-200/80">
                     <div className="flex items-center gap-2">
-                      <Layers size={15} className="text-[#8C1515]" />
+                      <Layers size={15} className="text-cardinal" />
                       <span className="font-bold text-xs text-slate-900">{school.name}</span>
                       <span className="text-[10px] font-mono bg-slate-200 px-1.5 py-0.2 rounded font-semibold text-slate-700">
                         {school.code}
@@ -407,7 +407,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                 type="checkbox"
                 checked={dpdpEnabled}
                 onChange={(e) => setDpdpEnabled(e.target.checked)}
-                className="w-4 h-4 text-[#8C1515] rounded"
+                className="w-4 h-4 text-cardinal rounded"
               />
             </div>
 
@@ -424,7 +424,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                 type="checkbox"
                 checked={apaarAutoVerify}
                 onChange={(e) => setApaarAutoVerify(e.target.checked)}
-                className="w-4 h-4 text-[#8C1515] rounded"
+                className="w-4 h-4 text-cardinal rounded"
               />
             </div>
           </div>
@@ -456,7 +456,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                   AISHE Code
                 </span>
-                <span className="font-mono font-bold text-[#8C1515]">{aisheCode}</span>
+                <span className="font-mono font-bold text-cardinal">{aisheCode}</span>
               </div>
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">

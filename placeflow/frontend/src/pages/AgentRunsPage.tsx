@@ -37,7 +37,7 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) =
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             SECTION 10 &bull; AUTONOMOUS AGENT TRACE TELEMETRY
@@ -52,7 +52,7 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) =
 
         <button
           onClick={onOpenCopilot}
-          className="px-3.5 py-1.5 bg-[#8C1515] text-white text-xs font-semibold rounded hover:bg-[#701010] shadow-xs flex items-center gap-1.5 transition-colors"
+          className="px-3.5 py-1.5 bg-cardinal text-white text-xs font-semibold rounded hover:bg-cardinal-dark shadow-xs flex items-center gap-1.5 transition-colors"
         >
           <Bot size={13} />
           <span>Launch Copilot Console</span>
@@ -118,7 +118,7 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) =
               <tbody className="divide-y divide-slate-100">
                 {runs.map((r) => (
                   <tr key={r.run_id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-2.5 px-4 font-mono font-semibold text-[#0B1B3D]">
+                    <td className="py-2.5 px-4 font-mono font-semibold text-navy-900">
                       {r.run_id}
                     </td>
                     <td className="py-2.5 px-4">

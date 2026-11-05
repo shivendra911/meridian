@@ -47,7 +47,7 @@ export const ReportsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-16 text-slate-500 text-sm gap-3">
-        <Activity className="animate-spin text-[#8C1515]" size={24} />
+        <Activity className="animate-spin text-cardinal" size={24} />
         <span className="font-medium text-slate-700">Aggregating Institutional Datasets via MongoDB Pipelines...</span>
         <span className="text-xs text-slate-400 font-mono">Running $facet, $setWindowFields, and $bucket stages</span>
       </div>
@@ -57,7 +57,7 @@ export const ReportsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white border-l-4 border-l-[#0B1B3D] border border-slate-200 rounded p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             EXECUTIVE REGISTRAR &bull; 15 AGGREGATION PIPELINES
@@ -82,7 +82,7 @@ export const ReportsPage: React.FC = () => {
           {currentReport && (
             <button
               onClick={() => handleDownloadCsv(selectedReportId)}
-              className="px-3.5 py-1.5 bg-[#8C1515] text-white text-xs font-semibold rounded hover:bg-[#701010] shadow-xs flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-1.5 bg-cardinal text-white text-xs font-semibold rounded hover:bg-cardinal-dark shadow-xs flex items-center gap-1.5 transition-colors"
             >
               <Download size={13} />
               <span>Download {currentReport.title} (CSV)</span>
@@ -116,7 +116,7 @@ export const ReportsPage: React.FC = () => {
               onClick={() => setSelectedReportId(rid)}
               className={`px-3 py-1.5 text-xs rounded font-medium border flex items-center gap-1.5 transition-all ${
                 selectedReportId === rid
-                  ? 'bg-[#0B1B3D] text-white border-[#0B1B3D] shadow-xs font-semibold'
+                  ? 'bg-navy-900 text-white border-navy-900 shadow-xs font-semibold'
                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
               }`}
             >

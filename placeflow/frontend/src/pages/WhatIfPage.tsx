@@ -67,14 +67,14 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
       {/* Back link */}
       <button
         onClick={onBack}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-[#8C1515] transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-cardinal transition-colors"
       >
         <ArrowLeft size={13} />
         <span>Return to Candidate Dossier ({studentId})</span>
       </button>
 
       {/* Header */}
-      <div className="bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded p-5 shadow-subtle flex items-start justify-between">
+      <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex items-start justify-between">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             SECTION 9 &bull; ML-23 ADVISORY EXPLAINABILITY &amp; ML-07 CONFORMAL BANDS
@@ -106,7 +106,7 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
           {/* Controls Panel */}
           <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle h-fit">
             <h2 className="text-sm font-bold font-serif text-slate-900 mb-1 flex items-center gap-2">
-              <Sliders size={14} className="text-[#8C1515]" />
+              <Sliders size={14} className="text-cardinal" />
               <span>Adjust Hypothetical Parameters</span>
             </h2>
             <div className="text-[11px] text-slate-500 mb-4">
@@ -125,7 +125,7 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
                   max="10"
                   value={targetCgpa}
                   onChange={(e) => setTargetCgpa(parseFloat(e.target.value) || 0)}
-                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-[#8C1515] font-mono"
+                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-cardinal font-mono"
                   required
                 />
                 {result?.baseline && (
@@ -145,7 +145,7 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
                   max="10"
                   value={targetBacklogs}
                   onChange={(e) => setTargetBacklogs(parseInt(e.target.value) || 0)}
-                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-[#8C1515] font-mono"
+                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-cardinal font-mono"
                   required
                 />
                 {result?.baseline && (
@@ -164,7 +164,7 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
                   value={addedSkills}
                   onChange={(e) => setAddedSkills(e.target.value)}
                   placeholder="e.g. Go, Kubernetes, React"
-                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-[#8C1515]"
+                  className="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded focus:bg-white focus:border-cardinal"
                 />
                 <div className="text-[10.5px] text-slate-400 mt-1">
                   Comma-separated competencies to simulate acquiring
@@ -174,7 +174,7 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
               <button
                 type="submit"
                 disabled={computing}
-                className="w-full py-2 bg-[#8C1515] hover:bg-[#701010] text-white text-xs font-semibold rounded shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                className="w-full py-2 bg-cardinal hover:bg-cardinal-dark text-white text-xs font-semibold rounded shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
               >
                 {computing ? <Activity className="animate-spin" size={13} /> : <TrendingUp size={13} />}
                 <span>Recompute What-If Simulation</span>
@@ -240,8 +240,8 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
                     </div>
                   </div>
                   <div className="border-x border-slate-200">
-                    <div className="text-[10px] uppercase font-semibold text-[#8C1515]">Median Expected CTC</div>
-                    <div className="text-xl font-bold font-mono text-[#8C1515] mt-1">
+                    <div className="text-[10px] uppercase font-semibold text-cardinal">Median Expected CTC</div>
+                    <div className="text-xl font-bold font-mono text-cardinal mt-1">
                       ₹{result.simulated.package_band_80.median_lpa} LPA
                     </div>
                   </div>

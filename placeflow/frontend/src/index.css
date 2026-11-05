@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   --color-canvas: #F6F7F9;
   --color-surface: #FFFFFF;
@@ -13,53 +13,47 @@
   --color-brand-hover: #16295A;
   --color-accent: #8C1515;
 
+  --color-cardinal: #8C1515;
+  --color-cardinal-dark: #701010;
+  --color-cardinal-light: #FDF2F2;
+  --color-navy-900: #0B1B3D;
+  --color-navy-950: #071126;
+  --color-obsidian-900: #090D16;
+
   --color-success: #15803D;
   --color-warning: #B45309;
   --color-danger: #DC2626;
   --color-info: #1D4ED8;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
+/* Everything custom lives in a layer so Tailwind utilities (px-4, rounded, bg-*) can override it.
+   Unlayered CSS beats every Tailwind v4 utility, which was breaking button padding and borders. */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: #F6F7F9;
+    color: #111827;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+  }
+
+  button:not(:disabled), [role="button"] {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid #0B1B3D;
+    outline-offset: 2px;
+  }
 }
 
-button {
-  background: transparent;
-  background-color: transparent;
-  border: 0 solid transparent;
-  outline: none;
-  margin: 0;
-  padding: 0;
-  color: inherit;
-  font: inherit;
-  line-height: inherit;
-  cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 0;
-}
-
-button:focus {
-  outline: none;
-}
-
-input, select, textarea {
-  font: inherit;
-  color: inherit;
-  margin: 0;
-  box-sizing: border-box;
-  outline: none;
-}
-
-body {
-  @apply bg-canvas text-ink antialiased;
-  font-family: var(--font-sans);
-  margin: 0;
-  padding: 0;
-}
-
-/* Custom scrollbars */
+/* Custom scrollbars for data tables */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

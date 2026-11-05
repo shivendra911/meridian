@@ -44,7 +44,7 @@ export const FairnessPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white border-l-4 border-l-[#0B1B3D] border border-slate-200 rounded p-5 shadow-subtle flex items-start justify-between">
+      <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-subtle flex items-start justify-between">
         <div>
           <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
             SECTION 9.3 &bull; AI GOVERNANCE FAIRNESS &amp; SENSITIVE ATTRIBUTE AUDITING
@@ -131,7 +131,7 @@ export const FairnessPage: React.FC = () => {
             <tbody className="divide-y divide-slate-100 font-mono">
               {audit.slice_reports.map((s) => (
                 <tr key={s.slice} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-[#0B1B3D] font-sans">{s.slice}</td>
+                  <td className="py-2.5 px-4 font-bold text-navy-900 font-sans">{s.slice}</td>
                   <td className="py-2.5 px-4 text-slate-700">{s.sample_size}</td>
                   <td className="py-2.5 px-4 text-slate-800 font-semibold">{s.mean_cgpa.toFixed(2)}</td>
                   <td className="py-2.5 px-4 text-slate-800">{s.avg_predicted_probability}%</td>

@@ -72,7 +72,7 @@ export const UniversalObjectWorkspace: React.FC<UniversalObjectWorkspaceProps> =
   return (
     <div className="space-y-6">
       {/* 1. Universal Object Masthead Ribbon */}
-      <div className="bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded-lg p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded-lg p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           {/* Breadcrumbs */}
           <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mb-1.5 font-medium">
@@ -150,7 +150,7 @@ export const UniversalObjectWorkspace: React.FC<UniversalObjectWorkspaceProps> =
                 <tbody className="divide-y divide-slate-100 font-mono">
                   {relatedRecords.map((rec) => (
                     <tr key={rec.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="py-2.5 px-3 font-bold text-[#8C1515]">{rec.id}</td>
+                      <td className="py-2.5 px-3 font-bold text-cardinal">{rec.id}</td>
                       <td className="py-2.5 px-3 font-sans text-slate-600 font-medium">
                         {rec.type}
                       </td>
@@ -164,7 +164,7 @@ export const UniversalObjectWorkspace: React.FC<UniversalObjectWorkspaceProps> =
                       <td className="py-2.5 px-3 text-right">
                         <button
                           onClick={() => onNavigateRecord?.(rec.type, rec.id)}
-                          className="text-[11px] font-semibold text-[#8C1515] hover:underline cursor-pointer"
+                          className="text-[11px] font-semibold text-cardinal hover:underline cursor-pointer"
                         >
                           Inspect &rarr;
                         </button>
@@ -252,7 +252,7 @@ export const UniversalObjectWorkspace: React.FC<UniversalObjectWorkspaceProps> =
                 className="p-3 border border-slate-200 rounded-lg bg-white flex items-center justify-between gap-3 text-xs"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded bg-red-50 text-[#8C1515] flex items-center justify-center shrink-0 font-bold font-mono text-[10px]">
+                  <div className="w-8 h-8 rounded bg-red-50 text-cardinal flex items-center justify-center shrink-0 font-bold font-mono text-[10px]">
                     PDF
                   </div>
                   <div>
