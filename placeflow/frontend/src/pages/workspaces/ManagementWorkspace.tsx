@@ -194,7 +194,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
               Statutory Pack
             </Button>
             <Button
-              variant="cardinal"
+              variant="primary"
               size="sm"
               onClick={() => handleRunAiQuery('Provide executive institutional health brief')}
             >
@@ -357,7 +357,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
               />
             </div>
             <Button
-              variant="cardinal"
+              variant="primary"
               size="sm"
               loading={isQuerying}
               disabled={!executiveQuery.trim()}
@@ -462,7 +462,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
                   </p>
                   <div className="mt-3 flex items-center gap-3">
                     <Button
-                      variant="cardinal"
+                      variant="primary"
                       size="sm"
                       onClick={() => onNavigateTab?.('academic')}
                     >
@@ -783,7 +783,7 @@ export const ManagementWorkspace: React.FC<{ onNavigateTab?: (tab: string) => vo
                 DPDP Act 2023, UGC Autonomous Reporting, and NIRF Audit Packs
               </p>
             </div>
-            <Button variant="cardinal" size="sm" onClick={() => onNavigateTab?.('nirf')}>
+            <Button variant="primary" size="sm" onClick={() => onNavigateTab?.('nirf')}>
               Open NIRF Module
             </Button>
           </div>

@@ -4,6 +4,7 @@ import { LucideIcon, HelpCircle, TrendingUp, TrendingDown, Minus } from 'lucide-
 export interface StatCardProps {
   label: string;
   value: string | number;
+  hint?: string;
   subValue?: string;
   change?: string;
   changeType?: 'up' | 'down' | 'neutral';
@@ -19,12 +20,11 @@ export interface StatCardProps {
 export const StatCard: React.FC<StatCardProps> = ({
   label,
   value,
+  hint,
   subValue,
   change,
   changeType = 'neutral',
   icon: Icon,
-  iconColor = 'text-[#8C1515]',
-  iconBg = 'bg-red-50',
   explainTooltip,
   actionSlot,
   onClick,
@@ -33,50 +33,61 @@ export const StatCard: React.FC<StatCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`bg-white border border-slate-200 rounded p-4 shadow-xs transition-all hover:border-slate-300 ${
-        onClick ? 'cursor-pointer hover:shadow-sm' : ''
+      className={`rounded-lg border border-line bg-surface p-4 transition-colors ${
+        onClick ? 'cursor-pointer hover:border-slate-300' : ''
       } ${className}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 uppercase tracking-wider truncate">
-            <span>{label}</span>
+          <div className="flex items-center gap-1.5">
+            <p className="text-xs font-medium uppercase tracking-wide text-ink-muted truncate m-0">
+              {label}
+            </p>
             {explainTooltip && (
-              <span title={explainTooltip} className="cursor-help text-slate-400 hover:text-slate-600">
-                <HelpCircle size={12} />
+              <span
+                title={explainTooltip}
+                className="cursor-help text-ink-muted/70 hover:text-ink shrink-0"
+              >
+                <HelpCircle size={13} />
               </span>
             )}
           </div>
 
-          <div className="mt-1 flex items-baseline gap-2">
-            <span className="font-serif font-bold text-2xl text-slate-900 tracking-tight">
+          <div className="mt-2 flex items-baseline gap-2">
+            <p className="text-2xl font-semibold tabular-nums text-ink m-0">
               {value}
-            </span>
+            </p>
             {subValue && (
-              <span className="text-xs text-slate-400 font-mono font-medium">
+              <span className="text-xs text-ink-muted font-medium tabular-nums">
                 {subValue}
               </span>
             )}
           </div>
 
+          {hint && (
+            <p className="mt-1 text-xs text-ink-muted leading-tight m-0">
+              {hint}
+            </p>
+          )}
+
           {change && (
-            <div className="mt-1.5 flex items-center gap-1 text-[11px] font-mono">
+            <div className="mt-1.5 flex items-center gap-1 text-xs tabular-nums">
               {changeType === 'up' && (
-                <TrendingUp size={12} className="text-emerald-600" />
+                <TrendingUp size={13} className="text-success shrink-0" />
               )}
               {changeType === 'down' && (
-                <TrendingDown size={12} className="text-red-600" />
+                <TrendingDown size={13} className="text-danger shrink-0" />
               )}
               {changeType === 'neutral' && (
-                <Minus size={12} className="text-slate-400" />
+                <Minus size={13} className="text-ink-muted shrink-0" />
               )}
               <span
-                className={`font-semibold ${
+                className={`font-medium ${
                   changeType === 'up'
-                    ? 'text-emerald-700'
+                    ? 'text-success'
                     : changeType === 'down'
-                    ? 'text-red-700'
-                    : 'text-slate-500'
+                    ? 'text-danger'
+                    : 'text-ink-muted'
                 }`}
               >
                 {change}
@@ -86,16 +97,13 @@ export const StatCard: React.FC<StatCardProps> = ({
         </div>
 
         {Icon && (
-          <div
-            className={`w-9 h-9 rounded flex items-center justify-center shrink-0 border border-black/5 ${iconBg} ${iconColor}`}
-          >
-            <Icon size={18} />
+          <div className="w-8 h-8 rounded-md bg-canvas border border-line flex items-center justify-center shrink-0 text-ink-muted">
+            <Icon size={16} />
           </div>
         )}
       </div>
 
-      {actionSlot && <div className="mt-3 pt-2.5 border-t border-slate-100">{actionSlot}</div>}
+      {actionSlot && <div className="mt-3 pt-2.5 border-t border-line">{actionSlot}</div>}
     </div>
   );
 };
-

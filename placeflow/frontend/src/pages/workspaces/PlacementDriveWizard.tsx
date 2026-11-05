@@ -45,7 +45,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
   const [ctc, setCtc] = useState('32.5');
   const [location, setLocation] = useState('Bengaluru / Hyderabad');
   const [jobDescription, setJobDescription] = useState(
-    'Seeking passionate software engineers to develop high-throughput distributed systems, storage fabrics, and cloud telemetry solutions.'
+    'Seeking engineers to design high-throughput distributed systems, telemetry engines, and cloud fabric solutions.'
   );
 
   // Step 2 State: Eligibility
@@ -80,7 +80,6 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
 
   // Real-time qualifying student estimator
   const qualifyingEstimates = useMemo(() => {
-    // Total candidate pool in selected branches
     const branchPools: Record<string, number> = {
       CSE: 240,
       IT: 180,
@@ -90,16 +89,10 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
       MECH: 210,
     };
     const totalInBranches = selectedBranches.reduce((sum, b) => sum + (branchPools[b] || 100), 0);
-
-    // Apply CGPA filter discount
     const cgpaFraction = minCgpa >= 8.5 ? 0.45 : minCgpa >= 8.0 ? 0.65 : minCgpa >= 7.5 ? 0.8 : 0.92;
     const cgpaQualified = Math.round(totalInBranches * cgpaFraction);
-
-    // Apply Backlog filter discount
     const backlogFraction = maxBacklogs === 0 ? 0.88 : maxBacklogs === 1 ? 0.95 : 1.0;
     const backlogQualified = Math.round(cgpaQualified * backlogFraction);
-
-    // Consent verified count
     const consentVerified = Math.round(backlogQualified * 0.97);
 
     return {
@@ -152,24 +145,24 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
       subtitle="Guided step-by-step drive wizard with deterministic eligibility simulation"
       size="xl"
     >
-      <div className="space-y-6">
+      <div className="space-y-6 font-sans">
         {/* Step Progress Stepper */}
         <div>
           <div className="flex items-center justify-between text-xs mb-2">
-            <span className="font-bold text-slate-700 uppercase tracking-wider font-mono">
-              STEP {currentStep} OF {totalSteps}:{' '}
+            <span className="font-semibold text-ink uppercase tracking-wide">
+              Step {currentStep} of {totalSteps}:{' '}
               {currentStep === 1 && 'Company & Opportunity'}
-              {currentStep === 2 && 'Eligibility & Candidate Filtering'}
-              {currentStep === 3 && 'Selection Process & Assessment Rounds'}
-              {currentStep === 4 && 'Superday Window & Clash Detection'}
+              {currentStep === 2 && 'Eligibility & Filtering'}
+              {currentStep === 3 && 'Selection Workflow'}
+              {currentStep === 4 && 'Superday Window & Clash Solver'}
               {currentStep === 5 && 'Intake Quotas & Acceptance Policy'}
-              {currentStep === 6 && 'Review, Simulation & Publication'}
+              {currentStep === 6 && 'Review, Simulation & Publish'}
             </span>
-            <span className="font-semibold text-[#8C1515] font-mono">{progressPct}% Complete</span>
+            <span className="font-medium text-brand tabular-nums">{progressPct}% Complete</span>
           </div>
-          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-line h-1.5 rounded-full overflow-hidden">
             <div
-              className="bg-[#8C1515] h-full transition-all duration-300 rounded-full"
+              className="bg-brand h-full transition-all duration-150 rounded-full"
               style={{ width: `${progressPct}%` }}
             />
           </div>
@@ -178,22 +171,22 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
         {/* STEP 1: Company & Opportunity */}
         {currentStep === 1 && (
           <div className="space-y-4">
-            <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-900 flex items-start gap-2.5">
-              <Info size={16} className="text-blue-600 shrink-0 mt-0.5" />
+            <div className="p-3 bg-canvas border border-line rounded-lg text-xs text-ink-muted flex items-start gap-2.5">
+              <Info size={16} className="text-brand shrink-0 mt-0.5" />
               <span>
-                Select a verified corporate partner from the institutional registry. Position terms will automatically inherit your institution's placement charter rules.
+                Select a verified corporate partner from the institutional registry. Position terms automatically inherit your campus placement charter rules.
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-ink mb-1">
                   Corporate Partner *
                 </label>
                 <select
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-[#8C1515]/20 focus:border-[#8C1515]"
+                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
                 >
                   <option value="Google India">Google India (Tier 1 Global)</option>
                   <option value="Microsoft IDC">Microsoft IDC (Tier 1 Global)</option>
@@ -205,13 +198,13 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-ink mb-1">
                   Opportunity Tier *
                 </label>
                 <select
                   value={tier}
                   onChange={(e) => setTier(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-[#8C1515]/20 focus:border-[#8C1515]"
+                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
                 >
                   <option value="SUPER_DREAM">Super Dream (&gt; ₹20 LPA)</option>
                   <option value="DREAM">Dream (₹10 - ₹20 LPA)</option>
@@ -223,20 +216,20 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-ink mb-1">
                   Job Position Title *
                 </label>
                 <input
                   type="text"
                   value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-[#8C1515]/20 focus:border-[#8C1515]"
+                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
                   placeholder="e.g. SDE-1 (Distributed Systems)"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-ink mb-1">
                   CTC Package (INR LPA) *
                 </label>
                 <div className="relative">
@@ -244,9 +237,9 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                     type="text"
                     value={ctc}
                     onChange={(e) => setCtc(e.target.value)}
-                    className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white pl-7 font-mono font-semibold"
+                    className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface pl-7 font-mono font-medium tabular-nums text-ink focus:border-brand focus:ring-1 focus:ring-brand"
                   />
-                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs">
+                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-muted text-xs">
                     ₹
                   </span>
                 </div>
@@ -254,41 +247,40 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-medium text-ink mb-1">
                 Posting Location(s)
               </label>
               <input
                 type="text"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
+                className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
                 placeholder="e.g. Bengaluru, Hyderabad, Gurugram"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="block text-xs font-medium text-ink mb-1">
                 Job Overview &amp; Responsibilities
               </label>
               <textarea
                 rows={3}
                 value={jobDescription}
                 onChange={(e) => setJobDescription(e.target.value)}
-                className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
+                className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
               />
             </div>
           </div>
         )}
 
-        {/* STEP 2: Eligibility & Real-time Candidate Estimator */}
+        {/* STEP 2: Eligibility & Candidate Estimator */}
         {currentStep === 2 && (
           <div className="space-y-5">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              {/* Left Column: Form Controls */}
               <div className="lg:col-span-2 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-xs font-medium text-ink mb-1">
                       Minimum CGPA Cutoff
                     </label>
                     <input
@@ -298,21 +290,21 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                       max="10.0"
                       value={minCgpa}
                       onChange={(e) => setMinCgpa(parseFloat(e.target.value) || 0)}
-                      className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white font-mono font-semibold"
+                      className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface font-mono font-medium tabular-nums text-ink focus:border-brand focus:ring-1 focus:ring-brand"
                     />
-                    <span className="text-[11px] text-slate-400 mt-1 block">
-                      Autonomous scale: 10.0 max
+                    <span className="text-[11px] text-ink-muted mt-1 block">
+                      Scale: 10.0 max
                     </span>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    <label className="block text-xs font-medium text-ink mb-1">
                       Active Backlogs Permitted
                     </label>
                     <select
                       value={maxBacklogs}
                       onChange={(e) => setMaxBacklogs(parseInt(e.target.value, 10))}
-                      className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
+                      className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
                     >
                       <option value="0">0 Active Backlogs (Strict Zero)</option>
                       <option value="1">At most 1 Active Backlog</option>
@@ -322,13 +314,13 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  <label className="block text-xs font-medium text-ink mb-1">
                     Graduating Batch Year
                   </label>
                   <select
                     value={targetBatch}
                     onChange={(e) => setTargetBatch(e.target.value)}
-                    className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
+                    className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
                   >
                     <option value="2027">Batch of 2027 (Active Superday Cohort)</option>
                     <option value="2026">Batch of 2026 (Graduating / Immediate)</option>
@@ -337,7 +329,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-2">
+                  <label className="block text-xs font-medium text-ink mb-2">
                     Eligible Academic Disciplines / Branches
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -355,10 +347,10 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                           key={branch.code}
                           type="button"
                           onClick={() => toggleBranch(branch.code)}
-                          className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-all flex items-center gap-1.5 ${
+                          className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition-colors duration-150 flex items-center gap-1.5 cursor-pointer ${
                             isSelected
-                              ? 'bg-[#8C1515] text-white border-[#8C1515] shadow-xs'
-                              : 'bg-white text-slate-700 border-slate-300 hover:border-slate-400'
+                              ? 'bg-brand text-white border-brand'
+                              : 'bg-surface text-ink border-line hover:border-slate-300'
                           }`}
                         >
                           {isSelected && <Check size={12} />}
@@ -370,55 +362,55 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 </div>
               </div>
 
-              {/* Right Column: Live Qualifying Student Estimator (Per Section 4.D) */}
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+              {/* Right Column: Live Estimator */}
+              <div className="bg-canvas border border-line rounded-lg p-4 space-y-3">
                 <div className="flex items-center gap-2">
-                  <Users size={16} className="text-[#8C1515]" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                  <Users size={16} className="text-brand" />
+                  <span className="text-xs font-semibold uppercase tracking-wide text-ink">
                     Live Pool Simulation
                   </span>
                 </div>
 
-                <div className="p-3 bg-white border border-slate-200 rounded-lg text-center">
-                  <div className="text-[11px] text-slate-500 uppercase font-semibold">
-                    Estimated Qualifying Candidates
+                <div className="p-3 bg-surface border border-line rounded-lg text-center">
+                  <div className="text-[11px] text-ink-muted uppercase font-medium">
+                    Estimated Qualifying Pool
                   </div>
-                  <div className="text-3xl font-serif font-bold text-[#8C1515] mt-1">
+                  <div className="text-3xl font-semibold tabular-nums text-brand mt-1">
                     {qualifyingEstimates.finalEligible}
                   </div>
-                  <div className="text-[11px] text-emerald-700 font-medium mt-0.5">
-                    Ready for instant one-click notification
+                  <div className="text-[11px] text-success font-medium mt-0.5">
+                    Ready for automated batch dispatch
                   </div>
                 </div>
 
                 <div className="space-y-2 text-xs pt-1">
-                  <div className="flex justify-between text-slate-600">
+                  <div className="flex justify-between text-ink-muted">
                     <span>Total in Selected Branches:</span>
-                    <span className="font-mono font-semibold">
+                    <span className="font-medium tabular-nums text-ink">
                       {qualifyingEstimates.totalInBranches}
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-600">
+                  <div className="flex justify-between text-ink-muted">
                     <span>Passed CGPA &gt;= {minCgpa}:</span>
-                    <span className="font-mono font-semibold text-emerald-700">
+                    <span className="font-medium tabular-nums text-success">
                       {qualifyingEstimates.cgpaQualified}
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-600">
+                  <div className="flex justify-between text-ink-muted">
                     <span>Passed Backlog Limit ({maxBacklogs}):</span>
-                    <span className="font-mono font-semibold text-emerald-700">
+                    <span className="font-medium tabular-nums text-success">
                       {qualifyingEstimates.backlogQualified}
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-600">
+                  <div className="flex justify-between text-ink-muted">
                     <span>DPDP Consent Granted:</span>
-                    <span className="font-mono font-semibold text-emerald-700">
+                    <span className="font-medium tabular-nums text-success">
                       {qualifyingEstimates.finalEligible}
                     </span>
                   </div>
-                  <div className="flex justify-between text-amber-700 pt-1 border-t border-slate-200">
+                  <div className="flex justify-between text-warning pt-1 border-t border-line">
                     <span>Pending Verification Flags:</span>
-                    <span className="font-mono font-semibold">
+                    <span className="font-medium tabular-nums">
                       {qualifyingEstimates.flaggedDataIssues} students
                     </span>
                   </div>
@@ -428,15 +420,15 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
           </div>
         )}
 
-        {/* STEP 3: Selection Process & Rounds */}
+        {/* STEP 3: Selection Workflow */}
         {currentStep === 3 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
+                <h4 className="text-xs font-semibold uppercase tracking-wide text-ink m-0">
                   Drive Assessment Stages &amp; Pipeline
                 </h4>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-ink-muted m-0 mt-0.5">
                   Configure evaluation milestones from online screening to final offer release
                 </p>
               </div>
@@ -464,22 +456,22 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
               {rounds.map((round, idx) => (
                 <div
                   key={round.id}
-                  className="p-3 bg-white border border-slate-200 rounded-lg flex items-center justify-between gap-4 text-xs"
+                  className="p-3 bg-surface border border-line rounded-lg flex items-center justify-between gap-4 text-xs"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-full bg-[#8C1515] text-white flex items-center justify-center font-bold font-mono text-[11px]">
+                    <div className="w-6 h-6 rounded-md bg-brand text-white flex items-center justify-center font-semibold text-[11px] tabular-nums">
                       {idx + 1}
                     </div>
                     <div>
-                      <span className="font-bold text-slate-900 block">{round.name}</span>
-                      <span className="text-[11px] text-slate-500">
+                      <span className="font-semibold text-ink block">{round.name}</span>
+                      <span className="text-[11px] text-ink-muted">
                         Duration: {round.duration} &bull; Mode: {round.type} &bull;{' '}
                         {'platform' in round ? round.platform : round.venue}
                       </span>
                     </div>
                   </div>
 
-                  <Badge variant="info" size="xs">
+                  <Badge variant="neutral" size="xs">
                     Stage {idx + 1}
                   </Badge>
                 </div>
@@ -488,30 +480,30 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
           </div>
         )}
 
-        {/* STEP 4: Superday Window & Clash Solver */}
+        {/* STEP 4: Superday Window & Clash Detection */}
         {currentStep === 4 && (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-ink mb-1">
                   Scheduled Drive Date
                 </label>
                 <input
                   type="date"
                   value={driveDate}
                   onChange={(e) => setDriveDate(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white font-mono"
+                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-ink mb-1">
                   Superday Time Block
                 </label>
                 <select
                   value={superdaySlot}
                   onChange={(e) => setSuperdaySlot(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
+                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink"
                 >
                   <option value="SLOT_A_MORNING">Morning Block A (08:30 - 13:00 IST)</option>
                   <option value="SLOT_B_AFTERNOON">Afternoon Block B (13:30 - 18:00 IST)</option>
@@ -521,24 +513,23 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Reserved Computer Terminal Lab Venue
+              <label className="block text-xs font-medium text-ink mb-1">
+                Reserved Terminal Lab Venue
               </label>
               <input
                 type="text"
                 value={assignedLab}
                 onChange={(e) => setAssignedLab(e.target.value)}
-                className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
+                className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink"
               />
             </div>
 
-            {/* Clash Solver Result Banner */}
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-3 text-xs text-emerald-950">
-              <CheckCircle2 size={18} className="text-emerald-600 shrink-0 mt-0.5" />
+            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-3 text-xs text-ink">
+              <CheckCircle2 size={18} className="text-success shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold">Autonomous Superday Clash Solver: Zero Conflicts</span>
-                <p className="text-[11px] text-emerald-800 mt-0.5">
-                  No competing Day 1 corporate partner holds a lock on Lab 3 & 4 during this time window. Student interview slots will be automatically interleaved with academic lectures.
+                <span className="font-semibold text-success">Superday Conflict Solver: Zero Clashes Detected</span>
+                <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed m-0">
+                  No competing Day-1 corporate partner holds a lock on Lab 3 &amp; 4 during this schedule. Student interview slots are automatically synchronized with academic timetables.
                 </p>
               </div>
             </div>
@@ -550,26 +541,26 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Anticipated Hiring Intake Target
+                <label className="block text-xs font-medium text-ink mb-1">
+                  Target Hiring Intake
                 </label>
                 <input
                   type="number"
                   value={intakeGoal}
                   onChange={(e) => setIntakeGoal(parseInt(e.target.value, 10) || 0)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white font-mono font-semibold"
+                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink font-mono font-medium tabular-nums"
                 />
-                <span className="text-[11px] text-slate-400 mt-1 block">Expected offers</span>
+                <span className="text-[11px] text-ink-muted mt-1 block">Expected offers</span>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-ink mb-1">
                   Candidate Offer Acceptance Window
                 </label>
                 <select
                   value={acceptanceDeadlineHours}
                   onChange={(e) => setAcceptanceDeadlineHours(parseInt(e.target.value, 10))}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
+                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink"
                 >
                   <option value="24">24 Hours (Fast-track Superday)</option>
                   <option value="48">48 Hours (Standard Placement Policy v3)</option>
@@ -578,12 +569,12 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+            <div className="p-4 bg-canvas border border-line rounded-lg flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-semibold text-ink block">
                   Encourage Gender Diversity &amp; Special Demographics
                 </span>
-                <span className="text-[11px] text-slate-500">
+                <span className="text-[11px] text-ink-muted">
                   Highlight candidate profiles from underrepresented engineering disciplines
                 </span>
               </div>
@@ -591,58 +582,58 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 type="checkbox"
                 checked={diversityFocus}
                 onChange={(e) => setDiversityFocus(e.target.checked)}
-                className="w-4 h-4 text-[#8C1515] rounded focus:ring-[#8C1515]"
+                className="w-4 h-4 rounded text-brand focus:ring-brand"
               />
             </div>
           </div>
         )}
 
-        {/* STEP 6: Review, Simulation & Publication */}
+        {/* STEP 6: Review, Simulation & Publish */}
         {currentStep === 6 && (
           <div className="space-y-4">
             <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg flex items-start gap-3">
-              <Sparkles size={20} className="text-emerald-700 shrink-0 mt-0.5" />
+              <Sparkles size={18} className="text-success shrink-0 mt-0.5" />
               <div>
-                <span className="text-xs font-bold text-emerald-950 block">
-                  Deterministic Pre-Publication Simulation Passed
+                <span className="text-xs font-semibold text-success block">
+                  Pre-Publication Verification Complete
                 </span>
-                <p className="text-[11px] text-emerald-800 mt-0.5 leading-relaxed">
-                  Drive parameters are completely verified against Institutional Placement Charter v3. Exactly <strong>{qualifyingEstimates.finalEligible} students</strong> will receive instant verified notifications.
+                <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed m-0">
+                  Drive parameters are completely verified against Institutional Placement Charter v3. Exactly <strong>{qualifyingEstimates.finalEligible} candidates</strong> will receive automated notifications.
                 </p>
               </div>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="bg-canvas p-4 rounded-lg border border-line grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-ink-muted block text-[10px] uppercase font-medium">
                   Partner
                 </span>
-                <span className="font-bold text-slate-900">{companyName}</span>
+                <span className="font-semibold text-ink">{companyName}</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-ink-muted block text-[10px] uppercase font-medium">
                   Package
                 </span>
-                <span className="font-mono font-bold text-emerald-700">₹{ctc} LPA</span>
+                <span className="font-semibold tabular-nums text-success">₹{ctc} LPA</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-ink-muted block text-[10px] uppercase font-medium">
                   Eligible Pool
                 </span>
-                <span className="font-mono font-bold text-[#8C1515]">
+                <span className="font-semibold tabular-nums text-brand">
                   {qualifyingEstimates.finalEligible} Candidates
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-ink-muted block text-[10px] uppercase font-medium">
                   Date
                 </span>
-                <span className="font-mono font-bold text-slate-900">{driveDate}</span>
+                <span className="font-semibold tabular-nums text-ink">{driveDate}</span>
               </div>
             </div>
 
-            <div className="text-xs text-slate-600 bg-white p-3 border border-slate-200 rounded-lg space-y-1">
-              <span className="font-semibold text-slate-800 block">Included Disciplines:</span>
+            <div className="text-xs text-ink-muted bg-surface p-3 border border-line rounded-lg space-y-1">
+              <span className="font-semibold text-ink block">Included Disciplines:</span>
               <div className="flex flex-wrap gap-1.5">
                 {selectedBranches.map((b) => (
                   <Badge key={b} variant="neutral" size="xs">
@@ -655,7 +646,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
         )}
 
         {/* Wizard Footer Controls */}
-        <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+        <div className="flex items-center justify-between pt-4 border-t border-line">
           {currentStep > 1 ? (
             <Button
               variant="outline"
@@ -673,7 +664,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
 
           {currentStep < totalSteps ? (
             <Button
-              variant="cardinal"
+              variant="primary"
               size="sm"
               onClick={() => setCurrentStep(currentStep + 1)}
               rightIcon={<ArrowRight size={13} />}
@@ -682,12 +673,12 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
             </Button>
           ) : (
             <Button
-              variant="cardinal"
+              variant="primary"
               size="sm"
               onClick={handlePublish}
               rightIcon={<Send size={13} />}
             >
-              Publish Drive &amp; Notify Eligible Candidates
+              Publish Drive &amp; Notify Candidates
             </Button>
           )}
         </div>
@@ -695,4 +686,3 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
     </Modal>
   );
 };
-

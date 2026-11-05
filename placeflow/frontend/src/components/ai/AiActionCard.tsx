@@ -89,7 +89,7 @@ export const AiActionCard: React.FC<AiActionCardProps> = ({
 
           <div className="mt-3 flex items-center justify-between">
             <Button
-              variant="cardinal"
+              variant="primary"
               size="xs"
               onClick={onPrimaryAction}
               rightIcon={<ArrowRight size={11} />}

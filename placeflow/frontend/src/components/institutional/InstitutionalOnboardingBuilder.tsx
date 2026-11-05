@@ -503,7 +503,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
 
           {step < totalSteps ? (
             <Button
-              variant="cardinal"
+              variant="primary"
               size="sm"
               onClick={() => setStep(step + 1)}
               rightIcon={<ArrowRight size={13} />}
@@ -512,7 +512,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
             </Button>
           ) : (
             <Button
-              variant="cardinal"
+              variant="primary"
               size="sm"
               onClick={handleActivate}
               loading={isActivating}

@@ -1,7 +1,24 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
 
-/* Universally reset all buttons, inputs, selects, links to modern clean primitives */
+@theme {
+  --font-sans: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --color-canvas: #F6F7F9;
+  --color-surface: #FFFFFF;
+  --color-line: #E5E7EB;
+  --color-ink: #111827;
+  --color-ink-muted: #6B7280;
+
+  --color-brand: #0B1B3D;
+  --color-brand-hover: #16295A;
+  --color-accent: #8C1515;
+
+  --color-success: #15803D;
+  --color-warning: #B45309;
+  --color-danger: #DC2626;
+  --color-info: #1D4ED8;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -35,32 +52,14 @@ input, select, textarea {
   outline: none;
 }
 
-:root {
-  --navy-900: #0B1B3D;
-  --obsidian-900: #090D16;
-  --cardinal: #8C1515;
-  --cardinal-light: #FDF2F2;
-  --slate-50: #F8FAFC;
-  --slate-100: #F1F5F9;
-  --slate-200: #E2E8F0;
-  --slate-300: #CBD5E1;
-  --slate-500: #64748B;
-  --slate-700: #334155;
-  --slate-800: #1E293B;
-  --slate-900: #0F172A;
-}
-
 body {
+  @apply bg-canvas text-ink antialiased;
+  font-family: var(--font-sans);
   margin: 0;
   padding: 0;
-  background-color: #F8FAFC;
-  color: #1E293B;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbars for high-density ledgers */
+/* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -69,9 +68,9 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #E5E7EB;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748B;
+  background: #CBD5E1;
 }

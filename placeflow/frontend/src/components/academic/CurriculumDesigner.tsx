@@ -172,7 +172,7 @@ export const CurriculumDesigner: React.FC = () => {
             Run Curriculum Simulation
           </Button>
           <Button
-            variant="cardinal"
+            variant="primary"
             size="sm"
             onClick={() => alert('Gazette version B.Tech CSE v2026.1 published successfully!')}
             leftIcon={<FileCheck2 size={13} />}
@@ -371,7 +371,7 @@ export const CurriculumDesigner: React.FC = () => {
 
             <div className="pt-2 border-t border-slate-100">
               <Button
-                variant="cardinal"
+                variant="primary"
                 size="sm"
                 className="w-full"
                 onClick={handleRunSimulation}
@@ -455,7 +455,7 @@ export const CurriculumDesigner: React.FC = () => {
                 Dismiss
               </Button>
               <Button
-                variant="cardinal"
+                variant="primary"
                 size="sm"
                 onClick={() => {
                   setIsDrawerOpen(false);

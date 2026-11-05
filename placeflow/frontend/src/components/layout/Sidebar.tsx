@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   LayoutDashboard,
   Users,
@@ -10,20 +10,15 @@ import {
   Award,
   Radar,
   Bot,
-  Calculator,
-  ShieldCheck,
-  History,
-  Database,
-  BarChart3,
-  Network,
-  Landmark,
   GraduationCap,
-  Sparkles,
-  BookOpen,
+  ShieldCheck,
+  ChevronDown,
+  History,
+  Calculator,
+  Network,
+  BarChart3,
 } from 'lucide-react';
-import { useTenant } from '../../context/TenantContext';
-import { usePersona } from '../../context/PersonaContext';
-import { Badge } from '../ui/Badge';
+import { usePersona, UserPersona } from '../../context/PersonaContext';
 
 interface SidebarProps {
   currentTab: string;
@@ -31,35 +26,35 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => {
-  const { activeTenant, activeInstitution } = useTenant();
-  const { activePersona, personaConfig } = usePersona();
+  const { activePersona, switchPersona } = usePersona();
+  const [showOtherRoles, setShowOtherRoles] = useState(false);
 
-  // Dynamically resolve navigation sections based on the active operating persona
-  const getSectionsForPersona = () => {
+  // Sections tailored to the active role
+  const getNavSections = () => {
     if (activePersona === 'STUDENT') {
       return [
         {
-          title: 'Student Academic Portal',
+          title: 'Student Hub',
           items: [
-            { id: 'overview', label: 'My Workbench & Actions', icon: LayoutDashboard },
-            { id: 'academic', label: 'Course Registration & Curricula', icon: GraduationCap },
-            { id: 'whatif', label: 'Degree Progression Simulator', icon: Calculator },
+            { id: 'overview', label: 'My Workbench', icon: LayoutDashboard },
+            { id: 'academic', label: 'Course Basket', icon: GraduationCap },
+            { id: 'whatif', label: 'Degree Progression', icon: Calculator },
           ],
         },
         {
-          title: 'Career & Placements',
+          title: 'Career & Drives',
           items: [
-            { id: 'jobs', label: 'Active Placement Drives (JNFs)', icon: Briefcase },
-            { id: 'applications', label: 'My Applications & Status', icon: FileText },
-            { id: 'interviews', label: 'My Interview Schedule', icon: Calendar },
-            { id: 'placements', label: 'Offers & Placement Register', icon: Award },
+            { id: 'jobs', label: 'Active Placement Drives', icon: Briefcase },
+            { id: 'applications', label: 'My Applications', icon: FileText },
+            { id: 'interviews', label: 'Interview Schedule', icon: Calendar },
+            { id: 'placements', label: 'Offers & Registry', icon: Award },
           ],
         },
         {
-          title: 'Privacy & Profile',
+          title: 'Profile & Privacy',
           items: [
-            { id: 'students', label: 'My Verified Dossier', icon: Users },
-            { id: 'consent', label: 'DPDP Privacy Consents', icon: ShieldCheck },
+            { id: 'students', label: 'Verified Dossier', icon: Users },
+            { id: 'consent', label: 'DPDP Consents', icon: ShieldCheck },
           ],
         },
       ];
@@ -68,20 +63,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
     if (activePersona === 'FACULTY') {
       return [
         {
-          title: 'Faculty Teaching Workbench',
+          title: 'Faculty Workbench',
           items: [
-            { id: 'overview', label: 'Teaching Command Center', icon: LayoutDashboard },
-            { id: 'academic', label: 'Curriculum & Prerequisite DAG', icon: GraduationCap },
-            { id: 'students', label: 'Course Rosters & Advising', icon: Users },
-            { id: 'reports', label: 'Gradebook & CIE Moderation', icon: BarChart3 },
+            { id: 'overview', label: 'Teaching Center', icon: LayoutDashboard },
+            { id: 'academic', label: 'Curriculum DAG', icon: GraduationCap },
+            { id: 'students', label: 'Course Rosters', icon: Users },
+            { id: 'reports', label: 'Gradebook & CIE', icon: BarChart3 },
           ],
         },
         {
-          title: 'Recruitment & Student Mentoring',
+          title: 'Corporate & Mentoring',
           items: [
             { id: 'companies', label: 'Corporate Partners', icon: Building2 },
-            { id: 'jobs', label: 'Job Openings (JNFs)', icon: Briefcase },
-            { id: 'renege', label: 'Student Retention Radar', icon: Radar },
+            { id: 'jobs', label: 'Placement Drives', icon: Briefcase },
+            { id: 'renege', label: 'Retention Radar', icon: Radar },
           ],
         },
       ];
@@ -90,20 +85,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
     if (activePersona === 'HOD_DEAN') {
       return [
         {
-          title: 'Departmental Leadership',
+          title: 'Department Leadership',
           items: [
-            { id: 'overview', label: 'Department Command Hub', icon: LayoutDashboard },
-            { id: 'architecture', label: 'Organizational Structure & Hierarchy', icon: Network },
-            { id: 'academic', label: 'Curriculum Approval & Accreditation', icon: GraduationCap },
-            { id: 'reports', label: 'Departmental Standings & Reports', icon: BarChart3 },
+            { id: 'overview', label: 'Department Hub', icon: LayoutDashboard },
+            { id: 'architecture', label: 'Hierarchy Graph', icon: Network },
+            { id: 'academic', label: 'Curriculum Approval', icon: GraduationCap },
+            { id: 'reports', label: 'Department Reports', icon: BarChart3 },
           ],
         },
         {
-          title: 'Departmental Governance',
+          title: 'Governance',
           items: [
-            { id: 'iam', label: 'Faculty Roles & Delegations', icon: ShieldCheck },
-            { id: 'nirf', label: 'NIRF Departmental Metrics', icon: Calculator },
-            { id: 'fairness', label: 'Demographic Fairness Audit', icon: Database },
+            { id: 'iam', label: 'Faculty Roles', icon: ShieldCheck },
+            { id: 'nirf', label: 'NIRF Metrics', icon: Calculator },
           ],
         },
       ];
@@ -112,107 +106,152 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
     if (activePersona === 'MANAGEMENT') {
       return [
         {
-          title: 'Executive Institutional Oversight',
+          title: 'Executive Oversight',
           items: [
-            { id: 'overview', label: 'Institutional Command Hub', icon: LayoutDashboard },
-            { id: 'architecture', label: 'Multi-Campus Hierarchy Graph', icon: Network },
-            { id: 'nirf', label: 'NIRF Graduation Outcomes', icon: Calculator },
-            { id: 'reports', label: 'Statutory Audits & Pipeline Reports', icon: BarChart3 },
+            { id: 'overview', label: 'Command Hub', icon: LayoutDashboard },
+            { id: 'architecture', label: 'Multi-Campus Graph', icon: Network },
+            { id: 'nirf', label: 'NIRF Outcomes', icon: Calculator },
+            { id: 'reports', label: 'Statutory Audits', icon: BarChart3 },
           ],
         },
         {
-          title: 'Risk & Compliance',
+          title: 'Risk & Audit',
           items: [
-            { id: 'iam', label: 'Identity & Access Governance', icon: ShieldCheck },
+            { id: 'iam', label: 'Access Governance', icon: ShieldCheck },
             { id: 'consent', label: 'DPDP Consent Ledger', icon: ShieldCheck },
-            { id: 'agent-runs', label: 'Campus AI Trace Ledger', icon: History },
+            { id: 'agent-runs', label: 'AI Trace Ledger', icon: History },
           ],
         },
       ];
     }
 
-    // Default: TPO_PLACEMENT (Full Operations Directorate)
+    // Default: TPO_PLACEMENT (Primary Flagship Flow)
     return [
       {
-        title: 'Campus Operating System (CAMP-01/02)',
+        title: 'Placement Directorate',
         items: [
-          { id: 'overview', label: 'Institutional Command Hub', icon: LayoutDashboard },
-          { id: 'architecture', label: 'Topology & Hierarchy Graph', icon: Network },
-          { id: 'iam', label: 'Identity & Access Governance', icon: ShieldCheck },
-          { id: 'academic', label: 'Academic Lifecycle & Curricula', icon: GraduationCap },
-          { id: 'reports', label: 'Institutional Audits & Reports', icon: BarChart3 },
-        ],
-      },
-      {
-        title: 'Career & Placement Directorate',
-        items: [
-          { id: 'students', label: 'Candidate Registry (VTI)', icon: Users },
+          { id: 'overview', label: 'Command Overview', icon: LayoutDashboard },
+          { id: 'jobs', label: 'Placement Drives (JNFs)', icon: Briefcase },
           { id: 'companies', label: 'Corporate Partners', icon: Building2 },
-          { id: 'jobs', label: 'Job Openings (JNFs)', icon: Briefcase },
           { id: 'applications', label: 'Application Ledger', icon: FileText },
-          { id: 'interviews', label: 'Interview Schedule', icon: Calendar },
           { id: 'superday', label: 'Superday Clash Solver', icon: Zap },
           { id: 'placements', label: 'Placement Register', icon: Award },
+          { id: 'students', label: 'Candidate Registry', icon: Users },
         ],
       },
       {
-        title: 'Governance & Accreditation',
+        title: 'Governance & Campus AI',
         items: [
           { id: 'renege', label: 'Retention & Renege Radar', icon: Radar },
-          { id: 'nirf', label: 'NIRF GO Accreditation', icon: Calculator },
+          { id: 'nirf', label: 'NIRF Accreditation', icon: Calculator },
           { id: 'consent', label: 'DPDP Consent Ledger', icon: ShieldCheck },
+          { id: 'agent-runs', label: 'Campus AI Trace', icon: History },
         ],
       },
       {
-        title: 'Autonomous Multi-Agent AI',
+        title: 'Campus Architecture',
         items: [
-          { id: 'copilot', label: 'Autonomous Copilot Hub', icon: Bot },
-          { id: 'agent-runs', label: 'Agent Trace Ledger', icon: History },
-          { id: 'fairness', label: 'Demographic Fairness', icon: Database },
+          { id: 'academic', label: 'Curricula & Lifecycle', icon: GraduationCap },
+          { id: 'architecture', label: 'Campus Hierarchy', icon: Network },
+          { id: 'iam', label: 'Access Governance', icon: ShieldCheck },
         ],
       },
     ];
   };
 
-  const navSections = getSectionsForPersona();
+  const navSections = getNavSections();
 
   return (
-    <aside className="w-72 bg-[#090D16] text-slate-300 flex flex-col shrink-0 h-screen sticky top-0 border-r border-slate-800 select-none z-20 font-sans">
-      {/* Brand Directorate Crest */}
-      <div className="p-4 border-b border-slate-800 bg-[#060A12]">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded bg-[#8C1515] text-white flex items-center justify-center font-serif font-bold text-lg shadow-md border border-red-700 shrink-0">
-            P
-          </div>
-          <div className="min-w-0">
-            <div className="font-serif font-bold text-base text-white tracking-wide truncate">
-              PlaceFlow OS
-            </div>
-            <div className="text-[10px] text-amber-400 font-medium uppercase tracking-wider truncate">
-              India Multi-Tenant Platform
-            </div>
-          </div>
+    <aside className="w-[240px] bg-brand text-slate-300 flex flex-col shrink-0 min-h-screen border-r border-brand-hover select-none font-sans">
+      {/* 1. Brand Header with Cardinal Accent on Logo Mark Only */}
+      <div className="p-4 border-b border-white/10 flex items-center gap-2.5">
+        <div className="w-8 h-8 rounded-lg bg-accent text-white flex items-center justify-center font-bold text-sm tracking-tight shrink-0 shadow-xs">
+          M
         </div>
-
-        {/* Current Active Persona Chip */}
-        <div className="mt-3 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5 truncate">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
-            <span className="text-white font-medium text-[11px] truncate">
-              {personaConfig.title}
-            </span>
+        <div className="min-w-0">
+          <div className="font-semibold text-sm text-white tracking-tight truncate leading-tight">
+            Meridian
           </div>
-          <span className="text-[9px] bg-red-950 text-red-300 font-mono px-1 rounded uppercase">
-            {personaConfig.badgeLabel}
-          </span>
+          <div className="text-[11px] text-slate-400 truncate leading-tight mt-0.5">
+            Campus to Career OS
+          </div>
         </div>
       </div>
 
-      {/* Navigation Scrollable Body */}
-      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-5">
+      {/* 2. Flagship Persona Switcher (Student & TPO Front and Center) */}
+      <div className="px-3 pt-3 pb-2 border-b border-white/10">
+        <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5 px-1">
+          Active Workspace
+        </div>
+        <div className="grid grid-cols-2 gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
+          <button
+            onClick={() => {
+              switchPersona('TPO_PLACEMENT');
+              onSelectTab('overview');
+            }}
+            className={`px-2 py-1.5 rounded-md text-xs font-medium transition-all duration-150 text-center truncate ${
+              activePersona === 'TPO_PLACEMENT'
+                ? 'bg-surface text-ink font-semibold shadow-xs'
+                : 'text-slate-300 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            TPO Officer
+          </button>
+          <button
+            onClick={() => {
+              switchPersona('STUDENT');
+              onSelectTab('overview');
+            }}
+            className={`px-2 py-1.5 rounded-md text-xs font-medium transition-all duration-150 text-center truncate ${
+              activePersona === 'STUDENT'
+                ? 'bg-surface text-ink font-semibold shadow-xs'
+                : 'text-slate-300 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            Student
+          </button>
+        </div>
+
+        {/* Flagged Collapsible for Secondary Roles */}
+        <div className="mt-1.5">
+          <button
+            onClick={() => setShowOtherRoles(!showOtherRoles)}
+            className="w-full flex items-center justify-between px-1.5 py-1 text-[11px] text-slate-400 hover:text-slate-200 transition-colors"
+          >
+            <span>Additional Roles (Preview)</span>
+            <ChevronDown
+              size={12}
+              className={`transition-transform duration-150 ${showOtherRoles ? 'rotate-180' : ''}`}
+            />
+          </button>
+          {showOtherRoles && (
+            <div className="mt-1 space-y-0.5 pl-1 pr-1 pb-1">
+              {(['FACULTY', 'HOD_DEAN', 'MANAGEMENT'] as UserPersona[]).map((role) => (
+                <button
+                  key={role}
+                  onClick={() => {
+                    switchPersona(role);
+                    onSelectTab('overview');
+                  }}
+                  className={`w-full text-left px-2 py-1 rounded text-[11px] transition-colors ${
+                    activePersona === role
+                      ? 'bg-white/15 text-white font-medium'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  {role === 'FACULTY' ? 'Faculty Portal' : role === 'HOD_DEAN' ? 'HOD / Dean' : 'Executive Management'}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 3. Navigation List */}
+      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
         {navSections.map((section) => (
           <div key={section.title}>
-            <div className="px-2 mb-1.5 text-[9px] font-semibold tracking-wider text-slate-400 uppercase">
+            <div className="px-2 mb-1 text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
               {section.title}
             </div>
             <div className="space-y-0.5">
@@ -223,14 +262,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
                   <button
                     key={item.id}
                     onClick={() => onSelectTab(item.id)}
-                    className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded text-xs font-medium transition-colors text-left cursor-pointer border-0 ${
+                    className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs transition-colors duration-150 text-left ${
                       isActive
-                        ? 'bg-[#8C1515] text-white shadow-xs font-semibold'
-                        : 'bg-transparent text-slate-400 hover:text-slate-100 hover:bg-slate-800/60'
+                        ? 'bg-white/10 text-white font-semibold'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5 font-medium'
                     }`}
                   >
                     <Icon
-                      size={15}
+                      size={16}
                       className={isActive ? 'text-white' : 'text-slate-400'}
                     />
                     <span className="truncate">{item.label}</span>
@@ -242,16 +281,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
         ))}
       </nav>
 
-      {/* Footer System Architecture Info */}
-      <div className="p-3 border-t border-slate-800 bg-[#060A12] text-[10px] text-slate-400 space-y-1">
-        <div className="flex items-center justify-between">
-          <span>Engine:</span>
-          <span className="text-emerald-400 font-mono font-medium">Django + MongoDB 7</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <span>Campus AI:</span>
-          <span className="text-amber-400 font-mono">Gateway Live</span>
-        </div>
+      {/* 4. Footer System Badge */}
+      <div className="p-3 border-t border-white/10 text-[10px] text-slate-400 flex items-center justify-between">
+        <span className="truncate">Apex University &bull; Main</span>
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" title="Connected"></span>
       </div>
     </aside>
   );

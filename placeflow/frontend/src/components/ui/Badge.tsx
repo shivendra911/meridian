@@ -33,55 +33,55 @@ export const Badge: React.FC<BadgeProps> = ({
   className = '',
 }) => {
   const sizeStyles: Record<BadgeSize, string> = {
-    xs: 'text-[9px] px-1.5 py-0.2 gap-1 font-mono font-bold tracking-wider',
-    sm: 'text-[10px] px-2 py-0.5 gap-1.5 font-mono font-medium',
+    xs: 'text-[10px] px-1.5 py-0.5 gap-1 font-medium',
+    sm: 'text-[11px] px-2 py-0.5 gap-1.5 font-medium',
     md: 'text-xs px-2.5 py-1 gap-1.5 font-medium',
   };
 
   const variantStyles: Record<BadgeVariant, { container: string; dot: string }> = {
     success: {
-      container: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-      dot: 'bg-emerald-500',
+      container: 'bg-emerald-50 text-success border-emerald-200',
+      dot: 'bg-success',
     },
     warning: {
-      container: 'bg-amber-50 text-amber-800 border-amber-200',
-      dot: 'bg-amber-500',
+      container: 'bg-amber-50 text-warning border-amber-200',
+      dot: 'bg-warning',
     },
     danger: {
-      container: 'bg-red-50 text-red-800 border-red-200',
-      dot: 'bg-red-500',
+      container: 'bg-red-50 text-danger border-red-200',
+      dot: 'bg-danger',
     },
     destructive: {
-      container: 'bg-red-50 text-red-800 border-red-200',
-      dot: 'bg-red-500',
+      container: 'bg-red-50 text-danger border-red-200',
+      dot: 'bg-danger',
     },
     info: {
-      container: 'bg-blue-50 text-blue-800 border-blue-200',
-      dot: 'bg-blue-500',
+      container: 'bg-blue-50 text-info border-blue-200',
+      dot: 'bg-info',
     },
     neutral: {
-      container: 'bg-slate-100 text-slate-700 border-slate-200',
-      dot: 'bg-slate-400',
+      container: 'bg-canvas text-ink-muted border-line',
+      dot: 'bg-ink-muted',
     },
     subtle: {
-      container: 'bg-slate-100 text-slate-700 border-slate-200',
-      dot: 'bg-slate-400',
+      container: 'bg-canvas text-ink-muted border-line',
+      dot: 'bg-ink-muted',
     },
     ai: {
-      container: 'bg-violet-50 text-violet-800 border-violet-200',
-      dot: 'bg-violet-500',
+      container: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+      dot: 'bg-indigo-600',
     },
     institutional: {
-      container: 'bg-[#FDF2F2] text-[#8C1515] border-red-200 font-bold',
-      dot: 'bg-[#8C1515]',
+      container: 'bg-brand/10 text-brand border-brand/20 font-semibold',
+      dot: 'bg-brand',
     },
   };
 
-  const currentVariant = variantStyles[variant];
+  const currentVariant = variantStyles[variant] || variantStyles.neutral;
 
   return (
     <span
-      className={`inline-flex items-center rounded border uppercase transition-colors ${sizeStyles[size]} ${currentVariant.container} ${className}`}
+      className={`inline-flex items-center rounded-md border transition-colors ${sizeStyles[size]} ${currentVariant.container} ${className}`}
     >
       {isDot && (
         <span

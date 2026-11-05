@@ -394,7 +394,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
 
           {step < 3 ? (
             <Button
-              variant="cardinal"
+              variant="primary"
               size="sm"
               onClick={() => setStep(step + 1)}
               rightIcon={<ArrowRight size={13} />}
@@ -403,7 +403,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
             </Button>
           ) : (
             <Button
-              variant="cardinal"
+              variant="primary"
               size="sm"
               onClick={handleConfirm}
               rightIcon={<Check size={13} />}

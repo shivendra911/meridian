@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
 import { OverviewData } from '../types';
-import { StatCard } from '../components/common/StatCard';
 import { useTenant } from '../context/TenantContext';
 import {
   Users,
@@ -9,25 +8,28 @@ import {
   Building2,
   Briefcase,
   TrendingUp,
-  Activity,
-  CheckCircle2,
-  AlertCircle,
   ShieldCheck,
-  Landmark,
-  Network,
   Zap,
   Radar,
   ArrowRight,
-  MapPin,
   Sparkles,
+  CheckCircle2,
+  Activity,
+  AlertCircle,
 } from 'lucide-react';
+import { PageHeader } from '../components/ui/PageHeader';
+import { StatCard } from '../components/ui/StatCard';
+import { Card } from '../components/ui/Card';
+import { Badge } from '../components/ui/Badge';
+import { Button } from '../components/ui/Button';
+import { Skeleton } from '../components/ui/Skeleton';
 
 interface OverviewPageProps {
   onNavigateTab?: (tab: string) => void;
 }
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => {
-  const { activeTenant, activeInstitution, activeCampus, campuses } = useTenant();
+  const { activeTenant, activeInstitution, activeCampus } = useTenant();
   const [data, setData] = useState<OverviewData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,330 +50,278 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center p-16 text-slate-500 text-sm">
-        <Activity className="animate-spin mb-3 text-[#8C1515]" size={28} />
-        <span className="font-medium text-slate-700">Loading Institutional Command Telemetry...</span>
-        <span className="text-xs text-slate-400 mt-1">
-          Synchronizing tenant {activeTenant?.name || 'workspace'} with MongoDB 7 replica set
-        </span>
+      <div className="space-y-6 font-sans">
+        <div className="space-y-2">
+          <Skeleton className="h-7 w-1/3" />
+          <Skeleton className="h-4 w-1/2" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-24 w-full" />
+          <Skeleton className="h-24 w-full" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Skeleton className="lg:col-span-2 h-80 w-full" />
+          <Skeleton className="h-80 w-full" />
+        </div>
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="bg-red-50 border border-red-200 text-red-800 p-5 rounded text-sm flex items-center gap-3">
-        <AlertCircle size={20} className="shrink-0 text-red-600" />
+      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-xs text-ink flex items-start gap-3">
+        <AlertCircle size={18} className="text-danger shrink-0 mt-0.5" />
         <div>
-          <div className="font-semibold">Unable to Load Telemetry Stream</div>
-          <div className="text-xs text-red-700 mt-0.5">{error}</div>
+          <div className="font-semibold text-danger">Unable to Load Telemetry Stream</div>
+          <div className="text-ink-muted mt-1">{error || 'Unknown error occurred'}</div>
         </div>
       </div>
     );
   }
 
-  const { kpis, branch_velocity, tier_distribution, top_roles, recent_activity } = data;
+  const { kpis, branch_velocity, tier_distribution, recent_activity } = data;
 
   return (
-    <div className="space-y-6">
-      {/* Institutional Directorate Command Banner */}
-      <div className="bg-white border-l-4 border-l-[#8C1515] border border-slate-200 rounded-lg p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-[10px] font-bold tracking-widest uppercase bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono">
-              CAMP-01 FOUNDATION DOMAIN
-            </span>
-            <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              {activeTenant?.status || 'ACTIVE'}
-            </span>
-            <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-              {activeTenant?.customer_type || 'ENTERPRISE'}
-            </span>
-          </div>
-
-          <h1 className="text-2xl font-bold font-serif text-slate-900 m-0 flex items-center gap-2">
-            <Landmark size={22} className="text-[#8C1515]" />
-            {activeInstitution ? activeInstitution.legal_name : activeTenant?.name || 'Campus Operating System'}
-          </h1>
-
-          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600 mt-2">
-            <div className="flex items-center gap-1">
-              <MapPin size={13} className="text-slate-400" />
-              <span>{activeCampus ? activeCampus.campus_name : 'Main Campus'}</span>
-              <span className="text-[9px] bg-slate-100 text-slate-600 px-1 py-0.2 rounded font-mono">
-                {activeCampus?.campus_code || 'MAIN'}
-              </span>
-            </div>
-            <span className="text-slate-300">•</span>
-            <div>
-              Classification: <span className="font-semibold text-slate-800">{activeInstitution?.institution_type || 'Institute of National Importance'}</span>
-            </div>
-            <span className="text-slate-300">•</span>
-            <div>
-              Campuses Active: <span className="font-semibold text-slate-800">{campuses.length || 1}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Institutional Action Buttons */}
-        <div className="flex items-center gap-2 shrink-0">
-          {onNavigateTab && (
-            <button
-              onClick={() => onNavigateTab('architecture')}
-              className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-medium flex items-center gap-2 shadow-xs transition-colors"
+    <div className="space-y-6 font-sans">
+      {/* 1. Page Header */}
+      <PageHeader
+        title={activeInstitution ? activeInstitution.legal_name : activeTenant?.name || 'Institutional Command Hub'}
+        description={`${activeCampus?.campus_name || 'Main Campus'} • Directorate of Career & Placement Operations`}
+        badge={
+          <Badge variant="success" size="xs">
+            System Online &bull; Active
+          </Badge>
+        }
+        actions={
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onNavigateTab?.('architecture')}
+              rightIcon={<ArrowRight size={13} />}
             >
-              <Network size={14} className="text-amber-400" />
-              <span>Topology & Hierarchy</span>
-              <ArrowRight size={13} />
-            </button>
-          )}
-        </div>
-      </div>
+              Hierarchy Graph
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => onNavigateTab?.('jobs')}
+              leftIcon={<Briefcase size={14} />}
+            >
+              Manage Drives
+            </Button>
+          </div>
+        }
+      />
 
-      {/* 12-Point Institutional Readiness & Compliance Banner */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-emerald-900 text-white p-4 rounded-lg shadow-xs flex items-center justify-between">
-          <div>
-            <div className="text-[10px] uppercase tracking-wider text-emerald-300 font-semibold">
-              Readiness & Activation Gate
-            </div>
-            <div className="text-lg font-bold mt-0.5">12 / 12 Criteria Cleared</div>
-            <div className="text-xs text-emerald-200 mt-1">
-              Ministry of Education AISHE verified • Primary campus locked
-            </div>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-emerald-800/80 border border-emerald-600 flex items-center justify-center shrink-0">
-            <ShieldCheck size={22} className="text-emerald-300" />
-          </div>
-        </div>
-
-        <div className="bg-slate-900 text-white p-4 rounded-lg shadow-xs flex items-center justify-between">
-          <div>
-            <div className="text-[10px] uppercase tracking-wider text-amber-300 font-semibold">
-              Talent Authenticity (VTI)
-            </div>
-            <div className="text-lg font-bold mt-0.5">91.4% Gold/Silver Ratio</div>
-            <div className="text-xs text-slate-400 mt-1">
-              Tamper-evident verification across cohort credentials
-            </div>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0">
-            <Award size={22} className="text-amber-400" />
-          </div>
-        </div>
-
-        <div className="bg-slate-900 text-white p-4 rounded-lg shadow-xs flex items-center justify-between">
-          <div>
-            <div className="text-[10px] uppercase tracking-wider text-blue-300 font-semibold">
-              Superday Scheduling Integrity
-            </div>
-            <div className="text-lg font-bold mt-0.5">Zero Clashes Detected</div>
-            <div className="text-xs text-slate-400 mt-1">
-              OR-Tools constraint arbitrator running in real time
-            </div>
-          </div>
-          <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0">
-            <Zap size={22} className="text-blue-400" />
-          </div>
-        </div>
-      </div>
-
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* 2. Top Metric Row (Max 4 StatCards, tabular-nums) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Registered Candidates"
           value={kpis.total_students || 0}
-          context="Institutional Cohort 2025–26"
+          hint="Class of 2026–2027 Cohort"
           icon={Users}
-          variant="default"
         />
         <StatCard
           label="Placement Rate"
           value={`${kpis.placement_pct || 0}%`}
-          context="Verified offers accepted"
+          hint="Verified Offers Accepted"
           icon={Award}
-          variant="cardinal"
+          change="+4.2% YoY"
+          changeType="up"
         />
         <StatCard
           label="Corporate Partners"
           value={kpis.total_companies || 0}
-          context="Active visiting employers"
+          hint="Active Visiting Recruiters"
           icon={Building2}
-          variant="default"
         />
         <StatCard
-          label="Open Vacancies (JNFs)"
+          label="Open JNFs / Drives"
           value={kpis.open_jobs || 0}
-          context="Active recruitment drives"
+          hint="Active Recruitment Drives"
           icon={Briefcase}
-          variant="default"
         />
       </div>
 
-      {/* Quick Launchpad to Enterprise Moats */}
-      <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-        <div className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-2">
-          <Sparkles size={14} className="text-[#8C1515]" />
-          Platform Operational Engines
+      {/* 3. 2/3 Main Panel + 1/3 Side Panel Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Panel (2 Columns) */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Department Placement Velocity */}
+          <Card
+            title="Department Placement Velocity"
+            subtitle="Verified placement rates across academic disciplines"
+          >
+            <div className="space-y-3">
+              {branch_velocity.rows && branch_velocity.rows.length > 0 ? (
+                branch_velocity.rows.map((row) => (
+                  <div key={row.department} className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="font-medium text-ink">{row.department}</span>
+                      <span className="tabular-nums text-ink-muted">
+                        {row.placed_students} / {row.total_students} ({row.placement_pct}%)
+                      </span>
+                    </div>
+                    <div className="w-full bg-line rounded-full h-1.5 overflow-hidden">
+                      <div
+                        className="bg-brand h-full rounded-full transition-all duration-150"
+                        style={{ width: `${Math.min(100, row.placement_pct || 0)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-xs text-ink-muted py-4 text-center">
+                  No department velocity records recorded
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Compensation Tier Breakdown */}
+          <Card
+            title="Compensation Tier Distribution"
+            subtitle="Package bands for active opportunities"
+          >
+            <div className="space-y-3">
+              {tier_distribution.labels && tier_distribution.labels.length > 0 ? (
+                tier_distribution.labels.map((tierName, idx) => {
+                  const count = tier_distribution.counts[idx] || 0;
+                  const total = tier_distribution.counts.reduce((a, b) => a + b, 0) || 1;
+                  const pct = Math.round((count / total) * 100);
+                  return (
+                    <div key={tierName} className="space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium text-ink">{tierName}</span>
+                        <span className="tabular-nums text-ink-muted">
+                          {count} roles ({pct}%)
+                        </span>
+                      </div>
+                      <div className="w-full bg-line rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className="bg-brand-hover h-full rounded-full transition-all duration-150"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-xs text-ink-muted py-4 text-center">
+                  No compensation tier data available
+                </div>
+              )}
+            </div>
+          </Card>
+
+          {/* Platform Operational Engines */}
+          <Card
+            title="Operational Engines"
+            subtitle="Core institutional placement execution engines"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                onClick={() => onNavigateTab?.('superday')}
+                className="p-3 rounded-lg border border-line bg-surface hover:bg-canvas text-left transition-colors duration-150 cursor-pointer"
+              >
+                <div className="flex items-center justify-between text-xs font-semibold text-ink">
+                  <span>Superday Clash Solver</span>
+                  <Zap size={14} className="text-brand" />
+                </div>
+                <div className="text-[11px] text-ink-muted mt-1">
+                  Constraint-based interview schedule arbitrator
+                </div>
+              </button>
+
+              <button
+                onClick={() => onNavigateTab?.('renege')}
+                className="p-3 rounded-lg border border-line bg-surface hover:bg-canvas text-left transition-colors duration-150 cursor-pointer"
+              >
+                <div className="flex items-center justify-between text-xs font-semibold text-ink">
+                  <span>Retention Radar</span>
+                  <Radar size={14} className="text-brand" />
+                </div>
+                <div className="text-[11px] text-ink-muted mt-1">
+                  Post-offer renege telemetry &amp; early warnings
+                </div>
+              </button>
+            </div>
+          </Card>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <button
-            onClick={() => onNavigateTab && onNavigateTab('superday')}
-            className="p-3 bg-white rounded border border-slate-200 hover:border-slate-400 text-left transition-all shadow-2xs group"
+
+        {/* Side Panel (1 Column) */}
+        <div className="space-y-6">
+          {/* Institutional Integrity & Compliance */}
+          <Card
+            title="Institutional Governance"
+            subtitle="Accreditation & regulatory readiness"
           >
-            <div className="flex items-center justify-between text-slate-700 group-hover:text-[#8C1515] font-semibold text-xs">
-              <span>Superday Solver</span>
-              <Zap size={13} className="text-amber-500" />
-            </div>
-            <div className="text-[11px] text-slate-500 mt-1">OR-Tools interview conflict arbitrator</div>
-          </button>
+            <div className="space-y-3 text-xs">
+              <div className="p-3 rounded-lg border border-line bg-canvas space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-ink">MoE AISHE Verification</span>
+                  <Badge variant="success" size="xs">Verified</Badge>
+                </div>
+                <p className="text-[11px] text-ink-muted m-0">
+                  Primary campus registry locked &amp; attested.
+                </p>
+              </div>
 
-          <button
-            onClick={() => onNavigateTab && onNavigateTab('renege')}
-            className="p-3 bg-white rounded border border-slate-200 hover:border-slate-400 text-left transition-all shadow-2xs group"
+              <div className="p-3 rounded-lg border border-line bg-canvas space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-ink">Superday Lab Integrity</span>
+                  <Badge variant="success" size="xs">Zero Clashes</Badge>
+                </div>
+                <p className="text-[11px] text-ink-muted m-0">
+                  Terminal scheduling constraint engine running live.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-lg border border-line bg-canvas space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-ink">DPDP Act 2023 Consent</span>
+                  <Badge variant="success" size="xs">98.2% Active</Badge>
+                </div>
+                <p className="text-[11px] text-ink-muted m-0">
+                  Authoritative student data consent recorded.
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          {/* Live Transactional Audit Trail */}
+          <Card
+            title="Recent Audit Events"
+            subtitle="Append-only event telemetry"
           >
-            <div className="flex items-center justify-between text-slate-700 group-hover:text-[#8C1515] font-semibold text-xs">
-              <span>Retention Radar</span>
-              <Radar size={13} className="text-red-500" />
-            </div>
-            <div className="text-[11px] text-slate-500 mt-1">Post-offer renege early warning</div>
-          </button>
-
-          <button
-            onClick={() => onNavigateTab && onNavigateTab('copilot')}
-            className="p-3 bg-white rounded border border-slate-200 hover:border-slate-400 text-left transition-all shadow-2xs group"
-          >
-            <div className="flex items-center justify-between text-slate-700 group-hover:text-[#8C1515] font-semibold text-xs">
-              <span>Autonomous AI Copilots</span>
-              <Activity size={13} className="text-emerald-500" />
-            </div>
-            <div className="text-[11px] text-slate-500 mt-1">AG-01, AG-02 & AG-10 autonomous agents</div>
-          </button>
-
-          <button
-            onClick={() => onNavigateTab && onNavigateTab('consent')}
-            className="p-3 bg-white rounded border border-slate-200 hover:border-slate-400 text-left transition-all shadow-2xs group"
-          >
-            <div className="flex items-center justify-between text-slate-700 group-hover:text-[#8C1515] font-semibold text-xs">
-              <span>DPDP Consent Ledger</span>
-              <ShieldCheck size={13} className="text-blue-500" />
-            </div>
-            <div className="text-[11px] text-slate-500 mt-1">DPDP Act 2023 purpose-based audit</div>
-          </button>
-        </div>
-      </div>
-
-      {/* Department Placement Velocity & Tier Distribution */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Academic Department Placement Velocity */}
-        <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-sm font-bold text-slate-900 m-0">Department Placement Velocity</h2>
-              <div className="text-xs text-slate-500 mt-0.5">Verified offers by academic discipline</div>
-            </div>
-            <TrendingUp size={16} className="text-slate-400" />
-          </div>
-
-          <div className="space-y-3">
-            {branch_velocity.rows && branch_velocity.rows.length > 0 ? (
-              branch_velocity.rows.map((row) => (
-                <div key={row.department}>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="font-semibold text-slate-700">{row.department}</span>
-                    <span className="font-mono text-slate-600">
-                      {row.placed_students} / {row.total_students} ({row.placement_pct}%)
+            <div className="space-y-2 text-xs">
+              {recent_activity && recent_activity.length > 0 ? (
+                recent_activity.slice(0, 5).map((act, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2.5 rounded-lg border border-line bg-canvas flex items-start justify-between gap-2"
+                  >
+                    <div className="space-y-0.5 min-w-0">
+                      <div className="font-medium text-ink truncate">{act.message}</div>
+                      <span className="text-[10px] text-ink-muted font-mono uppercase">
+                        {act.event_type}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-ink-muted font-mono tabular-nums shrink-0">
+                      {act.at ? new Date(act.at).toLocaleTimeString() : 'Now'}
                     </span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-[#8C1515] h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.min(100, row.placement_pct || 0)}%` }}
-                    ></div>
-                  </div>
+                ))
+              ) : (
+                <div className="text-xs text-ink-muted py-3 text-center">
+                  No recent audit events
                 </div>
-              ))
-            ) : (
-              <div className="text-xs text-slate-400 py-4 text-center">No branch velocity data available</div>
-            )}
-          </div>
-        </div>
-
-        {/* Compensation Tier Breakdown */}
-        <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-sm font-bold text-slate-900 m-0">Compensation Tier Distribution</h2>
-              <div className="text-xs text-slate-500 mt-0.5">Distribution across recruitment offer bands</div>
+              )}
             </div>
-            <Award size={16} className="text-slate-400" />
-          </div>
-
-          <div className="space-y-3">
-            {tier_distribution.labels && tier_distribution.labels.length > 0 ? (
-              tier_distribution.labels.map((tierName, idx) => {
-                const count = tier_distribution.counts[idx] || 0;
-                const total = tier_distribution.counts.reduce((a, b) => a + b, 0) || 1;
-                const pct = Math.round((count / total) * 100);
-                return (
-                  <div key={tierName}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="font-semibold text-slate-700">{tierName}</span>
-                      <span className="font-mono text-slate-600">{count} opportunities ({pct}%)</span>
-                    </div>
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                      <div
-                        className="bg-slate-700 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${pct}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="text-xs text-slate-400 py-4 text-center">No tier distribution data available</div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Live Transactional Audit Feed */}
-      <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-sm font-bold text-slate-900 m-0">Live Institutional Audit Trail</h2>
-            <div className="text-xs text-slate-500 mt-0.5">
-              Append-only transactional event log for {activeTenant?.name}
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs text-slate-500">
-            <CheckCircle2 size={14} className="text-emerald-600" />
-            <span>MongoDB Outbox Synced</span>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          {recent_activity && recent_activity.length > 0 ? (
-            recent_activity.map((act, idx) => (
-              <div
-                key={idx}
-                className="flex items-center justify-between p-2.5 rounded bg-slate-50 border border-slate-100 text-xs hover:bg-slate-100/70 transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="px-1.5 py-0.5 rounded font-mono text-[10px] font-semibold bg-slate-200 text-slate-700">
-                    {act.event_type}
-                  </span>
-                  <span className="font-medium text-slate-800">{act.message}</span>
-                </div>
-                <span className="text-[10px] text-slate-400 font-mono">
-                  {act.at ? new Date(act.at).toLocaleTimeString() : 'Just now'}
-                </span>
-              </div>
-            ))
-          ) : (
-            <div className="text-xs text-slate-400 py-4 text-center">No recent activity logged</div>
-          )}
+          </Card>
         </div>
       </div>
     </div>

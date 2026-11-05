@@ -34,7 +34,7 @@ export const Tabs: React.FC<TabsProps> = ({
 
   if (variant === 'pill') {
     return (
-      <div className={`flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-lg border border-slate-200 select-none ${className}`}>
+      <div className={`flex flex-wrap items-center gap-1 p-1 bg-canvas rounded-lg border border-line select-none ${className}`}>
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -42,20 +42,20 @@ export const Tabs: React.FC<TabsProps> = ({
             <button
               key={tab.id}
               onClick={() => onChange(tab.id)}
-              className={`flex items-center rounded-md font-medium transition-all ${
+              className={`flex items-center rounded-md font-medium transition-all duration-150 ${
                 sizeStyles[size]
               } ${
                 isActive
-                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                  ? 'bg-surface text-ink border border-line shadow-none font-semibold'
+                  : 'text-ink-muted hover:text-ink hover:bg-surface/50 border border-transparent'
               }`}
             >
-              {Icon && <Icon size={14} className={isActive ? 'text-[#8C1515]' : 'text-slate-400'} />}
+              {Icon && <Icon size={14} className={isActive ? 'text-brand' : 'text-ink-muted'} />}
               <span>{tab.label}</span>
               {tab.count !== undefined && (
                 <span
-                  className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded ${
-                    isActive ? 'bg-red-50 text-[#8C1515]' : 'bg-slate-200 text-slate-600'
+                  className={`text-[10px] font-mono tabular-nums px-1.5 py-0.5 rounded ${
+                    isActive ? 'bg-canvas text-ink font-semibold' : 'bg-line/50 text-ink-muted'
                   }`}
                 >
                   {tab.count}
@@ -70,7 +70,7 @@ export const Tabs: React.FC<TabsProps> = ({
 
   // Default 'line' variant
   return (
-    <div className={`border-b border-slate-200 flex flex-wrap items-center gap-2 select-none ${className}`}>
+    <div className={`border-b border-line flex flex-wrap items-center gap-2 select-none ${className}`}>
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -78,20 +78,20 @@ export const Tabs: React.FC<TabsProps> = ({
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className={`flex items-center border-b-2 font-medium transition-all relative ${
+            className={`flex items-center border-b-2 font-medium transition-all duration-150 relative ${
               sizeStyles[size]
             } ${
               isActive
-                ? 'border-[#8C1515] text-[#8C1515] font-semibold'
-                : 'border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300'
+                ? 'border-brand text-brand font-semibold'
+                : 'border-transparent text-ink-muted hover:text-ink hover:border-line'
             }`}
           >
-            {Icon && <Icon size={14} className={isActive ? 'text-[#8C1515]' : 'text-slate-400'} />}
+            {Icon && <Icon size={14} className={isActive ? 'text-brand' : 'text-ink-muted'} />}
             <span>{tab.label}</span>
             {tab.count !== undefined && (
               <span
-                className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded ${
-                  isActive ? 'bg-red-50 text-[#8C1515]' : 'bg-slate-100 text-slate-500'
+                className={`text-[10px] font-mono tabular-nums px-1.5 py-0.5 rounded ${
+                  isActive ? 'bg-brand/10 text-brand font-semibold' : 'bg-canvas text-ink-muted'
                 }`}
               >
                 {tab.count}
@@ -99,7 +99,7 @@ export const Tabs: React.FC<TabsProps> = ({
             )}
             {tab.badge && (
               <span
-                className={`text-[9px] font-mono font-bold uppercase px-1.5 py-0.2 rounded border ${
+                className={`text-[9px] font-mono uppercase px-1.5 py-0.5 rounded border ${
                   tab.badgeColor || 'bg-amber-50 text-amber-700 border-amber-200'
                 }`}
               >
@@ -112,4 +112,3 @@ export const Tabs: React.FC<TabsProps> = ({
     </div>
   );
 };
-

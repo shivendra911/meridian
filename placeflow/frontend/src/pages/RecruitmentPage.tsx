@@ -6,14 +6,17 @@ import {
   Briefcase,
   FileText,
   Award,
-  Activity,
   PlusCircle,
   HelpCircle,
   Sparkles,
-  ShieldCheck,
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
+import { Card } from '../components/ui/Card';
+import { PageHeader } from '../components/ui/PageHeader';
+import { StatCard } from '../components/ui/StatCard';
+import { Skeleton } from '../components/ui/Skeleton';
+import { EmptyState } from '../components/ui/EmptyState';
 import {
   EligibilityExplainerDrawer,
   EligibilityReport,
@@ -107,7 +110,6 @@ export const RecruitmentPage: React.FC<RecruitmentPageProps> = ({
   }, []);
 
   const handleDriveCreated = (driveData: any) => {
-    // Add locally to jobs list
     const tierMap: Record<string, 'Normal' | 'Dream' | 'Super Dream'> = {
       SUPER_DREAM: 'Super Dream',
       DREAM: 'Dream',
@@ -134,255 +136,317 @@ export const RecruitmentPage: React.FC<RecruitmentPageProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white border-l-4 border-l-[#0B1B3D] border border-slate-200 rounded p-5 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
-            OFFICE OF CAREER SERVICES &bull; RECRUITMENT OPERATIONS
-          </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
-            Recruitment Operations &amp; Partner Ledgers
-          </h1>
-          <p className="text-xs text-slate-600 mt-1">
-            Master records of visiting corporate partners, active Job Notification Forms (JNFs), candidate applications, and finalized offers.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <Button
-            variant="cardinal"
-            size="sm"
-            onClick={() => setIsWizardOpen(true)}
-            leftIcon={<Sparkles size={13} />}
-          >
-            Create Guided Drive
-          </Button>
-
-          {/* Tab Pills */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded border border-slate-200">
-            <button
-              onClick={() => setTab('companies')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                tab === 'companies'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Building2 size={13} />
-              <span>Partners ({companies.length})</span>
-            </button>
-            <button
-              onClick={() => setTab('jobs')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                tab === 'jobs'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Briefcase size={13} />
-              <span>JNFs ({jobs.length})</span>
-            </button>
-            <button
-              onClick={() => setTab('applications')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                tab === 'applications'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <FileText size={13} />
-              <span>Applications ({applications.length})</span>
-            </button>
-            <button
-              onClick={() => setTab('placements')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold transition-all flex items-center gap-1.5 ${
-                tab === 'placements'
-                  ? 'bg-white text-slate-900 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <Award size={13} />
-              <span>Offers ({placements.length})</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {loading ? (
-        <div className="flex items-center justify-center p-12 text-slate-500 text-sm">
-          <Activity className="animate-spin mr-2" size={18} />
-          Loading Recruitment Operations Data...
-        </div>
-      ) : tab === 'companies' ? (
-        /* Companies Table */
-        <div className="bg-white border border-slate-200 rounded shadow-subtle overflow-hidden">
-          <div className="p-4 border-b border-slate-200 bg-slate-50 font-bold text-xs text-slate-800">
-            Corporate Partner Organizations ({companies.length})
-          </div>
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
-              <tr>
-                <th className="py-2.5 px-4">Company ID</th>
-                <th className="py-2.5 px-4">Company Name</th>
-                <th className="py-2.5 px-4">Industry Sector</th>
-                <th className="py-2.5 px-4">Primary Location</th>
-                <th className="py-2.5 px-4">Contact</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-mono">
-              {companies.map((c) => (
-                <tr key={c.company_id} className="hover:bg-slate-50/80">
-                  <td className="py-2.5 px-4 font-bold text-[#0B1B3D]">{c.company_id}</td>
-                  <td className="py-2.5 px-4 font-sans font-semibold text-slate-900">{c.name}</td>
-                  <td className="py-2.5 px-4 font-sans text-slate-600">{c.industry}</td>
-                  <td className="py-2.5 px-4 font-sans text-slate-600">{c.location}</td>
-                  <td className="py-2.5 px-4 text-slate-500">{c.contact_email || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : tab === 'jobs' ? (
-        /* Jobs Table */
-        <div className="bg-white border border-slate-200 rounded shadow-subtle overflow-hidden">
-          <div className="p-4 border-b border-slate-200 bg-slate-50 font-bold text-xs text-slate-800 flex items-center justify-between">
-            <span>Active Job Notification Forms (JNFs) ({jobs.length})</span>
+    <div className="space-y-6 font-sans">
+      {/* 1. Page Header */}
+      <PageHeader
+        title="Recruitment Operations & Corporate Ledgers"
+        description="Visiting corporate partners, active Job Notification Forms (JNFs), candidate applications, and offer records."
+        badge={
+          <Badge variant="institutional" size="xs">
+            Placement Directorate
+          </Badge>
+        }
+        actions={
+          <div className="flex items-center gap-2">
             <Button
-              variant="cardinal"
-              size="xs"
+              variant="primary"
+              size="sm"
               onClick={() => setIsWizardOpen(true)}
-              leftIcon={<PlusCircle size={13} />}
+              leftIcon={<Sparkles size={14} />}
             >
-              New JNF Drive
+              Create Placement Drive
             </Button>
           </div>
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
-              <tr>
-                <th className="py-2.5 px-4">JNF ID</th>
-                <th className="py-2.5 px-4">Role Title</th>
-                <th className="py-2.5 px-4">Recruiter</th>
-                <th className="py-2.5 px-4">Package</th>
-                <th className="py-2.5 px-4">Tier</th>
-                <th className="py-2.5 px-4">Eligibility Criteria</th>
-                <th className="py-2.5 px-4">Vacancies</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-mono">
-              {jobs.map((j) => (
-                <tr key={j.job_id} className="hover:bg-slate-50/80">
-                  <td className="py-2.5 px-4 font-bold text-[#0B1B3D]">{j.job_id}</td>
-                  <td className="py-2.5 px-4 font-sans font-semibold text-slate-900">{j.title}</td>
-                  <td className="py-2.5 px-4 font-sans text-slate-700">{j.company_id}</td>
-                  <td className="py-2.5 px-4 font-bold text-[#8C1515]">₹{j.package_lpa} LPA</td>
-                  <td className="py-2.5 px-4 font-sans">
-                    <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-medium text-[11px]">
-                      {j.tier}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-4 font-sans text-[11px] text-slate-600">
-                    CGPA &ge; {j.eligibility.min_cgpa.toFixed(2)} &bull; Backlogs &le; {j.eligibility.max_backlogs}
-                  </td>
-                  <td className="py-2.5 px-4 text-emerald-700 font-bold">
-                    {j.filled} / {j.vacancies}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        }
+      />
+
+      {/* 2. Top Metric Row (Max 4 StatCards, tabular-nums) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          label="Corporate Partners"
+          value={loading ? '—' : companies.length}
+          hint="Verified Visiting Recruiters"
+          icon={Building2}
+        />
+        <StatCard
+          label="Active Placement Drives"
+          value={loading ? '—' : jobs.length}
+          hint="Open Job Notifications (JNFs)"
+          icon={Briefcase}
+        />
+        <StatCard
+          label="Total Applications"
+          value={loading ? '—' : applications.length}
+          hint="Candidate Submissions"
+          icon={FileText}
+        />
+        <StatCard
+          label="Offers Released"
+          value={loading ? '—' : placements.length}
+          hint="Final Placed Candidates"
+          icon={Award}
+        />
+      </div>
+
+      {/* 3. Tab Pills Filter */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
+        <div className="flex items-center gap-1 bg-canvas p-1 rounded-lg border border-line">
+          <button
+            onClick={() => setTab('companies')}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 flex items-center gap-1.5 cursor-pointer ${
+              tab === 'companies'
+                ? 'bg-surface text-ink font-semibold border border-line shadow-none'
+                : 'text-ink-muted hover:text-ink'
+            }`}
+          >
+            <Building2 size={13} />
+            <span>Corporate Partners ({companies.length})</span>
+          </button>
+          <button
+            onClick={() => setTab('jobs')}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 flex items-center gap-1.5 cursor-pointer ${
+              tab === 'jobs'
+                ? 'bg-surface text-ink font-semibold border border-line shadow-none'
+                : 'text-ink-muted hover:text-ink'
+            }`}
+          >
+            <Briefcase size={13} />
+            <span>Placement Drives ({jobs.length})</span>
+          </button>
+          <button
+            onClick={() => setTab('applications')}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 flex items-center gap-1.5 cursor-pointer ${
+              tab === 'applications'
+                ? 'bg-surface text-ink font-semibold border border-line shadow-none'
+                : 'text-ink-muted hover:text-ink'
+            }`}
+          >
+            <FileText size={13} />
+            <span>Applications ({applications.length})</span>
+          </button>
+          <button
+            onClick={() => setTab('placements')}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors duration-150 flex items-center gap-1.5 cursor-pointer ${
+              tab === 'placements'
+                ? 'bg-surface text-ink font-semibold border border-line shadow-none'
+                : 'text-ink-muted hover:text-ink'
+            }`}
+          >
+            <Award size={13} />
+            <span>Offers Register ({placements.length})</span>
+          </button>
         </div>
+
+        {tab === 'jobs' && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsWizardOpen(true)}
+            leftIcon={<PlusCircle size={14} />}
+          >
+            New JNF Drive
+          </Button>
+        )}
+      </div>
+
+      {/* 4. Table Views with 40px rows, sticky header, no zebra stripes */}
+      {loading ? (
+        <div className="rounded-lg border border-line bg-surface p-6 space-y-3">
+          <Skeleton className="h-6 w-1/4" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+      ) : tab === 'companies' ? (
+        companies.length === 0 ? (
+          <EmptyState
+            icon={Building2}
+            title="No corporate partners registered"
+            description="Add corporate partners to start scheduling placement drives and candidate assessments."
+            actionLabel="Create Placement Drive"
+            onAction={() => setIsWizardOpen(true)}
+          />
+        ) : (
+          <div className="rounded-lg border border-line bg-surface overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10 sticky top-0">
+                    <th className="py-2 px-4 font-medium">Company ID</th>
+                    <th className="py-2 px-4 font-medium">Organization Name</th>
+                    <th className="py-2 px-4 font-medium">Industry Sector</th>
+                    <th className="py-2 px-4 font-medium">Location</th>
+                    <th className="py-2 px-4 font-medium">Contact Email</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {companies.map((c) => (
+                    <tr key={c.company_id} className="h-10 hover:bg-canvas/50 transition-colors">
+                      <td className="py-2 px-4 font-mono font-medium text-brand">{c.company_id}</td>
+                      <td className="py-2 px-4 font-medium text-ink">{c.name}</td>
+                      <td className="py-2 px-4 text-ink-muted">{c.industry}</td>
+                      <td className="py-2 px-4 text-ink-muted">{c.location}</td>
+                      <td className="py-2 px-4 text-ink-muted font-mono">{c.contact_email || '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
+      ) : tab === 'jobs' ? (
+        jobs.length === 0 ? (
+          <EmptyState
+            icon={Briefcase}
+            title="No placement drives active"
+            description="Launch a new Job Notification Form (JNF) drive with guided eligibility criteria."
+            actionLabel="Create Guided Drive"
+            onAction={() => setIsWizardOpen(true)}
+          />
+        ) : (
+          <div className="rounded-lg border border-line bg-surface overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10 sticky top-0">
+                    <th className="py-2 px-4 font-medium">JNF ID</th>
+                    <th className="py-2 px-4 font-medium">Position Title</th>
+                    <th className="py-2 px-4 font-medium">Recruiter</th>
+                    <th className="py-2 px-4 font-medium">CTC Package</th>
+                    <th className="py-2 px-4 font-medium">Tier</th>
+                    <th className="py-2 px-4 font-medium">Eligibility Rules</th>
+                    <th className="py-2 px-4 font-medium text-right">Vacancies</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {jobs.map((j) => (
+                    <tr key={j.job_id} className="h-10 hover:bg-canvas/50 transition-colors">
+                      <td className="py-2 px-4 font-mono font-medium text-brand">{j.job_id}</td>
+                      <td className="py-2 px-4 font-medium text-ink">{j.title}</td>
+                      <td className="py-2 px-4 text-ink-muted">{j.company_id}</td>
+                      <td className="py-2 px-4 font-semibold tabular-nums text-success">₹{j.package_lpa} LPA</td>
+                      <td className="py-2 px-4">
+                        <Badge variant="neutral" size="xs">
+                          {j.tier}
+                        </Badge>
+                      </td>
+                      <td className="py-2 px-4 text-ink-muted text-[11px] tabular-nums">
+                        CGPA &ge; {j.eligibility.min_cgpa.toFixed(2)} • Backlogs &le; {j.eligibility.max_backlogs}
+                      </td>
+                      <td className="py-2 px-4 text-right font-medium tabular-nums text-ink">
+                        {j.filled} / {j.vacancies}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
       ) : tab === 'applications' ? (
-        /* Applications Table */
-        <div className="bg-white border border-slate-200 rounded shadow-subtle overflow-hidden">
-          <div className="p-4 border-b border-slate-200 bg-slate-50 font-bold text-xs text-slate-800">
-            Application Tracking Ledger ({applications.length})
+        applications.length === 0 ? (
+          <EmptyState
+            icon={FileText}
+            title="No candidate applications yet"
+            description="When eligible candidates register for active placement drives, applications will appear here."
+          />
+        ) : (
+          <div className="rounded-lg border border-line bg-surface overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10 sticky top-0">
+                    <th className="py-2 px-4 font-medium">Application ID</th>
+                    <th className="py-2 px-4 font-medium">Candidate</th>
+                    <th className="py-2 px-4 font-medium">Role &amp; Drive</th>
+                    <th className="py-2 px-4 font-medium">Application Date</th>
+                    <th className="py-2 px-4 font-medium">Status</th>
+                    <th className="py-2 px-4 font-medium text-right">Explainability</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line">
+                  {applications.map((app) => (
+                    <tr key={app.application_id} className="h-10 hover:bg-canvas/50 transition-colors">
+                      <td className="py-2 px-4 font-mono font-medium text-brand">{app.application_id}</td>
+                      <td className="py-2 px-4 font-medium text-ink">
+                        {app.student?.name || app.student_id}{' '}
+                        <span className="text-ink-muted font-normal">({app.student_id})</span>
+                      </td>
+                      <td className="py-2 px-4 text-ink-muted">{app.job?.title || app.job_id}</td>
+                      <td className="py-2 px-4 text-ink-muted font-mono tabular-nums">
+                        {app.applied_at ? new Date(app.applied_at).toLocaleDateString() : 'Active'}
+                      </td>
+                      <td className="py-2 px-4">
+                        <Badge
+                          variant={
+                            app.status === 'Selected'
+                              ? 'success'
+                              : app.status === 'Shortlisted'
+                              ? 'info'
+                              : 'neutral'
+                          }
+                          size="xs"
+                        >
+                          {app.status}
+                        </Badge>
+                      </td>
+                      <td className="py-2 px-4 text-right">
+                        <button
+                          onClick={() => handleOpenExplainability(app)}
+                          className="text-[11px] font-medium text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
+                        >
+                          <HelpCircle size={13} />
+                          <span>Explain Rules</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
-              <tr>
-                <th className="py-2.5 px-4">Application ID</th>
-                <th className="py-2.5 px-4">Candidate</th>
-                <th className="py-2.5 px-4">Job opening</th>
-                <th className="py-2.5 px-4">Applied Date</th>
-                <th className="py-2.5 px-4">Status</th>
-                <th className="py-2.5 px-4 text-right">Deterministic Explainability</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-mono">
-              {applications.map((app) => (
-                <tr key={app.application_id} className="hover:bg-slate-50/80">
-                  <td className="py-2.5 px-4 font-bold text-[#0B1B3D]">{app.application_id}</td>
-                  <td className="py-2.5 px-4 font-sans font-medium text-slate-900">
-                    {app.student?.name || app.student_id} ({app.student_id})
-                  </td>
-                  <td className="py-2.5 px-4 font-sans text-slate-700">
-                    {app.job?.title || app.job_id}
-                  </td>
-                  <td className="py-2.5 px-4 text-slate-500">
-                    {app.applied_at ? new Date(app.applied_at).toLocaleDateString() : 'Active'}
-                  </td>
-                  <td className="py-2.5 px-4 font-sans">
-                    <span
-                      className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
-                        app.status === 'Selected'
-                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                          : app.status === 'Shortlisted'
-                          ? 'bg-blue-50 text-blue-800 border border-blue-200'
-                          : 'bg-slate-100 text-slate-700'
-                      }`}
-                    >
-                      {app.status}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-4 text-right font-sans">
-                    <button
-                      onClick={() => handleOpenExplainability(app)}
-                      className="text-[11px] font-semibold text-[#8C1515] hover:underline inline-flex items-center gap-1 cursor-pointer"
-                    >
-                      <HelpCircle size={12} />
-                      <span>Explain Rules</span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        )
+      ) : placements.length === 0 ? (
+        <EmptyState
+          icon={Award}
+          title="No finalized placement offers"
+          description="Final offer acceptances and placement records will appear here once candidates complete selection rounds."
+        />
       ) : (
-        /* Placements Table */
-        <div className="bg-white border border-slate-200 rounded shadow-subtle overflow-hidden">
-          <div className="p-4 border-b border-slate-200 bg-slate-50 font-bold text-xs text-slate-800">
-            Finalized Placement Offers Register ({placements.length})
-          </div>
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-700 font-semibold border-b border-slate-200">
-              <tr>
-                <th className="py-2.5 px-4">Placement ID</th>
-                <th className="py-2.5 px-4">Candidate Roll</th>
-                <th className="py-2.5 px-4">Recruiting Company</th>
-                <th className="py-2.5 px-4">Package CTC</th>
-                <th className="py-2.5 px-4">Tier</th>
-                <th className="py-2.5 px-4">Placement Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 font-mono">
-              {placements.map((p) => (
-                <tr key={p.placement_id} className="hover:bg-slate-50/80">
-                  <td className="py-2.5 px-4 font-bold text-[#0B1B3D]">{p.placement_id}</td>
-                  <td className="py-2.5 px-4 font-semibold text-slate-900">{p.student_id}</td>
-                  <td className="py-2.5 px-4 font-sans text-slate-800 font-medium">
-                    {p.company_id}
-                  </td>
-                  <td className="py-2.5 px-4 text-[#8C1515] font-bold">₹{p.package_lpa} LPA</td>
-                  <td className="py-2.5 px-4 font-sans font-medium">{p.tier}</td>
-                  <td className="py-2.5 px-4 text-slate-500">
-                    {p.placement_date ? new Date(p.placement_date).toLocaleDateString() : 'Active'}
-                  </td>
+        <div className="rounded-lg border border-line bg-surface overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10 sticky top-0">
+                  <th className="py-2 px-4 font-medium">Placement ID</th>
+                  <th className="py-2 px-4 font-medium">Candidate Roll</th>
+                  <th className="py-2 px-4 font-medium">Recruiting Organization</th>
+                  <th className="py-2 px-4 font-medium">Package CTC</th>
+                  <th className="py-2 px-4 font-medium">Tier</th>
+                  <th className="py-2 px-4 font-medium text-right">Offer Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {placements.map((p) => (
+                  <tr key={p.placement_id} className="h-10 hover:bg-canvas/50 transition-colors">
+                    <td className="py-2 px-4 font-mono font-medium text-brand">{p.placement_id}</td>
+                    <td className="py-2 px-4 font-medium text-ink">{p.student_id}</td>
+                    <td className="py-2 px-4 text-ink-muted">{p.company_id}</td>
+                    <td className="py-2 px-4 font-semibold tabular-nums text-success">₹{p.package_lpa} LPA</td>
+                    <td className="py-2 px-4">
+                      <Badge variant="neutral" size="xs">
+                        {p.tier}
+                      </Badge>
+                    </td>
+                    <td className="py-2 px-4 text-right text-ink-muted font-mono tabular-nums">
+                      {p.placement_date ? new Date(p.placement_date).toLocaleDateString() : 'Active'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
@@ -402,4 +466,3 @@ export const RecruitmentPage: React.FC<RecruitmentPageProps> = ({
     </div>
   );
 };
-
