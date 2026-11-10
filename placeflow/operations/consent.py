@@ -72,6 +72,13 @@ def record_consent(
         {"$set": doc},
         upsert=True,
     )
+
+    if purpose == "AI_PREDICTIVE_MODELING":
+        try:
+            db.students.update_one({"student_id": student_id}, {"$set": {"ml_opt_out": False}})
+        except Exception:
+            pass
+
     return {"status": "SUCCESS", "consent_id": consent_id, "purpose": purpose}
 
 

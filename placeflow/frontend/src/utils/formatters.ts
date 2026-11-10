@@ -62,3 +62,4 @@ export function normalizeApplication(app: any): NormalizedApp {
     appliedDate: formatFriendlyDate(app.application_date || app.applied_at),
   };
 }
+

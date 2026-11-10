@@ -57,6 +57,7 @@ import { AgentRunsPage } from './pages/AgentRunsPage';
 import { InstitutionalArchitecturePage } from './pages/InstitutionalArchitecturePage';
 import { IdentityAccessPage } from './pages/IdentityAccessPage';
 import { AcademicLifecyclePage } from './pages/AcademicLifecyclePage';
+import { InstitutionalHierarchyPage } from './pages/InstitutionalHierarchyPage';
 
 const RoleHome: React.FC<{
   onNavigate: (path: string) => void;
@@ -192,6 +193,10 @@ export const AppContent: React.FC = () => {
               <Route path="/compliance/consent" element={<ConsentPage />} />
               <Route path="/compliance/fairness" element={<FairnessPage />} />
               <Route path="/compliance/ai" element={<AgentRunsPage onOpenCopilot={() => setIsCopilotOpen(true)} />} />
+
+              {/* Institutional Mentorship & Hierarchy Engine */}
+              <Route path="/institution/hierarchy" element={<InstitutionalHierarchyPage />} />
+              <Route path="/advising" element={<InstitutionalHierarchyPage />} />
 
               {/* Admin Persona Routes (CAMP-01, 02, 03) */}
               <Route path="/admin/organisation" element={<InstitutionalArchitecturePage />} />

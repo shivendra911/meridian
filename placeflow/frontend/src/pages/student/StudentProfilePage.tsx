@@ -122,28 +122,28 @@ export const StudentProfilePage: React.FC = () => {
             <div className="p-4 bg-canvas rounded-lg border border-line">
               <span className="text-[11px] text-ink-muted block">Academic GPA Weight</span>
               <span className="text-2xl font-bold font-mono text-ink mt-1 block">
-                {student?.vti?.breakdown.cgpa_score || 35} / 40
+                {student?.vti?.breakdown?.cgpa_score || 35} / 40
               </span>
               <span className="text-[10px] text-ink-muted mt-0.5 block">Official transcript normalized</span>
             </div>
             <div className="p-4 bg-canvas rounded-lg border border-line">
               <span className="text-[11px] text-ink-muted block">Backlog Reliability</span>
               <span className="text-2xl font-bold font-mono text-ink mt-1 block">
-                {student?.vti?.breakdown.backlog_score || 25} / 25
+                {student?.vti?.breakdown?.backlog_score || 25} / 25
               </span>
               <span className="text-[10px] text-ink-muted mt-0.5 block">Clean examination record</span>
             </div>
             <div className="p-4 bg-canvas rounded-lg border border-line">
               <span className="text-[11px] text-ink-muted block">Skills Verification</span>
               <span className="text-2xl font-bold font-mono text-ink mt-1 block">
-                {student?.vti?.breakdown.skills_score || 18} / 20
+                {student?.vti?.breakdown?.skills_score || 18} / 20
               </span>
               <span className="text-[10px] text-ink-muted mt-0.5 block">Git & lab practical audits</span>
             </div>
             <div className="p-4 bg-canvas rounded-lg border border-line">
               <span className="text-[11px] text-ink-muted block">Hiring Tier Weight</span>
               <span className="text-2xl font-bold font-mono text-ink mt-1 block">
-                {student?.vti?.breakdown.tier_score || 10} / 15
+                {student?.vti?.breakdown?.tier_score || 10} / 15
               </span>
               <span className="text-[10px] text-ink-muted mt-0.5 block">Super Dream eligibility</span>
             </div>

@@ -9,6 +9,7 @@ export interface CardProps {
   headerRibbonColor?: string;
   className?: string;
   bodyClassName?: string;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -20,9 +21,11 @@ export const Card: React.FC<CardProps> = ({
   headerRibbonColor,
   className = '',
   bodyClassName = 'p-4',
+  onClick,
 }) => {
   return (
     <div
+      onClick={onClick}
       className={`rounded-lg border border-line bg-surface overflow-hidden ${
         headerRibbonColor ? 'border-t-2' : ''
       } ${className}`}

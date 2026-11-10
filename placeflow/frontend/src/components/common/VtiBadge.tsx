@@ -30,17 +30,19 @@ export const VtiBadge: React.FC<VtiBadgeProps> = ({ vti }) => {
     },
   };
 
-  const current = styleMap[vti.badge_class] || styleMap.silver;
+  const badgeKey = (vti.badge_class || 'silver') as keyof typeof styleMap;
+  const current = styleMap[badgeKey] || styleMap.silver;
   const Icon = current.icon;
+  const displayScore = vti.score ?? vti.vti_score ?? 0;
 
   return (
     <div
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded border ${current.bg} ${current.border} ${current.text} text-xs font-semibold shadow-2xs`}
-      title={vti.summary}
+      title={vti.summary || vti.description}
     >
       <Icon size={13} className="shrink-0" />
       <span>{vti.badge}</span>
-      <span className="font-mono text-[11px] opacity-75">({vti.score})</span>
+      <span className="font-mono text-[11px] opacity-75">({displayScore})</span>
     </div>
   );
 };

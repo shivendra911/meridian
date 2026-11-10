@@ -1,35 +1,240 @@
 export interface VtiScore {
-  score: number;
+  score?: number;
+  vti_score?: number;
   badge: string;
-  badge_class: 'gold' | 'silver' | 'bronze';
-  breakdown: {
-    cgpa_score: number;
-    backlog_score: number;
-    tier_score: number;
-    skills_score: number;
+  badge_class?: 'gold' | 'silver' | 'bronze' | 'unverified' | string;
+  breakdown?: {
+    cgpa_score?: number;
+    backlog_score?: number;
+    tier_score?: number;
+    skills_score?: number;
   };
-  summary: string;
+  summary?: string;
+  description?: string;
+  trust_level?: string;
 }
 
 export interface Student {
   student_id: string;
+  reg_no?: string;
   name: string;
   email: string;
   phone?: string;
   department: string;
+  school?: string;
   year: number;
+  batch?: string;
   cgpa: number;
+  attendance?: number;
   backlogs: number;
   skills: string[];
   placement_status: 'Placed' | 'Unplaced';
-  highest_tier?: 'Normal' | 'Dream' | 'Super Dream';
+  highest_tier?: 'Normal' | 'Dream' | 'Super Dream' | 'None';
   ml_opt_out?: boolean;
+  mentor_id?: string;
+  mentor_name?: string;
+  mentor_school?: string;
+  mentor_hod?: string;
+  mentor_hos?: string;
+  hod_id?: string;
+  hod_name?: string;
+  hos_name?: string;
+  assessment_status?: string;
+  company_eligibility?: string;
+  survey_status?: 'Filled' | 'Pending';
+  survey_response?: {
+    timestamp?: string;
+    has_received_email?: boolean;
+    email_response?: string;
+    option_detail?: string;
+  };
+  remarks?: string;
+  tags?: string[];
+  placement_company?: string;
+  placement_lpa?: number;
+  verification_issue?: string;
+  internship_status?: string;
+  internship_location?: string;
+  action_required?: string;
   vti?: VtiScore;
   ai_risk?: {
     placement_probability: number;
     expected_package_lpa: number;
     risk_level: 'LOW' | 'MEDIUM' | 'HIGH';
   };
+}
+
+export interface AdminProfile {
+  admin_id: string;
+  employee_code: string;
+  name: string;
+  email: string;
+  role: string;
+  office: string;
+  permissions: string[];
+  faculty_id?: string;
+  person_id?: string;
+  department?: string;
+  designation?: string;
+  status: string;
+  created_at?: string;
+}
+
+export interface FacultyProfile {
+  faculty_id: string;
+  employee_code: string;
+  name: string;
+  email: string;
+  phone: string;
+  school: string;
+  department: string;
+  designation: string;
+  academic_rank?: string;
+  roles?: string[];
+  is_hod?: boolean;
+  is_hos?: boolean;
+  is_mentor?: boolean;
+  is_admin?: boolean;
+  is_placement_coordinator?: boolean;
+  courses_taught?: string[];
+  committees?: string[];
+  office_location?: string;
+  person_id?: string;
+  account_id?: string;
+  hod_id: string;
+  hod_name: string;
+  hos_name: string;
+  mentees_count: number;
+  mentee_ids?: string[];
+  assessment_eligible_count: number;
+  assessment_not_eligible_count: number;
+  form_filled_count: number;
+  form_pending_count: number;
+  already_placed_count: number;
+  verification_issues_count: number;
+  completion_rate: number;
+  action_items_count: number;
+  created_at?: string;
+}
+
+export interface HodProfile {
+  hod_id: string;
+  name: string;
+  email: string;
+  school: string;
+  department: string;
+  hos_name: string;
+  faculty_id?: string;
+  person_id?: string;
+  is_active_teacher?: boolean;
+  academic_rank?: string;
+  office_location?: string;
+  faculty_count: number;
+  faculty_ids?: string[];
+  students_count: number;
+  assessment_eligible_count: number;
+  assessment_not_eligible_count: number;
+  form_filled_count: number;
+  form_pending_count: number;
+  completion_rate: number;
+  placed_count: number;
+  verification_issues_count: number;
+  created_at?: string;
+}
+
+export interface HosProfile {
+  hos_id: string;
+  name: string;
+  school: string;
+  designation: string;
+  faculty_id?: string;
+  person_id?: string;
+  is_active_teacher?: boolean;
+  academic_rank?: string;
+  office_location?: string;
+  hod_count: number;
+  hod_ids?: string[];
+  faculty_count: number;
+  faculty_ids?: string[];
+  students_count: number;
+  assessment_eligible_count: number;
+  assessment_not_eligible_count: number;
+  form_filled_count: number;
+  form_pending_count: number;
+  completion_rate: number;
+  placed_count: number;
+  created_at?: string;
+}
+
+export interface PlacementDrive {
+  drive_id: string;
+  company_name: string;
+  role_title: string;
+  batch_year: string;
+  total_candidates: number;
+  eligible_count: number;
+  not_eligible_count: number;
+  form_filled_count: number;
+  form_pending_count: number;
+  responses_yes: number;
+  responses_no: number;
+  rejection_breakdown: Record<string, number>;
+  remarks_breakdown: Record<string, number>;
+  school_stats: Record<string, {
+    total: number;
+    eligible: number;
+    filled: number;
+    pending: number;
+    completion_rate: number;
+  }>;
+  created_at?: string;
+}
+
+export interface InstitutionalSummary {
+  status: string;
+  kpis: {
+    total_students: number;
+    total_faculty_mentors?: number;
+    total_faculty_personnel: number;
+    total_department_heads: number;
+    total_school_deans: number;
+    total_administrators: number;
+    total_graph_relationships: number;
+    multi_role_breakdown?: {
+      active_teachers: number;
+      active_mentors: number;
+      teachers_serving_as_hod: number;
+      teachers_serving_as_hos: number;
+      faculty_placement_coordinators: number;
+    };
+  };
+  drive: PlacementDrive;
+  school_heads: HosProfile[];
+}
+
+export interface UnifiedProfile {
+  entity_type: 'STUDENT' | 'FACULTY' | 'ADMIN' | 'DEPARTMENT_HEAD' | 'SCHOOL_HEAD';
+  profile: any;
+  roles?: string[];
+  mentor?: Partial<FacultyProfile>;
+  linked_faculty?: FacultyProfile;
+  faculty_dossier?: FacultyProfile;
+  appointments?: {
+    hod?: HodProfile | null;
+    hos?: HosProfile | null;
+    admin?: AdminProfile | null;
+  };
+  relationships?: Array<{
+    relation_id: string;
+    from_id: string;
+    from_name: string;
+    from_type: string;
+    to_id: string;
+    to_name: string;
+    to_type: string;
+    relation_type: string;
+    scope: string;
+  }>;
 }
 
 export interface JobEligibility {
@@ -41,6 +246,9 @@ export interface JobEligibility {
 export interface Job {
   job_id: string;
   company_id: string;
+  company_name?: string;
+  location?: string;
+  skills_required?: string[];
   title: string;
   tier: 'Normal' | 'Dream' | 'Super Dream';
   package_lpa: number;

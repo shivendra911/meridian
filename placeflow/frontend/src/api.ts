@@ -18,6 +18,13 @@ import {
   Campus,
   OrganizationalTreeNode,
   ReadinessReport,
+  FacultyProfile,
+  HodProfile,
+  HosProfile,
+  AdminProfile,
+  UnifiedProfile,
+  PlacementDrive,
+  InstitutionalSummary,
 } from './types';
 
 const API_BASE = 'http://127.0.0.1:8000/api';
@@ -58,6 +65,91 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 }
 
 export const api = {
+  // Institutional Hierarchy & Faculty Mentorship (CAMP-01/02 Governance)
+  getInstitutionalSummary: () => request<InstitutionalSummary>('/v4/institutional/summary/'),
+  getSchoolHeads: () => request<{ count: number; school_heads: HosProfile[] }>('/v4/institutional/hos/'),
+  getDepartmentHeads: (hos?: string) => {
+    const qs = hos ? `?hos=${encodeURIComponent(hos)}` : '';
+    return request<{ count: number; department_heads: HodProfile[] }>(`/v4/institutional/hods/${qs}`);
+  },
+  getFacultyList: (params?: {
+    hod_id?: string;
+    hos?: string;
+    role?: string;
+    department?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+    sort?: string;
+  }) => {
+    const q = new URLSearchParams();
+    if (params?.hod_id) q.append('hod_id', params.hod_id);
+    if (params?.hos) q.append('hos', params.hos);
+    if (params?.role) q.append('role', params.role);
+    if (params?.department) q.append('department', params.department);
+    if (params?.search) q.append('search', params.search);
+    if (params?.page) q.append('page', String(params.page));
+    if (params?.limit) q.append('limit', String(params.limit));
+    if (params?.sort) q.append('sort', params.sort);
+    const qs = q.toString() ? `?${q.toString()}` : '';
+    return request<{ total_count: number; page: number; total_pages: number; faculty: FacultyProfile[] }>(`/v4/institutional/faculty/${qs}`);
+  },
+  getFacultyDetail: (facultyId: string) =>
+    request<{
+      faculty: FacultyProfile;
+      roles?: string[];
+      teaching?: {
+        courses: string[];
+        office_location: string;
+        academic_rank: string;
+        committees: string[];
+      };
+      appointments?: {
+        hod?: HodProfile | null;
+        hos?: HosProfile | null;
+        admin?: AdminProfile | null;
+      };
+      colleagues?: Array<{
+        faculty_id: string;
+        name: string;
+        designation: string;
+        roles: string[];
+        email: string;
+      }>;
+      network_relationships?: any[];
+      mentees_count: number;
+      mentees: Student[];
+      cohort_breakdown: {
+        eligible: number;
+        not_eligible: number;
+        survey_filled: number;
+        survey_pending: number;
+        placed_elsewhere: number;
+        verification_issues: number;
+      };
+      action_items: {
+        pending_submission: Student[];
+        verification_blocked: Student[];
+      };
+    }>(`/v4/institutional/faculty/${facultyId}/`),
+  getAdmins: () => request<{ count: number; admins: AdminProfile[] }>('/v4/institutional/admins/'),
+  getAdminDetail: (adminId: string) =>
+    request<{
+      admin: AdminProfile;
+      linked_faculty?: FacultyProfile | null;
+      network_relationships: any[];
+    }>(`/v4/institutional/admins/${adminId}/`),
+  getUnifiedProfile: (identifier: string) =>
+    request<UnifiedProfile>(`/v4/institutional/profile/${identifier}/`),
+  getDriveAccenture: () => request<{ status: string; drive: PlacementDrive }>('/v4/institutional/drive/accenture/'),
+  getInstitutionalRelationships: (nodeId?: string, relType?: string) => {
+    const q = new URLSearchParams();
+    if (nodeId) q.append('node_id', nodeId);
+    if (relType) q.append('relation_type', relType);
+    const qs = q.toString() ? `?${q.toString()}` : '';
+    return request<{ count: number; relationships: any[] }>(`/v4/institutional/relationships/${qs}`);
+  },
+
   // Directorate Overview
   getOverview: () => request<OverviewData>('/overview/'),
 

@@ -96,16 +96,33 @@ def train():
     joblib.dump(clf, PLACEMENT_CLF_PATH)
     joblib.dump(reg, PACKAGE_REG_PATH)
     joblib.dump({"dept_encoder": dept_encoder, "feature_cols": feature_cols}, ENCODERS_PATH)
+    global _MODEL_CACHE
+    _MODEL_CACHE = (clf, reg, {"dept_encoder": dept_encoder, "feature_cols": feature_cols})
     print(f"\nModels saved to {MODEL_DIR}")
+
+
+_MODEL_CACHE = None
+
+
+def _get_models():
+    global _MODEL_CACHE
+    if _MODEL_CACHE is None:
+        if not (PLACEMENT_CLF_PATH.exists() and PACKAGE_REG_PATH.exists() and ENCODERS_PATH.exists()):
+            return None, None, None
+        clf = joblib.load(PLACEMENT_CLF_PATH)
+        reg = joblib.load(PACKAGE_REG_PATH)
+        meta = joblib.load(ENCODERS_PATH)
+        _MODEL_CACHE = (clf, reg, meta)
+    return _MODEL_CACHE
 
 
 def predict_student(student_id):
     """Predict placement probability and expected package for one student."""
     db = get_db()
 
-    clf = joblib.load(PLACEMENT_CLF_PATH)
-    reg = joblib.load(PACKAGE_REG_PATH)
-    meta = joblib.load(ENCODERS_PATH)
+    clf, reg, meta = _get_models()
+    if clf is None or reg is None or meta is None:
+        return None
 
     student = db.students.find_one({"student_id": student_id}, {"_id": 0})
     if not student:

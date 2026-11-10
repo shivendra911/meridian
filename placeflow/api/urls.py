@@ -20,9 +20,22 @@ from api import (
     views_camp02,
     views_camp03,
     views_ai,
+    views_hierarchy,
 )
 
 urlpatterns = [
+    # Institutional Hierarchy & Faculty Mentorship (CAMP-01/02 Governance Extension)
+    path("v4/institutional/summary/", views_hierarchy.InstitutionalSummaryView.as_view(), name="institutional_summary"),
+    path("v4/institutional/hos/", views_hierarchy.SchoolHeadsListView.as_view(), name="institutional_hos"),
+    path("v4/institutional/hods/", views_hierarchy.DepartmentHeadsListView.as_view(), name="institutional_hods"),
+    path("v4/institutional/faculty/", views_hierarchy.FacultyListView.as_view(), name="institutional_faculty"),
+    path("v4/institutional/faculty/<str:faculty_id>/", views_hierarchy.FacultyDetailView.as_view(), name="institutional_faculty_detail"),
+    path("v4/institutional/admins/", views_hierarchy.AdminListView.as_view(), name="institutional_admins"),
+    path("v4/institutional/admins/<str:admin_id>/", views_hierarchy.AdminDetailView.as_view(), name="institutional_admin_detail"),
+    path("v4/institutional/profile/<str:identifier>/", views_hierarchy.UnifiedPersonProfileView.as_view(), name="institutional_unified_profile"),
+    path("v4/institutional/drive/accenture/", views_hierarchy.PlacementDriveDetailView.as_view(), name="institutional_drive_accenture"),
+    path("v4/institutional/relationships/", views_hierarchy.InstitutionalRelationshipsView.as_view(), name="institutional_relationships"),
+
     # Campus AI: Cross-Platform Intelligence Infrastructure Endpoints
     path("v4/ai/query/", views_ai.ai_query_view, name="campus_ai_query"),
     path("v4/ai/rag/", views_ai.ai_rag_view, name="campus_ai_rag"),

@@ -6,24 +6,42 @@ Usage:
 """
 import sys
 import pathlib
+import time
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 from database.connection import get_db  # noqa: E402
 from operations.reports import run  # noqa: E402
 
+_CACHE = {
+    "demand": None,
+    "demand_time": 0,
+    "placed": None,
+    "placed_time": 0,
+}
+CACHE_TTL_SECS = 120
+
 
 def _demand_scores(db):
-    """Compute a demand score for each skill based on open seats."""
+    """Compute a demand score for each skill based on open seats (cached 120s)."""
+    now = time.time()
+    if _CACHE["demand"] is not None and (now - _CACHE["demand_time"] < CACHE_TTL_SECS):
+        return _CACHE["demand"]
     demand = run(db, "A7a")  # skill -> open seats
     if not demand:
         return {}
     max_seats = max(r["seats"] for r in demand)
-    return {r["_id"]: r["seats"] / max_seats for r in demand}  # normalize to 0-1
+    res = {r["_id"]: r["seats"] / max_seats for r in demand}  # normalize to 0-1
+    _CACHE["demand"] = res
+    _CACHE["demand_time"] = now
+    return res
 
 
 def _placed_skills(db):
-    """Skills that placed students had — weighted by frequency."""
+    """Skills that placed students had — weighted by frequency (cached 120s)."""
+    now = time.time()
+    if _CACHE["placed"] is not None and (now - _CACHE["placed_time"] < CACHE_TTL_SECS):
+        return _CACHE["placed"]
     pipeline = [
         {"$match": {"placement_status": "Placed"}},
         {"$unwind": "$skills"},
@@ -34,7 +52,10 @@ def _placed_skills(db):
     if not results:
         return {}
     max_count = max(r["count"] for r in results)
-    return {r["_id"]: r["count"] / max_count for r in results}
+    res = {r["_id"]: r["count"] / max_count for r in results}
+    _CACHE["placed"] = res
+    _CACHE["placed_time"] = now
+    return res
 
 
 def recommend(db, student_id, top_n=5):

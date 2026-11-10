@@ -22,32 +22,56 @@ class StudentListView(APIView):
         db = get_db()
         dept_filter = request.query_params.get("department")
         search_query = request.query_params.get("search", "").strip()
+        mentor_filter = request.query_params.get("mentor_id")
+        hod_filter = request.query_params.get("hod_id")
+        hos_filter = request.query_params.get("hos_name") or request.query_params.get("hos")
+        assessment_filter = request.query_params.get("assessment_status")
+        survey_filter = request.query_params.get("survey_status")
+        tag_filter = request.query_params.get("tag")
 
         query = {}
         if dept_filter and dept_filter != "ALL":
             query["department"] = dept_filter
+        if mentor_filter:
+            query["mentor_id"] = mentor_filter
+        if hod_filter:
+            query["hod_id"] = hod_filter
+        if hos_filter:
+            query["hos_name"] = hos_filter
+        if assessment_filter:
+            query["assessment_status"] = assessment_filter
+        if survey_filter:
+            query["survey_status"] = survey_filter
+        if tag_filter:
+            query["tags"] = tag_filter
         if search_query:
             query["$or"] = [
                 {"name": {"$regex": search_query, "$options": "i"}},
                 {"student_id": {"$regex": search_query, "$options": "i"}},
+                {"reg_no": {"$regex": search_query, "$options": "i"}},
                 {"skills": {"$regex": search_query, "$options": "i"}},
+                {"mentor_name": {"$regex": search_query, "$options": "i"}},
+                {"remarks": {"$regex": search_query, "$options": "i"}},
             ]
 
         rows = list(db.students.find(query, {"_id": 0}).sort("student_id", 1).limit(300))
 
-        # Annotate with VTI authenticity score and ML prediction
+        # Annotate with VTI authenticity score and ML prediction (fast cached path)
         try:
             from ml.placement_predictor import predict_student
             for r in rows:
-                r["vti"] = calculate_talent_authenticity(r)
-                sid = r.get("student_id")
-                if sid:
-                    pred = predict_student(sid)
-                    if pred:
-                        r["ai_risk"] = pred
+                if not r.get("vti"):
+                    r["vti"] = calculate_talent_authenticity(r)
+                if not r.get("ai_risk"):
+                    sid = r.get("student_id")
+                    if sid:
+                        pred = predict_student(sid)
+                        if pred:
+                            r["ai_risk"] = pred
         except Exception:
             for r in rows:
-                r["vti"] = calculate_talent_authenticity(r)
+                if not r.get("vti"):
+                    r["vti"] = calculate_talent_authenticity(r)
 
         return Response({
             "count": len(rows),
@@ -83,13 +107,19 @@ class StudentDetailView(APIView):
 
     def get(self, request, student_id):
         db = get_db()
-        sid = student_id.strip().upper()
-        student = db.students.find_one({"student_id": sid}, {"_id": 0})
+        raw_id = student_id.strip()
+        # Fast indexed lookup across student_id (case-insensitive) and reg_no
+        student = db.students.find_one(
+            {"$or": [{"student_id": raw_id}, {"student_id": raw_id.upper()}, {"reg_no": raw_id}]},
+            {"_id": 0}
+        )
         if not student:
-            return Response({"error": f"Candidate '{sid}' not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": f"Candidate '{raw_id}' not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        sid = student["student_id"]
 
         # 1. Talent Authenticity VTI
-        vti = calculate_talent_authenticity(student)
+        vti = student.get("vti") or calculate_talent_authenticity(student)
 
         # 2. Eligible Jobs
         eligible_jobs = applications.eligible_jobs(db, student)
@@ -101,12 +131,13 @@ class StudentDetailView(APIView):
         interviews = list(db.interviews.find({"student_id": sid}, {"_id": 0}).sort("scheduled_start", 1))
 
         # 5. AI Predictions & Skill Gap Recommendations
-        ai_pred = None
-        try:
-            from ml.placement_predictor import predict_student
-            ai_pred = predict_student(sid)
-        except Exception:
-            pass
+        ai_pred = student.get("ai_risk")
+        if not ai_pred:
+            try:
+                from ml.placement_predictor import predict_student
+                ai_pred = predict_student(sid)
+            except Exception:
+                pass
 
         ai_recs = []
         try:

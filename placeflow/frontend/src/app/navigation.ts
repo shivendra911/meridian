@@ -91,14 +91,21 @@ export const NAV: Record<Persona, NavSection[]> = {
       ],
     },
     {
-      title: 'People',
+      title: 'People & Mentorship',
       items: [
         {
-          label: 'Students',
+          label: 'Students Registry',
           path: '/students',
           icon: Users,
           status: 'live',
           tabs: ['Profile', 'Applications', 'Eligibility', 'Simulate', 'Consent'], // What-if + consent live here
+        },
+        {
+          label: 'Mentorship Hierarchy',
+          path: '/institution/hierarchy',
+          icon: Network,
+          status: 'live',
+          tabs: ['School Deans', 'HODs', 'Faculty Mentors', 'Accenture Telemetry', 'Graph'],
         },
       ],
     },

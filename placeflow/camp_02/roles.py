@@ -88,6 +88,39 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
         ],
     },
     {
+        "role_code": "SCHOOL_HEAD",
+        "role_name": "Executive Dean & Head of School",
+        "role_category": "ADMINISTRATIVE",
+        "description": "Executive academic head overseeing departments, faculty, curriculum, and placement outcomes",
+        "max_allowed_scope": "CAMPUS",
+        "permissions": [
+            "institution.profile.read", "campus.update", "organization.unit.update",
+            "student.profile.read", "student.academic.override", "reports.pipeline.execute",
+            "nirf.report.view", "placement.drive.manage", "placement.application.view",
+        ],
+    },
+    {
+        "role_code": "DEPARTMENT_HEAD",
+        "role_name": "Head of Department (HOD)",
+        "role_category": "ACADEMIC",
+        "description": "Academic departmental head overseeing faculty rosters, curriculum delivery, and student progress",
+        "max_allowed_scope": "ORGANIZATIONAL_UNIT",
+        "permissions": [
+            "student.profile.read", "student.academic.override", "student.verification.approve",
+            "placement.application.view", "placement.drive.manage", "reports.pipeline.execute",
+        ],
+    },
+    {
+        "role_code": "FACULTY_MENTOR",
+        "role_name": "Faculty Teacher & Academic Mentor",
+        "role_category": "ACADEMIC",
+        "description": "Faculty member delivering courses, grading CIEs, and counseling assigned student mentees",
+        "max_allowed_scope": "ORGANIZATIONAL_UNIT",
+        "permissions": [
+            "student.profile.read", "student.verification.approve", "placement.application.view",
+        ],
+    },
+    {
         "role_code": "DEPT_COORDINATOR",
         "role_name": "Department Faculty Placement Coordinator",
         "role_category": "ACADEMIC",
