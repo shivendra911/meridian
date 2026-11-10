@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from database.connection import get_db
 from ml.renege_predictor import batch_renege_radar
+from api.auth.permissions import perm
 
 
 class RenegeRadarView(APIView):
@@ -14,6 +15,7 @@ class RenegeRadarView(APIView):
     Evaluates candidate flight risk using salary disparity ratios,
     post-offer application leaks, and lag days.
     """
+    permission_classes = [perm("placement.application.view")]
 
     def get(self, request):
         db = get_db()

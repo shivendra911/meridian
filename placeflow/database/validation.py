@@ -86,6 +86,7 @@ STUDENTS = collection_schema(
         "hod_name": string(),
         "hos_name": string(),
         "school_code": string(),
+        "person_id": string(),
         "ml_opt_out": {"bsonType": "bool"},
     })
 
@@ -164,7 +165,9 @@ PLACEMENTS = collection_schema(
         "job_id": string(),
         "package_lpa": number(minimum=0),
         "placement_date": date(),
-        "status": string(enum=["Placed"]),
+        "status": string(enum=["Placed", "Accepted", "Declined"]),
+        "response_status": string(),
+        "responded_at": date(),
     })
 
 ACTIVITY_FEED = collection_schema(
@@ -391,6 +394,10 @@ INDEXES = [
     ("institutional_relationships", [("from_id", 1), ("relation_type", 1)], {"name": "ix_rel_from"}),
     ("institutional_relationships", [("to_id", 1), ("relation_type", 1)], {"name": "ix_rel_to"}),
     ("students", [("reg_no", 1)], {"name": "uq_students_reg_no", "unique": True, "sparse": True}),
+    ("students", [("person_id", 1)], {"name": "uq_students_person_id", "unique": True, "sparse": True}),
+    ("faculty", [("person_id", 1)], {"name": "uq_faculty_person_id", "unique": True, "sparse": True}),
+    ("department_heads", [("person_id", 1)], {"name": "uq_hod_person_id", "unique": True, "sparse": True}),
+    ("school_heads", [("person_id", 1)], {"name": "uq_hos_person_id", "unique": True, "sparse": True}),
     ("students", [("mentor_id", 1)], {"name": "ix_student_mentor"}),
     ("students", [("mentor_hod", 1)], {"name": "ix_student_hod"}),
     ("students", [("mentor_hos", 1)], {"name": "ix_student_hos"}),

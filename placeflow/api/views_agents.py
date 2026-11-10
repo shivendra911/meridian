@@ -8,10 +8,12 @@ from rest_framework import status
 from database.connection import get_db
 from operations.agents import run_agent, AGENT_CATALOG
 from operations.agent_tools import TOOL_CATALOG
+from api.auth.permissions import perm
 
 
 class AgentCatalogView(APIView):
     """Returns available autonomous agents and typed MCP tools."""
+    permission_classes = [perm("agent.catalog.read")]
 
     def get(self, request):
         return Response({
@@ -22,6 +24,7 @@ class AgentCatalogView(APIView):
 
 class AgentChatView(APIView):
     """Executes an agent run following the Plan -> Tool Call -> Synthesize cycle."""
+    permission_classes = [perm("agent.execute.run")]
 
     def post(self, request):
         db = get_db()
@@ -38,6 +41,7 @@ class AgentChatView(APIView):
 
 class AgentRunsLedgerView(APIView):
     """Retrieves immutable telemetry logs of past agent runs."""
+    permission_classes = [perm("agent.trace.view")]
 
     def get(self, request):
         db = get_db()

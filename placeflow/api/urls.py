@@ -2,7 +2,7 @@
 PlaceFlow Django API — URL Dispatcher Configuration
 """
 
-from django.urls import path
+from django.urls import path, include
 from api import (
     views_overview,
     views_students,
@@ -22,8 +22,26 @@ from api import (
     views_ai,
     views_hierarchy,
 )
+from api.auth import views as views_auth
 
 urlpatterns = [
+    # Authoritative Health & System Status Probe (Public Allowlist)
+    path("health/", views_overview.HealthCheckView.as_view(), name="api_health"),
+
+    # Authoritative Authentication & Session Lifecycle (CAMP-02 RBAC Extension)
+    path("auth/csrf/", views_auth.CsrfTokenView.as_view(), name="auth_csrf"),
+    path("auth/login/", views_auth.LoginView.as_view(), name="auth_login"),
+    path("auth/logout/", views_auth.LogoutView.as_view(), name="auth_logout"),
+    path("auth/me/", views_auth.MeView.as_view(), name="auth_me"),
+    path("auth/switch-context/", views_auth.SwitchContextView.as_view(), name="auth_switch_context"),
+
+    # Namespaced Role-Separated Portals (Phase 3 & Phase 6)
+    path("student/", include("api.portals.student.urls")),
+    path("tpo/", include("api.portals.tpo.urls")),
+    path("faculty/", include("api.portals.faculty.urls")),
+    path("hod/", include("api.portals.hod.urls")),
+    path("management/", include("api.portals.management.urls")),
+    path("admin/", include("api.portals.admin.urls")),
     # Institutional Hierarchy & Faculty Mentorship (CAMP-01/02 Governance Extension)
     path("v4/institutional/summary/", views_hierarchy.InstitutionalSummaryView.as_view(), name="institutional_summary"),
     path("v4/institutional/hos/", views_hierarchy.SchoolHeadsListView.as_view(), name="institutional_hos"),

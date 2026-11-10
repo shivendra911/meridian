@@ -13,10 +13,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from database.connection import get_db
+from api.auth.permissions import perm, any_of
 
 
 class InstitutionalSummaryView(APIView):
     """Returns high-level institutional rollup metrics across HOS, HODs, Faculty, Admins, and Students."""
+    permission_classes = [any_of("organization.unit.create", "organization.unit.update", "student.profile.read", "placement.application.view")]
 
     def get(self, request):
         db = get_db()
@@ -60,6 +62,7 @@ class InstitutionalSummaryView(APIView):
 
 class SchoolHeadsListView(APIView):
     """Returns the 4 School Heads (HOS) with their departmental breakdown and completion rates."""
+    permission_classes = [any_of("organization.unit.create", "organization.unit.update", "student.profile.read")]
 
     def get(self, request):
         db = get_db()
@@ -72,6 +75,7 @@ class SchoolHeadsListView(APIView):
 
 class DepartmentHeadsListView(APIView):
     """Returns Department Heads (HODs) with filtering by HOS and sorting by completion rate."""
+    permission_classes = [any_of("organization.unit.create", "organization.unit.update", "student.profile.read")]
 
     def get(self, request):
         db = get_db()
@@ -89,6 +93,7 @@ class DepartmentHeadsListView(APIView):
 
 class FacultyListView(APIView):
     """Returns searchable, paginated Faculty Mentor profiles with cohort stats and action items."""
+    permission_classes = [any_of("organization.unit.create", "organization.unit.update", "student.profile.read")]
 
     def get(self, request):
         db = get_db()
@@ -146,6 +151,7 @@ class FacultyListView(APIView):
 
 class FacultyDetailView(APIView):
     """Returns complete multi-role teacher dossier including courses, HOD/HOS appointments, and student mentees."""
+    permission_classes = [any_of("organization.unit.create", "organization.unit.update", "student.profile.read")]
 
     def get(self, request, faculty_id):
         db = get_db()
@@ -223,6 +229,7 @@ class FacultyDetailView(APIView):
 
 class AdminListView(APIView):
     """Returns directory of institutional administrators, directorates, and executive officers."""
+    permission_classes = [any_of("iam.account.create", "organization.unit.create", "student.profile.read")]
 
     def get(self, request):
         db = get_db()
@@ -235,6 +242,7 @@ class AdminListView(APIView):
 
 class AdminDetailView(APIView):
     """Returns administrative dossier including permissions, jurisdiction, and linked teacher profile."""
+    permission_classes = [any_of("iam.account.create", "organization.unit.create", "student.profile.read")]
 
     def get(self, request, admin_id):
         db = get_db()
@@ -261,6 +269,7 @@ class AdminDetailView(APIView):
 
 class UnifiedPersonProfileView(APIView):
     """Resolves any individual (Student, Teacher, HOD, HOS, Admin) into a unified 360-degree profile."""
+    permission_classes = [any_of("student.profile.read", "organization.unit.create", "placement.application.view")]
 
     def get(self, request, identifier):
         db = get_db()
@@ -345,6 +354,7 @@ class UnifiedPersonProfileView(APIView):
 
 class PlacementDriveDetailView(APIView):
     """Returns comprehensive Accenture 2026 drive telemetry and candidate funnel analysis."""
+    permission_classes = [perm("placement.drive.manage")]
 
     def get(self, request):
         db = get_db()
@@ -360,6 +370,7 @@ class PlacementDriveDetailView(APIView):
 
 class InstitutionalRelationshipsView(APIView):
     """Queries directed graph relationships for a given node or relation type."""
+    permission_classes = [any_of("organization.unit.create", "organization.unit.update", "student.profile.read")]
 
     def get(self, request):
         db = get_db()

@@ -80,6 +80,9 @@ def records_fixture():
         admin_email="admin@rec.edu",
         db=db,
     )
+    from camp_01.tenants import transition_tenant_status
+    transition_tenant_status(t["id"], "PROVISIONING", db=db)
+    transition_tenant_status(t["id"], "ACTIVE", db=db)
     inst = create_institution(
         tenant_id=t["id"],
         institution_code="REC_INST_01",
@@ -385,6 +388,20 @@ def test_academic_rest_api_endpoints(records_fixture):
     """Test 5: Verify DRF endpoints mounted under /api/v4/academic/."""
     f = records_fixture
     client = APIClient()
+    from camp_02.sessions import create_auth_session
+    admin_acc = f["db"].accounts.find_one({"username": "admin"})
+    if not admin_acc:
+        from scripts.seed_demo_accounts import seed_demo_accounts
+        seed_demo_accounts(db=f["db"])
+        admin_acc = f["db"].accounts.find_one({"username": "admin"})
+    sess_t = create_auth_session(
+        account_id=admin_acc["account_id"],
+        tenant_id=f["tenant_id"],
+        institution_id=f["institution_id"],
+        auth_assurance="AAL1_PASSWORD",
+        db=f["db"],
+    )
+    client.cookies["pf_session"] = sess_t["raw_token"]
 
     # 1. GET /api/v4/academic/programs/
     res_progs = client.get(

@@ -65,17 +65,22 @@ from camp_01.config import (
 )
 from camp_01.directory import search_public_directory
 from camp_01.onboarding import execute_full_onboarding_pipeline
+from api.auth.permissions import perm, any_of
 
 
 def _get_tenant_id(request):
-    """Helper to extract tenant_id from context, header, or query."""
-    tid = getattr(request, "tenant_id", None) or get_current_tenant_id(required=False) or request.headers.get("X-Tenant-ID") or request.GET.get("tenant_id")
+    """Helper to extract tenant_id from context, header, query, or authenticated user."""
+    user = getattr(request, "user", None)
+    user_tid = getattr(user, "tenant_id", None) if user else None
+    tid = getattr(request, "tenant_id", None) or user_tid or get_current_tenant_id(required=False) or request.headers.get("X-Tenant-ID") or request.GET.get("tenant_id")
     if not tid and request.data and isinstance(request.data, dict):
         tid = request.data.get("tenant_id")
     return tid
 
 
 class TenantListCreateView(APIView):
+    permission_classes = [perm("configuration.version.create")]
+
     def get(self, request):
         status_filter = request.GET.get("status")
         cust_type = request.GET.get("customer_type")
@@ -120,6 +125,8 @@ class TenantDetailView(APIView):
 
 
 class InstitutionListCreateView(APIView):
+    permission_classes = [any_of("organization.unit.create", "institution.profile.read", "configuration.version.create")]
+
     def get(self, request):
         tid = _get_tenant_id(request)
         if not tid:
@@ -210,6 +217,8 @@ class InstitutionIdentifiersView(APIView):
 
 
 class CampusListCreateView(APIView):
+    permission_classes = [any_of("campus.create", "campus.update", "organization.unit.create")]
+
     def get(self, request):
         tid = _get_tenant_id(request)
         camps = list_campuses(tid)

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from database.connection import get_db
 from ml.fairness_audit import run_cohort_fairness_audit, audit_feature_set, PROHIBITED_SENSITIVE_FEATURES
+from api.auth.permissions import perm
 
 
 class FairnessAuditView(APIView):
@@ -14,6 +15,7 @@ class FairnessAuditView(APIView):
     Evaluates selection rate parity across academic departments
     and verifies that zero prohibited sensitive attributes appear in models.
     """
+    permission_classes = [perm("agent.fairness.audit")]
 
     def get(self, request):
         db = get_db()

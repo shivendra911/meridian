@@ -1,0 +1,336 @@
+"""PlaceFlow / Meridian — Student Portal API Views (Phase 3).
+
+All views in this module are strictly SELF-scoped:
+- Candidate identity is derived solely from the authenticated Principal context.
+- Any student_id parameter passed in query strings, URL paths, or request bodies is discarded.
+- Out-of-scope requests or lookups return HTTP 404 (IDOR prevention).
+"""
+
+from datetime import datetime, timezone
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from database.connection import get_db
+from api.auth.permissions import perm, any_of
+from api.auth.scoping import ScopeResolver
+from api.auth.masking import mask_records
+from operations.applications import check_eligibility, apply_for_job
+from operations.errors import PlaceFlowError
+from operations.consent import record_consent, withdraw_consent, get_student_consents
+
+
+class StudentBaseView(APIView):
+    """Base class extracting authoritative student subject ID from the active principal."""
+
+    def get_student_id(self, request) -> str:
+        user = getattr(request, "user", None)
+        if not user or not getattr(user, "is_authenticated", False):
+            return None
+        subj = getattr(user, "subject", None) or {}
+        if subj.get("type") != "student":
+            return None
+        return subj.get("id")
+
+
+class StudentMeView(StudentBaseView):
+    """GET /api/student/me/ — Authoritative career profile dossier of the authenticated student."""
+    permission_classes = [perm("student.profile.read")]
+
+    def get(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        student = db.students.find_one({"student_id": student_id}, {"_id": 0})
+        if not student:
+            return Response({"error": "CandidateRecordNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Enrich with mentorship topology if present
+        rels = list(db.institutional_relationships.find(
+            {"from_id": student_id, "relation_type": "MENTORED_BY"},
+            {"_id": 0},
+        ))
+        student["mentorship_relations"] = rels
+
+        # Masking for self is identity-preserving
+        return Response(mask_records(student, request.user), status=status.HTTP_200_OK)
+
+
+class StudentProfileUpdateView(StudentBaseView):
+    """PATCH /api/student/profile/ — Updates candidate portfolio, bio, skills, or ML opt-out."""
+    permission_classes = [perm("student.profile.update_self")]
+
+    def patch(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        student = db.students.find_one({"student_id": student_id})
+        if not student:
+            return Response({"error": "CandidateRecordNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        allowed_fields = {"skills", "remarks", "phone", "ml_opt_out"}
+        update_data = {}
+        for k in allowed_fields:
+            if k in request.data:
+                update_data[k] = request.data[k]
+
+        if update_data:
+            db.students.update_one({"student_id": student_id}, {"$set": update_data})
+
+        updated = db.students.find_one({"student_id": student_id}, {"_id": 0})
+        return Response(mask_records(updated, request.user), status=status.HTTP_200_OK)
+
+
+class StudentOpportunitiesView(StudentBaseView):
+    """GET /api/student/opportunities/ — Published recruitment drives with server-computed eligibility."""
+    permission_classes = [perm("placement.application.create")]
+
+    def get(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        student = db.students.find_one({"student_id": student_id})
+        if not student:
+            return Response({"error": "CandidateRecordNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        jobs = list(db.jobs.find({"status": "Open"}, {"_id": 0}))
+        company_ids = [j.get("company_id") for j in jobs if j.get("company_id")]
+        companies = {c["company_id"]: c for c in db.companies.find({"company_id": {"$in": company_ids}}, {"_id": 0})}
+        applied_jobs = set(db.applications.distinct("job_id", {"student_id": student_id}))
+
+        decorated_jobs = []
+        for j in jobs:
+            cid = j.get("company_id")
+            comp = companies.get(cid, {})
+            j_copy = dict(j)
+            j_copy["company_name"] = comp.get("name", "Corporate Partner")
+            j_copy["company_industry"] = comp.get("industry", "Technology")
+            j_copy["has_applied"] = j.get("job_id") in applied_jobs
+
+            try:
+                check_eligibility(student, j)
+                j_copy["eligible"] = True
+                j_copy["reasons"] = []
+            except PlaceFlowError as pfe:
+                j_copy["eligible"] = False
+                j_copy["reasons"] = [str(pfe)]
+            except Exception as exc:
+                j_copy["eligible"] = False
+                j_copy["reasons"] = [str(exc)]
+
+            decorated_jobs.append(j_copy)
+
+        return Response(decorated_jobs, status=status.HTTP_200_OK)
+
+
+class StudentApplyView(StudentBaseView):
+    """POST /api/student/opportunities/<job_id>/apply/ — Applies for an open drive."""
+    permission_classes = [perm("placement.application.create")]
+
+    def post(self, request, job_id=None):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        actual_job_id = job_id or request.data.get("job_id")
+        if not actual_job_id:
+            return Response({"error": "MissingJobId"}, status=status.HTTP_400_BAD_REQUEST)
+
+        db = get_db()
+        try:
+            app_id = apply_for_job(db, student_id=student_id, job_id=actual_job_id)
+            return Response({"application_id": app_id, "status": "Applied"}, status=status.HTTP_201_CREATED)
+        except PlaceFlowError as err:
+            return Response({"error": str(err)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class StudentApplicationsListView(StudentBaseView):
+    """GET /api/student/applications/ — Lists active applications for the authenticated student."""
+    permission_classes = [perm("placement.application.view")]
+
+    def get(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        apps = list(db.applications.find({"student_id": student_id}, {"_id": 0}).sort("application_date", -1))
+        job_ids = [a.get("job_id") for a in apps if a.get("job_id")]
+        jobs = {j["job_id"]: j for j in db.jobs.find({"job_id": {"$in": job_ids}}, {"_id": 0})}
+        companies = {c["company_id"]: c["name"] for c in db.companies.find({}, {"_id": 0, "company_id": 1, "name": 1})}
+
+        for a in apps:
+            j = jobs.get(a.get("job_id"), {})
+            a["job_title"] = j.get("title", "Corporate Position")
+            a["tier"] = j.get("tier", "Standard")
+            a["package_lpa"] = j.get("package_lpa", 0.0)
+            a["company_name"] = companies.get(j.get("company_id"), "Corporate Partner")
+
+        return Response(apps, status=status.HTTP_200_OK)
+
+
+class StudentInterviewsListView(StudentBaseView):
+    """GET /api/student/interviews/ — Scheduled interview rounds for the authenticated candidate."""
+    permission_classes = [perm("placement.application.view")]
+
+    def get(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        interviews = list(db.interviews.find({"student_id": student_id}, {"_id": 0}).sort("scheduled_start", 1))
+        return Response(interviews, status=status.HTTP_200_OK)
+
+
+class StudentOffersListView(StudentBaseView):
+    """GET /api/student/offers/ — Final placement offer ledger records for the authenticated candidate."""
+    permission_classes = [perm("placement.application.view")]
+
+    def get(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        offers = list(db.placements.find({"student_id": student_id}, {"_id": 0}).sort("placement_date", -1))
+        return Response(offers, status=status.HTTP_200_OK)
+
+
+class StudentOfferRespondView(StudentBaseView):
+    """POST /api/student/offers/<offer_id>/respond/ — Student accepts or declines placement offer."""
+    permission_classes = [perm("placement.offer.respond")]
+
+    def post(self, request, offer_id):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        action = (request.data.get("action") or "").strip().upper()
+        if action not in ("ACCEPT", "DECLINE"):
+            return Response({"error": "InvalidAction", "message": "Action must be ACCEPT or DECLINE."}, status=status.HTTP_400_BAD_REQUEST)
+
+        db = get_db()
+        offer = db.placements.find_one({"placement_id": offer_id, "student_id": student_id})
+        if not offer:
+            # 404 to avoid leaking existence of out-of-scope offers
+            return Response({"error": "OfferNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        new_status = "Accepted" if action == "ACCEPT" else "Declined"
+        now = datetime.now(timezone.utc)
+        db.placements.update_one(
+            {"placement_id": offer_id},
+            {"$set": {"response_status": new_status, "responded_at": now}},
+        )
+
+        return Response({"placement_id": offer_id, "status": new_status, "responded_at": now.isoformat()}, status=status.HTTP_200_OK)
+
+
+class StudentConsentsView(StudentBaseView):
+    """GET /api/student/consents/ — Active and historical DPDP consent notices and responses."""
+    permission_classes = [any_of("consent.grant.record", "consent.withdraw.process")]
+
+    def get(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        consents = get_student_consents(db, student_id)
+        return Response(consents, status=status.HTTP_200_OK)
+
+
+class StudentConsentRecordView(StudentBaseView):
+    """POST /api/student/consents/record/ — Records candidate affirmative DPDP data sharing consent."""
+    permission_classes = [perm("consent.grant.record")]
+
+    def post(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        purpose = request.data.get("purpose")
+        purposes = request.data.get("purposes")
+        if not purpose and purposes and isinstance(purposes, list) and len(purposes) > 0:
+            purpose = purposes[0]
+        if not purpose:
+            purpose = "PLACEMENT_MATCHING"
+
+        purpose_alias_map = {
+            "PlacementEligibility": "PLACEMENT_MATCHING",
+            "CorporateSharing": "RECRUITER_DISCLOSURE",
+            "AITelemetry": "AI_PREDICTIVE_MODELING",
+        }
+        canonical_purpose = purpose_alias_map.get(purpose, purpose)
+
+        try:
+            res = record_consent(db, student_id=student_id, purpose=canonical_purpose)
+            cid = res.get("consent_id", f"c_{student_id}") if isinstance(res, dict) else str(res)
+            return Response({"consent_id": cid, "status": "Active", "record": res}, status=status.HTTP_201_CREATED)
+        except Exception as exc:
+            return Response({"error": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class StudentConsentWithdrawView(StudentBaseView):
+    """POST /api/student/consents/withdraw/ — Instantly withdraws DPDP candidate consent."""
+    permission_classes = [perm("consent.withdraw.process")]
+
+    def post(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        purpose = request.data.get("purpose", "PLACEMENT_MATCHING")
+        purpose_alias_map = {
+            "PlacementEligibility": "PLACEMENT_MATCHING",
+            "CorporateSharing": "RECRUITER_DISCLOSURE",
+            "AITelemetry": "AI_PREDICTIVE_MODELING",
+        }
+        canonical_purpose = purpose_alias_map.get(purpose, purpose)
+
+        try:
+            res = withdraw_consent(db, student_id=student_id, purpose=canonical_purpose)
+            return Response({"success": True, "message": "Consent successfully withdrawn.", "result": res}, status=status.HTTP_200_OK)
+        except Exception as exc:
+            return Response({"error": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class StudentAcademicsView(StudentBaseView):
+    """GET /api/student/academics/ — Academic standing, NEP progression, credits, and course ledger."""
+    permission_classes = [any_of("student.profile.read", "academic.registration.self")]
+
+    def get(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        student = db.students.find_one({"student_id": student_id}, {"_id": 0})
+        if not student:
+            return Response({"error": "CandidateRecordNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Retrieve academic ledger entries
+        ledger = list(db.student_academic_records.find({"student_id": student_id}, {"_id": 0}))
+        courses = list(db.course_registrations.find({"student_id": student_id}, {"_id": 0}))
+
+        return Response({
+            "student_id": student_id,
+            "name": student.get("name"),
+            "cgpa": student.get("cgpa", 0.0),
+            "attendance": student.get("attendance", 0.0),
+            "backlogs": student.get("backlogs", 0),
+            "department": student.get("department"),
+            "year": student.get("year"),
+            "batch": student.get("batch"),
+            "academic_records": ledger,
+            "courses": courses,
+        }, status=status.HTTP_200_OK)
+

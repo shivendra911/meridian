@@ -65,7 +65,15 @@ redesign*.txt
 frontendfullyredesigned*.txt
 *.prompt
 *.prompt.md
+*.task.md
+*.agent.md
+RBAC_SPEC.md
+check-boundaries.mjs
+prompts.zip
+prompts_extracted/
 scratch/
+*.zip
+
 
 
 

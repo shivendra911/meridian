@@ -10,6 +10,7 @@ from operations import students, applications
 from operations.authenticity import calculate_talent_authenticity
 from operations.errors import friendly
 from operations.consent import get_student_consents
+from api.auth.permissions import perm, any_of
 
 
 class StudentListView(APIView):
@@ -17,6 +18,7 @@ class StudentListView(APIView):
     Returns candidate registry with search, filtering, VTI scores, and risk bands.
     Accepts POST to register new candidates under strict $jsonSchema rules.
     """
+    permission_classes = [perm("student.profile.read")]
 
     def get(self, request):
         db = get_db()
@@ -104,6 +106,7 @@ class StudentDetailView(APIView):
     - ML placement likelihood & competency roadmap
     - DPDP consent records
     """
+    permission_classes = [perm("student.profile.read")]
 
     def get(self, request, student_id):
         db = get_db()
@@ -160,4 +163,15 @@ class StudentDetailView(APIView):
             "skill_recommendations": ai_recs,
             "consents": consents,
         }, status=status.HTTP_200_OK)
+
+
+class FacultyMenteesView(StudentListView):
+    """Mentees list for faculty advising. Strictly requires faculty advising permissions."""
+    permission_classes = [any_of("faculty.attendance.manage", "faculty.gradebook.manage")]
+
+
+class HodStudentsView(StudentListView):
+    """Departmental student cohort list. Strictly requires department head permissions."""
+    permission_classes = [any_of("academic.curriculum.approve", "academic.progression.evaluate")]
+
 

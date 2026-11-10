@@ -137,6 +137,9 @@ def test_drf_camp01_rest_api_endpoints(setup_camp01_test_db):
     db = setup_camp01_test_db
     db.platform_tenants.delete_many({"slug": "api-test-trust"})
     client = APIClient()
+    login_res = client.post("/api/auth/login/", {"username": "admin", "password": "password123"}, format="json")
+    if login_res.status_code == 200 and "pf_session" in login_res.cookies:
+        client.cookies["pf_session"] = login_res.cookies["pf_session"].value
 
     # 1. Public directory search
     res_dir = client.get("/api/v4/directory/search/?q=Bombay")
@@ -161,6 +164,17 @@ def test_drf_camp01_rest_api_endpoints(setup_camp01_test_db):
     # Transition tenant to ACTIVE
     client.post(f"/api/v4/tenants/{tid}/", {"status": "PROVISIONING"}, format="json")
     client.post(f"/api/v4/tenants/{tid}/", {"status": "ACTIVE"}, format="json")
+
+    # Authorize session for the newly activated tenant
+    from camp_02.sessions import create_auth_session
+    admin_acc = db.accounts.find_one({"username": "admin"})
+    sess_tid = create_auth_session(
+        account_id=admin_acc["account_id"],
+        tenant_id=tid,
+        auth_assurance="AAL1_PASSWORD",
+        db=db,
+    )
+    client.cookies["pf_session"] = sess_tid["raw_token"]
 
     # 3. Create institution via REST API with X-Tenant-ID header
     res_inst = client.post(

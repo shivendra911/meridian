@@ -10,10 +10,12 @@ from operations import jobs, applications, interviews, placements
 from operations.ids import insert_with_id
 from operations.errors import friendly
 from operations.cascading import atomic_placement_with_cascading
+from api.auth.permissions import perm, any_of
 
 
 class CompanyListView(APIView):
     """Lists and registers participating corporate partner organizations."""
+    permission_classes = [any_of("placement.company.create", "placement.company.verify", "placement.drive.manage")]
 
     def get(self, request):
         db = get_db()
@@ -31,6 +33,7 @@ class CompanyListView(APIView):
 
 class JobListView(APIView):
     """Lists open JNFs (Job Notification Forms) and registers new corporate drives."""
+    permission_classes = [perm("placement.drive.manage")]
 
     def get(self, request):
         db = get_db()
@@ -48,6 +51,7 @@ class JobListView(APIView):
 
 class JobCandidatesView(APIView):
     """Returns candidate pool matching a specific job's academic eligibility thresholds."""
+    permission_classes = [perm("placement.drive.manage")]
 
     def get(self, request, job_id):
         db = get_db()
@@ -60,6 +64,7 @@ class JobCandidatesView(APIView):
 
 class ApplicationListView(APIView):
     """Application ledger and registration endpoint."""
+    permission_classes = [perm("placement.application.view")]
 
     def get(self, request):
         db = get_db()
@@ -81,6 +86,7 @@ class ApplicationListView(APIView):
 
 class ApplicationStatusView(APIView):
     """Updates application progression stage."""
+    permission_classes = [perm("placement.application.status_update")]
 
     def post(self, request, application_id):
         db = get_db()
@@ -97,6 +103,7 @@ class ApplicationStatusView(APIView):
 
 class InterviewListView(APIView):
     """Official master interview schedule and slot booking."""
+    permission_classes = [perm("placement.interview.schedule")]
 
     def get(self, request):
         db = get_db()
@@ -123,6 +130,7 @@ class InterviewListView(APIView):
 
 class PlacementListView(APIView):
     """Placement register and atomic multi-tier cascading placement execution."""
+    permission_classes = [perm("placement.offer.record")]
 
     def get(self, request):
         db = get_db()

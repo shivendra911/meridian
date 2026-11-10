@@ -17,7 +17,15 @@ from database.connection import get_db
 
 @pytest.fixture(scope="module")
 def api_client():
-    return APIClient()
+    client = APIClient()
+    db = get_db()
+    if not db.accounts.find_one({"username": "tpo_admin"}):
+        from scripts.seed_demo_accounts import seed_demo_accounts
+        seed_demo_accounts(db=db)
+    res = client.post("/api/auth/login/", {"username": "tpo_admin", "password": "password123"}, format="json")
+    if res.status_code == 200 and "pf_session" in res.cookies:
+        client.cookies["pf_session"] = res.cookies["pf_session"].value
+    return client
 
 
 def test_django_overview_api(api_client):

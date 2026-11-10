@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from database.connection import get_db
 from ml.whatif_simulator import simulate_student_career
+from api.auth.permissions import any_of
 
 
 class WhatIfSimulateView(APIView):
@@ -14,6 +15,7 @@ class WhatIfSimulateView(APIView):
     Evaluates hypothetical profile changes (CGPA, backlog clearance, new skills)
     and returns 80% conformal package intervals with plain-language explanations.
     """
+    permission_classes = [any_of("placement.application.view", "student.profile.read")]
 
     def post(self, request):
         db = get_db()

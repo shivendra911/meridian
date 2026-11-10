@@ -4,9 +4,24 @@ PlaceFlow Django API — Executive Overview & Directorate Telemetry
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework import status
 from database.connection import get_db
 from operations import reports
+from api.auth.permissions import perm, any_of
+
+
+class HealthCheckView(APIView):
+    """Authoritative platform health probe (PUBLIC_ALLOWLIST)."""
+    permission_classes = [AllowAny]
+    authentication_classes = []
+
+    def get(self, request):
+        return Response({
+            "status": "healthy",
+            "service": "placeflow-api",
+            "version": "v4.0-rbac",
+        }, status=status.HTTP_200_OK)
 
 
 class OverviewTelemetryView(APIView):
@@ -14,6 +29,7 @@ class OverviewTelemetryView(APIView):
     Returns high-level institutional placement KPIs, department placement velocity,
     tier distribution breakdown, and the live activity audit feed.
     """
+    permission_classes = [any_of("placement.drive.manage", "reports.pipeline.execute")]
 
     def get(self, request):
         db = get_db()

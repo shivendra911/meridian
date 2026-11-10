@@ -10,10 +10,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from database.connection import get_db
 from operations import reports
+from api.auth.permissions import perm, any_of
 
 
 class ReportsSummaryView(APIView):
     """Returns catalog of institutional reports and execution data."""
+    permission_classes = [any_of("reports.pipeline.execute", "reports.statutory.sign", "nirf.report.view")]
 
     def get(self, request):
         db = get_db()
@@ -43,6 +45,7 @@ class ReportsSummaryView(APIView):
 
 class ReportCsvExportView(APIView):
     """Exports any institutional aggregation report as CSV."""
+    permission_classes = [perm("student.record.export")]
 
     def get(self, request, report_id):
         if report_id not in reports.REPORTS:

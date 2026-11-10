@@ -20,6 +20,16 @@ def build(reset=False, bulk=False):
     else:
         sample_data.seed(db)
     sync_counters(db)
+
+    # In DEBUG / testing mode, always maintain seeded demo accounts and baseline roles
+    try:
+        from django.conf import settings
+        if getattr(settings, "DEBUG", False):
+            from scripts.seed_demo_accounts import seed_demo_accounts
+            seed_demo_accounts(db=db)
+    except Exception:
+        pass
+
     return db
 
 

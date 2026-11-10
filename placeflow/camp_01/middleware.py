@@ -78,7 +78,47 @@ class IsTenantActive(permissions.BasePermission):
     """DRF permission check: verifies that request has an active, non-suspended tenant."""
 
     def has_permission(self, request, view):
-        if not getattr(request, "tenant", None):
+        tenant = getattr(request, "tenant", None)
+        if not tenant and hasattr(request, "user") and getattr(request.user, "is_authenticated", False):
+            tenant_id = getattr(request.user, "tenant_id", None)
+            if tenant_id:
+                try:
+                    tenant = get_tenant_by_id(tenant_id)
+                    request.tenant = tenant
+                except Exception:
+                    tenant = None
+
+        if not tenant:
             return False
-        return request.tenant.get("status") == "ACTIVE"
+        return tenant.get("status") == "ACTIVE"
+
+
+class LegacyRouteDeprecationMiddleware:
+    """Attaches Deprecation: true header to un-namespaced legacy API endpoints.
+
+    Legacy routes will remain active during transition phases and will be retired
+    in Phase 6 after frontend portals are fully migrated.
+    """
+
+    PORTAL_PREFIXES = (
+        "/api/auth/",
+        "/api/health",
+        "/api/student/",
+        "/api/tpo/",
+        "/api/faculty/",
+        "/api/hod/",
+        "/api/management/",
+        "/api/admin/",
+    )
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        path = getattr(request, "path", "")
+        if path.startswith("/api/"):
+            if not any(path.startswith(p) for p in self.PORTAL_PREFIXES):
+                response["Deprecation"] = "true"
+        return response
 

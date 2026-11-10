@@ -51,7 +51,10 @@ def session_fixture():
     acc = create_account(person_id=p["person_id"], email="dev@sess.edu", db=db)
     mem = create_institutional_membership(t["id"], inst["institution_id"], p["person_id"], acc["account_id"], "STUDENT", db=db)
 
-    return {"db": db, "tenant": t, "institution": inst, "person": p, "account": acc, "membership": mem}
+    yield {"db": db, "tenant": t, "institution": inst, "person": p, "account": acc, "membership": mem}
+
+    from scripts.seed_demo_accounts import seed_demo_accounts
+    seed_demo_accounts(db=db)
 
 
 def test_session_lifecycle_and_invalidation(session_fixture):

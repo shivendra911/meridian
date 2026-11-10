@@ -49,6 +49,26 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
             "placement.drive.publish", "placement.offer.approve", "placement.policy.override",
             "student.profile.read", "student.record.export",
             "consent.audit.export", "agent.trace.view", "agent.fairness.audit",
+            "notification.read",
+        ],
+    },
+    {
+        "role_code": "INSTITUTION_ADMIN",
+        "role_name": "Institution Operations & IT Administrator",
+        "role_category": "ADMINISTRATIVE",
+        "description": "Institution-level administrator managing IAM, hierarchy, campuses, policies, and academic structure",
+        "max_allowed_scope": "INSTITUTION",
+        "permissions": [
+            "iam.account.create", "iam.account.lock", "iam.account.unlock",
+            "iam.membership.invite", "iam.membership.activate", "iam.membership.suspend",
+            "iam.role.create", "iam.role.version_publish", "iam.role.assign", "iam.role.revoke",
+            "iam.delegation.create", "iam.delegation.revoke", "iam.session.revoke", "iam.audit.view",
+            "organization.unit.create", "organization.unit.update", "organization.structure.approve",
+            "campus.create", "campus.update", "campus.close",
+            "configuration.version.create", "configuration.resolve",
+            "institution.profile.read", "institution.profile.update",
+            "academic.program.manage", "academic.course.manage", "academic.calendar.manage",
+            "academic.registration.manage", "notification.read",
         ],
     },
     {
@@ -70,6 +90,7 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
             "consent.notice.publish", "consent.audit.export",
             "agent.catalog.read", "agent.execute.run", "agent.trace.view", "agent.fairness.audit",
             "iam.role.assign", "iam.delegation.create", "iam.delegation.revoke",
+            "student.documents.verify", "notification.read",
         ],
     },
     {
@@ -85,6 +106,7 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
             "placement.superday.solve", "placement.offer.record",
             "student.profile.read", "student.verification.approve",
             "reports.pipeline.execute", "agent.catalog.read", "agent.execute.run",
+            "student.documents.verify", "notification.read",
         ],
     },
     {
@@ -97,6 +119,7 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
             "institution.profile.read", "campus.update", "organization.unit.update",
             "student.profile.read", "student.academic.override", "reports.pipeline.execute",
             "nirf.report.view", "placement.drive.manage", "placement.application.view",
+            "academic.curriculum.approve", "academic.progression.evaluate", "notification.read",
         ],
     },
     {
@@ -107,7 +130,9 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
         "max_allowed_scope": "ORGANIZATIONAL_UNIT",
         "permissions": [
             "student.profile.read", "student.academic.override", "student.verification.approve",
-            "placement.application.view", "placement.drive.manage", "reports.pipeline.execute",
+            "placement.application.view", "reports.pipeline.execute",
+            "academic.curriculum.approve", "academic.progression.evaluate",
+            "faculty.attendance.manage", "faculty.gradebook.manage", "notification.read",
         ],
     },
     {
@@ -118,6 +143,7 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
         "max_allowed_scope": "ORGANIZATIONAL_UNIT",
         "permissions": [
             "student.profile.read", "student.verification.approve", "placement.application.view",
+            "faculty.attendance.manage", "faculty.gradebook.manage", "notification.read",
         ],
     },
     {
@@ -130,6 +156,7 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
             "student.profile.read", "student.academic.override", "student.verification.approve",
             "placement.application.view", "placement.drive.manage",
             "reports.pipeline.execute",
+            "notification.read",
         ],
     },
     {
@@ -141,6 +168,8 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
         "permissions": [
             "placement.application.view", "placement.interview.schedule",
             "placement.superday.solve", "student.profile.read",
+            "student.profile.update_self", "placement.application.create",
+            "placement.offer.respond", "notification.read",
         ],
     },
     {
@@ -153,6 +182,8 @@ BASELINE_ROLES: List[Dict[str, Any]] = [
             "student.profile.read", "student.profile.update_self",
             "placement.application.create", "placement.application.view",
             "consent.grant.record", "consent.withdraw.process",
+            "placement.offer.respond", "student.documents.upload",
+            "notification.read", "academic.registration.self",
         ],
     },
     {
@@ -427,8 +458,12 @@ def get_role_permissions(role_id: str, version_number: Optional[int] = None, db=
 
     role = get_role_by_id(role_id, db=db)
     v_num = version_number or role.get("current_version", 1)
+    canonical_role_id = role.get("role_id", role_id)
 
-    v_doc = db.role_versions.find_one({"role_id": role_id, "version_number": v_num}, {"_id": 0})
+    v_doc = db.role_versions.find_one(
+        {"role_id": {"$in": [role_id, canonical_role_id]}, "version_number": v_num},
+        {"_id": 0},
+    )
     if not v_doc:
         raise RoleNotFoundError(f"Role version {v_num} for role '{role_id}' not found.")
 

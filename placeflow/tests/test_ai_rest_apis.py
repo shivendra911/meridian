@@ -29,6 +29,9 @@ def api_client():
         db=db,
     )
     tenant_id = tenant["id"]
+    from camp_01.tenants import transition_tenant_status
+    transition_tenant_status(tenant_id, "PROVISIONING", db=db)
+    transition_tenant_status(tenant_id, "ACTIVE", db=db)
 
     # 2. Seed an institutional policy for RAG testing
     store = TenantIsolatedVectorStore(db)
@@ -46,7 +49,38 @@ def api_client():
         ],
     )
 
+    from camp_02.accounts import create_account
+    from camp_02.assignments import assign_role
+    from camp_02.sessions import create_auth_session
+
+    acc = db.accounts.find_one({"username": "ai_service_test"})
+    if not acc:
+        acc = create_account(
+            username="ai_service_test",
+            password="password123",
+            email="ai_service@nitk.edu",
+            account_type="SERVICE",
+            db=db,
+        )
+    assign_role(
+        account_id=acc["account_id"],
+        role_id="role_sys_institution_admin",
+        scope_type="INSTITUTION",
+        scope_id=tenant_id,
+        tenant_id=tenant_id,
+        institution_id=tenant_id,
+        db=db,
+    )
+    sess = create_auth_session(
+        account_id=acc["account_id"],
+        tenant_id=tenant_id,
+        institution_id=tenant_id,
+        auth_assurance="AAL1_PASSWORD",
+        db=db,
+    )
+
     client = APIClient()
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {sess['raw_token']}")
     yield client, db, tenant_id
 
     db.ai_tenant_quotas.delete_many({})

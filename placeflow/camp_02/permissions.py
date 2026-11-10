@@ -96,6 +96,15 @@ PERMISSION_CATALOGUE: List[Dict[str, Any]] = [
     {"permission_key": "academic.credit.award", "domain": "ACADEMIC", "resource": "credit_ledger", "action": "create", "description": "Award academic, vocational, and transfer credits to student ledger"},
     {"permission_key": "academic.credit.adjust", "domain": "ACADEMIC", "resource": "credit_ledger", "action": "override", "description": "Execute append-only offsetting credit reversals and moderations"},
     {"permission_key": "academic.progression.evaluate", "domain": "ACADEMIC", "resource": "progression", "action": "evaluate", "description": "Execute deterministic 6-step promotion rule engine"},
+    {"permission_key": "academic.registration.self", "domain": "ACADEMIC", "resource": "course_registration", "action": "register", "description": "Self-register for courses in academic term"},
+
+    # 9. Extended Role Operations & Student Portal Permissions
+    {"permission_key": "placement.offer.respond", "domain": "PLACEMENT", "resource": "offer", "action": "respond", "description": "Accept or decline placement offer"},
+    {"permission_key": "student.documents.upload", "domain": "DOSSIER", "resource": "document", "action": "upload", "description": "Upload student documents and credentials"},
+    {"permission_key": "student.documents.verify", "domain": "DOSSIER", "resource": "document", "action": "verify", "description": "Verify student credentials and uploaded marksheets"},
+    {"permission_key": "notification.read", "domain": "COMMUNICATION", "resource": "notification", "action": "read", "description": "Read institutional notifications and task alerts"},
+    {"permission_key": "faculty.attendance.manage", "domain": "ACADEMIC", "resource": "attendance", "action": "manage", "description": "Mark and update course attendance records"},
+    {"permission_key": "faculty.gradebook.manage", "domain": "ACADEMIC", "resource": "gradebook", "action": "manage", "description": "Record continuous internal evaluation (CIE) grades"},
 ]
 
 

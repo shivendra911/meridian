@@ -18,7 +18,6 @@ import {
   Scale,
   FileText,
 } from 'lucide-react';
-import { usePersona } from '../../context/PersonaContext';
 import { api } from '../../api';
 
 interface CommandPaletteProps {
@@ -47,7 +46,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const { switchPersona } = usePersona();
 
   // Dynamic entity registries loaded from real backend
   const [students, setStudents] = useState<any[]>([]);
@@ -67,64 +65,59 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   }, [isOpen]);
 
   const baseCommands: CommandItem[] = [
-    // Persona Switchers
+    // Workspace Navigators
     {
       id: 'sw_tpo',
-      category: 'Switch Persona',
-      label: 'Switch to TPO Placement Officer',
+      category: 'Switch Workspace',
+      label: 'Go to TPO Placement Officer',
       description: 'Institutional placement drives, recruiter CRM & Superday',
       icon: Briefcase,
       action: () => {
-        switchPersona('TPO');
-        navigate('/home');
+        navigate('/tpo/home');
       },
       shortcut: 'P 1',
     },
     {
       id: 'sw_student',
-      category: 'Switch Persona',
-      label: 'Switch to Student Portal',
+      category: 'Switch Workspace',
+      label: 'Go to Student Portal',
       description: 'Candidate opportunities feed, application tracker & VTI profile',
       icon: GraduationCap,
       action: () => {
-        switchPersona('STUDENT');
-        navigate('/home');
+        navigate('/student/home');
       },
       shortcut: 'P 2',
     },
     {
       id: 'sw_faculty',
-      category: 'Switch Persona',
-      label: 'Switch to Faculty Teaching Workspace',
+      category: 'Switch Workspace',
+      label: 'Go to Faculty Advising Workspace',
       description: 'Course roster delivery, attendance & CIE gradebook',
       icon: Users,
       action: () => {
-        switchPersona('FACULTY');
-        navigate('/home');
+        navigate('/faculty/home');
       },
       shortcut: 'P 3',
     },
     {
       id: 'sw_hod',
-      category: 'Switch Persona',
-      label: 'Switch to HOD / Dean Command',
+      category: 'Switch Workspace',
+      label: 'Go to HOD / Dean Command',
       description: 'Department leadership, curriculum approvals & workload',
       icon: Building2,
       action: () => {
-        switchPersona('HOD');
-        navigate('/home');
+        navigate('/hod/home');
       },
       shortcut: 'P 4',
     },
     {
       id: 'sw_mgmt',
-      category: 'Switch Persona',
-      label: 'Switch to Executive Management',
+      category: 'Switch Workspace',
+      label: 'Go to Executive Management',
       description: 'Multi-campus statutory oversight & NIRF accreditation',
       icon: ShieldCheck,
       action: () => {
-        switchPersona('MANAGEMENT');
-        navigate('/home');
+        navigate('/management/home');
       },
       shortcut: 'P 5',
     },

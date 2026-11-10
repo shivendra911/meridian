@@ -306,3 +306,42 @@ def merge_person_identities(
     )
 
     return get_person_by_id(target_person_id, db=db)
+
+
+def resolve_subject(person_id: str, db=None) -> Optional[Dict[str, Any]]:
+    """Resolves a person_id to their authoritative institutional subject role and record id.
+    
+    Checks across students, faculty, department_heads, school_heads, and admins collections.
+    Returns:
+        dict: {"type": "student"|"faculty"|"department_head"|"school_head"|"admin", "id": str}
+        or None if no domain subject record exists.
+    """
+    if db is None:
+        db = get_db()
+
+    student = db.students.find_one({"person_id": person_id}, {"_id": 0, "student_id": 1})
+    if student and "student_id" in student:
+        return {"type": "student", "id": student["student_id"]}
+
+    hos = db.school_heads.find_one({"person_id": person_id}, {"_id": 0, "hos_id": 1})
+    if hos and "hos_id" in hos:
+        return {"type": "school_head", "id": hos["hos_id"]}
+
+    hod = db.department_heads.find_one({"person_id": person_id}, {"_id": 0, "hod_id": 1})
+    if hod and "hod_id" in hod:
+        return {"type": "department_head", "id": hod["hod_id"]}
+
+    faculty = db.faculty.find_one({"person_id": person_id}, {"_id": 0, "faculty_id": 1})
+    if faculty and "faculty_id" in faculty:
+        return {"type": "faculty", "id": faculty["faculty_id"]}
+
+    admin = db.admins.find_one({"person_id": person_id}, {"_id": 0, "admin_id": 1})
+    if admin and "admin_id" in admin:
+        return {"type": "admin", "id": admin["admin_id"]}
+
+    person = db.person_identities.find_one({"person_id": person_id}, {"_id": 0, "metadata": 1})
+    if person and person.get("metadata", {}).get("company_id"):
+        return {"type": "company", "id": person["metadata"]["company_id"]}
+
+    return None
+

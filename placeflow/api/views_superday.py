@@ -8,10 +8,12 @@ from rest_framework import status
 from database.connection import get_db
 from operations.superday import detect_conflicts, auto_resolve_conflicts
 from operations.errors import friendly
+from api.auth.permissions import perm
 
 
 class SuperdayConflictsView(APIView):
     """Detects concurrent interview collisions, candidate double-booking, and room contention."""
+    permission_classes = [perm("placement.superday.solve")]
 
     def get(self, request):
         db = get_db()
@@ -28,6 +30,7 @@ class SuperdayConflictsView(APIView):
 
 class SuperdayResolveView(APIView):
     """Executes the 1-click algorithmic constraint solver within an ACID session."""
+    permission_classes = [perm("placement.superday.solve")]
 
     def post(self, request):
         db = get_db()

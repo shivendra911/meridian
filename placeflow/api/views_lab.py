@@ -8,10 +8,12 @@ from rest_framework import status
 from database.connection import get_db
 from operations.demo_registry import DEMOS
 from operations.errors import friendly
+from api.auth.permissions import perm
 
 
 class LabDemosView(APIView):
     """Returns list of database diagnostic demos."""
+    permission_classes = [perm("iam.role.create")]
 
     def get(self, request):
         demo_list = []
@@ -27,6 +29,7 @@ class LabDemosView(APIView):
 
 class LabRunDemoView(APIView):
     """Executes a diagnostic demo and measures live query performance."""
+    permission_classes = [perm("iam.role.create")]
 
     def post(self, request, demo_id):
         demo = DEMOS.get(demo_id)

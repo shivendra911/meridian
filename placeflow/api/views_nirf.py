@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from database.connection import get_db
 from operations.nirf import compute_nirf_metrics
+from api.auth.permissions import perm
 
 
 class NirfMetricsView(APIView):
@@ -14,6 +15,7 @@ class NirfMetricsView(APIView):
     Computes official NIRF Graduation Outcome scores (GPH 40, GMS 40)
     and recruiter salary dispersion table with small-cell (<5) privacy masking.
     """
+    permission_classes = [perm("nirf.report.view")]
 
     def get(self, request):
         db = get_db()

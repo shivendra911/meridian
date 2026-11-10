@@ -7,10 +7,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from database.connection import get_db
 from operations.consent import get_student_consents, record_consent, withdraw_consent, PURPOSE_DEFINITIONS, CURRENT_NOTICE_VERSION
+from api.auth.permissions import perm, any_of
 
 
 class ConsentDetailView(APIView):
     """Retrieves all purpose consent records for a student."""
+    permission_classes = [any_of("consent.audit.export", "consent.grant.record")]
 
     def get(self, request, student_id):
         db = get_db()
@@ -33,6 +35,7 @@ class ConsentDetailView(APIView):
 
 class ConsentRecordView(APIView):
     """Grants explicit consent for a processing purpose under Notice v2026.1-DPDP."""
+    permission_classes = [any_of("consent.grant.record", "placement.drive.manage", "iam.role.assign")]
 
     def post(self, request):
         db = get_db()
@@ -50,6 +53,7 @@ class ConsentRecordView(APIView):
 
 class ConsentWithdrawView(APIView):
     """Revokes consent for a processing purpose and activates model opt-out."""
+    permission_classes = [any_of("consent.withdraw.process", "placement.drive.manage", "iam.role.assign")]
 
     def post(self, request):
         db = get_db()
