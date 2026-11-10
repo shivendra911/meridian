@@ -59,4 +59,13 @@ ml/models/
 placeflow/database/data/
 placeflow/backups/
 
+# Local Prompts, Agent Runbooks, Specs & Scratch Dumps
+.agents/
+redesign*.txt
+frontendfullyredesigned*.txt
+*.prompt
+*.prompt.md
+scratch/
+
+
 
