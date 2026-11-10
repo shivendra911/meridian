@@ -22,6 +22,7 @@ class TaskType(str, Enum):
     AGENTIC_ORCHESTRATION = "AGENTIC_ORCHESTRATION"
     SUMMARIZATION = "SUMMARIZATION"
     STUDENT_ADVISING = "STUDENT_ADVISING"
+    PREDICTION = "PREDICTION"
 
 
 @dataclass
@@ -162,6 +163,7 @@ class ModelRouter:
         TaskType.AGENTIC_ORCHESTRATION: ("gemini-2.5-pro", "MOCK", 0.2),
         TaskType.SUMMARIZATION: ("gemini-2.5-flash", "MOCK", 0.3),
         TaskType.STUDENT_ADVISING: ("gemini-2.5-flash", "MOCK", 0.2),
+        TaskType.PREDICTION: ("placement_clf_v1", "ML_SERVING", 0.0),
     }
 
     def __init__(self, force_mock: bool = False):

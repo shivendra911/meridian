@@ -87,6 +87,8 @@ STUDENTS = collection_schema(
         "hos_name": string(),
         "school_code": string(),
         "person_id": string(),
+        "tenant_id": string(),
+        "institution_id": string(),
         "ml_opt_out": {"bsonType": "bool"},
     })
 
