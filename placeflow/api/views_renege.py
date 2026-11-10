@@ -19,7 +19,8 @@ class RenegeRadarView(APIView):
 
     def get(self, request):
         db = get_db()
-        radar = batch_renege_radar(db)
+        tenant_id = getattr(request.user, "tenant_id", None)
+        radar = batch_renege_radar(db, tenant_id=tenant_id)
         critical_count = sum(1 for r in radar if r["risk_level"] == "CRITICAL")
         moderate_count = sum(1 for r in radar if r["risk_level"] == "MODERATE")
         low_count = sum(1 for r in radar if r["risk_level"] == "LOW")

@@ -110,6 +110,7 @@ class MLServingManager:
             "placement_probability_ratio": round(prob, 3),
             "expected_package_lpa": pkg_lpa,
             "readiness_band": band,
+            "risk_level": "HIGH" if band == "NEEDS_PREPARATION" else "MEDIUM" if band == "MODERATE" else "LOW",
             "confidence": 0.88,
             "risk_tier": "TIER_B",
             "drivers": drivers,
@@ -143,7 +144,7 @@ class MLServingManager:
                 "message": "Candidate opted out of automated profiling.",
             }
 
-        risk_data = calculate_renege_risk(db, student_id)
+        risk_data = calculate_renege_risk(db, student_id, tenant_id=tenant_id)
         latency_ms = round((time.time() - start_time) * 1000.0, 2)
 
         if not risk_data:
@@ -173,12 +174,14 @@ class MLServingManager:
         student_id: str,
         tenant_id: Optional[str] = None,
         top_k: int = 5,
+        actor_id: Optional[str] = None,
         db=None,
     ) -> Dict[str, Any]:
         """Recommends high-impact skills based on active market demand and cohort success.
 
         Risk Tier: TIER_A (Low)
         """
+        start_time = time.time()
         if db is None:
             db = get_db()
 
@@ -188,12 +191,27 @@ class MLServingManager:
         rec_data = recommend(db, student_id)
 
         recommendations = rec_data.get("recommendations", [])[:top_k]
+        latency_ms = round((time.time() - start_time) * 1000.0, 2)
+
+        self._record_inference_trace(
+            model_id="skill_recommender",
+            version="1.0.0",
+            entity_type="student",
+            entity_id=student_id,
+            tenant_id=tenant_id or features.get("tenant_id"),
+            actor_id=actor_id,
+            latency_ms=latency_ms,
+            db=db,
+        )
+
         return {
             "student_id": student_id,
             "current_skills": features.get("skills", []),
             "recommendations": recommendations,
+            "recommended_skills": recommendations,
             "market_demand_basis": rec_data.get("market_demand_basis", "active_jnf_catalog"),
             "risk_tier": "TIER_A",
+            "latency_ms": latency_ms,
         }
 
     # --------------------------------------------------------------------------
@@ -331,3 +349,4 @@ class MLServingManager:
 
 # Global serving manager instance
 serving = MLServingManager()
+serving_manager = serving

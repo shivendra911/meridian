@@ -108,11 +108,77 @@ export interface StudentAcademics {
   courses?: any[];
 }
 
+export interface PlacementReadiness {
+  student_id: string;
+  opted_out: boolean;
+  status: string;
+  placement_probability?: number;
+  placement_probability_ratio?: number;
+  expected_package_lpa?: number;
+  readiness_band?: 'READY' | 'MODERATE' | 'NEEDS_PREPARATION';
+  risk_level?: string;
+  confidence?: number;
+  risk_tier?: string;
+  drivers?: Array<{
+    feature: string;
+    impact: 'POSITIVE' | 'NEUTRAL' | 'NEGATIVE';
+    contribution_weight: number;
+    explanation: string;
+  }>;
+  model_version?: string;
+  message?: string;
+}
+
+export interface SkillRecommendations {
+  student_id: string;
+  current_skills: string[];
+  recommendations: string[];
+  recommended_skills?: string[];
+  market_demand_basis?: string;
+}
+
+export interface WhatIfSimulationResult {
+  student_id: string;
+  opted_out: boolean;
+  baseline?: {
+    cgpa: number;
+    backlogs: number;
+    skills: string[];
+    placement_probability: number;
+    risk_level: string;
+    expected_package_lpa: number;
+  };
+  simulated?: {
+    cgpa: number;
+    backlogs: number;
+    skills: string[];
+    placement_probability: number;
+    risk_level: string;
+    expected_package_lpa: number;
+    package_band_80: {
+      lower_bound_lpa: number;
+      median_lpa: number;
+      upper_bound_lpa: number;
+      interval_coverage: string;
+    };
+    eligible_drives_count: number;
+  };
+  explanations?: string[];
+  disclaimer?: string;
+  message?: string;
+}
+
 export const studentApi = {
   // Candidate Profile Dossier
   getMe: () => client.get<StudentProfile>('/student/me/'),
   updateProfile: (data: { skills?: string[]; remarks?: string; phone?: string; ml_opt_out?: boolean }) =>
     client.patch<StudentProfile>('/student/profile/', data),
+
+  // Machine Learning & Predictive Insights
+  getReadinessInsights: () => client.get<PlacementReadiness>('/student/insights/readiness/'),
+  getSkillRecommendations: () => client.get<SkillRecommendations>('/student/insights/skills/'),
+  simulateWhatIf: (data: { target_cgpa?: number; target_backlogs?: number; added_skills?: string[] }) =>
+    client.post<WhatIfSimulationResult>('/student/insights/whatif/', data),
 
   // Opportunities & Recruitment Drives
   getOpportunities: () => client.get<StudentOpportunity[]>('/student/opportunities/'),

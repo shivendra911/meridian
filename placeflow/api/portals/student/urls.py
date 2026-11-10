@@ -16,5 +16,8 @@ urlpatterns = [
     path("consents/record/", views.StudentConsentRecordView.as_view(), name="student_consent_record"),
     path("consents/withdraw/", views.StudentConsentWithdrawView.as_view(), name="student_consent_withdraw"),
     path("academics/", views.StudentAcademicsView.as_view(), name="student_academics"),
+    path("insights/readiness/", views.StudentReadinessInsightsView.as_view(), name="student_insights_readiness"),
+    path("insights/skills/", views.StudentSkillRecommendationsView.as_view(), name="student_insights_skills"),
+    path("insights/whatif/", views.StudentWhatIfView.as_view(), name="student_insights_whatif"),
 ]
 

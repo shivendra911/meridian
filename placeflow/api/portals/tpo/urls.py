@@ -12,6 +12,7 @@ from api import (
     views_fairness,
     views_reports,
     views_whatif,
+    views_ml,
 )
 
 urlpatterns = [
@@ -31,5 +32,7 @@ urlpatterns = [
     path("insights/fairness/", views_fairness.FairnessAuditView.as_view(), name="tpo_insights_fairness"),
     path("insights/reports/", views_reports.ReportsSummaryView.as_view(), name="tpo_insights_reports"),
     path("insights/whatif/", views_whatif.WhatIfSimulateView.as_view(), name="tpo_insights_whatif"),
+    path("models/", views_ml.ModelRegistryListView.as_view(), name="tpo_models_list"),
+    path("models/retrain/", views_ml.ModelRetrainView.as_view(), name="tpo_models_retrain"),
 ]
 

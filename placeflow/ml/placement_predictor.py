@@ -19,6 +19,8 @@ from sklearn.preprocessing import LabelEncoder
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 
 from database.connection import get_db  # noqa: E402
+from ml.registry import registry, ModelMetadata
+from ml.features import extract_cohort_features
 
 MODEL_DIR = pathlib.Path(__file__).resolve().parent / "models"
 PLACEMENT_CLF_PATH = MODEL_DIR / "placement_clf.pkl"
@@ -26,17 +28,25 @@ PACKAGE_REG_PATH = MODEL_DIR / "package_reg.pkl"
 ENCODERS_PATH = MODEL_DIR / "encoders.pkl"
 
 
-def _extract_features(db):
+def _extract_features(db, tenant_id=None):
     """Build a feature DataFrame from the database. Each row is a student."""
-    students = list(db.students.find({}, {"_id": 0}))
+    # Multi-tenant cold start: scope to tenant if sufficient data exists, else fallback to global baseline
+    query = {}
+    is_tenant_scoped = False
+    if tenant_id and db.students.count_documents({"tenant_id": tenant_id}) >= 10:
+        query["tenant_id"] = tenant_id
+        is_tenant_scoped = True
+
+    students = list(db.students.find(query, {"_id": 0}))
     if not students:
-        raise RuntimeError("No students in database. Run setup_database.py --bulk first.")
+        raise RuntimeError("No students in database for the specified scope. Run setup_database.py --bulk first.")
 
     df = pd.DataFrame(students)
 
     # Count applications per student
     app_counts = {}
-    for app in db.applications.find({}, {"student_id": 1, "_id": 0}):
+    app_query = {"tenant_id": tenant_id} if is_tenant_scoped else {}
+    for app in db.applications.find(app_query, {"student_id": 1, "_id": 0}):
         sid = app["student_id"]
         app_counts[sid] = app_counts.get(sid, 0) + 1
     df["application_count"] = df["student_id"].map(app_counts).fillna(0).astype(int)
@@ -46,7 +56,8 @@ def _extract_features(db):
 
     # Placement info
     placement_map = {}
-    for p in db.placements.find({}, {"student_id": 1, "package_lpa": 1, "_id": 0}):
+    plc_query = {"tenant_id": tenant_id} if is_tenant_scoped else {}
+    for p in db.placements.find(plc_query, {"student_id": 1, "package_lpa": 1, "_id": 0}):
         placement_map[p["student_id"]] = p["package_lpa"]
     df["placed"] = df["student_id"].map(lambda s: 1 if s in placement_map else 0)
     df["package_lpa"] = df["student_id"].map(placement_map).fillna(0)
@@ -59,10 +70,11 @@ def _extract_features(db):
     return df, feature_cols, dept_encoder
 
 
-def train():
+def train(tenant_id=None, db=None):
     """Train placement classifier and package regressor on the current database."""
-    db = get_db()
-    df, feature_cols, dept_encoder = _extract_features(db)
+    if db is None:
+        db = get_db()
+    df, feature_cols, dept_encoder = _extract_features(db, tenant_id=tenant_id)
 
     X = df[feature_cols].values
     y_placed = df["placed"].values
@@ -70,7 +82,9 @@ def train():
     # Classifier: will this student get placed?
     clf = GradientBoostingClassifier(n_estimators=100, max_depth=4, random_state=42)
     scores = cross_val_score(clf, X, y_placed, cv=5, scoring="accuracy")
-    print(f"Placement classifier — 5-fold CV accuracy: {scores.mean():.3f} (+/- {scores.std():.3f})")
+    cv_acc = float(scores.mean())
+    cv_std = float(scores.std())
+    print(f"Placement classifier — 5-fold CV accuracy: {cv_acc:.3f} (+/- {cv_std:.3f})")
     clf.fit(X, y_placed)
 
     # Regressor: for placed students, what package?
@@ -81,24 +95,65 @@ def train():
     y_package = df.loc[placed_mask, "package_lpa"].values
 
     reg = GradientBoostingRegressor(n_estimators=100, max_depth=4, random_state=42)
+    r2_score = 0.0
     if placed_mask.sum() >= 5:
         pkg_scores = cross_val_score(reg, X_placed, y_package, cv=min(5, placed_mask.sum()), scoring="r2")
-        print(f"Package regressor — 5-fold CV R²: {pkg_scores.mean():.3f} (+/- {pkg_scores.std():.3f})")
+        r2_score = float(pkg_scores.mean())
+        print(f"Package regressor — 5-fold CV R²: {r2_score:.3f} (+/- {pkg_scores.std():.3f})")
     reg.fit(X_placed, y_package)
 
     # Feature importance
     print("\nFeature importance (placement):")
+    feature_importances = {}
     for name, imp in sorted(zip(feature_cols, clf.feature_importances_), key=lambda x: -x[1]):
+        feature_importances[name] = round(float(imp), 4)
         print(f"  {name:20s} {imp:.3f}")
 
-    # Save
-    MODEL_DIR.mkdir(parents=True, exist_ok=True)
-    joblib.dump(clf, PLACEMENT_CLF_PATH)
-    joblib.dump(reg, PACKAGE_REG_PATH)
-    joblib.dump({"dept_encoder": dept_encoder, "feature_cols": feature_cols}, ENCODERS_PATH)
+    # Save via Registry with Metadata Manifests
+    meta_clf = ModelMetadata(
+        model_id="placement_clf",
+        version="2.0.0",
+        algorithm="GradientBoostingClassifier",
+        risk_tier="TIER_B",
+        feature_names=feature_cols,
+        metrics={"cv_accuracy": cv_acc, "cv_std": cv_std},
+        description="Predicts placement probability across corporate recruiting drives",
+    )
+    registry.save_model("placement_clf", clf, meta_clf)
+
+    meta_reg = ModelMetadata(
+        model_id="package_reg",
+        version="2.0.0",
+        algorithm="GradientBoostingRegressor",
+        risk_tier="TIER_B",
+        feature_names=feature_cols,
+        metrics={"cv_r2": r2_score},
+        description="Predicts expected compensation package band (LPA)",
+    )
+    registry.save_model("package_reg", reg, meta_reg)
+
+    encoder_data = {"dept_encoder": dept_encoder, "feature_cols": feature_cols}
+    meta_enc = ModelMetadata(
+        model_id="encoders",
+        version="2.0.0",
+        algorithm="LabelEncoder",
+        risk_tier="TIER_A",
+        description="Categorical feature encoders for student cohorts",
+    )
+    registry.save_model("encoders", encoder_data, meta_enc)
+
     global _MODEL_CACHE
-    _MODEL_CACHE = (clf, reg, {"dept_encoder": dept_encoder, "feature_cols": feature_cols})
-    print(f"\nModels saved to {MODEL_DIR}")
+    _MODEL_CACHE = (clf, reg, encoder_data)
+    print(f"\nModels and manifests saved to {MODEL_DIR}")
+
+    return {
+        "status": "SUCCESS",
+        "train_samples": len(df),
+        "placed_samples": int(placed_mask.sum()),
+        "cv_accuracy": cv_acc,
+        "cv_r2": r2_score,
+        "feature_importances": feature_importances,
+    }
 
 
 _MODEL_CACHE = None
@@ -107,12 +162,12 @@ _MODEL_CACHE = None
 def _get_models():
     global _MODEL_CACHE
     if _MODEL_CACHE is None:
-        if not (PLACEMENT_CLF_PATH.exists() and PACKAGE_REG_PATH.exists() and ENCODERS_PATH.exists()):
+        clf, _ = registry.load_model("placement_clf")
+        reg, _ = registry.load_model("package_reg")
+        enc, _ = registry.load_model("encoders")
+        if clf is None or reg is None or enc is None:
             return None, None, None
-        clf = joblib.load(PLACEMENT_CLF_PATH)
-        reg = joblib.load(PACKAGE_REG_PATH)
-        meta = joblib.load(ENCODERS_PATH)
-        _MODEL_CACHE = (clf, reg, meta)
+        _MODEL_CACHE = (clf, reg, enc)
     return _MODEL_CACHE
 
 

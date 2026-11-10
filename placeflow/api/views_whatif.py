@@ -20,7 +20,13 @@ class WhatIfSimulateView(APIView):
     def post(self, request):
         db = get_db()
         data = request.data
-        student_id = data.get("student_id")
+        tenant_id = getattr(request.user, "tenant_id", None)
+        subj = getattr(request.user, "subject", None) or {}
+        if subj.get("type") == "student":
+            student_id = subj.get("id")
+        else:
+            student_id = data.get("student_id")
+
         if not student_id:
             return Response({"error": "student_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -36,6 +42,7 @@ class WhatIfSimulateView(APIView):
             target_cgpa=hypothetical_cgpa,
             target_backlogs=resolved_backlogs,
             added_skills=additional_skills,
+            tenant_id=tenant_id,
         )
         return Response(result, status=status.HTTP_200_OK)
 

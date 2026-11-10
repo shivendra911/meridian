@@ -55,6 +55,7 @@ def simulate_student_career(
     target_cgpa: Optional[float] = None,
     target_backlogs: Optional[int] = None,
     added_skills: Optional[List[str]] = None,
+    tenant_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Simulates changes to a student's profile and returns:
@@ -63,8 +64,15 @@ def simulate_student_career(
     - Actionable plain-language explanations (ML-23, FR-ML-004)
     - Opt-out status check (FR-ML-005)
     """
-    student = get_student(db, student_id)
+    try:
+        student = get_student(db, student_id)
+    except Exception:
+        return {"error": f"Student {student_id} not found"}
+
     if not student:
+        return {"error": f"Student {student_id} not found"}
+
+    if tenant_id and student.get("tenant_id") and student.get("tenant_id") != tenant_id:
         return {"error": f"Student {student_id} not found"}
 
     # FR-ML-005: Respect student opt-out from personalized predictive models
@@ -151,6 +159,9 @@ def simulate_student_career(
         "eligibility.min_cgpa": {"$lte": sim_cgpa},
         "eligibility.max_backlogs": {"$gte": sim_backlogs},
     }
+    effective_tenant = tenant_id or student.get("tenant_id")
+    if effective_tenant:
+        matching_jobs_query["tenant_id"] = effective_tenant
     eligible_count = db.jobs.count_documents(matching_jobs_query)
 
     return {

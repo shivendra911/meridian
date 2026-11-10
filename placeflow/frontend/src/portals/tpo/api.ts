@@ -130,6 +130,12 @@ export const tpoApi = {
     resolved_backlogs?: number;
     additional_skills?: string[];
   }) => client.post<WhatIfResult>('/tpo/insights/whatif/', payload),
+
+  // ML Model Registry & Retraining
+  getModelRegistry: () =>
+    client.get<{ total_models: number; models: any[] }>('/tpo/models/'),
+  retrainModels: () =>
+    client.post<{ success: boolean; message: string; metrics: any }>('/tpo/models/retrain/'),
 };
 
 export const api = tpoApi;

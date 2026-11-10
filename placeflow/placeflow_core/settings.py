@@ -137,6 +137,6 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/minute',
         'user': '1000/minute',
-        'login': os.environ.get('DJANGO_LOGIN_THROTTLE_RATE', '60/minute'),
+        'login': os.environ.get('DJANGO_LOGIN_THROTTLE_RATE', '1000/minute' if DEBUG else '60/minute'),
     },
 }

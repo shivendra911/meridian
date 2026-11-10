@@ -334,3 +334,84 @@ class StudentAcademicsView(StudentBaseView):
             "courses": courses,
         }, status=status.HTTP_200_OK)
 
+
+class StudentReadinessInsightsView(StudentBaseView):
+    """GET /api/student/insights/readiness/ — Student placement probability, readiness band & explainability drivers."""
+    permission_classes = [perm("student.profile.read")]
+
+    def get(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        tenant_id = getattr(request.user, "tenant_id", None)
+        actor_id = getattr(request.user, "user_id", None)
+
+        from ml.serving import serving_manager
+        result = serving_manager.predict_placement_readiness(
+            student_id=student_id,
+            tenant_id=tenant_id,
+            actor_id=actor_id,
+            db=db,
+        )
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class StudentSkillRecommendationsView(StudentBaseView):
+    """GET /api/student/insights/skills/ — Market-aligned skill gap analysis and recommendations."""
+    permission_classes = [perm("student.profile.read")]
+
+    def get(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        tenant_id = getattr(request.user, "tenant_id", None)
+        actor_id = getattr(request.user, "user_id", None)
+
+        from ml.serving import serving_manager
+        result = serving_manager.recommend_skills(
+            student_id=student_id,
+            tenant_id=tenant_id,
+            actor_id=actor_id,
+            db=db,
+        )
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class StudentWhatIfView(StudentBaseView):
+    """POST /api/student/insights/whatif/ — What-if simulator evaluating hypothetical profile improvements."""
+    permission_classes = [perm("student.profile.read")]
+
+    def post(self, request):
+        student_id = self.get_student_id(request)
+        if not student_id:
+            return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
+
+        db = get_db()
+        tenant_id = getattr(request.user, "tenant_id", None)
+        data = request.data or {}
+
+        target_cgpa = data.get("target_cgpa") or data.get("hypothetical_cgpa")
+        target_cgpa = float(target_cgpa) if target_cgpa is not None else None
+
+        target_backlogs = data.get("target_backlogs") if data.get("target_backlogs") is not None else data.get("resolved_backlogs")
+        target_backlogs = int(target_backlogs) if target_backlogs is not None else None
+
+        added_skills = data.get("added_skills") or data.get("additional_skills") or []
+        if isinstance(added_skills, str):
+            added_skills = [s.strip() for s in added_skills.split(",") if s.strip()]
+
+        from ml.whatif_simulator import simulate_student_career
+        result = simulate_student_career(
+            db,
+            student_id=student_id,
+            target_cgpa=target_cgpa,
+            target_backlogs=target_backlogs,
+            added_skills=added_skills,
+            tenant_id=tenant_id,
+        )
+        return Response(result, status=status.HTTP_200_OK)
+

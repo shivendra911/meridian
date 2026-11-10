@@ -19,9 +19,18 @@ import {
   Mail,
   Phone,
   BookOpen,
+  TrendingUp,
+  CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { studentApi, StudentProfile, StudentConsent } from '../api';
+import {
+  studentApi,
+  StudentProfile,
+  StudentConsent,
+  PlacementReadiness,
+  SkillRecommendations,
+} from '../api';
 import { PageHeader, StatCard, Card, Badge, Button, Skeleton } from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
 
@@ -46,6 +55,8 @@ const CONSENT_PURPOSES = [
 export const StudentProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [consents, setConsents] = useState<StudentConsent[]>([]);
+  const [readiness, setReadiness] = useState<PlacementReadiness | null>(null);
+  const [skillRecs, setSkillRecs] = useState<SkillRecommendations | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -62,14 +73,18 @@ export const StudentProfilePage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const [profData, conData] = await Promise.all([
+      const [profData, conData, readData, recData] = await Promise.all([
         studentApi.getMe(),
         studentApi.getConsents(),
+        studentApi.getReadinessInsights().catch(() => null),
+        studentApi.getSkillRecommendations().catch(() => null),
       ]);
       setProfile(profData);
       setSkills(profData.skills || []);
       setMlOptOut(Boolean(profData.ml_opt_out));
       setConsents(conData || []);
+      if (readData) setReadiness(readData);
+      if (recData) setSkillRecs(recData);
     } catch (err: any) {
       setError(err);
     } finally {
@@ -115,6 +130,8 @@ export const StudentProfilePage: React.FC = () => {
     try {
       const updated = await studentApi.updateProfile({ ml_opt_out: val });
       setMlOptOut(Boolean(updated.ml_opt_out));
+      const updatedReadiness = await studentApi.getReadinessInsights().catch(() => null);
+      if (updatedReadiness) setReadiness(updatedReadiness);
       toast.success(
         val
           ? 'ML Opt-Out Enabled: Telemetry disabled for automated ranking.'
@@ -211,6 +228,150 @@ export const StudentProfilePage: React.FC = () => {
             </span>
           </div>
         </div>
+      </Card>
+
+      {/* Placement Readiness & Explainability Insights */}
+      <Card
+        title="Predictive Placement Readiness &amp; Career Insights"
+        subtitle="Tier-B Statistical Model with Directional Explainability (DPDP Compliant)"
+      >
+        {readiness?.opted_out ? (
+          <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 text-amber-900 flex items-start gap-3">
+            <ShieldAlert className="text-amber-600 shrink-0 mt-0.5" size={18} />
+            <div className="space-y-1">
+              <div className="text-xs font-bold uppercase tracking-wider">Profiling Suppressed</div>
+              <p className="text-xs text-amber-800">
+                You have opted out of automated AI predictive modeling. Deterministic eligibility criteria (CGPA, backlogs, branch) remain fully active for all recruitment drives.
+              </p>
+            </div>
+          </div>
+        ) : readiness ? (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="p-3 bg-canvas border border-line rounded-xl">
+                <div className="text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-1">
+                  Readiness Score
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold font-serif text-brand">
+                    {readiness.placement_probability ?? 0}%
+                  </span>
+                  <Badge
+                    variant={
+                      readiness.readiness_band === 'READY'
+                        ? 'success'
+                        : readiness.readiness_band === 'MODERATE'
+                        ? 'warning'
+                        : 'neutral'
+                    }
+                  >
+                    {readiness.readiness_band?.replace('_', ' ') || 'CALCULATING'}
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="p-3 bg-canvas border border-line rounded-xl">
+                <div className="text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-1">
+                  Indicative Package
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold font-serif text-ink">
+                    ₹{readiness.expected_package_lpa ?? '--'} <span className="text-xs font-sans font-normal text-ink-muted">LPA</span>
+                  </span>
+                  <Badge variant="ai">80% Interval</Badge>
+                </div>
+              </div>
+
+              <div className="p-3 bg-canvas border border-line rounded-xl">
+                <div className="text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-1">
+                  Model Governance
+                </div>
+                <div className="text-xs text-ink font-mono font-medium">
+                  {readiness.model_version ? `v${readiness.model_version}` : 'v2.0.0'} &bull; Tier-B
+                </div>
+                <div className="text-[10px] text-ink-muted mt-1">
+                  Human coordinators make final selections
+                </div>
+              </div>
+            </div>
+
+            {/* Explainability Drivers */}
+            {readiness.drivers && readiness.drivers.length > 0 && (
+              <div className="pt-2">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-ink-muted mb-2 flex items-center gap-1.5">
+                  <TrendingUp size={13} className="text-brand" />
+                  <span>Directional Explainability Factors</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {readiness.drivers.map((drv, idx) => (
+                    <div
+                      key={idx}
+                      className="p-2.5 bg-canvas border border-line rounded-lg text-xs flex items-start gap-2"
+                    >
+                      {drv.impact === 'POSITIVE' ? (
+                        <CheckCircle2 size={14} className="text-emerald-600 shrink-0 mt-0.5" />
+                      ) : drv.impact === 'NEGATIVE' ? (
+                        <AlertCircle size={14} className="text-red-500 shrink-0 mt-0.5" />
+                      ) : (
+                        <Sparkles size={14} className="text-brand shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <span className="font-semibold text-ink">{drv.feature}: </span>
+                        <span className="text-ink-muted">{drv.explanation}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Market-Recommended Skills */}
+            {skillRecs && skillRecs.recommendations && skillRecs.recommendations.length > 0 && (
+              <div className="pt-2 border-t border-line">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-ink-muted mb-2 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles size={13} className="text-amber-500" />
+                    <span>In-Demand Skills for Your Target Roles</span>
+                  </span>
+                  <span className="text-[10px] text-ink-muted font-normal lowercase">
+                    {skillRecs.market_demand_basis || 'active drives catalog'}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {skillRecs.recommendations.map((rec) => {
+                    const alreadyHas = skills.includes(rec);
+                    return (
+                      <button
+                        key={rec}
+                        type="button"
+                        disabled={alreadyHas}
+                        onClick={() => {
+                          if (!alreadyHas) {
+                            setSkills([...skills, rec]);
+                            toast.info(`Added "${rec}" to portfolio. Remember to click "Save Portfolio".`);
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border transition-colors ${
+                          alreadyHas
+                            ? 'bg-canvas border-line text-ink-muted opacity-60 cursor-default'
+                            : 'bg-brand/5 border-brand/20 text-brand hover:bg-brand/10 cursor-pointer'
+                        }`}
+                      >
+                        <span>{rec}</span>
+                        {!alreadyHas && <Plus size={11} className="text-brand" />}
+                        {alreadyHas && <CheckCircle2 size={11} className="text-emerald-500" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-xs text-ink-muted p-2">
+            Placement readiness telemetry will populate as profile data and drive interactions are recorded.
+          </div>
+        )}
       </Card>
 
       {/* Skills Portfolio Editor */}
