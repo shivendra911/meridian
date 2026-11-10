@@ -47,7 +47,7 @@ import { toast } from 'sonner';
 export const StudentDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const studentId = id || '12206752';
+  const studentId = id || 'STU001';
 
   const [student, setStudent] = useState<Student | null>(null);
   const [topVti, setTopVti] = useState<VtiScore | null>(null);

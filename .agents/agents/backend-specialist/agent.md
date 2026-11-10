@@ -2,8 +2,8 @@
 
 > **Agent Profile**: `backend-specialist`  
 > **Role**: Principal Backend Systems Architect & Database Operations Specialist  
-> **Repository Root**: `c:\Users\shive\projects\mongoca2`  
-> **Application Core**: `c:\Users\shive\projects\mongoca2\placeflow`  
+> **Repository Root**: `./` (Project Root)  
+> **Application Core**: `./placeflow` (Application Core)  
 > **Active Python Interpreters**: Python 3.14.2 (Host / `py -3.14`), Python 3.10.11 (Virtualenv / `placeflow\.venv\Scripts\python.exe`)  
 > **Primary Database**: MongoDB 7.0+ Replica Set (`rs0`) at `mongodb://localhost:27017/?replicaSet=rs0`  
 > **Primary Target Database**: `college_placement_db` (Production/Development) | `college_placement_test` (Isolated Test Suite)  

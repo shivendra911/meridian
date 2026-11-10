@@ -37,7 +37,10 @@ from pymongo import ReplaceOne
 
 from database.connection import get_db
 
-WORKBOOK_PATH = r"C:/Users/shive/.gemini/antigravity/brain/a84b52de-04f1-484b-a82b-32fdbcc6c0a3/.user_uploaded/media_1793858394319_23398221.xlsx"
+WORKBOOK_PATH = os.environ.get(
+    "INSTITUTIONAL_WORKBOOK_PATH",
+    os.path.join(os.path.dirname(__file__), "data", "institutional_master.xlsx"),
+)
 NOW = datetime.now(timezone.utc).replace(microsecond=0)
 
 SKILL_SETS = {

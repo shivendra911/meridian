@@ -46,3 +46,17 @@ exports/
 ml/models/
 .git_placeflow_backup/
 
+# Raw User Datasets, Spreadsheets & Binary Dumps (Zero-Data Privacy Policy)
+*.xlsx
+*.xls
+*.csv
+*.tsv
+*.parquet
+*.jsonl
+*.dump
+*.pkl
+*.joblib
+placeflow/database/data/
+placeflow/backups/
+
+
