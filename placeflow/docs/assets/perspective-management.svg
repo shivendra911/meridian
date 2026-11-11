@@ -120,3 +120,4 @@
   <rect x="225" y="552" width="705" height="20" fill="none"/>
   <text x="225" y="566" fill="#94A3B8" font-family="monospace" font-size="10">Endpoints: GET .../nirf/metrics/ &bull; GET .../fairness/audit/ &bull; GET .../agents/runs/ &bull; GET .../reports/</text>
 </svg>
+

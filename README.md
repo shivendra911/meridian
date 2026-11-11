@@ -104,10 +104,18 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 #### Perspective Deep-Dive Walkthrough:
 
 <details>
-<summary><b>1. 🎓 The Student Perspective (/student)</b> — <i>Click to expand visual cockpit</i></summary>
+<summary><b>1. 🎓 The Student Perspective (/student)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
 <br/>
 
 ![Student Perspective](docs/assets/perspective-student.svg)
+
+<div align="center">
+
+![Student Live Interactive Demo](docs/assets/demo-student.gif)
+
+*Live Demo 2.1: Candidate 1-Click Application Workflow &bull; DPDP Purpose Consent Verification &bull; Automated Stage Progression.*
+
+</div>
 
 - **"What Needs Me Now" Hub**: Prioritized action triage (pending DPDP consents, scheduled interview slots).
 - **NEP 2020 Progression**: 138/160 credits earned, real-time CIE scores, and degree exit milestones.
@@ -116,10 +124,18 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 </details>
 
 <details>
-<summary><b>2. 🏢 The TPO Placement Directorate (/tpo)</b> — <i>Click to expand visual cockpit</i></summary>
+<summary><b>2. 🏢 The TPO Placement Directorate (/tpo)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
 <br/>
 
 ![TPO Perspective](docs/assets/perspective-tpo.svg)
+
+<div align="center">
+
+![TPO Live Interactive Demo](docs/assets/demo-tpo.gif)
+
+*Live Demo 2.2: Superday Multi-Room Conflict Arbitrator &bull; 1-Click Constraint Resolution &bull; Zero Recruiter Idle Time.*
+
+</div>
 
 - **Superday Conflict Solver**: 1-Click NP-hard room collision resolution.
 - **6-Step Drive Creation Wizard**: Guided JNF publishing with live candidate estimator sliders.
@@ -128,10 +144,18 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 </details>
 
 <details>
-<summary><b>3. 🧑‍🏫 The Faculty Advisory Perspective (/faculty)</b> — <i>Click to expand visual cockpit</i></summary>
+<summary><b>3. 🧑‍🏫 The Faculty Advisory Perspective (/faculty)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
 <br/>
 
 ![Faculty Perspective](docs/assets/perspective-faculty.svg)
+
+<div align="center">
+
+![Faculty Live Interactive Demo](docs/assets/demo-faculty.gif)
+
+*Live Demo 2.3: Mentee Attendance Drop Warning (&lt;75%) &bull; Early Advisory Intervention Logging &bull; Placement Protection.*
+
+</div>
 
 - **Assigned Mentees**: Dedicated ~24 mentee cohort with unmasked verified profiles.
 - **Early Attendance Warnings**: Flags drop-offs (&lt;75%) before placement debarment.
@@ -140,10 +164,18 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 </details>
 
 <details>
-<summary><b>4. 🏛️ The Department Head (HOD) Perspective (/hod)</b> — <i>Click to expand visual cockpit</i></summary>
+<summary><b>4. 🏛️ The Department Head (HOD) Perspective (/hod)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
 <br/>
 
 ![HOD Perspective](docs/assets/perspective-hod.svg)
+
+<div align="center">
+
+![HOD Live Interactive Demo](docs/assets/demo-hod.gif)
+
+*Live Demo 2.4: Department Leadership Benchmarking &bull; Borderline CGPA Eligibility Waiver Approval &bull; Audit Trail Signature.*
+
+</div>
 
 - **Department Benchmarks**: 89.6% placement rate and 16.2 LPA median CTC tracking.
 - **Faculty Load Allocations**: Balances student advisor loads across department faculty.
@@ -152,10 +184,18 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 </details>
 
 <details>
-<summary><b>5. 📊 The Executive Management Perspective (/management)</b> — <i>Click to expand visual cockpit</i></summary>
+<summary><b>5. 📊 The Executive Management Perspective (/management)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
 <br/>
 
 ![Management Perspective](docs/assets/perspective-management.svg)
+
+<div align="center">
+
+![Management Live Interactive Demo](docs/assets/demo-management.gif)
+
+*Live Demo 2.5: Real-Time Cohort Fairness Audit Across 7,141 Candidates in 6.7s &bull; Disparate Impact Evaluation (0.842 Compliant).*
+
+</div>
 
 - **Statutory NIRF Calculator**: Real-time GPH and GMS accreditation metrics.
 - **7,141-Cohort Fairness Audit**: Disparate impact ratio evaluation completed in 6.7s.
@@ -164,10 +204,18 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 </details>
 
 <details>
-<summary><b>6. 🛡️ The Institutional Administrator Perspective (/admin)</b> — <i>Click to expand visual cockpit</i></summary>
+<summary><b>6. 🛡️ The Institutional Administrator Perspective (/admin)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
 <br/>
 
 ![Admin Perspective](docs/assets/perspective-admin.svg)
+
+<div align="center">
+
+![Admin Live Interactive Demo](docs/assets/demo-admin.gif)
+
+*Live Demo 2.6: Unmatched External Email Identity Claim &bull; Institutional Roll Match &bull; 1-Click Verification &amp; Activation.*
+
+</div>
 
 - **Account Claims Queue**: Manual resolution for unmatched or non-standard email claims.
 - **Multi-Tenant Hierarchy**: Downward scope inheritance across campuses and schools.

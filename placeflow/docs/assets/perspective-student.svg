@@ -142,3 +142,4 @@
   <rect x="225" y="552" width="705" height="20" fill="none"/>
   <text x="225" y="566" fill="#94A3B8" font-family="monospace" font-size="10">Endpoints: GET /api/student/me/ &bull; GET /api/student/opportunities/ &bull; POST .../apply/ &bull; GET .../academics/</text>
 </svg>
+

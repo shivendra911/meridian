@@ -156,6 +156,10 @@ The **Student Perspective** transforms the candidate journey from a passive noti
 
 *Figure 2.1: Student Command Center &bull; Verified Profile &bull; DPDP Consent &bull; Real-Time CGPA &amp; Backlog Matched Drives.*
 
+![Student Live Interactive Demo](docs/assets/demo-student.gif)
+
+*Live Demo 2.1: Candidate 1-Click Application Workflow &bull; DPDP Purpose Consent Verification &bull; Automated Stage Progression.*
+
 </div>
 
 - **"What Needs Me Now" Hub**: Prioritized action triage (e.g., pending DPDP consent signatures, scheduled Superday virtual interview rooms).
@@ -174,6 +178,10 @@ The **TPO Directorate Perspective** provides enterprise placement operations acr
 ![Meridian TPO Placement Directorate Perspective](docs/assets/perspective-tpo.svg)
 
 *Figure 2.2: TPO Directorate Command Center &bull; 1-Click Superday Conflict Solver &bull; Drive Wizard &bull; Candidate Roster.*
+
+![TPO Live Interactive Demo](docs/assets/demo-tpo.gif)
+
+*Live Demo 2.2: Superday Multi-Room Conflict Arbitrator &bull; 1-Click Constraint Resolution &bull; Zero Recruiter Idle Time.*
 
 </div>
 
@@ -194,6 +202,10 @@ The **Faculty Advisory Perspective** bridges academic performance with career re
 
 *Figure 2.3: Faculty Mentorship Cockpit &bull; Mentee Progression &bull; Early Warning Attendance &bull; Advisory Dossiers.*
 
+![Faculty Live Interactive Demo](docs/assets/demo-faculty.gif)
+
+*Live Demo 2.3: Mentee Attendance Drop Warning (&lt;75%) &bull; Early Advisory Intervention Logging &bull; Placement Protection.*
+
 </div>
 
 - **Assigned Mentee Cohort**: Dedicated cohort tracking (typically ~24 students per faculty mentor) with unmasked verified profiles.
@@ -211,6 +223,10 @@ The **HOD Leadership Perspective** provides departmental academic governance and
 ![Meridian Department Head Perspective](docs/assets/perspective-hod.svg)
 
 *Figure 2.4: Department Head Leadership &bull; Placement Rate Benchmarks &bull; Faculty Mentoring Loads &bull; Waiver Approvals.*
+
+![HOD Live Interactive Demo](docs/assets/demo-hod.gif)
+
+*Live Demo 2.4: Department Leadership Benchmarking &bull; Borderline CGPA Eligibility Waiver Approval &bull; Audit Trail Signature.*
 
 </div>
 
@@ -230,6 +246,10 @@ The **Executive Management Perspective** equips Vice-Chancellors, Deans, and Dir
 
 *Figure 2.5: Executive Leadership &bull; Statutory NIRF Outcome Calculator &bull; 7,141-Cohort Demographic Fairness Audit.*
 
+![Management Live Interactive Demo](docs/assets/demo-management.gif)
+
+*Live Demo 2.5: Real-Time Cohort Fairness Audit Across 7,141 Candidates in 6.7s &bull; Disparate Impact Evaluation (0.842 Compliant).*
+
 </div>
 
 - **NIRF Accreditation Outcome Engine**: Real-time GPH (Graduation Outcome Placement & Higher Studies) and GMS (Graduation Outcome Median Salary) metrics.
@@ -248,6 +268,10 @@ The **Institutional Admin Perspective** governs multi-tenant topology, IAM ident
 ![Meridian Institutional Admin Perspective](docs/assets/perspective-admin.svg)
 
 *Figure 2.6: Institutional Governance &bull; Pending Account Claims Queue &bull; Multi-Tenant Topology &bull; IAM Audit Trail.*
+
+![Admin Live Interactive Demo](docs/assets/demo-admin.gif)
+
+*Live Demo 2.6: Unmatched External Email Identity Claim &bull; Institutional Roll Match &bull; 1-Click Verification &amp; Activation.*
 
 </div>
 
