@@ -101,6 +101,80 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 - 📊 **Executive Management**: Official NIRF accreditation metrics (GPH/GMS calculation), campus-wide demographic fairness audit, and autonomous copilot execution logs.
 - 🛡️ **Institutional Admin**: Tenant and campus hierarchy configuration, IAM identities, user accounts, and manual account claims resolution queue.
 
+#### Perspective Deep-Dive Walkthrough:
+
+<details>
+<summary><b>1. 🎓 The Student Perspective (/student)</b> — <i>Click to expand visual cockpit</i></summary>
+<br/>
+
+![Student Perspective](docs/assets/perspective-student.svg)
+
+- **"What Needs Me Now" Hub**: Prioritized action triage (pending DPDP consents, scheduled interview slots).
+- **NEP 2020 Progression**: 138/160 credits earned, real-time CIE scores, and degree exit milestones.
+- **Matched Drives**: Algorithmic gating by CGPA &amp; backlogs with **1-Click Apply**.
+- **Endpoints**: `GET /api/student/me/`, `GET /api/student/opportunities/`, `POST .../apply/`, `GET .../academics/`.
+</details>
+
+<details>
+<summary><b>2. 🏢 The TPO Placement Directorate (/tpo)</b> — <i>Click to expand visual cockpit</i></summary>
+<br/>
+
+![TPO Perspective](docs/assets/perspective-tpo.svg)
+
+- **Superday Conflict Solver**: 1-Click NP-hard room collision resolution.
+- **6-Step Drive Creation Wizard**: Guided JNF publishing with live candidate estimator sliders.
+- **Renege Flight Radar**: Telemetry identifying candidates at risk of dropping campus offers.
+- **Endpoints**: `GET /api/tpo/overview/`, `POST /api/tpo/jobs/`, `POST .../superday/resolve/`, `GET .../renege/`.
+</details>
+
+<details>
+<summary><b>3. 🧑‍🏫 The Faculty Advisory Perspective (/faculty)</b> — <i>Click to expand visual cockpit</i></summary>
+<br/>
+
+![Faculty Perspective](docs/assets/perspective-faculty.svg)
+
+- **Assigned Mentees**: Dedicated ~24 mentee cohort with unmasked verified profiles.
+- **Early Attendance Warnings**: Flags drop-offs (&lt;75%) before placement debarment.
+- **Intervention Notes**: Confidential advisory logs and technical mock review records.
+- **Endpoints**: `GET /api/faculty/mentees/`, `GET .../mentees/{id}/`, `GET /api/faculty/summary/`.
+</details>
+
+<details>
+<summary><b>4. 🏛️ The Department Head (HOD) Perspective (/hod)</b> — <i>Click to expand visual cockpit</i></summary>
+<br/>
+
+![HOD Perspective](docs/assets/perspective-hod.svg)
+
+- **Department Benchmarks**: 89.6% placement rate and 16.2 LPA median CTC tracking.
+- **Faculty Load Allocations**: Balances student advisor loads across department faculty.
+- **Waiver Exceptions**: Committee sign-off on borderline placement eligibility requests.
+- **Endpoints**: `GET /api/hod/students/`, `GET /api/hod/faculty/`, `GET /api/hod/summary/`.
+</details>
+
+<details>
+<summary><b>5. 📊 The Executive Management Perspective (/management)</b> — <i>Click to expand visual cockpit</i></summary>
+<br/>
+
+![Management Perspective](docs/assets/perspective-management.svg)
+
+- **Statutory NIRF Calculator**: Real-time GPH and GMS accreditation metrics.
+- **7,141-Cohort Fairness Audit**: Disparate impact ratio evaluation completed in 6.7s.
+- **Zero Sensitive Attributes Gate**: Prohibits gender, caste, native state, and income in models.
+- **Endpoints**: `GET .../nirf/metrics/`, `GET .../fairness/audit/`, `GET .../agents/runs/`.
+</details>
+
+<details>
+<summary><b>6. 🛡️ The Institutional Administrator Perspective (/admin)</b> — <i>Click to expand visual cockpit</i></summary>
+<br/>
+
+![Admin Perspective](docs/assets/perspective-admin.svg)
+
+- **Account Claims Queue**: Manual resolution for unmatched or non-standard email claims.
+- **Multi-Tenant Hierarchy**: Downward scope inheritance across campuses and schools.
+- **IAM Lifecycle**: Re-issue invite tokens, force password resets, and session eviction.
+- **Endpoints**: `GET /api/admin/claims/`, `POST .../claims/{id}/resolve/`, `GET /api/admin/tenants/`.
+</details>
+
 ### 2. Design-System Cards with 5 Deterministic States
 
 <div align="center">

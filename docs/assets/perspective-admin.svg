@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="960" height="580">
+  <defs>
+    <filter id="sh_adm" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="580" rx="16" fill="#F8FAFC"/>
+
+  <!-- Window Header -->
+  <rect x="0" y="0" width="960" height="42" rx="16" fill="#0F172A"/>
+  <rect x="0" y="26" width="960" height="16" fill="#0F172A"/>
+  <circle cx="24" cy="21" r="5" fill="#EF4444"/>
+  <circle cx="40" cy="21" r="5" fill="#F59E0B"/>
+  <circle cx="56" cy="21" r="5" fill="#10B981"/>
+  <text x="480" y="26" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Meridian · Institutional Admin Perspective (/admin/claims)</text>
+
+  <!-- Sidebar -->
+  <rect x="0" y="42" width="200" height="538" fill="#0B1B3D"/>
+  <rect x="18" y="58" width="28" height="28" rx="6" fill="#8C1515"/>
+  <text x="32" y="77" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="16" font-weight="800" text-anchor="middle">M</text>
+  <text x="56" y="77" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" font-weight="700">MERIDIAN</text>
+  
+  <text x="20" y="112" fill="#64748B" font-family="-apple-system, sans-serif" font-size="10" font-weight="700">PLATFORM ADMIN</text>
+
+  <!-- Nav items -->
+  <rect x="10" y="124" width="180" height="32" rx="6" fill="#1E293B"/>
+  <text x="24" y="145" fill="#FB923C" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">📥 Claims Queue (5)</text>
+  
+  <text x="24" y="180" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">🏢 Tenants &amp; Hierarchy</text>
+  <text x="24" y="212" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">👤 IAM Identities</text>
+  <text x="24" y="244" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">🔑 User Accounts</text>
+  <text x="24" y="276" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">🛡️ Roles &amp; Perms</text>
+  <text x="24" y="308" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">📜 Audit Logs</text>
+  <text x="24" y="340" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">⚙️ System Health</text>
+
+  <!-- Main Content Header -->
+  <g transform="translate(225, 60)">
+    <text x="0" y="18" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="18" font-weight="700">Institutional Governance &amp; IAM Control</text>
+    <text x="0" y="36" fill="#64748B" font-family="-apple-system, sans-serif" font-size="12">Arjun Mehta &bull; Platform Administrator &bull; Scope: Institution Multi-Tenant Root</text>
+  </g>
+
+  <!-- 4 StatCards -->
+  <g transform="translate(225, 115)" filter="url(#sh_adm)">
+    <!-- Card 1 -->
+    <rect x="0" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="14" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Pending Claims</text>
+    <text x="14" y="52" fill="#EA580C" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">5 Queue</text>
+    <text x="80" y="50" fill="#EA580C" font-family="-apple-system, sans-serif" font-size="11">Action Req</text>
+
+    <!-- Card 2 -->
+    <rect x="180" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="194" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Active Tenants</text>
+    <text x="194" y="52" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">3 Tenants</text>
+    <text x="260" y="50" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">8 Insts</text>
+
+    <!-- Card 3 -->
+    <rect x="360" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="374" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">IAM Identities</text>
+    <text x="374" y="52" fill="#2563EB" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">7,284</text>
+    <text x="430" y="50" fill="#10B981" font-family="-apple-system, sans-serif" font-size="11">Verified</text>
+
+    <!-- Card 4 -->
+    <rect x="540" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="554" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Concurrent Sessions</text>
+    <text x="554" y="52" fill="#059669" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">38 Active</text>
+  </g>
+
+  <!-- What Needs Me Now -->
+  <g transform="translate(225, 210)">
+    <text x="0" y="14" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">⚡ WHAT NEEDS ME NOW (Identity &amp; Tenant Approvals)</text>
+
+    <!-- TaskCard 1: Unmatched claim -->
+    <g transform="translate(0, 26)" filter="url(#sh_adm)">
+      <rect width="345" height="90" rx="8" fill="#FFF7ED" stroke="#FDBA74" stroke-width="1.5"/>
+      <rect x="12" y="12" width="115" height="18" rx="4" fill="#FFEDD5"/>
+      <text x="69" y="25" fill="#C2410C" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">MANUAL CLAIM</text>
+      <text x="12" y="48" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Claim from non-standard email domain</text>
+      <text x="12" y="65" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Priya Nair claiming B.Tech ECE record STU089</text>
+      <rect x="210" y="52" width="122" height="26" rx="4" fill="#EA580C"/>
+      <text x="271" y="69" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Resolve Claim →</text>
+    </g>
+
+    <!-- TaskCard 2: Break-Glass audit -->
+    <g transform="translate(360, 26)" filter="url(#sh_adm)">
+      <rect width="345" height="90" rx="8" fill="#FFFFFF" stroke="#CBD5E1"/>
+      <rect x="12" y="12" width="95" height="18" rx="4" fill="#E2E8F0"/>
+      <text x="59" y="25" fill="#475569" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">AUDIT LOG</text>
+      <text x="12" y="48" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Privileged Session Termination</text>
+      <text x="12" y="65" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Revoke expired external recruiter credentials (COMP001)</text>
+      <rect x="230" y="52" width="102" height="26" rx="4" fill="#0F172A"/>
+      <text x="281" y="69" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Revoke Now →</text>
+    </g>
+  </g>
+
+  <!-- Pending Claims Table -->
+  <g transform="translate(225, 350)">
+    <text x="0" y="14" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">📥 PENDING ACCOUNT CLAIMS QUEUE (GET /api/admin/claims/)</text>
+
+    <!-- Claim 1 -->
+    <g transform="translate(0, 26)" filter="url(#sh_adm)">
+      <rect width="705" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+      <text x="20" y="30" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="14" font-weight="700">Priya Nair &bull; Claimed Record: STU089 &bull; Electronics &amp; Comm</text>
+      <text x="20" y="48" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Submitted Email: priya.nair@gmail.com &bull; Matched Institutional Roll: 2022BEC089 &bull; Reason: Lost institutional SIM</text>
+      <rect x="580" y="24" width="110" height="28" rx="4" fill="#EA580C"/>
+      <text x="635" y="42" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Approve Link →</text>
+    </g>
+
+    <!-- Claim 2 -->
+    <g transform="translate(0, 112)" filter="url(#sh_adm)">
+      <rect width="705" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+      <text x="20" y="30" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="14" font-weight="700">Dr. Vivek Murthy &bull; Claimed Record: FAC11402 &bull; Mechanical Engg</text>
+      <text x="20" y="48" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Submitted Email: v.murthy@univ.edu &bull; Status: One-Time Token Expired &bull; Action: Resend Invite Token</text>
+      <rect x="580" y="24" width="110" height="28" rx="4" fill="#0F172A"/>
+      <text x="635" y="42" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Resend Token →</text>
+    </g>
+  </g>
+
+  <!-- Bottom Endpoints Bar -->
+  <rect x="225" y="552" width="705" height="20" fill="none"/>
+  <text x="225" y="566" fill="#94A3B8" font-family="monospace" font-size="10">Endpoints: GET /api/admin/claims/ &bull; POST .../claims/{id}/resolve/ &bull; GET /api/admin/tenants/</text>
+</svg>

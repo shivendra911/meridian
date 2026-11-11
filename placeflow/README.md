@@ -147,6 +147,117 @@ flowchart TD
 └─────────────────┴─────────────────┴─────────────────┴─────────────────┴────────────────┘
 ```
 
+### 3.1 🎓 The Student Perspective (`/student`)
+The **Student Perspective** transforms the candidate journey from a passive notification feed into an active career cockpit.
+
+<div align="center">
+
+![Meridian Student Perspective](docs/assets/perspective-student.svg)
+
+*Figure 2.1: Student Command Center &bull; Verified Profile &bull; DPDP Consent &bull; Real-Time CGPA &amp; Backlog Matched Drives.*
+
+</div>
+
+- **"What Needs Me Now" Hub**: Prioritized action triage (e.g., pending DPDP consent signatures, scheduled Superday virtual interview rooms).
+- **NEP 2020 Academic Progression**: Visualizes completed credits (138/160), active CIE marks, and multi-exit degree milestones.
+- **Matched Opportunities**: Drives automatically gated by verified CGPA and backlogs with **1-Click Apply**.
+- **Verified Talent Index (VTI)**: Cryptographic composite index (Gold Honors, Silver Audited, Bronze Standard).
+- **Primary Endpoints**: `GET /api/student/me/`, `GET /api/student/opportunities/`, `POST /api/student/opportunities/<id>/apply/`, `GET /api/student/academics/`, `POST /api/student/consents/record/`.
+
+---
+
+### 3.2 🏢 The TPO Placement Directorate Perspective (`/tpo`)
+The **TPO Directorate Perspective** provides enterprise placement operations across thousands of candidates and hundreds of corporate hiring partners.
+
+<div align="center">
+
+![Meridian TPO Placement Directorate Perspective](docs/assets/perspective-tpo.svg)
+
+*Figure 2.2: TPO Directorate Command Center &bull; 1-Click Superday Conflict Solver &bull; Drive Wizard &bull; Candidate Roster.*
+
+</div>
+
+- **Superday Multi-Room Conflict Solver**: 1-Click NP-hard constraint solver detecting room clashes between top recruiters and reallocating interview slots with zero schedule drift.
+- **6-Step Placement Drive Wizard**: Guided JNF creation from partner selection, CTC packages, criteria sliders, Superday room allocations, to diversity quotas.
+- **Renege Flight Radar**: Multi-factor early warning telemetry tracking compensation disparities and post-offer application leakage.
+- **Machine Learning Hub**: Real-time model registry tracking inference latency, ROC-AUC (87.4%), and retraining triggers.
+- **Primary Endpoints**: `GET /api/tpo/overview/`, `POST /api/tpo/jobs/`, `POST /api/tpo/superday/resolve/`, `GET /api/tpo/insights/renege/`, `GET /api/tpo/models/`.
+
+---
+
+### 3.3 🧑‍🏫 The Faculty Advisory Perspective (`/faculty`)
+The **Faculty Advisory Perspective** bridges academic performance with career readiness through targeted mentoring cohorts.
+
+<div align="center">
+
+![Meridian Faculty Advisory Perspective](docs/assets/perspective-faculty.svg)
+
+*Figure 2.3: Faculty Mentorship Cockpit &bull; Mentee Progression &bull; Early Warning Attendance &bull; Advisory Dossiers.*
+
+</div>
+
+- **Assigned Mentee Cohort**: Dedicated cohort tracking (typically ~24 students per faculty mentor) with unmasked verified profiles.
+- **Early Warning Attendance Alerts**: Automatic flags when mentee attendance drops below statutory thresholds (e.g. 75%), preventing campus placement debarment.
+- **Advisory Intervention Notes**: Confidential, auditable faculty notes and mock technical preparation loops for Superday candidates.
+- **Primary Endpoints**: `GET /api/faculty/mentees/`, `GET /api/faculty/mentees/<student_id>/`, `GET /api/faculty/summary/`.
+
+---
+
+### 3.4 🏛️ The Department Head (HOD) Perspective (`/hod`)
+The **HOD Leadership Perspective** provides departmental academic governance and placement velocity tracking.
+
+<div align="center">
+
+![Meridian Department Head Perspective](docs/assets/perspective-hod.svg)
+
+*Figure 2.4: Department Head Leadership &bull; Placement Rate Benchmarks &bull; Faculty Mentoring Loads &bull; Waiver Approvals.*
+
+</div>
+
+- **Department Placement Rates**: Live tracking of placement rate (89.6%) and median CTC (16.2 LPA) across departmental batch cohorts.
+- **Faculty Load Allocations**: Monitors mentoring assignments to prevent advisor burnout and ensure NEP 2020 advisory ratios.
+- **Special Eligibility Waiver Workflow**: Departmental sign-off on borderline eligibility waivers (e.g., 0.1 CGPA exception for hackathon winners).
+- **Primary Endpoints**: `GET /api/hod/students/`, `GET /api/hod/faculty/`, `GET /api/hod/summary/`.
+
+---
+
+### 3.5 📊 The Executive Management Perspective (`/management`)
+The **Executive Management Perspective** equips Vice-Chancellors, Deans, and Directors with statutory accreditation analytics.
+
+<div align="center">
+
+![Meridian Executive Management Perspective](docs/assets/perspective-management.svg)
+
+*Figure 2.5: Executive Leadership &bull; Statutory NIRF Outcome Calculator &bull; 7,141-Cohort Demographic Fairness Audit.*
+
+</div>
+
+- **NIRF Accreditation Outcome Engine**: Real-time GPH (Graduation Outcome Placement & Higher Studies) and GMS (Graduation Outcome Median Salary) metrics.
+- **Demographic Slice Fairness Audit**: 80% four-fifths rule disparate impact evaluator running across the entire 7,141-student institutional cohort in 6.7 seconds.
+- **Sensitive Proxy Attribute Gate**: Asserts 100% exclusion of prohibited features (gender, caste, native state, parental income) from all ML inputs.
+- **Autonomous Copilot Ledger**: Complete execution traces and token usage audit logs for background autonomous agents.
+- **Primary Endpoints**: `GET /api/management/nirf/metrics/`, `GET /api/management/fairness/audit/`, `GET /api/management/agents/runs/`, `GET /api/management/reports/`.
+
+---
+
+### 3.6 🛡️ The Institutional Administrator Perspective (`/admin`)
+The **Institutional Admin Perspective** governs multi-tenant topology, IAM identities, and manual account verification.
+
+<div align="center">
+
+![Meridian Institutional Admin Perspective](docs/assets/perspective-admin.svg)
+
+*Figure 2.6: Institutional Governance &bull; Pending Account Claims Queue &bull; Multi-Tenant Topology &bull; IAM Audit Trail.*
+
+</div>
+
+- **Pending Account Claims Queue**: Resolves identity claims from external or non-standard email domains with 1-click verified linkage.
+- **Multi-Tenant Hierarchy**: Configures tenants, institutions, campuses, schools, and departments with downward scope inheritance.
+- **IAM Account Lifecycle Controls**: Re-issue cryptographic onboarding invitations, trigger forced password resets, and revoke sessions.
+- **Primary Endpoints**: `GET /api/admin/claims/`, `POST /api/admin/claims/<id>/resolve/`, `GET /api/admin/tenants/`, `GET /api/admin/iam/identities/`.
+
+---
+
 ### Portal Route Isolation & Boundary Invariants
 - **No Shared Pages Across Portals**: A student, TPO officer, and department head never view a page that merely toggles conditional DOM blocks. Each portal has its own API adapter (`src/portals/<role>/api.ts`) and pages.
 - **Enforced Architectural Boundaries**: Checked on every build via `scripts/check-boundaries.mjs`. Importing across sibling portals throws immediate build errors.

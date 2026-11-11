@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="960" height="580">
+  <defs>
+    <filter id="sh_tpo" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Canvas -->
+  <rect width="960" height="580" rx="16" fill="#F8FAFC"/>
+
+  <!-- Window Header -->
+  <rect x="0" y="0" width="960" height="42" rx="16" fill="#0F172A"/>
+  <rect x="0" y="26" width="960" height="16" fill="#0F172A"/>
+  <circle cx="24" cy="21" r="5" fill="#EF4444"/>
+  <circle cx="40" cy="21" r="5" fill="#F59E0B"/>
+  <circle cx="56" cy="21" r="5" fill="#10B981"/>
+  <text x="480" y="26" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Meridian · TPO Placement Directorate (/tpo/overview)</text>
+
+  <!-- Sidebar -->
+  <rect x="0" y="42" width="200" height="538" fill="#0B1B3D"/>
+  <rect x="18" y="58" width="28" height="28" rx="6" fill="#8C1515"/>
+  <text x="32" y="77" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="16" font-weight="800" text-anchor="middle">M</text>
+  <text x="56" y="77" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" font-weight="700">MERIDIAN</text>
+  
+  <text x="20" y="112" fill="#64748B" font-family="-apple-system, sans-serif" font-size="10" font-weight="700">TPO OPERATIONS</text>
+
+  <!-- Nav items -->
+  <rect x="10" y="124" width="180" height="32" rx="6" fill="#1E293B"/>
+  <text x="24" y="145" fill="#2DD4BF" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">📊 Overview</text>
+  
+  <text x="24" y="180" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">🎯 Drives Wizard (6-Step)</text>
+  <text x="24" y="212" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">👥 Student Cohort (VTI)</text>
+  <text x="24" y="244" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">🏢 Corporate Partners</text>
+  <text x="24" y="276" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">⚡ Superday Solver</text>
+  <text x="24" y="308" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">🚨 Renege Radar</text>
+  <text x="24" y="340" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">🤖 ML Model Hub</text>
+  <text x="24" y="372" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">📈 Aggregation Reports</text>
+
+  <!-- Main Content Header -->
+  <g transform="translate(225, 60)">
+    <text x="0" y="18" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="18" font-weight="700">Placement Directorate Command Center</text>
+    <text x="0" y="36" fill="#64748B" font-family="-apple-system, sans-serif" font-size="12">Dr. K. Venkatesh &bull; Head of Training &amp; Placement &bull; Scope: Institutional</text>
+    <rect x="580" y="8" width="125" height="30" rx="4" fill="#0D9488"/>
+    <text x="642" y="27" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">+ New Drive Wizard</text>
+  </g>
+
+  <!-- 4 StatCards -->
+  <g transform="translate(225, 115)" filter="url(#sh_tpo)">
+    <!-- Card 1 -->
+    <rect x="0" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="14" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Cohort Placement Rate</text>
+    <text x="14" y="52" fill="#0D9488" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">94.2%</text>
+    <text x="90" y="50" fill="#10B981" font-family="-apple-system, sans-serif" font-size="11">↑ 4.1% YoY</text>
+
+    <!-- Card 2 -->
+    <rect x="180" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="194" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Median CTC Package</text>
+    <text x="194" y="52" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">14.8 LPA</text>
+
+    <!-- Card 3 -->
+    <rect x="360" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="374" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Active Live Drives</text>
+    <text x="374" y="52" fill="#2563EB" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">18</text>
+    <text x="410" y="50" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">42 Finished</text>
+
+    <!-- Card 4 -->
+    <rect x="540" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="554" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Renege Flight Alerts</text>
+    <text x="554" y="52" fill="#EF4444" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">3 High</text>
+    <text x="625" y="50" fill="#F59E0B" font-family="-apple-system, sans-serif" font-size="11">5 Moderate</text>
+  </g>
+
+  <!-- What Needs Me Now Section -->
+  <g transform="translate(225, 210)">
+    <text x="0" y="14" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">⚡ WHAT NEEDS ME NOW (Action Command Center)</text>
+
+    <!-- TaskCard 1: Superday Solver -->
+    <g transform="translate(0, 26)" filter="url(#sh_tpo)">
+      <rect width="345" height="90" rx="8" fill="#FEF2F2" stroke="#F87171" stroke-width="1.5"/>
+      <rect x="12" y="12" width="105" height="18" rx="4" fill="#FEE2E2"/>
+      <text x="64" y="25" fill="#B91C1C" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">ROOM COLLISION</text>
+      <text x="125" y="25" fill="#B91C1C" font-family="-apple-system, sans-serif" font-size="11">Superday Day 1</text>
+      <text x="12" y="48" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Lab 402 Contention: Google &amp; Microsoft</text>
+      <text x="12" y="65" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Constraint solver recommends reallocation to Lab 405</text>
+      <rect x="200" y="52" width="132" height="26" rx="4" fill="#DC2626"/>
+      <text x="266" y="69" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">1-Click Resolve →</text>
+    </g>
+
+    <!-- TaskCard 2: Goldman Sachs shortlists -->
+    <g transform="translate(360, 26)" filter="url(#sh_tpo)">
+      <rect width="345" height="90" rx="8" fill="#FFFFFF" stroke="#CBD5E1"/>
+      <rect x="12" y="12" width="115" height="18" rx="4" fill="#FEF3C7"/>
+      <text x="69" y="25" fill="#B45309" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">VERIFICATION DUE</text>
+      <text x="135" y="25" fill="#B45309" font-family="-apple-system, sans-serif" font-size="11">14 Candidates</text>
+      <text x="12" y="48" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Goldman Sachs Analyst Shortlist Review</text>
+      <text x="12" y="65" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Audit CGPAs and sign off on test terminal roster</text>
+      <rect x="230" y="52" width="102" height="26" rx="4" fill="#0F172A"/>
+      <text x="281" y="69" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Audit List →</text>
+    </g>
+  </g>
+
+  <!-- Live Drive Management Roster -->
+  <g transform="translate(225, 350)">
+    <text x="0" y="14" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">🏢 CORPORATE DRIVES &amp; CANDIDATE ROSTER</text>
+
+    <!-- Row 1 -->
+    <g transform="translate(0, 26)" filter="url(#sh_tpo)">
+      <rect width="705" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+      <text x="20" y="30" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="14" font-weight="700">Google India &bull; Software Development Engineer (L3)</text>
+      <text x="20" y="48" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Tier: Super Dream &bull; 24.5 LPA &bull; 72 Applicants &bull; Superday Day-1 &bull; Status: Round 2 Interviews</text>
+      <rect x="580" y="24" width="110" height="28" rx="4" fill="#0F172A"/>
+      <text x="635" y="42" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Manage Loop →</text>
+    </g>
+
+    <!-- Row 2 -->
+    <g transform="translate(0, 112)" filter="url(#sh_tpo)">
+      <rect width="705" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+      <text x="20" y="30" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="14" font-weight="700">Microsoft IDC &bull; Cloud Solutions Architect</text>
+      <text x="20" y="48" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Tier: Dream &bull; 21.0 LPA &bull; 98 Applicants &bull; Superday Day-1 &bull; Status: Shortlisted</text>
+      <rect x="580" y="24" width="110" height="28" rx="4" fill="#0F172A"/>
+      <text x="635" y="42" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Manage Loop →</text>
+    </g>
+  </g>
+
+  <!-- Bottom Endpoints Bar -->
+  <rect x="225" y="552" width="705" height="20" fill="none"/>
+  <text x="225" y="566" fill="#94A3B8" font-family="monospace" font-size="10">Endpoints: POST .../superday/resolve/ &bull; GET /api/tpo/jobs/ &bull; GET /api/tpo/overview/ &bull; GET .../renege/</text>
+</svg>

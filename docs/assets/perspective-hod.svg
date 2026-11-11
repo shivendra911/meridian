@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="960" height="580">
+  <defs>
+    <filter id="sh_hod" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="580" rx="16" fill="#F8FAFC"/>
+
+  <!-- Window Header -->
+  <rect x="0" y="0" width="960" height="42" rx="16" fill="#0F172A"/>
+  <rect x="0" y="26" width="960" height="16" fill="#0F172A"/>
+  <circle cx="24" cy="21" r="5" fill="#EF4444"/>
+  <circle cx="40" cy="21" r="5" fill="#F59E0B"/>
+  <circle cx="56" cy="21" r="5" fill="#10B981"/>
+  <text x="480" y="26" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" text-anchor="middle">Meridian · Department Head Perspective (/hod/dashboard)</text>
+
+  <!-- Sidebar -->
+  <rect x="0" y="42" width="200" height="538" fill="#0B1B3D"/>
+  <rect x="18" y="58" width="28" height="28" rx="6" fill="#8C1515"/>
+  <text x="32" y="77" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="16" font-weight="800" text-anchor="middle">M</text>
+  <text x="56" y="77" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="14" font-weight="700">MERIDIAN</text>
+  
+  <text x="20" y="112" fill="#64748B" font-family="-apple-system, sans-serif" font-size="10" font-weight="700">DEPARTMENT HOD</text>
+
+  <!-- Nav items -->
+  <rect x="10" y="124" width="180" height="32" rx="6" fill="#1E293B"/>
+  <text x="24" y="145" fill="#A78BFA" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">📊 Department Stats</text>
+  
+  <text x="24" y="180" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">👥 Student Cohort (412)</text>
+  <text x="24" y="212" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">🧑‍🏫 Faculty Roster (18)</text>
+  <text x="24" y="244" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">⚖️ Waiver Approvals</text>
+  <text x="24" y="276" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">📈 Academic Progression</text>
+  <text x="24" y="308" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">🏢 Company Hiring Stats</text>
+  <text x="24" y="340" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="12">⚙️ Account Area</text>
+
+  <!-- Main Content Header -->
+  <g transform="translate(225, 60)">
+    <text x="0" y="18" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="18" font-weight="700">Department Leadership Dashboard</text>
+    <text x="0" y="36" fill="#64748B" font-family="-apple-system, sans-serif" font-size="12">Dr. Sweety Sehgal &bull; Head of Department &bull; Computer Science &amp; Engineering &bull; Scope: OU_CSE</text>
+  </g>
+
+  <!-- 4 StatCards -->
+  <g transform="translate(225, 115)" filter="url(#sh_hod)">
+    <!-- Card 1 -->
+    <rect x="0" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="14" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Dept Placement Rate</text>
+    <text x="14" y="52" fill="#7C3AED" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">89.6%</text>
+    <text x="90" y="50" fill="#10B981" font-family="-apple-system, sans-serif" font-size="11">Top Branch</text>
+
+    <!-- Card 2 -->
+    <rect x="180" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="194" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Batch Cohort Size</text>
+    <text x="194" y="52" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">412</text>
+    <text x="240" y="50" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Candidates</text>
+
+    <!-- Card 3 -->
+    <rect x="360" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="374" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Active Faculty Mentors</text>
+    <text x="374" y="52" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">18</text>
+    <text x="405" y="50" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">~23 / mentor</text>
+
+    <!-- Card 4 -->
+    <rect x="540" y="0" width="165" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+    <text x="554" y="24" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Dept Median Package</text>
+    <text x="554" y="52" fill="#059669" font-family="-apple-system, sans-serif" font-size="22" font-weight="700">16.2 LPA</text>
+  </g>
+
+  <!-- What Needs Me Now -->
+  <g transform="translate(225, 210)">
+    <text x="0" y="14" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">⚡ WHAT NEEDS ME NOW (Department Actions)</text>
+
+    <!-- TaskCard 1: Waiver approval -->
+    <g transform="translate(0, 26)" filter="url(#sh_hod)">
+      <rect width="345" height="90" rx="8" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1.5"/>
+      <rect x="12" y="12" width="115" height="18" rx="4" fill="#FEF3C7"/>
+      <text x="69" y="25" fill="#B45309" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">WAIVER REQUEST</text>
+      <text x="12" y="48" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">3 Students Requesting CGPA Waiver (Amazon)</text>
+      <text x="12" y="65" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Current 7.92 vs 8.00 Cutoff &bull; Exceptional Hackathon Winners</text>
+      <rect x="210" y="52" width="122" height="26" rx="4" fill="#B45309"/>
+      <text x="271" y="69" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Review Waiver →</text>
+    </g>
+
+    <!-- TaskCard 2: Mentoring rebalance -->
+    <g transform="translate(360, 26)" filter="url(#sh_hod)">
+      <rect width="345" height="90" rx="8" fill="#FFFFFF" stroke="#CBD5E1"/>
+      <rect x="12" y="12" width="95" height="18" rx="4" fill="#EDE9FE"/>
+      <text x="59" y="25" fill="#6D28D9" font-family="-apple-system, sans-serif" font-size="10" font-weight="700" text-anchor="middle">LOAD BALANCE</text>
+      <text x="12" y="48" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">2 Faculty Mentors Overallocated (>30 Mentees)</text>
+      <text x="12" y="65" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Reassign 8 students to junior faculty to meet NEP norms</text>
+      <rect x="230" y="52" width="102" height="26" rx="4" fill="#7C3AED"/>
+      <text x="281" y="69" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">Rebalance →</text>
+    </g>
+  </g>
+
+  <!-- Department Benchmarks Table -->
+  <g transform="translate(225, 350)">
+    <text x="0" y="14" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">🏛️ FACULTY ADVISORY ALLOCATIONS &amp; REVIEWS</text>
+
+    <!-- Row 1 -->
+    <g transform="translate(0, 26)" filter="url(#sh_hod)">
+      <rect width="705" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+      <text x="20" y="30" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="14" font-weight="700">Dr. Janpreet Singh &bull; Associate Professor &bull; FAC11266</text>
+      <text x="20" y="48" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Mentees: 24 Assigned &bull; Placed: 19 (79%) &bull; Active Advisory Interventions: 2 &bull; Load: Optimal ✓</text>
+      <rect x="580" y="24" width="110" height="28" rx="4" fill="#0F172A"/>
+      <text x="635" y="42" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">View Group →</text>
+    </g>
+
+    <!-- Row 2 -->
+    <g transform="translate(0, 112)" filter="url(#sh_hod)">
+      <rect width="705" height="75" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+      <text x="20" y="30" fill="#0F172A" font-family="-apple-system, sans-serif" font-size="14" font-weight="700">Prof. Swathy Reghu &bull; Assistant Professor &bull; FAC35422</text>
+      <text x="20" y="48" fill="#64748B" font-family="-apple-system, sans-serif" font-size="11">Mentees: 22 Assigned &bull; Placed: 18 (81%) &bull; Active Advisory Interventions: 0 &bull; Load: Optimal ✓</text>
+      <rect x="580" y="24" width="110" height="28" rx="4" fill="#0F172A"/>
+      <text x="635" y="42" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">View Group →</text>
+    </g>
+  </g>
+
+  <!-- Bottom Endpoints Bar -->
+  <rect x="225" y="552" width="705" height="20" fill="none"/>
+  <text x="225" y="566" fill="#94A3B8" font-family="monospace" font-size="10">Endpoints: GET /api/hod/students/ &bull; GET /api/hod/faculty/ &bull; GET /api/hod/summary/</text>
+</svg>
