@@ -359,10 +359,10 @@ STUDENT_PROFILES = collection_schema(
     })
 
 ACCOUNT_TOKENS = collection_schema(
-    ["token_hash", "account_id", "purpose", "expires_at", "attempts"],
+    ["token_hash", "purpose", "expires_at", "attempts"],
     {
         "token_hash": string(),
-        "account_id": string(),
+        "account_id": {"bsonType": ["string", "null"]},
         "purpose": string(enum=["INVITE", "RESET", "CLAIM_OTP"]),
         "expires_at": date(),
         "used_at": date(),
@@ -385,6 +385,21 @@ NOTIFICATIONS = collection_schema(
         "read_at": date(),
     })
 
+CLAIM_REQUESTS = collection_schema(
+    ["claim_id", "tenant_id", "registration_no", "email_submitted", "status", "created_at"],
+    {
+        "claim_id": string(),
+        "tenant_id": string(),
+        "registration_no": string(),
+        "email_submitted": string(),
+        "student_id": {"bsonType": ["string", "null"]},
+        "status": string(enum=["PENDING", "APPROVED", "REJECTED"]),
+        "notes": {"bsonType": ["string", "null"]},
+        "created_at": date(),
+        "resolved_at": {"bsonType": ["date", "null"]},
+        "resolved_by": {"bsonType": ["string", "null"]},
+    })
+
 SCHEMAS = {
     "students": STUDENTS, "companies": COMPANIES, "jobs": JOBS,
     "applications": APPLICATIONS, "interviews": INTERVIEWS,
@@ -396,6 +411,7 @@ SCHEMAS = {
     "student_profiles": STUDENT_PROFILES,
     "account_tokens": ACCOUNT_TOKENS,
     "notifications": NOTIFICATIONS,
+    "claim_requests": CLAIM_REQUESTS,
 }
 
 # Rules $jsonSchema cannot express (they compare two fields) go in $expr.
@@ -474,6 +490,9 @@ INDEXES = [
     ("account_tokens", [("account_id", 1), ("purpose", 1)], {"name": "ix_account_purpose"}),
     ("notifications", [("notification_id", 1)], {"name": "uq_notification_id", "unique": True}),
     ("notifications", [("person_id", 1), ("read_at", 1), ("created_at", -1)], {"name": "ix_notification_person_read"}),
+    ("claim_requests", [("claim_id", 1)], {"name": "uq_claim_id", "unique": True}),
+    ("claim_requests", [("tenant_id", 1), ("status", 1), ("created_at", -1)], {"name": "ix_claim_status"}),
+    ("claim_requests", [("registration_no", 1)], {"name": "ix_claim_reg_no"}),
 ]
 
 VIEW_NAME = "v_application_details"

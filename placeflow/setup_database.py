@@ -14,6 +14,11 @@ def build(reset=False, bulk=False):
     apply_schemas(db)
     apply_indexes(db)
     create_views(db)
+    try:
+        from camp_02.schemas import setup_camp02_collections
+        setup_camp02_collections(db)
+    except Exception:
+        pass
     if bulk:
         from database import bulk_seed  # built in Phase 9
         bulk_seed.load(db)

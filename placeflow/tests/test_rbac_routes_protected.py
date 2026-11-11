@@ -21,6 +21,11 @@ PUBLIC_ALLOWLIST = {
     "/api/auth/csrf/",
     "/api/auth/login/",
     "/api/health/",
+    "/api/auth/accept-invite/",
+    "/api/auth/claim/start/",
+    "/api/auth/claim/verify/",
+    "/api/auth/password/forgot/",
+    "/api/auth/password/reset/",
 }
 
 

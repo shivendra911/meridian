@@ -138,5 +138,7 @@ REST_FRAMEWORK = {
         'anon': '100/minute',
         'user': '1000/minute',
         'login': os.environ.get('DJANGO_LOGIN_THROTTLE_RATE', '1000/minute' if DEBUG else '60/minute'),
+        'claim_start': os.environ.get('DJANGO_CLAIM_THROTTLE_RATE', '1000/minute' if DEBUG else '30/minute'),
+        'password_forgot': os.environ.get('DJANGO_FORGOT_THROTTLE_RATE', '1000/minute' if DEBUG else '30/minute'),
     },
 }

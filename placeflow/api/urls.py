@@ -23,6 +23,7 @@ from api import (
     views_hierarchy,
 )
 from api.auth import views as views_auth
+from api.auth import lifecycle_views
 from api.account import views as views_account
 
 urlpatterns = [
@@ -35,6 +36,11 @@ urlpatterns = [
     path("auth/logout/", views_auth.LogoutView.as_view(), name="auth_logout"),
     path("auth/me/", views_auth.MeView.as_view(), name="auth_me"),
     path("auth/switch-context/", views_auth.SwitchContextView.as_view(), name="auth_switch_context"),
+    path("auth/accept-invite/", lifecycle_views.AcceptInviteView.as_view(), name="auth_accept_invite"),
+    path("auth/claim/start/", lifecycle_views.ClaimStartView.as_view(), name="auth_claim_start"),
+    path("auth/claim/verify/", lifecycle_views.ClaimVerifyView.as_view(), name="auth_claim_verify"),
+    path("auth/password/forgot/", lifecycle_views.PasswordForgotView.as_view(), name="auth_password_forgot"),
+    path("auth/password/reset/", lifecycle_views.PasswordResetView.as_view(), name="auth_password_reset"),
 
     # Meridian Platform Identity, Profiles & Cards (PLATFORM_SPEC)
     path("account/", include("api.account.urls")),

@@ -392,10 +392,10 @@ STUDENT_PROFILES_VALIDATOR = {
 ACCOUNT_TOKENS_VALIDATOR = {
     "$jsonSchema": {
         "bsonType": "object",
-        "required": ["token_hash", "account_id", "purpose", "expires_at", "attempts"],
+        "required": ["token_hash", "purpose", "expires_at", "attempts"],
         "properties": {
             "token_hash": {"bsonType": "string"},
-            "account_id": {"bsonType": "string"},
+            "account_id": {"bsonType": ["string", "null"]},
             "purpose": {
                 "enum": ["INVITE", "RESET", "CLAIM_OTP"],
             },
@@ -423,6 +423,29 @@ NOTIFICATIONS_VALIDATOR = {
             "created_at": {"bsonType": "date"},
             "read_at": {"bsonType": ["date", "null"]},
         },
+    }
+}
+
+CLAIM_REQUESTS_VALIDATOR = {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": ["claim_id", "tenant_id", "registration_no", "email_submitted", "status", "created_at"],
+        "properties": {
+            "_id": {},
+            "claim_id": {"bsonType": "string"},
+            "tenant_id": {"bsonType": "string"},
+            "registration_no": {"bsonType": "string"},
+            "email_submitted": {"bsonType": "string"},
+            "student_id": {"bsonType": ["string", "null"]},
+            "status": {
+                "enum": ["PENDING", "APPROVED", "REJECTED"],
+            },
+            "notes": {"bsonType": ["string", "null"]},
+            "created_at": {"bsonType": "date"},
+            "resolved_at": {"bsonType": ["date", "null"]},
+            "resolved_by": {"bsonType": ["string", "null"]},
+        },
+        "additionalProperties": False,
     }
 }
 
@@ -564,3 +587,12 @@ def setup_camp02_collections(db):
         db.command("collMod", "notifications", validator=NOTIFICATIONS_VALIDATOR)
     db.notifications.create_index([("notification_id", 1)], unique=True, name="uq_notification_id")
     db.notifications.create_index([("person_id", 1), ("read_at", 1), ("created_at", -1)], name="ix_notification_person_read")
+
+    # 15. claim_requests
+    if "claim_requests" not in db.list_collection_names():
+        db.create_collection("claim_requests", validator=CLAIM_REQUESTS_VALIDATOR)
+    else:
+        db.command("collMod", "claim_requests", validator=CLAIM_REQUESTS_VALIDATOR)
+    db.claim_requests.create_index([("claim_id", 1)], unique=True, name="uq_claim_id")
+    db.claim_requests.create_index([("tenant_id", 1), ("status", 1), ("created_at", -1)], name="ix_claim_status")
+    db.claim_requests.create_index([("registration_no", 1)], name="ix_claim_reg_no")
