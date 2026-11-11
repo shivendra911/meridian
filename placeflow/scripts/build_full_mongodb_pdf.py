@@ -1,6 +1,6 @@
 """
 Meridian (PlaceFlow) — Definitive Enterprise MongoDB 7.0+ Architecture & System Report
-Generates an exhaustive 40-70 page technical whitepaper and engineering specification in PDF.
+Generates an exhaustive 45-60+ page technical whitepaper and academic engineering specification in PDF.
 Uses standard templating with placeholder replacement to avoid f-string curly-brace conflicts.
 """
 
@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import json
+import base64
 import subprocess
 from pathlib import Path
 
@@ -27,6 +28,15 @@ def load_svg(filename: str) -> str:
     text = path.read_text(encoding="utf-8")
     text = re.sub(r'<\?xml[^>]*\?>', '', text)
     return text
+
+def load_png_base64(filename: str) -> str:
+    path = ASSETS_DIR / filename
+    if not path.exists():
+        path = PLACEFLOW_DIR / "docs" / "assets" / filename
+    if not path.exists():
+        return ""
+    data = base64.b64encode(path.read_bytes()).decode("ascii")
+    return f"data:image/png;base64,{data}"
 
 def build_report():
     print("=" * 80)
@@ -49,11 +59,22 @@ def build_report():
     }
     print(f"Loaded {len(svgs)} vector diagrams.")
 
-    # Read the CSS & HTML template parts
-    # We will assemble a rich, comprehensive document
+    print("Loading prototype PNG screenshots...")
+    images = {
+        "__IMG_PROTOTYPE_OVERVIEW__": load_png_base64("prototype-overview.png"),
+        "__IMG_PROTOTYPE_STUDENT__": load_png_base64("prototype-student.png"),
+        "__IMG_PROTOTYPE_TPO__": load_png_base64("prototype-tpo.png"),
+        "__IMG_PROTOTYPE_FACULTY__": load_png_base64("prototype-faculty.png"),
+        "__IMG_PROTOTYPE_HOD__": load_png_base64("prototype-hod.png"),
+        "__IMG_PROTOTYPE_MGMT__": load_png_base64("prototype-management.png"),
+        "__IMG_PROTOTYPE_ADMIN__": load_png_base64("prototype-admin.png"),
+    }
+    print(f"Loaded {len(images)} prototype screenshots.")
+
+    # Assemble HTML document from report modules
     from generate_report_sections import get_html_document
     
-    html = get_html_document(svgs)
+    html = get_html_document(svgs, images)
     
     print(f"Writing complete HTML specification to {OUTPUT_HTML}...")
     OUTPUT_HTML.write_text(html, encoding="utf-8")
