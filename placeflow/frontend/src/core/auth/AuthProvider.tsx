@@ -17,6 +17,17 @@ export interface AuthAssignment {
   scope_id: string;
 }
 
+export interface AuthProfile {
+  display_name: string;
+  preferred_name?: string | null;
+  avatar_url?: string | null;
+  headline?: string | null;
+  email?: string | null;
+  affiliation_label?: string | null;
+  institution_name?: string | null;
+  department?: string | null;
+}
+
 export interface AuthMe {
   account_id: string;
   person_id: string;
@@ -30,6 +41,8 @@ export interface AuthMe {
   default_portal: string;
   delegation: any | null;
   break_glass: any | null;
+  profile?: AuthProfile;
+  unread_notifications?: number;
 }
 
 export type AuthStatus = 'loading' | 'anon' | 'authed';
