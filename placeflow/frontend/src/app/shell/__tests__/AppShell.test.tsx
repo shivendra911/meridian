@@ -33,6 +33,8 @@ const createMockAuthContext = (overrides?: Partial<AuthContextType>): AuthContex
   },
   login: vi.fn(),
   logout: vi.fn(),
+  sessionExpired: false,
+  dismissSessionExpired: vi.fn(),
   can: vi.fn(() => true),
   canAny: vi.fn(() => true),
   canAll: vi.fn(() => true),

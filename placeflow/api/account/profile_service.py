@@ -24,6 +24,7 @@ SELF_ASSERTED_ALLOWLIST = {
     "summary",
     "skills",
     "links",
+    "onboarded_at",
 }
 
 
@@ -115,6 +116,7 @@ def get_profile_summary(
         "affiliation_label": affiliation_label,
         "institution_name": inst_name,
         "department": dept,
+        "onboarded_at": (person or {}).get("onboarded_at"),
     }
 
 
@@ -276,6 +278,17 @@ def update_self_profile(
             "email": bool(patch_data["notification_prefs"].get("email", True)),
             "in_app": bool(patch_data["notification_prefs"].get("in_app", True)),
         }
+    if "onboarded_at" in patch_data:
+        raw_onboard = patch_data["onboarded_at"]
+        if isinstance(raw_onboard, str):
+            try:
+                person_updates["onboarded_at"] = datetime.fromisoformat(raw_onboard.replace("Z", "+00:00"))
+            except Exception:
+                person_updates["onboarded_at"] = now
+        elif isinstance(raw_onboard, datetime):
+            person_updates["onboarded_at"] = raw_onboard
+        else:
+            person_updates["onboarded_at"] = now
 
     if person_id and person_updates:
         person_updates["updated_at"] = now

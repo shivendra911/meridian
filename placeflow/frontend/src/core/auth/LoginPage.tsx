@@ -1,13 +1,16 @@
-/**
- * PlaceFlow / Meridian — Login Page & Demo Persona Dispatcher (Phase 4).
- *
- * Implements authoritative session authentication and developer quick-select
- * for seeded demo accounts under development mode.
- */
-
-import React, { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Lock, User, AlertCircle, ArrowRight, Sparkles, Shield } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import {
+  Lock,
+  User,
+  AlertCircle,
+  ArrowRight,
+  Sparkles,
+  Shield,
+  Briefcase,
+  GraduationCap,
+  Users,
+} from 'lucide-react';
 import { useAuth } from './useAuth';
 import { formatApiError } from '../api/errors';
 
@@ -23,7 +26,7 @@ const DEMO_ACCOUNTS = [
 ];
 
 export const LoginPage: React.FC = () => {
-  const { login, status } = useAuth();
+  const { login, status, me } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const nextUrl = searchParams.get('next');
@@ -32,6 +35,18 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // If already authenticated, redirect to nextUrl or default portal
+  useEffect(() => {
+    if (status === 'authed' && me) {
+      if (nextUrl && nextUrl.startsWith('/') && !nextUrl.startsWith('/login') && !nextUrl.startsWith('/forbidden')) {
+        navigate(nextUrl, { replace: true });
+      } else {
+        const targetPortal = me.default_portal || (me.portals && me.portals[0]) || 'student';
+        navigate(`/${targetPortal}/home`, { replace: true });
+      }
+    }
+  }, [status, me, nextUrl, navigate]);
 
   const handleSubmit = async (e?: React.FormEvent, customUser?: string, customPass?: string) => {
     if (e) e.preventDefault();
@@ -47,17 +62,18 @@ export const LoginPage: React.FC = () => {
     setErrorMsg(null);
 
     try {
-      const me = await login(userToLogin, passToLogin);
-      
+      const authUser = await login(userToLogin, passToLogin);
+
       // Determine redirection destination
       if (nextUrl && nextUrl.startsWith('/') && !nextUrl.startsWith('/login') && !nextUrl.startsWith('/forbidden')) {
         navigate(nextUrl, { replace: true });
       } else {
-        const targetPortal = me.default_portal || (me.portals && me.portals[0]) || 'student';
+        const targetPortal = authUser.default_portal || (authUser.portals && authUser.portals[0]) || 'student';
         navigate(`/${targetPortal}/home`, { replace: true });
       }
-    } catch (err) {
-      setErrorMsg(formatApiError(err));
+    } catch (err: any) {
+      // Standardized generic credentials message
+      setErrorMsg('Invalid username or password.');
     } finally {
       setIsSubmitting(false);
     }
@@ -70,23 +86,94 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-canvas flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        {/* Brand Mark */}
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand text-white font-bold text-xl mb-3 shadow-xs">
-          M
+    <div className="min-h-screen bg-canvas flex flex-col lg:flex-row font-sans">
+      {/* Left Brand Showcase Banner (Desktop) */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-brand via-brand-dark to-slate-900 text-white p-12 flex-col justify-between relative overflow-hidden">
+        {/* Subtle decorative background rings */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/5 blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-brand-light/10 blur-3xl pointer-events-none" />
+
+        {/* Brand Header */}
+        <div className="relative z-10 flex items-center gap-3">
+          <Link to="/" className="w-10 h-10 rounded-xl bg-white text-brand flex items-center justify-center font-bold text-lg shadow-lg">
+            M
+          </Link>
+          <div>
+            <span className="font-bold text-lg tracking-tight block leading-tight">Meridian</span>
+            <span className="text-[11px] text-white/70 block">Campus-to-Career OS</span>
+          </div>
         </div>
-        <h2 className="text-2xl font-bold tracking-tight text-ink">
-          Sign in to Meridian
-        </h2>
-        <p className="mt-1 text-xs text-ink-muted">
-          Institutional Campus-to-Career Operating System
-        </p>
+
+        {/* Center Testimonial / Architecture Hero */}
+        <div className="relative z-10 space-y-6 max-w-md my-auto">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs text-white backdrop-blur-xs border border-white/10">
+            <Sparkles size={13} className="text-amber-300" />
+            <span>Institutional Governance & Careers</span>
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-tight">
+            One platform connecting students, faculty, recruiters, and leadership.
+          </h1>
+          <p className="text-sm text-white/80 leading-relaxed">
+            Role-partitioned workspaces, real-time superday scheduling, automated NIRF analytics, and DPDP-compliant verification.
+          </p>
+
+          <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/10">
+            <div className="flex items-center gap-2">
+              <Briefcase size={16} className="text-white/60 shrink-0" />
+              <div className="text-[11px]">
+                <strong className="block text-white font-semibold">TPO Automation</strong>
+                <span className="text-white/60">Live Superday</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <GraduationCap size={16} className="text-white/60 shrink-0" />
+              <div className="text-[11px]">
+                <strong className="block text-white font-semibold">Student Hub</strong>
+                <span className="text-white/60">Verified Records</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users size={16} className="text-white/60 shrink-0" />
+              <div className="text-[11px]">
+                <strong className="block text-white font-semibold">Mentorship</strong>
+                <span className="text-white/60">Faculty & HOD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="relative z-10 text-xs text-white/50 flex items-center justify-between">
+          <span>&copy; {new Date().getFullYear()} Meridian Platform</span>
+          <div className="flex items-center gap-4">
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
+            <Link to="/contact" className="hover:text-white transition-colors">Contact</Link>
+          </div>
+        </div>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        <div className="bg-surface py-8 px-6 sm:px-10 border border-line rounded-xl shadow-xs">
-          <form className="space-y-4" onSubmit={handleSubmit}>
+      {/* Right Authentication Form Column */}
+      <div className="flex-1 flex flex-col justify-center py-12 px-6 sm:px-12 lg:px-16 xl:px-24">
+        <div className="mx-auto w-full max-w-sm">
+          {/* Mobile Brand Mark */}
+          <div className="lg:hidden text-center mb-6">
+            <Link to="/" className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand text-white font-bold text-xl mb-2 shadow-xs">
+              M
+            </Link>
+            <h2 className="text-xl font-bold text-ink">Meridian</h2>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-ink">
+              Sign in to your account
+            </h2>
+            <p className="mt-1 text-xs text-ink-muted">
+              Enter your university credentials or claimed account details.
+            </p>
+          </div>
+
+          <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
             {errorMsg && (
               <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 flex items-start gap-2">
                 <AlertCircle size={16} className="shrink-0 mt-0.5 text-red-600" />
@@ -96,7 +183,7 @@ export const LoginPage: React.FC = () => {
 
             <div>
               <label className="block text-xs font-semibold text-ink mb-1.5">
-                Username or University ID
+                Username, University ID or Email
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-muted">
@@ -107,16 +194,24 @@ export const LoginPage: React.FC = () => {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="e.g. tpo_admin, student, hod"
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-line rounded-lg bg-canvas text-ink placeholder-ink-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                  placeholder="e.g. tpo_admin, student, or name@univ.edu"
+                  className="w-full pl-9 pr-3 py-2 text-xs border border-line rounded-lg bg-surface text-ink placeholder-ink-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-ink mb-1.5">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-ink">
+                  Password
+                </label>
+                <Link
+                  to="/forgot-password"
+                  className="text-xs text-brand hover:text-brand-hover font-medium transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-muted">
                   <Lock size={15} />
@@ -127,7 +222,7 @@ export const LoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-line rounded-lg bg-canvas text-ink placeholder-ink-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                  className="w-full pl-9 pr-3 py-2 text-xs border border-line rounded-lg bg-surface text-ink placeholder-ink-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                 />
               </div>
             </div>
@@ -151,29 +246,41 @@ export const LoginPage: React.FC = () => {
             </button>
           </form>
 
+          {/* Self-Service Student Claim Link */}
+          <div className="mt-6 pt-5 border-t border-line text-center">
+            <p className="text-xs text-ink-muted">
+              First time here as a student?{' '}
+              <Link to="/claim" className="font-semibold text-brand hover:text-brand-hover transition-colors">
+                Claim your account
+              </Link>
+            </p>
+          </div>
+
           {/* Dev-Mode Demo Account Quick Selector */}
           {import.meta.env.DEV && (
-            <div className="mt-8 pt-6 border-t border-line">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[11px] font-semibold text-ink flex items-center gap-1.5 uppercase tracking-wider">
+            <div className="mt-6 pt-5 border-t border-line">
+              <div className="flex items-center justify-between mb-2.5">
+                <span className="text-[10px] font-semibold text-ink-muted flex items-center gap-1.5 uppercase tracking-wider">
                   <Sparkles size={12} className="text-amber-500" />
-                  Seeded Demo Workspaces
+                  Demo Workspaces
                 </span>
-                <span className="text-[10px] text-ink-muted font-mono">Dev Only</span>
+                <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 font-mono">
+                  Dev Only
+                </span>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-1.5">
                 {DEMO_ACCOUNTS.map((acc) => (
                   <button
                     key={acc.username}
                     type="button"
                     onClick={() => handleQuickDemo(acc.username)}
-                    className="p-2 text-left rounded-lg border border-line bg-canvas hover:bg-slate-100 hover:border-slate-300 transition-colors text-xs flex flex-col group cursor-pointer"
+                    className="p-1.5 text-left rounded-lg border border-line bg-canvas hover:bg-slate-100 hover:border-slate-300 transition-colors text-xs flex flex-col group cursor-pointer"
                   >
-                    <span className="font-semibold text-ink group-hover:text-brand flex items-center justify-between">
+                    <span className="font-semibold text-ink group-hover:text-brand flex items-center justify-between text-[11px]">
                       {acc.label}
-                      <span className="text-[10px] font-normal text-ink-muted font-mono">/{acc.portal}</span>
+                      <span className="text-[9px] font-normal text-ink-muted font-mono">/{acc.portal}</span>
                     </span>
-                    <span className="text-[11px] text-ink-muted truncate mt-0.5">{acc.name}</span>
+                    <span className="text-[10px] text-ink-muted truncate">{acc.name}</span>
                   </button>
                 ))}
               </div>
@@ -184,4 +291,3 @@ export const LoginPage: React.FC = () => {
     </div>
   );
 };
-

@@ -88,12 +88,19 @@ def test_account_profile_get_and_patch_allowlist(auth_client):
         "headline": "Aspiring Cloud Native & Distributed Systems Engineer",
         "skills": ["React", "TypeScript", "Python", "Docker"],
         "summary": "Final year CSE student focused on high-throughput backend architecture.",
+        "onboarded_at": "2026-11-11T12:00:00Z",
     }
     patch_res = auth_client.patch("/api/account/profile/", patch_payload, format="json")
     assert patch_res.status_code == 200
     updated_prof = patch_res.json()
     assert updated_prof["preferred_name"] == "Ari"
     assert updated_prof["headline"] == "Aspiring Cloud Native & Distributed Systems Engineer"
+    assert updated_prof["onboarded_at"] is not None
+
+    # Check /api/auth/me/ profile has onboarded_at
+    me_res = auth_client.get("/api/auth/me/")
+    assert me_res.status_code == 200
+    assert me_res.json()["profile"]["onboarded_at"] is not None
 
     # 3. PATCH read-only or unlisted fields rejected with 400
     bad_payload = {"cgpa": 9.99, "department": "ECE"}

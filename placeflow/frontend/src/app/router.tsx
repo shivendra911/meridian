@@ -1,10 +1,10 @@
 /**
- * PlaceFlow / Meridian — Core Application Router (Phase 4).
+ * PlaceFlow / Meridian — Core Application Router (Phase 5).
  *
- * Enforces role-partitioned workspaces:
- * - Public: /login
- * - Authenticated: / (redirects to default portal), /forbidden, /404
- * - Portals: /student/*, /tpo/*, /faculty/*, /hod/*, /management/*, /admin/*
+ * Enforces role-partitioned workspaces & account lifecycle:
+ * - Public: /, /login, /forgot-password, /reset-password, /accept-invite, /claim, /privacy, /terms, /contact, /forbidden, /404
+ * - Authenticated Account Area: /account/*, /onboarding
+ * - Authenticated Portals: /student/*, /tpo/*, /faculty/*, /hod/*, /management/*, /admin/*
  * - Legacy migration redirects for backwards compatibility.
  */
 
@@ -14,11 +14,24 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 // Core Auth & Guards
 import { RequireAuth, RequirePortal } from '../core/auth/guards';
 import { LoginPage } from '../core/auth/LoginPage';
+import { ForgotPasswordPage } from '../core/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from '../core/auth/ResetPasswordPage';
+import { AcceptInvitePage } from '../core/auth/AcceptInvitePage';
+import { ClaimPage } from '../core/auth/ClaimPage';
+import { OnboardingPage } from '../core/auth/OnboardingPage';
+
+// Public & Static Pages
 import { PortalRedirect } from './PortalRedirect';
 import { HomeGate } from '../public/HomeGate';
 import { ForbiddenPage } from './ForbiddenPage';
 import { NotFoundPage } from './NotFoundPage';
 import { DevCardsPage } from '../pages/DevCardsPage';
+import { PrivacyPolicyPage } from '../public/PrivacyPolicyPage';
+import { TermsOfServicePage } from '../public/TermsOfServicePage';
+import { ContactSupportPage } from '../public/ContactSupportPage';
+
+// Account Area (Cross-Portal)
+import { AccountRoutes } from '../account/routes';
 
 // Portal Root Trees
 import { StudentRoutes } from '../portals/student/routes';
@@ -31,9 +44,16 @@ import { AdminRoutes } from '../portals/admin/routes';
 export const AppRouter: React.FC = () => {
   return (
     <Routes>
-      {/* 1. Public Authentication Route */}
+      {/* 1. Public Authentication & Lifecycle Routes */}
       <Route path="/" element={<HomeGate />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/accept-invite" element={<AcceptInvitePage />} />
+      <Route path="/claim" element={<ClaimPage />} />
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+      <Route path="/terms" element={<TermsOfServicePage />} />
+      <Route path="/contact" element={<ContactSupportPage />} />
       <Route path="/forbidden" element={<ForbiddenPage />} />
 
       {/* Dev-only Card System Review Gallery (PLATFORM_SPEC) */}
@@ -41,8 +61,13 @@ export const AppRouter: React.FC = () => {
         <Route path="/dev/cards" element={<DevCardsPage />} />
       )}
 
-      {/* 2. Authenticated Portal Trees */}
+      {/* 2. Authenticated Routes */}
       <Route element={<RequireAuth />}>
+        {/* First-login Onboarding Stepper */}
+        <Route path="/onboarding" element={<OnboardingPage />} />
+
+        {/* Shared Cross-Portal Account Area */}
+        <Route path="/account/*" element={<AccountRoutes />} />
 
         {/* Student Workspace */}
         <Route
@@ -132,4 +157,3 @@ export const AppRouter: React.FC = () => {
 };
 
 export default AppRouter;
-

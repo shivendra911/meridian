@@ -26,6 +26,7 @@ export interface AuthProfile {
   affiliation_label?: string | null;
   institution_name?: string | null;
   department?: string | null;
+  onboarded_at?: string | null;
 }
 
 export interface AuthMe {
@@ -50,6 +51,8 @@ export type AuthStatus = 'loading' | 'anon' | 'authed';
 export interface AuthContextType {
   status: AuthStatus;
   me: AuthMe | null;
+  sessionExpired: boolean;
+  dismissSessionExpired: () => void;
   login: (username: string, password: string, tenantId?: string) => Promise<AuthMe>;
   logout: () => Promise<void>;
   can: (permission: string) => boolean;
@@ -65,6 +68,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [status, setStatus] = useState<AuthStatus>('loading');
   const [me, setMe] = useState<AuthMe | null>(null);
+  const [sessionExpired, setSessionExpired] = useState<boolean>(false);
 
   // Load active identity on application mount
   const refreshMe = useCallback(async () => {
@@ -89,14 +93,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Register automatic session eviction on 401
     const unbind = client.onUnauthorized(() => {
-      setMe(null);
-      setStatus('anon');
+      setMe((currentMe) => {
+        if (currentMe) {
+          setSessionExpired(true);
+          return currentMe;
+        }
+        setStatus('anon');
+        return null;
+      });
     });
 
     return () => {
       unbind();
     };
   }, [refreshMe]);
+
+  const dismissSessionExpired = useCallback(() => {
+    setSessionExpired(false);
+    setMe(null);
+    setStatus('anon');
+    window.location.href = '/login';
+  }, []);
 
   const login = useCallback(async (username: string, password: string, tenantId?: string): Promise<AuthMe> => {
     setStatus('loading');
@@ -107,6 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await client.post<{ me: AuthMe }>('/auth/login/', payload);
       setMe(res.me);
       setStatus('authed');
+      setSessionExpired(false);
       return res.me;
     } catch (err) {
       setMe(null);
@@ -161,6 +179,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const value = useMemo<AuthContextType>(() => ({
     status,
     me,
+    sessionExpired,
+    dismissSessionExpired,
     login,
     logout,
     can,
@@ -169,7 +189,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     hasPortal,
     switchPortal,
     refreshMe,
-  }), [status, me, login, logout, can, canAny, canAll, hasPortal, switchPortal, refreshMe]);
+  }), [status, me, sessionExpired, dismissSessionExpired, login, logout, can, canAny, canAll, hasPortal, switchPortal, refreshMe]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
