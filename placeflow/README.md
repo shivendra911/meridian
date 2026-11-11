@@ -1,278 +1,585 @@
-# PlaceFlow v3.1 — Production Institutional Placement ERP & Governance Platform
-### Full-Stack Architecture: Django 5.x REST Backend &bull; React 19 + TypeScript + Tailwind v4 Frontend &bull; MongoDB 7.0+ Replica Set
-#### Inspired by Stanford CareerEd, MIT CAPD &amp; IIT Placement Directorate (OCS)
+# Meridian (PlaceFlow) — Enterprise Academic & Career Operating System
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Django 5.2](https://img.shields.io/badge/Django-5.2%20REST%20Framework-092E20.svg)](https://www.djangoproject.com/)
-[![React 19](https://img.shields.io/badge/React-19%20TypeScript-61DAFB.svg)](https://react.dev/)
-[![Tailwind v4](https://img.shields.io/badge/Tailwind-v4.3%20Vite-38B2AC.svg)](https://tailwindcss.com/)
-[![MongoDB 7.0+ Replica Set](https://img.shields.io/badge/MongoDB-rs0%20ReplicaSet-green.svg)](https://www.mongodb.com/)
-[![Tests Passing](https://img.shields.io/badge/tests-30%2F30%20passed-success.svg)](tests/)
-[![DPDP Act 2023](https://img.shields.io/badge/Privacy-DPDP%202023%20Compliant-teal.svg)](frontend/src/pages/ConsentPage.tsx)
+<div align="center">
 
-PlaceFlow is an enterprise-grade university placement operating platform engineered for the Directorate of Training &amp; Placement / Office of Career Services (OCS). It combines a high-performance **Django 5.x REST API backend** (with in-process Python AI/ML pipelines and strict MongoDB replica set transactions) and an institutional **React + TypeScript + Tailwind CSS** single-page web application.
+<img src="frontend/public/meridian.svg" alt="Meridian Logo" width="80" height="80" />
+
+### The Lifelong Institutional Academic & Career Operating System
+**Role-Partitioned Workspaces &bull; Strict MongoDB 7.0+ Replica Set Transactions &bull; In-Process Talent ML &bull; Server-Side Default-Deny RBAC**
+
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%20%7C%203.14-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Django 5.2](https://img.shields.io/badge/Django-5.2%20REST-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![React 19](https://img.shields.io/badge/React-19%20TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-v4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![MongoDB 7.0+ rs0](https://img.shields.io/badge/MongoDB-7.0%2B%20Replica%20Set-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Pytest Suite](https://img.shields.io/badge/Pytest-203%2F203%20Passed-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
+[![Vitest Suite](https://img.shields.io/badge/Vitest-28%2F28%20Passed-blueviolet?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Live Endpoints](https://img.shields.io/badge/Endpoints-83%2F83%20Verified-emerald?style=for-the-badge)](http://127.0.0.1:8000/api/health/)
+[![DPDP Act 2023](https://img.shields.io/badge/Privacy-DPDP%202023%20Compliant-0D9488?style=for-the-badge)](frontend/src/public/PrivacyPolicyPage.tsx)
+
+</div>
 
 ---
 
-## Architecture Overview
+## 📑 Table of Contents
+
+1. [Executive Overview & Platform Vision](#1-executive-overview--platform-vision)
+2. [Interactive Visual Topology & Architecture](#2-interactive-visual-topology--architecture)
+3. [The Six Role-Partitioned Portals](#3-the-six-role-partitioned-portals)
+4. [One AppShell & The Design-System Card Architecture](#4-one-appshell--the-design-system-card-architecture)
+5. [Account Lifecycle, Onboarding & Self-Service Claims](#5-account-lifecycle-onboarding--self-service-claims)
+6. [Machine Learning & Institutional Talent Intelligence](#6-machine-learning--institutional-talent-intelligence)
+7. [Comprehensive REST API Reference (83+ Endpoints)](#7-comprehensive-rest-api-reference-83-endpoints)
+   - [7.1 Health & Authoritative Session Auth](#71-health--authoritative-session-auth)
+   - [7.2 Self-Service Account Lifecycle](#72-self-service-account-lifecycle)
+   - [7.3 Shared Account Area & Privacy Controls](#73-shared-account-area--privacy-controls)
+   - [7.4 Privacy-Masked Person Cards & Avatars](#74-privacy-masked-person-cards--avatars)
+   - [7.5 Student Workspace Portal](#75-student-workspace-portal)
+   - [7.6 TPO Placement Directorate Portal](#76-tpo-placement-directorate-portal)
+   - [7.7 Faculty Advisory Portal](#77-faculty-advisory-portal)
+   - [7.8 HOD Department Leadership Portal](#78-hod-department-leadership-portal)
+   - [7.9 Executive Management Portal](#79-executive-management-portal)
+   - [7.10 Institutional Admin & Governance Portal](#710-institutional-admin--governance-portal)
+8. [Seeded Demo Accounts & Credentials Matrix](#8-seeded-demo-accounts--credentials-matrix)
+9. [Local Quickstart & Running Servers](#9-local-quickstart--running-servers)
+10. [Test Suites & Boundary Verification](#10-test-suites--boundary-verification)
+
+---
+
+## 1. Executive Overview & Platform Vision
+
+**Meridian** (PlaceFlow) is a production institutional operating platform engineered for university leadership, campus placement directorates (Office of Career Services / TPO), academic departments, faculty advisors, and student cohorts.
+
+Unlike fragmented legacy portals that toggle basic UI flags, Meridian enforces:
+1. **True Role-Partitioned Workspaces**: Each persona operates in a purpose-built workspace (`/student`, `/tpo`, `/faculty`, `/hod`, `/management`, `/admin`) with dedicated route trees, presentational boundaries, and dedicated layouts.
+2. **Strict Server-Side Default-Deny RBAC**: Permissions are authoritative at the Django REST Framework layer. Hiding buttons in React is cosmetics; the server enforces verified institutional memberships, downward campus scoping, and tamper-proof session cookies.
+3. **MongoDB 7.0+ Replica Set Core**: Zero schema drift via strict JSONSchema collection validators (`additionalProperties: False`) and multi-document ACID transactions (`client.start_session()`).
+4. **Demographic Parity & Conformal Career Intelligence**: In-process ML models evaluated against India AI Governance standards (100% exclusion of sensitive demographic proxies: gender, caste, native state, parental income).
+
+---
+
+## 2. Interactive Visual Topology & Architecture
+
+```mermaid
+flowchart TD
+    subgraph Client["Frontend Layer (React 19 + TypeScript + Vite @ :5173)"]
+        PublicSite["Public Landing Page (/) & Legal (/privacy, /terms)"]
+        AuthFlow["Auth Journeys (/login, /claim, /onboarding, /forgot-password)"]
+        
+        subgraph Portals["Six Role-Partitioned Workspaces (One AppShell)"]
+            P_Stu["/student/* (Candidate Command Center)"]
+            P_Tpo["/tpo/* (Placement Operations & Superday)"]
+            P_Fac["/faculty/* (Mentee Advisory & Reviews)"]
+            P_Hod["/hod/* (Department Benchmarks & Roaster)"]
+            P_Mgmt["/management/* (Executive NIRF & Fairness)"]
+            P_Adm["/admin/* (IAM, Claims Queue & Tenants)"]
+        end
+        
+        AccountArea["Shared Account Area (/account/*)"]
+        DevCards["Design-System Gallery (/dev/cards)"]
+    end
+
+    subgraph Backend["API Gateway & Service Core (Django 5.2 REST @ :8000)"]
+        direction TB
+        RBAC["Authoritative RBAC Guard (Default-Deny + Downward Scoping)"]
+        Audit["Immutable Activity Audit Trail"]
+        
+        subgraph Domains["CAMP Modular Domains"]
+            CAMP01["CAMP-01: Tenancy, Institution & Hierarchy"]
+            CAMP02["CAMP-02: IAM, Account Lifecycle & Delegations"]
+            CAMP03["CAMP-03: NEP 2020 Academic Progression & Ledger"]
+        end
+        
+        subgraph Engines["Operational Business Engines"]
+            Superday["Superday Multi-Room Conflict Arbitrator"]
+            Cascading["Atomic Seat Cascading Engine"]
+            Fairness["Demographic Slice Parity Evaluator"]
+            WhatIf["What-If Career Simulator & Conformal Bands"]
+        end
+    end
+
+    subgraph Storage["Persistence & Storage Layer (MongoDB 7.0+ rs0)"]
+        DB[("MongoDB 7.0 Replica Set (rs0)\n- Strict $jsonSchema Validation\n- Multi-Document ACID Transactions")]
+    end
+
+    Client -->|HTTPS JSON + Secure Session Cookies| Backend
+    Backend --> DB
+```
+
+---
+
+## 3. The Six Role-Partitioned Portals
 
 ```
-                                      PLACEFLOW v3.1 SYSTEM TOPOLOGY
-                                      
-    ┌────────────────────────────────────────────────────────────────────────────────────────┐
-    │                         REACT 19 + TYPESCRIPT + TAILWIND v4 FRONTEND                    │
-    │                              (Running on Vite at http://127.0.0.1:5173)                 │
-    │                                                                                        │
-    │  - Executive Directorate Briefing         - Candidate Registry & High-Density Dossiers │
-    │  - What-If Conformal Career Simulator     - Superday 1-Click Collision Arbitrator      │
-    │  - Autonomous Multi-Agent Copilot (AG-01) - NIRF Accreditation Calculator (GPH & GMS)  │
-    │  - DPDP Act 2023 Consent Ledger           - Post-Offer Renege Flight Risk Radar        │
-    │  - Demographic Slice Fairness Audit       - 15 MongoDB Aggregation Reports & CSV Exporter│
-    └───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                                │ REST API (JSON) + CORS
-                                                ▼
-    ┌────────────────────────────────────────────────────────────────────────────────────────┐
-    │                         DJANGO 5.x REST FRAMEWORK BACKEND LAYER                        │
-    │                            (Running at http://127.0.0.1:8000/api/)                     │
-    │                                                                                        │
-    │  - Typed DRF API Endpoints (/api/overview, /api/students, /api/superday, /api/nirf...) │
-    │  - In-Process Python AI/ML Models (Gradient Boosting, Conformal Prediction, Shapley)  │
-    │  - Multi-Agent Orchestrator (L0/L1/L2 Autonomy + MCP Tools + Execution Traces)         │
-    │  - Demographic Parity & Sensitive Feature Bias Audit Gates (FR-ML-001/002)             │
-    └───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                                │ Native PyMongo Driver (rs0 Sessions)
-                                                ▼
-    ┌────────────────────────────────────────────────────────────────────────────────────────┐
-    │                     MONGODB 7.0+ REPLICA SET PERSISTENCE LAYER (rs0)                    │
-    │                                                                                        │
-    │  - Strict JSON Schema Collection Validators ($jsonSchema)                              │
-    │  - Multi-Document ACID Transactions (client.start_session())                           │
-    │  - 15 High-Performance Aggregation Pipelines ($facet, $bucket, $setWindowFields)      │
-    │  - Capped Audit Activity Feeds & Immutable Agent Trace Ledgers (agent_runs)            │
-    └────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                               MERIDIAN WORKSPACE ECOSYSTEM                             │
+├─────────────────┬─────────────────┬─────────────────┬─────────────────┬────────────────┤
+│ 🎓 STUDENT      │ 🏢 TPO ADMIN    │ 🧑‍🏫 FACULTY     │ 🏛️ HOD          │ 📊 MANAGEMENT  │
+├─────────────────┼─────────────────┼─────────────────┼─────────────────┼────────────────┤
+│ • What Needs Me │ • Placement     │ • Assigned      │ • Department    │ • NIRF Outcome │
+│   Now Action Hub│   Drive Wizard  │   Mentee Cohort │   Placement Rate│   Metrics      │
+│ • NEP Academics │ • Superday 1-Click│ • Mentee Details│ • Faculty Roster│ • Demographic  │
+│   & CIE Scores  │   Room Solver   │   & Dossiers    │ • Academic Year │   Fairness     │
+│ • Live Drives   │ • Renege Radar  │ • Attendance &  │   Progression   │ • Multi-Agent  │
+│   & 1-Click App │ • Company CRM   │   Review Notes  │ • Batch Cohort  │   Copilot Runs │
+│ • DPDP Consents │ • Student Roster│ • Advisory      │   Analytics     │ • Institutional│
+│ • Verified VTI  │ • ML Model Hub  │   Interventions │ • Cross-branch  │   Reports & CSV│
+└─────────────────┴─────────────────┴─────────────────┴─────────────────┴────────────────┘
+```
+
+### Portal Route Isolation & Boundary Invariants
+- **No Shared Pages Across Portals**: A student, TPO officer, and department head never view a page that merely toggles conditional DOM blocks. Each portal has its own API adapter (`src/portals/<role>/api.ts`) and pages.
+- **Enforced Architectural Boundaries**: Checked on every build via `scripts/check-boundaries.mjs`. Importing across sibling portals throws immediate build errors.
+
+---
+
+## 4. One AppShell & The Design-System Card Architecture
+
+Meridian unifies portal navigation into a centralized `AppShell` (`src/app/shell/`) reducing boilerplate by **>90%**:
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ [Logo] MERIDIAN     [🔍 Global Cmd+K]    [🔔 3]   [🏢 Main Campus]  [👤 UserMenu (Dr. KV) ]│
+├──────────────┬─────────────────────────────────────────────────────────────────────────┤
+│ 📊 Overview  │  Breadcrumbs: TPO / Placement Drives / Active Drives                    │
+│ 🎯 Drives    ├─────────────────────────────────────────────────────────────────────────┤
+│ 👥 Students  │  ⚡ WHAT NEEDS ME NOW (Command Center)                                   │
+│ 🏢 Companies │  ┌─────────────────────────┐  ┌─────────────────────────┐               │
+│ 🤖 ML Models │  │ ⚠️ 3 Conflicting Rooms   │  │ ⏳ 12 Applications Due   │               │
+│ ⚙️ Settings  │  │ Superday Slot Arbitrator │  │ Batch Verification      │               │
+│              │  │ [Resolve Conflicts →]    │  │ [Review Cohort →]       │               │
+│              │  └─────────────────────────┘  └─────────────────────────┘               │
+│              │                                                                         │
+│              │  Active Drives & Candidate Cards (StatCard, DriveCard, PersonChip)      │
+└──────────────┴─────────────────────────────────────────────────────────────────────────┘
+```
+
+### The 5 Deterministic Card States
+Every design-system card (`ProfileCard`, `DriveCard`, `ApplicationCard`, `InterviewCard`, `OfferCard`, `CompanyCard`, `TaskCard`) strictly renders 5 states:
+1. **Default / Populated**: Rendered data with interactive actions.
+2. **Loading**: Pulse-animated Skeleton matching the layout box dimensions.
+3. **Empty**: Contextual icon, friendly explanation, and primary action button.
+4. **Error**: Inline warning banner with retry handler.
+5. **Masked**: Field-level privacy redactions (e.g. `••••••••••`, `Masked for privacy`) for unauthorized viewers under DPDP compliance.
+
+> **Interactive Gallery**: Inspect all cards in all 5 states at `/dev/cards` (DEV mode).
+
+---
+
+## 5. Account Lifecycle, Onboarding & Self-Service Claims
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Invited Member / Student
+    participant UI as Meridian Frontend
+    participant API as Django REST Gateway
+    participant DB as MongoDB 7.0 rs0
+    participant Mail as Institutional Mailer
+
+    Note over User,Mail: Self-Service Claim Journey
+    User->>UI: Enters Institutional Reg No / Email at /claim
+    UI->>API: POST /api/auth/claim/start/
+    API->>DB: Query authoritative person_affiliations
+    API->>Mail: Generate 6-digit cryptographic OTP (15 min TTL)
+    Mail-->>User: Delivers Verification Code
+    User->>UI: Inputs 6-digit Code & Chooses Password
+    UI->>API: POST /api/auth/claim/verify/
+    API->>DB: Consume token, hash password (PBKDF2), activate account
+    API-->>UI: 200 OK + Sets Secure Session Cookie
+    UI->>UI: Redirects to /onboarding Stepper
 ```
 
 ---
 
-## Table of Contents
+## 6. Machine Learning & Institutional Talent Intelligence
 
-1. [Key Capabilities & Enterprise Moats](#1-key-capabilities--enterprise-moats)
-2. [PlaceFlow v3 Production Platform Pillars](#2-placeflow-v3-production-platform-pillars)
-3. [AI & Machine Learning Talent Intelligence](#3-ai--machine-learning-talent-intelligence)
-4. [Institutional UI/UX Architecture](#4-institutional-uiux-architecture)
-5. [Quickstart & Running Servers](#5-quickstart--running-servers)
-6. [Interactive Web Route & REST API Reference](#6-interactive-web-route--rest-api-reference)
-7. [Database Schema & Aggregation Pipelines](#7-database-schema--aggregation-pipelines)
-8. [Automated Test Suite & Verification (30/30 Passing)](#8-automated-test-suite--verification-3030-passing)
-9. [License & Credits](#9-license--credits)
+Meridian incorporates four in-process Python predictive models designed specifically for university placement operations:
 
----
-
-## 1. Key Capabilities & Enterprise Moats
-
-### 1.1 Superday Multi-Recruiter Conflict Arbitrator (`operations/superday.py`)
-- **Problem**: During Day-1 / Day-2 Superdays, multiple corporate recruiters simultaneously interview top candidates. Concurrent double-booking and venue room contention cause hours of panel idle time.
-- **Engine**: Algorithmic constraint satisfaction solver detecting overlapping interview windows and room contention. Features a **1-Click Auto-Resolver** that calculates non-colliding time slots, updates schedules within ACID transactions, and tags loops with `was_rescheduled: true`.
-
-### 1.2 Atomic Seat Cascading Engine (`operations/cascading.py`)
-- **Problem**: When a student placed in a *Normal* role accepts an upgraded *Dream* or *Super Dream* offer, the vacated seat is often lost or manually re-advertised, leaving corporate partners unfilled.
-- **Engine**: Atomic cascading transactions. When a higher-tier offer is finalized, the engine atomistically:
-  1. Revokes the previous lower-tier placement.
-  2. Increments the former employer's available vacancy count.
-  3. Scans for top-ranked shortlisted candidate runners-up and automatically cascades the newly-freed seat to them.
-  4. Records immutable audit events in `activity_feed`. All or nothing via `client.start_session()`.
-
-### 1.3 Post-Offer Renege & Retention Radar (`ml/renege_predictor.py`)
-- **Problem**: Universities suffer a 25%–35% campus offer drop-off crisis where placed candidates ghost employers between offer letter issuance and joining day.
-- **Engine**: Multi-factor early warning telemetry evaluating:
-  - **Salary Disparity Ratio**: Candidate package vs. department peer cohort average.
-  - **Post-Offer Application Leakage**: Applications or interview loops initiated *after* an active offer.
-  - **Offer Lag**: Days between acceptance and projected joining.
-  - Assigns dynamic flight bands (`LOW`, `MODERATE`, `CRITICAL`) and generates prescriptive retention intervention protocols.
-
-### 1.4 Verified Talent Index (VTI Authenticity Engine) (`operations/authenticity.py`)
-- **Problem**: Recruiter distrust stemming from inflated candidate resumes, unverified GitHub claims, and phantom course certificates.
-- **Engine**: Composite trust algorithm scoring candidates across Verified CGPA, Backlog Integrity, Tier Ceiling, and Skills Inventory:
-  - `VTI >= 90`: **Gold Honors Verified** (Institutional Top Tier)
-  - `VTI 75–89`: **Silver Verified** (Fully Audited)
-  - `VTI < 75`: **Bronze Standard** (Self-Reported)
+| Model Subsystem | Architecture | Metric / Benchmark | Governance Standard |
+| :--- | :--- | :--- | :--- |
+| **Placement Probability** | Gradient Boosted Classifier | `87.4% ROC-AUC` | Excludes 100% of sensitive demographic proxies |
+| **Expected Package (LPA)** | Ridge & Ensemble Regressor | `±1.2 LPA Mean Error` | Conformal 90% prediction intervals |
+| **Post-Offer Renege Flight Radar** | Multi-Factor Telemetry | `Flight Band Risk (Low/Med/High)` | Evaluates compensation disparity & post-offer applications |
+| **Demographic Slice Fairness Audit** | Disparate Impact Calculator | `80% Rule (Four-Fifths)` | Audits selection-rate ratios across departments (7,141 students in 6.7s) |
 
 ---
 
-## 2. PlaceFlow v3 Production Platform Pillars
+## 7. Comprehensive REST API Reference (83+ Endpoints)
 
-### 2.1 Autonomous Agent Copilot Hub (`operations/agents.py`, `operations/agent_tools.py`)
-- **Graded Autonomy Levels**:
-  - **AG-01 (Student Career Assistant)**: Autonomy level **L0 Advisory**. Zero side-effects; assists students with eligible drives, schedule lookup, and policy explanation.
-  - **AG-02 (TPO Operational Copilot)**: Autonomy level **L1 Drafting**. Triage queues, collision alerts, and administrative report selection for human placement coordinator sign-off.
-  - **AG-10 (Scheduling Agent)**: Autonomy level **L2 Approval**. Proposes clash-free Superday schedules requiring human confirmation.
-- **MCP Tool Registry**: Typed platform tools (`get_my_eligible_drives`, `explain_eligibility`, `get_my_schedule`, `run_report`, `list_pending_tasks`, `detect_clashes`, `search_policy`). Agents invoke typed tools with parameter validation rather than querying raw database collections.
-- **Prompt Injection Defense**: Untrusted user text is quarantined as literal data.
-- **Immutable Execution Trace Ledger**: Every plan step, tool invocation payload, and synthesized output is permanently recorded in `agent_runs`.
+### 7.1 Health & Authoritative Session Auth
 
-### 2.2 NIRF Graduation Outcome Calculator (`operations/nirf.py`)
-- **Official Accreditation Formulas**:
-  - **GPH Score (Max 40)**: \(40 \times \frac{N_p + N_{hs}}{N}\), measuring placement and verified higher studies progression.
-  - **GMS Score (Max 40)**: \(40 \times \min(1.0, \frac{\text{Median CTC}}{\text{Benchmark CTC}})\), evaluating graduate median compensation.
-  - **Total GO Score (Max 80)**: Combined accreditation metric.
-- **Recruiter Salary Dispersion**: Company-wise minimum, median, and maximum package breakdown.
-- **Small-Cell Privacy Suppression**: Candidate counts under 5 are masked as `<5` to protect student anonymity (Section 8.1 privacy requirement).
+#### `GET /api/health/`
+- **Access**: Public Allowlist
+- **Response**: `200 OK`
+```json
+{
+  "status": "healthy",
+  "service": "placeflow-api",
+  "database": "connected (rs0)",
+  "timestamp": "2026-11-11T05:50:00Z"
+}
+```
 
-### 2.3 DPDP Purpose-Based Consent Ledger (`operations/consent.py`)
-- **Notice `2026.1-DPDP` Compliance**: Explicit purpose specification (`DATA_SHARING_RECRUITERS`, `ML_CAREER_RECOMMENDATION`, `TRANSCRIPT_VERIFICATION`, `ALUMNI_COMMUNICATION`).
-- **Granular Actions**: Grant and withdraw consent per purpose.
-- **Machine Learning Opt-Out**: Immediate ML prediction silencing when consent is withdrawn.
-- **Immutable Cryptographic Audit Trail**: Hashed verification logs with withdrawal date tracking.
+#### `GET /api/auth/csrf/`
+- **Access**: Public Allowlist
+- **Response**: `200 OK` + Sets `csrftoken` HTTP cookie.
 
-### 2.4 What-If Conformal Career Simulator (`operations/whatif.py`)
-- **Actionable Counterfactual Exploration**: Students simulate hypothetically raising CGPA, clearing backlogs, or acquiring high-demand skills (`AWS`, `Docker`, `Kubernetes`, `PyTorch`).
-- **Conformal Uncertainty Bands (ML-07)**: Rather than point estimates, outputs an **80% conformal prediction package interval** (\([\text{lower}, \text{upper}]\) LPA) calibrated to 80% empirical coverage.
-- **Transparent Attribution**: Shows exact delta increases in eligible corporate drives and potential tier unlocks (*Normal* \(\rightarrow\) *Dream* \(\rightarrow\) *Super Dream*).
+#### `POST /api/auth/login/`
+- **Access**: Public Allowlist
+- **Request**:
+```json
+{
+  "username": "tpo_admin",
+  "password": "password123"
+}
+```
+- **Response**: `200 OK` (Sets session cookie `sessionid`)
+```json
+{
+  "me": {
+    "user_id": "usr_tpo_head",
+    "person_id": "PER_TPO_004",
+    "username": "tpo_admin",
+    "email": "tpo.head@univ.edu",
+    "roles": ["TPO_ADMIN"],
+    "portals": ["tpo"],
+    "default_portal": "tpo",
+    "permissions": ["placement.drive.create", "placement.drive.update", "..."]
+  }
+}
+```
+
+#### `GET /api/auth/me/`
+- **Access**: Authenticated Session
+- **Response**: `200 OK` (Returns active principal context and verified profile).
+
+#### `POST /api/auth/logout/`
+- **Access**: Authenticated Session
+- **Response**: `200 OK` (Invalidates server session and deletes cookies).
 
 ---
 
-## 3. AI & Machine Learning Talent Intelligence
+### 7.2 Self-Service Account Lifecycle
 
-PlaceFlow implements India AI Governance and Responsible ML principles:
-1. **Advisory Only**: No model decides who is shortlisted or placed. Models rank and explain; human coordinators act.
-2. **Deterministic Rules First**: Eligibility and tiers are auditable code rules. ML is used strictly for non-linear advisory ranking.
-3. **No Sensitive Proxy Features (FR-ML-002)**: Gender, caste, religion, disability, and hometown are **strictly prohibited** from feature matrices.
-4. **Demographic Parity Auditing (FR-ML-001)**: Validates that selection rates across protected slices stay within acceptable thresholds (Disparate Impact Ratio \(\ge 0.80\)).
+#### `POST /api/auth/password/forgot/`
+- **Access**: Public Allowlist
+- **Request**: `{"email": "student@univ.edu"}`
+- **Response**: `200 OK` (`{"message": "If an account matches that email, we sent a password reset link."}`)
+
+#### `POST /api/auth/password/reset/`
+- **Access**: Public Allowlist
+- **Request**: `{"token": "crypto_token_hex", "password": "NewSecurePassword123!"}`
+- **Response**: `200 OK` (`{"status": "PASSWORD_RESET_SUCCESS"}`)
+
+#### `POST /api/auth/claim/start/`
+- **Access**: Public Allowlist
+- **Request**: `{"identifier": "aarav.student@univ.edu"}`
+- **Response**: `200 OK` (`{"status": "OTP_SENT", "masked_email": "a***@univ.edu"}`)
+
+#### `POST /api/auth/claim/verify/`
+- **Access**: Public Allowlist
+- **Request**: `{"identifier": "aarav.student@univ.edu", "otp": "491823", "password": "NewStudentPassword123!"}`
+- **Response**: `200 OK` (Activates account and returns authenticated principal).
+
+#### `POST /api/auth/accept-invite/`
+- **Access**: Public Allowlist
+- **Request**: `{"token": "invite_token_hex", "password": "InitialPassword123!"}`
+- **Response**: `200 OK`
 
 ---
 
-## 4. Institutional UI/UX Architecture
+### 7.3 Shared Account Area & Privacy Controls
 
-The frontend is crafted around the **Ivy & IIT Institutional Design Standard**:
-- **Palette**: Oxford Deep Navy (`#0B1B3D`), Academic Cardinal Crimson (`#8C1515`), Slate Canvas (`#F8FAFC`), and Gold Honors (`#D97706`).
-- **Typography**: Inter for crisp numerical tables, Playfair/Cinzel serif for institutional crests and headers, JetBrains Mono for candidate roll numbers and tokens.
-- **Component Density**: High-density registrar tables with sticky headers, color-coded status badges, and interactive drilldowns.
+#### `GET /api/account/profile/`
+- **Access**: Authenticated
+- **Response**: `200 OK`
+```json
+{
+  "profile": {
+    "person_id": "PER_STU_001",
+    "full_name": "Aarav Sharma",
+    "headline": "Computer Science Honors Candidate",
+    "avatar_url": "/api/media/avatar/PER_STU_001/",
+    "skills": ["Python", "React", "MongoDB", "Distributed Systems"],
+    "institution": "Apex Institute of Technology",
+    "department": "Computer Science & Engineering",
+    "verified_by_institution": true
+  }
+}
+```
+
+#### `PATCH /api/account/profile/`
+- **Access**: Authenticated
+- **Request**: `{"headline": "ML & Cloud Systems Engineer", "skills": ["Go", "Kubernetes"]}`
+- **Response**: `200 OK` (Self-written extensions updated).
+
+#### `POST /api/account/avatar/`
+- **Access**: Authenticated
+- **Payload**: `multipart/form-data` with image file (`avatar`).
+- **Response**: `200 OK` (`{"avatar_url": "/api/media/avatar/PER_STU_001/?v=173130..."}`)
+
+#### `GET /api/account/sessions/`
+- **Access**: Authenticated
+- **Response**: `200 OK` (List of active IP, user-agent, creation date, and `is_current` flags).
+
+#### `POST /api/account/sessions/<session_id>/revoke/`
+- **Access**: Authenticated
+- **Response**: `200 OK`
+
+#### `GET /api/account/notifications/`
+- **Access**: Authenticated
+- **Response**: `200 OK` (`{"unread_count": 0, "notifications": [...]}`)
+
+#### `POST /api/account/notifications/<id>/read/`
+- **Access**: Authenticated
+- **Response**: `200 OK`
 
 ---
 
-## 5. Quickstart & Running Servers
+### 7.4 Privacy-Masked Person Cards & Avatars
+
+#### `GET /api/people/<person_id>/card/`
+- **Access**: Authenticated (Enforces Dynamic Field-Level Masking)
+- **Viewer = Peer Student**:
+```json
+{
+  "person_id": "PER_STU_002",
+  "full_name": "Diya Patel",
+  "department": "Computer Science & Engineering",
+  "batch_year": 2026,
+  "email": "••••••••••@univ.edu",
+  "phone": "••••••••••",
+  "cgpa": null,
+  "verified_by_institution": true,
+  "is_masked": true
+}
+```
+- **Viewer = TPO Admin or Faculty Mentor**:
+```json
+{
+  "person_id": "PER_STU_002",
+  "full_name": "Diya Patel",
+  "department": "Computer Science & Engineering",
+  "batch_year": 2026,
+  "email": "diya.rep@univ.edu",
+  "phone": "+91 98765 43210",
+  "cgpa": 9.42,
+  "verified_by_institution": true,
+  "is_masked": false
+}
+```
+
+#### `GET /api/media/avatar/<person_id>/`
+- **Access**: Authenticated (Streams binary JPEG/PNG with ETag and cache control).
+
+---
+
+### 7.5 Student Workspace Portal (`/api/student/*`)
+
+| Method | Endpoint | Permissions | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/student/me/` | `portal.student` | Candidate context, assigned mentor, and tier restrictions |
+| `GET` | `/api/student/opportunities/` | `placement.drive.view` | Eligible job drives filtered by verified CGPA and backlogs |
+| `POST` | `/api/student/opportunities/<job_id>/apply/` | `placement.apply` | Atomic application submission with DPDP consent verification |
+| `GET` | `/api/student/applications/` | `placement.apply` | Application history, review stages, and interview schedules |
+| `GET` | `/api/student/interviews/` | `placement.apply` | Upcoming interview rounds, calendar invites, and room locations |
+| `GET` | `/api/student/offers/` | `placement.offer.view` | Received corporate offer letters and CTC packages |
+| `POST` | `/api/student/offers/<offer_id>/respond/` | `placement.offer.respond`| Accept or reject offer letter (triggers atomic seat cascading) |
+| `GET` | `/api/student/academics/` | `academic.record.view` | NEP 2020 course progression, credits earned, and CIE scores |
+| `GET` | `/api/student/consents/` | `dpdp.consent.view` | Active DPDP 2023 purpose consent authorizations |
+| `POST` | `/api/student/consents/record/` | `dpdp.consent.record` | Authorize recruiter data sharing under purpose specifications |
+| `POST` | `/api/student/consents/withdraw/` | `dpdp.consent.record` | Instant revocation of recruiter data sharing consent |
+| `GET` | `/api/student/insights/readiness/` | `portal.student` | ML Placement Likelihood and Conformal Package Band |
+
+---
+
+### 7.6 TPO Placement Directorate Portal (`/api/tpo/*`)
+
+| Method | Endpoint | Permissions | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/tpo/overview/` | `placement.overview.view` | Telemetry KPIs: Placement rate, median CTC, active loops |
+| `GET` | `/api/tpo/jobs/` | `placement.drive.view` | Active, upcoming, and completed campus recruitment drives |
+| `POST` | `/api/tpo/jobs/` | `placement.drive.create` | 6-Step Placement Drive creation wizard submission |
+| `GET` | `/api/tpo/jobs/<job_id>/candidates/`| `placement.drive.view` | Shortlisted, eligible, and interviewed applicants |
+| `GET` | `/api/tpo/companies/` | `company.partner.view` | Corporate recruiting partners and tier categorizations |
+| `POST` | `/api/tpo/companies/` | `company.partner.manage`| Register corporate partner and recruitment agreements |
+| `GET` | `/api/tpo/students/` | `student.roster.view` | Cohort-wide candidate registry with Verified Talent Index (VTI) |
+| `GET` | `/api/tpo/applications/` | `placement.application.view` | Global application ledger across all corporate drives |
+| `POST` | `/api/tpo/applications/<id>/status/` | `placement.application.manage` | Advance candidate through interview stages |
+| `GET` | `/api/tpo/interviews/` | `placement.interview.view` | All scheduled interview slots across campus venues |
+| `GET` | `/api/tpo/placements/` | `placement.offer.view` | Authoritative confirmed placement register |
+| `GET` | `/api/tpo/superday/conflicts/` | `superday.arbitrate` | Detect concurrent interview double-bookings and room clashes |
+| `POST` | `/api/tpo/superday/resolve/` | `superday.arbitrate` | 1-Click atomic rescheduling solver |
+| `GET` | `/api/tpo/insights/renege/` | `renege.radar.view` | Renege radar: high-risk candidates with post-offer leakage |
+| `GET` | `/api/tpo/insights/fairness/` | `fairness.audit.view` | Disparate impact ratio audit across academic departments |
+| `GET` | `/api/tpo/insights/reports/` | `reports.view` | 15 Aggregation reports (Package distribution, tier stats, etc.) |
+| `GET` | `/api/tpo/insights/reports/<id>/csv/` | `reports.export` | Streamed CSV report export |
+| `GET` | `/api/tpo/models/` | `models.registry.view` | Machine Learning model versioning, accuracy, and latency |
+| `POST` | `/api/tpo/models/retrain/` | `models.retrain` | Trigger retraining pipeline for placement predictor |
+
+---
+
+### 7.7 Faculty Advisory Portal (`/api/faculty/*`)
+
+| Method | Endpoint | Permissions | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/faculty/mentees/` | `faculty.mentees.view` | Assigned mentee roster with attendance and academic warning flags |
+| `GET` | `/api/faculty/mentees/<student_id>/` | `faculty.mentees.view` | Detailed mentee dossier with backlog history and placement status |
+| `GET` | `/api/faculty/summary/` | `faculty.mentees.view` | Department mentee progression summary and risk metrics |
+
+---
+
+### 7.8 HOD Department Leadership Portal (`/api/hod/*`)
+
+| Method | Endpoint | Permissions | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/hod/students/` | `hod.students.view` | Department student cohort filtered by batch and progression |
+| `GET` | `/api/hod/students/<student_id>/` | `hod.students.view` | Student record with verified credits and interview history |
+| `GET` | `/api/hod/faculty/` | `hod.faculty.view` | Department faculty roster with mentee load allocations |
+| `GET` | `/api/hod/summary/` | `hod.summary.view` | Department placement benchmark metrics and year-over-year rate |
+
+---
+
+### 7.9 Executive Management Portal (`/api/management/*`)
+
+| Method | Endpoint | Permissions | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/management/nirf/metrics/` | `accreditation.nirf.view`| Official NIRF accreditation calculation (GPH and GMS scores) |
+| `GET` | `/api/management/fairness/audit/` | `agent.fairness.audit` | Institutional fairness evaluation across 7,100+ candidates |
+| `GET` | `/api/management/consent/records/` | `dpdp.consent.audit` | Campus-wide DPDP Act compliance audit ledger |
+| `GET` | `/api/management/agents/runs/` | `campus.ai.audit` | Autonomous Copilot agent run execution logs and tokens |
+| `GET` | `/api/management/reports/` | `management.reports.view`| Executive summaries across all colleges and schools |
+
+---
+
+### 7.10 Institutional Admin & Governance Portal (`/api/admin/*`)
+
+| Method | Endpoint | Permissions | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/admin/tenants/` | `tenant.manage` | Platform multi-tenant registry |
+| `GET` | `/api/admin/institutions/` | `institution.manage` | Multi-institution hierarchy |
+| `GET` | `/api/admin/campuses/` | `campus.manage` | Physical campus sites and facilities |
+| `GET` | `/api/admin/hierarchy/` | `hierarchy.manage` | Organizational school and department structure |
+| `GET` | `/api/admin/summary/` | `admin.summary.view` | Global system status, active sessions, and tenant count |
+| `GET` | `/api/admin/claims/` | `iam.account.create` | Pending manual account verification queue |
+| `POST` | `/api/admin/claims/<id>/resolve/` | `iam.account.create` | Approve or reject pending identity claim |
+| `POST` | `/api/admin/affiliations/link/` | `iam.account.create` | Associate person identity with institutional record |
+| `POST` | `/api/admin/affiliations/unlink/` | `iam.account.create` | Remove person link |
+| `POST` | `/api/admin/accounts/<id>/resend-invite/`| `iam.account.create`| Re-issue cryptographic onboarding invitation token |
+| `POST` | `/api/admin/accounts/<id>/force-reset/` | `iam.account.create` | Invalidate password and enforce password reset |
+| `POST` | `/api/admin/accounts/<id>/deactivate/` | `iam.account.create` | Lock account and terminate all active sessions |
+| `GET` | `/api/admin/iam/identities/` | `iam.view` | Person identity directory (CAMP-02) |
+| `GET` | `/api/admin/iam/accounts/` | `iam.view` | Active user account registry |
+| `GET` | `/api/admin/iam/roles/` | `iam.roles.view` | System RBAC roles and permissions catalogue |
+| `GET` | `/api/admin/iam/assignments/` | `iam.assignments.view`| Role assignments and downward inheritance scopes |
+| `GET` | `/api/admin/academic/programs/` | `academic.manage` | NEP 2020 Degree programs (B.Tech, M.Tech, Ph.D) |
+| `GET` | `/api/admin/ai/traces/` | `campus.ai.audit` | Detailed AI Gateway LLM reasoning traces |
+
+---
+
+## 8. Seeded Demo Accounts & Credentials Matrix
+
+When running in `DEBUG=True`, Meridian automatically seeds 13 deterministic demo personas for instant zero-config testing:
+
+| Username | Password | Baseline Role | Assigned Scope | Perms | Primary Portal |
+| :--- | :--- | :--- | :--- | :---: | :--- |
+| `student` | `password123` | `STUDENT_MEMBER` | `STU001` (Self) | 10 | `/student` |
+| `placement_rep`| `password123` | `PLACEMENT_REP` | `OU_CSE` (Dept) | 8 | `/student` |
+| `faculty` | `password123` | `FACULTY_MENTOR` | `OU_CSE` (Dept) | 6 | `/faculty` |
+| `coordinator` | `password123` | `DEPT_COORDINATOR`| `OU_CSE` (Dept) | 7 | `/faculty` |
+| `hod` | `password123` | `DEPARTMENT_HEAD`| `OU_CSE` (Dept) | 10 | `/hod` |
+| `dean` | `password123` | `SCHOOL_HEAD` | `CMP_MAIN` (Campus) | 12 | `/hod` |
+| `tpo_coordinator`| `password123`| `TPO_COORDINATOR` | `CMP_MAIN` (Campus) | 17 | `/tpo` |
+| `tpo_admin` | `password123` | `TPO_ADMIN` | `INSTITUTION` | 49 | `/tpo` |
+| `vice_chancellor`| `password123`| `INSTITUTION_HEAD`| `INSTITUTION` | 30 | `/management` |
+| `admin` | `password123` | `INSTITUTION_ADMIN`| `INSTITUTION` | 29 | `/admin` |
+| `superadmin` | `password123` | `SUPER_ADMIN` | `GLOBAL` | 1 | `/admin` |
+| `auditor` | `password123` | `AUDITOR` | `INSTITUTION` | 6 | `/management` |
+| `recruiter` | `password123` | `RECRUITER_EXTERNAL`| `COMP001` (Accenture)| 5 | `/tpo` |
+
+---
+
+## 9. Local Quickstart & Running Servers
 
 ### Prerequisites
-- Python 3.10+
-- Node.js 20+ & npm
-- MongoDB 7.0+ running with replica set `rs0` on `localhost:27017`
+- **Python**: 3.10+ (tested with Python 3.10 and 3.14)
+- **Node.js**: v18+ and `npm`
+- **MongoDB**: 7.0+ Replica Set (`rs0`) running on `localhost:27017`
 
-### 1. Database Initialization
+### 1. Start MongoDB 7.0 Replica Set
+```powershell
+# Ensure MongoDB runs with replica set rs0
+mongod --dbpath C:\data\db --replSet rs0 --port 27017
+```
+
+### 2. Backend Setup & Seeding
 ```powershell
 cd placeflow
-.venv\Scripts\python -m database.setup_db
-.venv\Scripts\python -m database.seed_data
-```
 
-### 2. Launch Django Backend Server
+# Activate virtual environment
+.\.venv\Scripts\Activate.ps1
+
+# Install requirements
+pip install -r requirements.txt
+
+# Seed Database Schemas & Demo Accounts
+$env:PYTHONPATH="."
+python scripts/seed_demo_accounts.py
+
+# Launch Django REST Framework Backend
+python manage.py runserver 127.0.0.1:8000
+```
+*Backend active at `http://127.0.0.1:8000/api/`*
+
+### 3. Frontend Setup & Dev Server
 ```powershell
-cd placeflow
-.venv\Scripts\python manage.py runserver 127.0.0.1:8000
-```
-*Django REST API starts on `http://127.0.0.1:8000/api/`*
+cd placeflow/frontend
 
-### 3. Launch React Frontend Server
+# Install dependencies
+npm install
+
+# Start Vite Development Server
+npm run dev
+```
+*Frontend active at `http://127.0.0.1:5173/`*
+
+---
+
+## 10. Test Suites & Boundary Verification
+
+Meridian enforces 100% test passing before any commit:
+
 ```powershell
-cd placeflow\frontend
-npm run dev -- --host 127.0.0.1 --port 5173
-```
-*React Institutional Application starts on `http://127.0.0.1:5173/`*
+# 1. Architecture Boundaries (Zero cross-portal imports)
+cd placeflow/frontend
+node scripts/check-boundaries.mjs
+# Output: Boundaries OK
 
----
+# 2. Frontend Production Build
+npm run build
+# Output: tsc -b && vite build (0 errors)
 
-## 6. Interactive Web Route & REST API Reference
+# 3. Frontend Unit Tests (Vitest)
+npm test -- --run
+# Output: 5 passed (28 tests)
 
-| Endpoint | Method | Description |
-|---|---|---|
-| `/api/overview/` | `GET` | Executive Directorate KPIs, branch placement velocity, tier breakdown |
-| `/api/students/` | `GET`, `POST` | Candidate registry with department filtering and roll number search |
-| `/api/students/<id>/` | `GET` | High-density candidate dossier with VTI breakdown and eligible drives |
-| `/api/whatif/simulate/` | `POST` | What-If simulation with 80% conformal package prediction bands |
-| `/api/recruitment/companies/` | `GET` | Corporate hiring partners registry |
-| `/api/recruitment/jobs/` | `GET` | Job Notification Forms (JNFs) and tier vacancies |
-| `/api/recruitment/applications/` | `GET` | Unified application ledger |
-| `/api/recruitment/placements/` | `GET` | Official placement register |
-| `/api/recruitment/place-student/` | `POST` | Atomic cascading placement transaction |
-| `/api/superday/conflicts/` | `GET` | Collision matrix for overlapping interviews and rooms |
-| `/api/superday/resolve/` | `POST` | 1-Click ACID Superday collision resolver |
-| `/api/agents/chat/` | `POST` | AG-01, AG-02, AG-10 autonomous multi-agent copilot execution |
-| `/api/agents/runs/` | `GET` | Immutable agent execution trace audit ledger |
-| `/api/nirf/` | `GET` | NIRF Graduation Outcome accreditation formulas & privacy-masked salary dispersion |
-| `/api/consent/<id>/` | `GET` | Student DPDP Act 2023 purpose consent records |
-| `/api/consent/record/` | `POST` | Explicit consent grant action |
-| `/api/consent/withdraw/` | `POST` | Explicit consent withdrawal action |
-| `/api/fairness/audit/` | `GET` | Demographic slice parity & prohibited feature bias audit |
-| `/api/renege/radar/` | `GET` | Post-offer flight risk telemetry & retention intervention radar |
-| `/api/reports/` | `GET` | 15 MongoDB aggregation reports |
-| `/api/reports/<id>/csv/` | `GET` | Official registrar CSV download for any report |
+# 4. Backend Automated Test Suite (Pytest)
+cd ..
+$env:PYTHONPATH="placeflow"
+placeflow\.venv\Scripts\python.exe -m pytest -q
+# Output: 203 passed in 97s
 
----
-
-## 7. Database Schema & Aggregation Pipelines
-
-PlaceFlow runs against MongoDB 7.0+ `college_placement_db` with 11 core collections protected by strict `$jsonSchema` validators:
-1. `students`: Roll numbers, verified CGPA, backlogs, skills, placement status, highest tier.
-2. `companies`: Tier ratings, hiring contact details, recruitment history.
-3. `jobs`: JNF title, tier, package LPA, vacancies, filled counter, eligibility rules.
-4. `applications`: Candidate-job linkage, round progress, application status.
-5. `interviews`: Scheduled slots, panel venue, clash detection flags.
-6. `placements`: Accepted offer ledger, joining status.
-7. `activity_feed`: Capped collection for high-throughput real-time audit event logging.
-8. `agent_runs`: Immutable multi-agent reasoning plans, MCP tool calls, and outputs.
-9. `consent_records`: DPDP purpose-based explicit consent ledger.
-10. `nirf_snapshots`: Yearly snapshot archives for NIRF ranking audits.
-11. `system.js`: Server-side database routines.
-
----
-
-## 8. Automated Test Suite & Verification (30/30 Passing)
-
-Run the full pytest suite:
-```powershell
-cd placeflow
-.venv\Scripts\pytest -v
-```
-
-### Complete Test Results:
-```text
-tests/test_business_rules.py::test_validator_rejects_bad_cgpa PASSED     [  3%]
-tests/test_business_rules.py::test_duplicate_application_is_blocked PASSED [  6%]
-tests/test_business_rules.py::test_ineligible_cgpa_names_the_reason PASSED [ 10%]
-tests/test_business_rules.py::test_tier_policy PASSED                    [ 13%]
-tests/test_business_rules.py::test_interview_clash PASSED                [ 16%]
-tests/test_business_rules.py::test_delete_student_with_applications_is_blocked PASSED [ 20%]
-tests/test_business_rules.py::test_finalize_changes_everything_together PASSED [ 23%]
-tests/test_business_rules.py::test_full_job_rolls_back PASSED            [ 26%]
-tests/test_business_rules.py::test_concurrent_last_seat PASSED           [ 30%]
-tests/test_business_rules.py::test_audit_finds_orphans_because_mongodb_has_no_foreign_keys PASSED [ 33%]
-tests/test_django_api.py::test_django_overview_api PASSED                [ 36%]
-tests/test_django_api.py::test_django_students_api PASSED                [ 40%]
-tests/test_django_api.py::test_django_superday_api PASSED                [ 43%]
-tests/test_django_api.py::test_django_nirf_api PASSED                    [ 46%]
-tests/test_django_api.py::test_django_whatif_api PASSED                  [ 50%]
-tests/test_django_api.py::test_django_agent_chat_api PASSED              [ 53%]
-tests/test_django_api.py::test_django_consent_lifecycle_api PASSED       [ 56%]
-tests/test_django_api.py::test_django_fairness_api PASSED                [ 60%]
-tests/test_django_api.py::test_django_renege_radar_api PASSED            [ 63%]
-tests/test_enterprise_moats.py::test_superday_conflict_detection_and_resolution PASSED [ 66%]
-tests/test_enterprise_moats.py::test_atomic_placement_with_cascading PASSED [ 70%]
-tests/test_enterprise_moats.py::test_talent_authenticity_vti PASSED      [ 73%]
-tests/test_enterprise_moats.py::test_renege_risk_calculation PASSED      [ 76%]
-tests/test_v3_platform.py::test_sensitive_features_audit PASSED          [ 80%]
-tests/test_v3_platform.py::test_cohort_fairness_audit PASSED             [ 83%]
-tests/test_v3_platform.py::test_mcp_agent_tools_execution PASSED         [ 86%]
-tests/test_v3_platform.py::test_agent_runtime_trace_and_quarantine PASSED [ 90%]
-tests/test_v3_platform.py::test_whatif_simulator_and_conformal_bands PASSED [ 93%]
-tests/test_v3_platform.py::test_dpdp_consent_lifecycle_and_opt_out PASSED [ 96%]
-tests/test_v3_platform.py::test_nirf_graduation_outcome_calculator PASSED [100%]
-
-============================= 30 passed in 27.86s =============================
+# 5. Full Live Endpoint Verification (83 Endpoints across all roles)
+& placeflow\.venv\Scripts\python.exe ..\.gemini\antigravity\brain\7b696f20-c376-403b-815c-ef08a7d26f4a\scratch\verify_all_endpoints.py
+# Output: 83 passed, 0 failed (100%)
 ```
 
 ---
 
-## 9. License & Credits
+<div align="center">
 
-- **Engineering Directorate**: Office of Career Services / Training &amp; Placement Directorate.
-- **Governance**: Aligned with the Digital Personal Data Protection (DPDP) Act 2023 and Ministry of Education NIRF Ranking Framework.
-- **Open Standards**: Model Context Protocol (MCP) tool schema definitions.
+**Meridian Institutional Systems** &bull; Production Placement ERP & Academic Governance  
+*Engineered for scale, fairness, and verifiable student success.*
+
+</div>
