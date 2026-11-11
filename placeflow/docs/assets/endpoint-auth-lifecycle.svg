@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" width="1000" height="600">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B132B"/>
+      <stop offset="100%" stop-color="#1C2541"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="600" rx="16" fill="url(#bg)"/>
+
+  <!-- Window Header -->
+  <rect x="0" y="0" width="1000" height="48" rx="16" fill="#0A0F1D"/>
+  <rect x="0" y="32" width="1000" height="16" fill="#0A0F1D"/>
+  <circle cx="28" cy="24" r="6" fill="#EF4444"/>
+  <circle cx="48" cy="24" r="6" fill="#F59E0B"/>
+  <circle cx="68" cy="24" r="6" fill="#10B981"/>
+  <text x="500" y="29" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" text-anchor="middle">Meridian API Gateway — Authentication &amp; Identity Lifecycle</text>
+
+  <!-- Left Column: Session Auth Flow -->
+  <g transform="translate(35, 75)" filter="url(#shadow)">
+    <rect width="445" height="490" rx="12" fill="url(#cardGrad)" stroke="#334155" stroke-width="1"/>
+    
+    <!-- Header -->
+    <rect x="0" y="0" width="445" height="48" rx="12" fill="#1E293B"/>
+    <rect x="0" y="36" width="445" height="12" fill="#1E293B"/>
+    <text x="20" y="30" fill="#38BDF8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700">Authoritative Session &amp; Context</text>
+
+    <!-- Step 1: POST /api/auth/login/ -->
+    <g transform="translate(20, 65)">
+      <rect width="405" height="115" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1"/>
+      <rect x="12" y="12" width="52" height="22" rx="4" fill="#059669"/>
+      <text x="38" y="27" fill="#FFFFFF" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">POST</text>
+      <text x="72" y="28" fill="#F8FAFC" font-family="monospace" font-size="13" font-weight="600">/api/auth/login/</text>
+      <rect x="340" y="12" width="55" height="22" rx="4" fill="#065F46"/>
+      <text x="367" y="27" fill="#A7F3D0" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">200 OK</text>
+      
+      <!-- Body details -->
+      <text x="16" y="56" fill="#94A3B8" font-family="monospace" font-size="11">Payload: {"username":"tpo_admin", "password":"***"}</text>
+      <text x="16" y="76" fill="#34D399" font-family="monospace" font-size="11">Set-Cookie: sessionid=s%3A...; HttpOnly; SameSite=Lax</text>
+      <text x="16" y="96" fill="#94A3B8" font-family="monospace" font-size="11">Returns: Active principal context + verified portals</text>
+    </g>
+
+    <!-- Arrow Down -->
+    <path d="M 222 195 L 222 215 M 216 209 L 222 215 L 228 209" stroke="#38BDF8" stroke-width="2" fill="none"/>
+
+    <!-- Step 2: GET /api/auth/me/ -->
+    <g transform="translate(20, 225)">
+      <rect width="405" height="115" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1"/>
+      <rect x="12" y="12" width="45" height="22" rx="4" fill="#2563EB"/>
+      <text x="34" y="27" fill="#FFFFFF" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">GET</text>
+      <text x="65" y="28" fill="#F8FAFC" font-family="monospace" font-size="13" font-weight="600">/api/auth/me/</text>
+      <rect x="340" y="12" width="55" height="22" rx="4" fill="#065F46"/>
+      <text x="367" y="27" fill="#A7F3D0" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">200 OK</text>
+
+      <text x="16" y="56" fill="#94A3B8" font-family="monospace" font-size="11">"roles": ["TPO_ADMIN"], "portals": ["tpo"]</text>
+      <text x="16" y="76" fill="#94A3B8" font-family="monospace" font-size="11">"profile": {"name": "Dr. K. Venkatesh", ...}</text>
+      <text x="16" y="96" fill="#38BDF8" font-family="monospace" font-size="11">Permissions: 49 checked server-side per tenant</text>
+    </g>
+
+    <!-- Arrow Down -->
+    <path d="M 222 355 L 222 375 M 216 369 L 222 375 L 228 369" stroke="#38BDF8" stroke-width="2" fill="none"/>
+
+    <!-- Step 3: POST /api/auth/switch-context/ -->
+    <g transform="translate(20, 385)">
+      <rect width="405" height="85" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1"/>
+      <rect x="12" y="12" width="52" height="22" rx="4" fill="#059669"/>
+      <text x="38" y="27" fill="#FFFFFF" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">POST</text>
+      <text x="72" y="28" fill="#F8FAFC" font-family="monospace" font-size="13" font-weight="600">/api/auth/switch-context/</text>
+      <text x="16" y="54" fill="#94A3B8" font-family="monospace" font-size="11">Switches active tenant or delegated persona</text>
+      <text x="16" y="72" fill="#A855F7" font-family="monospace" font-size="11">Maintains downward scoping &amp; audit logging</text>
+    </g>
+  </g>
+
+  <!-- Right Column: Self-Service Claims & Recovery -->
+  <g transform="translate(520, 75)" filter="url(#shadow)">
+    <rect width="445" height="490" rx="12" fill="url(#cardGrad)" stroke="#334155" stroke-width="1"/>
+    
+    <!-- Header -->
+    <rect x="0" y="0" width="445" height="48" rx="12" fill="#1E293B"/>
+    <rect x="0" y="36" width="445" height="12" fill="#1E293B"/>
+    <text x="20" y="30" fill="#F59E0B" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700">Self-Service Claim &amp; Password Reset</text>
+
+    <!-- Step 1: Claim Start -->
+    <g transform="translate(20, 65)">
+      <rect width="405" height="115" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1"/>
+      <rect x="12" y="12" width="52" height="22" rx="4" fill="#059669"/>
+      <text x="38" y="27" fill="#FFFFFF" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">POST</text>
+      <text x="72" y="28" fill="#F8FAFC" font-family="monospace" font-size="13" font-weight="600">/api/auth/claim/start/</text>
+      <rect x="340" y="12" width="55" height="22" rx="4" fill="#065F46"/>
+      <text x="367" y="27" fill="#A7F3D0" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">200 OK</text>
+
+      <text x="16" y="56" fill="#94A3B8" font-family="monospace" font-size="11">Request: {"identifier": "aarav.student@univ.edu"}</text>
+      <text x="16" y="76" fill="#FBBF24" font-family="monospace" font-size="11">Action: Generates 6-digit cryptographic OTP</text>
+      <text x="16" y="96" fill="#94A3B8" font-family="monospace" font-size="11">Unmatched identities routed to admin review queue</text>
+    </g>
+
+    <!-- Arrow Down -->
+    <path d="M 222 195 L 222 215 M 216 209 L 222 215 L 228 209" stroke="#F59E0B" stroke-width="2" fill="none"/>
+
+    <!-- Step 2: Claim Verify -->
+    <g transform="translate(20, 225)">
+      <rect width="405" height="115" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1"/>
+      <rect x="12" y="12" width="52" height="22" rx="4" fill="#059669"/>
+      <text x="38" y="27" fill="#FFFFFF" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">POST</text>
+      <text x="72" y="28" fill="#F8FAFC" font-family="monospace" font-size="13" font-weight="600">/api/auth/claim/verify/</text>
+      <rect x="340" y="12" width="55" height="22" rx="4" fill="#065F46"/>
+      <text x="367" y="27" fill="#A7F3D0" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">200 OK</text>
+
+      <text x="16" y="56" fill="#94A3B8" font-family="monospace" font-size="11">Request: {"otp": "491823", "password": "***"}</text>
+      <text x="16" y="76" fill="#34D399" font-family="monospace" font-size="11">Validates OTP, sets PBKDF2 hash &amp; activates account</text>
+      <text x="16" y="96" fill="#38BDF8" font-family="monospace" font-size="11">Auto-logs in user &amp; redirects to /onboarding</text>
+    </g>
+
+    <!-- Arrow Down -->
+    <path d="M 222 355 L 222 375 M 216 369 L 222 375 L 228 369" stroke="#F59E0B" stroke-width="2" fill="none"/>
+
+    <!-- Step 3: Password Reset -->
+    <g transform="translate(20, 385)">
+      <rect width="405" height="85" rx="8" fill="#090D16" stroke="#1E293B" stroke-width="1"/>
+      <rect x="12" y="12" width="52" height="22" rx="4" fill="#059669"/>
+      <text x="38" y="27" fill="#FFFFFF" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">POST</text>
+      <text x="72" y="28" fill="#F8FAFC" font-family="monospace" font-size="13" font-weight="600">/api/auth/password/reset/</text>
+      <text x="16" y="54" fill="#94A3B8" font-family="monospace" font-size="11">Consumes single-use SHA-256 token from email link</text>
+      <text x="16" y="72" fill="#10B981" font-family="monospace" font-size="11">Enforces anti-enumeration &amp; rate limit security</text>
+    </g>
+  </g>
+</svg>

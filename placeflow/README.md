@@ -21,6 +21,18 @@
 
 ---
 
+## 🎬 Live Platform Demo
+
+<div align="center">
+
+![Meridian Live Interactive Platform Demo](docs/assets/meridian-demo.gif)
+
+*Figure 1: Live workflow walkthrough: Public Landing &rarr; TPO Command Center &amp; Superday Room Solver &rarr; Student Workspace &amp; 1-Click Apply &rarr; Executive Management Demographic Slice Fairness Audit.*
+
+</div>
+
+---
+
 ## 📑 Table of Contents
 
 1. [Executive Overview & Platform Vision](#1-executive-overview--platform-vision)
@@ -110,6 +122,14 @@ flowchart TD
 
 ## 3. The Six Role-Partitioned Portals
 
+<div align="center">
+
+![Meridian Namespaced Role Portals & Authorized API Topology](docs/assets/endpoint-portals-matrix.svg)
+
+*Figure 2: Architecture of the 6 role-partitioned workspaces, showing key endpoints, permissions, and architectural boundaries.*
+
+</div>
+
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                               MERIDIAN WORKSPACE ECOSYSTEM                             │
@@ -167,6 +187,14 @@ Every design-system card (`ProfileCard`, `DriveCard`, `ApplicationCard`, `Interv
 ---
 
 ## 5. Account Lifecycle, Onboarding & Self-Service Claims
+
+<div align="center">
+
+![Meridian API Gateway — Authentication & Identity Lifecycle](docs/assets/endpoint-auth-lifecycle.svg)
+
+*Figure 3: Authoritative session authentication flow, cryptographic claim token dispatch, and self-service password recovery.*
+
+</div>
 
 ```mermaid
 sequenceDiagram
@@ -339,6 +367,14 @@ Meridian incorporates four in-process Python predictive models designed specific
 
 ### 7.4 Privacy-Masked Person Cards & Avatars
 
+<div align="center">
+
+![DPDP Act 2023 Compliance — GET /api/people/{person_id}/card/](docs/assets/endpoint-person-card-masking.svg)
+
+*Figure 4: Dynamic field-level privacy masking evaluated server-side when viewing peer candidate records vs. faculty/staff.*
+
+</div>
+
 #### `GET /api/people/<person_id>/card/`
 - **Access**: Authenticated (Enforces Dynamic Field-Level Masking)
 - **Viewer = Peer Student**:
@@ -395,6 +431,14 @@ Meridian incorporates four in-process Python predictive models designed specific
 ---
 
 ### 7.6 TPO Placement Directorate Portal (`/api/tpo/*`)
+
+<div align="center">
+
+![Operational Business Moats — Superday Room Solver & Atomic Seat Cascading](docs/assets/endpoint-superday-cascading.svg)
+
+*Figure 5: Constraint solver resolving Superday room contention and ACID multi-document seat cascading transaction pipeline.*
+
+</div>
 
 | Method | Endpoint | Permissions | Description |
 | :--- | :--- | :--- | :--- |

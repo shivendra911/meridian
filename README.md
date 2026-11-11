@@ -20,6 +20,18 @@
 
 ---
 
+## 🎬 Live Platform Demo
+
+<div align="center">
+
+![Meridian Live Interactive Platform Demo](docs/assets/meridian-demo.gif)
+
+*Figure 1: Live workflow walkthrough: Public Landing &rarr; TPO Command Center &amp; Superday Room Solver &rarr; Student Workspace &amp; 1-Click Apply &rarr; Executive Management Demographic Slice Fairness Audit.*
+
+</div>
+
+---
+
 ## 🏛️ Platform Architecture
 
 ```mermaid
@@ -72,6 +84,15 @@ flowchart TD
 ## 🚀 Key Highlights & Architectural Moats
 
 ### 1. Six Purpose-Built Role Workspaces
+
+<div align="center">
+
+![Meridian Namespaced Role Portals & Authorized API Topology](docs/assets/endpoint-portals-matrix.svg)
+
+*Figure 2: Architecture of the 6 role-partitioned workspaces, showing key endpoints, permissions, and architectural boundaries.*
+
+</div>
+
 No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 - 🎓 **Student Portal**: Real-time course registrations, prerequisite gap analyzers, one-click drive applications, interview rounds, and DPDP consent controls.
 - 🏢 **TPO Directorate**: 6-step Placement Drive creation wizard, real-time candidate estimators, corporate partner CRM, and 1-click Superday conflict arbitration.
@@ -81,6 +102,15 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 - 🛡️ **Institutional Admin**: Tenant and campus hierarchy configuration, IAM identities, user accounts, and manual account claims resolution queue.
 
 ### 2. Design-System Cards with 5 Deterministic States
+
+<div align="center">
+
+![DPDP Act 2023 Compliance — GET /api/people/{person_id}/card/](docs/assets/endpoint-person-card-masking.svg)
+
+*Figure 3: Dynamic field-level privacy masking evaluated server-side when viewing peer candidate records vs. faculty/staff.*
+
+</div>
+
 Every card in the system (`ProfileCard`, `DriveCard`, `ApplicationCard`, `InterviewCard`, `OfferCard`, `CompanyCard`, `TaskCard`) strictly supports:
 - `Default`: Complete data presentation with interactive triggers.
 - `Loading`: Pulse-animated skeleton matching exact layout dimensions.
@@ -88,10 +118,29 @@ Every card in the system (`ProfileCard`, `DriveCard`, `ApplicationCard`, `Interv
 - `Error`: Inline error state with retry triggers.
 - `Masked`: Field-level privacy obfuscation for unauthorized viewers under DPDP regulations.
 
-### 3. Server-Side Default-Deny RBAC
+### 3. Server-Side Default-Deny RBAC &amp; Account Lifecycle
+
+<div align="center">
+
+![Meridian API Gateway — Authentication & Identity Lifecycle](docs/assets/endpoint-auth-lifecycle.svg)
+
+*Figure 4: Authoritative session authentication flow, cryptographic claim token dispatch, and self-service password recovery.*
+
+</div>
+
 - Permissions are verified strictly on the server by DRF permission classes.
 - Identity is derived entirely from validated session cookies, not client-side state.
 - Scopes are enforced hierarchically: `PLATFORM` &rarr; `INSTITUTION` &rarr; `CAMPUS` &rarr; `ORGANIZATIONAL_UNIT` &rarr; `SELF`.
+
+### 4. Operational Business Moats: Superday Solver &amp; Seat Cascading
+
+<div align="center">
+
+![Operational Business Moats — Superday Room Solver & Atomic Seat Cascading](docs/assets/endpoint-superday-cascading.svg)
+
+*Figure 5: Constraint solver resolving Superday room contention and ACID multi-document seat cascading transaction pipeline.*
+
+</div>
 
 ---
 

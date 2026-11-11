@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0A1128"/>
+      <stop offset="100%" stop-color="#101F42"/>
+    </linearGradient>
+    <filter id="shadow3" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="620" rx="16" fill="url(#bg3)"/>
+
+  <!-- Window Header -->
+  <rect x="0" y="0" width="1000" height="48" rx="16" fill="#060A17"/>
+  <rect x="0" y="32" width="1000" height="16" fill="#060A17"/>
+  <circle cx="28" cy="24" r="6" fill="#EF4444"/>
+  <circle cx="48" cy="24" r="6" fill="#F59E0B"/>
+  <circle cx="68" cy="24" r="6" fill="#10B981"/>
+  <text x="500" y="29" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" text-anchor="middle">Meridian Namespaced Role Portals &amp; Authorized API Topology</text>
+
+  <!-- Title -->
+  <text x="500" y="80" fill="#F8FAFC" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="18" font-weight="700" text-anchor="middle">6 Dedicated Workspace Engines &bull; Strict Zero Cross-Import Boundaries</text>
+  <text x="500" y="102" fill="#94A3B8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" text-anchor="middle">Verified on every commit via check-boundaries.mjs and server-side DRF permission decorators</text>
+
+  <!-- 6 Portal Cards in 2 rows of 3 -->
+  
+  <!-- ROW 1 -->
+  <!-- 1. Student Portal -->
+  <g transform="translate(40, 125)" filter="url(#shadow3)">
+    <rect width="285" height="215" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <rect x="0" y="0" width="285" height="38" rx="10" fill="#0284C7"/>
+    <rect x="0" y="28" width="285" height="10" fill="#0284C7"/>
+    <text x="14" y="24" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">🎓 Student Workspace (/student)</text>
+    
+    <g transform="translate(12, 48)">
+      <text x="0" y="16" fill="#38BDF8" font-family="monospace" font-size="11" font-weight="600">GET /api/student/me/</text>
+      <text x="0" y="32" fill="#64748B" font-family="sans-serif" font-size="10">Self context &amp; tier eligibility</text>
+      
+      <text x="0" y="56" fill="#38BDF8" font-family="monospace" font-size="11" font-weight="600">GET /api/student/opportunities/</text>
+      <text x="0" y="72" fill="#64748B" font-family="sans-serif" font-size="10">Filtered by verified CGPA &amp; backlogs</text>
+      
+      <text x="0" y="96" fill="#38BDF8" font-family="monospace" font-size="11" font-weight="600">POST .../opportunities/{id}/apply/</text>
+      <text x="0" y="112" fill="#64748B" font-family="sans-serif" font-size="10">Atomic submit + DPDP purpose consent</text>
+
+      <text x="0" y="136" fill="#38BDF8" font-family="monospace" font-size="11" font-weight="600">GET /api/student/academics/</text>
+      <text x="0" y="152" fill="#64748B" font-family="sans-serif" font-size="10">NEP 2020 L-T-P-S credits &amp; CIE scores</text>
+    </g>
+  </g>
+
+  <!-- 2. TPO Portal -->
+  <g transform="translate(355, 125)" filter="url(#shadow3)">
+    <rect width="290" height="215" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <rect x="0" y="0" width="290" height="38" rx="10" fill="#0D9488"/>
+    <rect x="0" y="28" width="290" height="10" fill="#0D9488"/>
+    <text x="14" y="24" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">🏢 TPO Directorate (/tpo)</text>
+    
+    <g transform="translate(12, 48)">
+      <text x="0" y="16" fill="#2DD4BF" font-family="monospace" font-size="11" font-weight="600">GET /api/tpo/overview/</text>
+      <text x="0" y="32" fill="#64748B" font-family="sans-serif" font-size="10">Placement telemetry &amp; live active loops</text>
+      
+      <text x="0" y="56" fill="#2DD4BF" font-family="monospace" font-size="11" font-weight="600">POST /api/tpo/jobs/</text>
+      <text x="0" y="72" fill="#64748B" font-family="sans-serif" font-size="10">6-Step Placement Drive creation wizard</text>
+      
+      <text x="0" y="96" fill="#2DD4BF" font-family="monospace" font-size="11" font-weight="600">POST /api/tpo/superday/resolve/</text>
+      <text x="0" y="112" fill="#64748B" font-family="sans-serif" font-size="10">1-Click atomic room contention solver</text>
+
+      <text x="0" y="136" fill="#2DD4BF" font-family="monospace" font-size="11" font-weight="600">GET /api/tpo/insights/renege/</text>
+      <text x="0" y="152" fill="#64748B" font-family="sans-serif" font-size="10">Post-offer candidate drop-off radar</text>
+    </g>
+  </g>
+
+  <!-- 3. Faculty Advisory -->
+  <g transform="translate(675, 125)" filter="url(#shadow3)">
+    <rect width="285" height="215" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <rect x="0" y="0" width="285" height="38" rx="10" fill="#4F46E5"/>
+    <rect x="0" y="28" width="285" height="10" fill="#4F46E5"/>
+    <text x="14" y="24" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">🧑‍🏫 Faculty Advisor (/faculty)</text>
+    
+    <g transform="translate(12, 48)">
+      <text x="0" y="16" fill="#818CF8" font-family="monospace" font-size="11" font-weight="600">GET /api/faculty/mentees/</text>
+      <text x="0" y="32" fill="#64748B" font-family="sans-serif" font-size="10">Assigned mentee cohort &amp; alert flags</text>
+      
+      <text x="0" y="56" fill="#818CF8" font-family="monospace" font-size="11" font-weight="600">GET .../mentees/{id}/</text>
+      <text x="0" y="72" fill="#64748B" font-family="sans-serif" font-size="10">High-density candidate dossier &amp; VTI</text>
+      
+      <text x="0" y="96" fill="#818CF8" font-family="monospace" font-size="11" font-weight="600">GET /api/faculty/summary/</text>
+      <text x="0" y="112" fill="#64748B" font-family="sans-serif" font-size="10">Progression stats &amp; advisory metrics</text>
+
+      <text x="0" y="136" fill="#818CF8" font-family="monospace" font-size="11" font-weight="600">POST .../mentees/{id}/note/</text>
+      <text x="0" y="152" fill="#64748B" font-family="sans-serif" font-size="10">Confidential intervention log</text>
+    </g>
+  </g>
+
+  <!-- ROW 2 -->
+  <!-- 4. HOD Portal -->
+  <g transform="translate(40, 370)" filter="url(#shadow3)">
+    <rect width="285" height="215" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <rect x="0" y="0" width="285" height="38" rx="10" fill="#7C3AED"/>
+    <rect x="0" y="28" width="285" height="10" fill="#7C3AED"/>
+    <text x="14" y="24" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">🏛️ HOD Leadership (/hod)</text>
+    
+    <g transform="translate(12, 48)">
+      <text x="0" y="16" fill="#A78BFA" font-family="monospace" font-size="11" font-weight="600">GET /api/hod/students/</text>
+      <text x="0" y="32" fill="#64748B" font-family="sans-serif" font-size="10">Department-scoped candidate cohort</text>
+      
+      <text x="0" y="56" fill="#A78BFA" font-family="monospace" font-size="11" font-weight="600">GET /api/hod/faculty/</text>
+      <text x="0" y="72" fill="#64748B" font-family="sans-serif" font-size="10">Faculty roster &amp; mentee allocations</text>
+      
+      <text x="0" y="96" fill="#A78BFA" font-family="monospace" font-size="11" font-weight="600">GET /api/hod/summary/</text>
+      <text x="0" y="112" fill="#64748B" font-family="sans-serif" font-size="10">Placement rates &amp; YoY trends</text>
+
+      <text x="0" y="136" fill="#A78BFA" font-family="monospace" font-size="11" font-weight="600">POST .../approvals/waiver/</text>
+      <text x="0" y="152" fill="#64748B" font-family="sans-serif" font-size="10">Special eligibility exception grants</text>
+    </g>
+  </g>
+
+  <!-- 5. Executive Management -->
+  <g transform="translate(355, 370)" filter="url(#shadow3)">
+    <rect width="290" height="215" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <rect x="0" y="0" width="290" height="38" rx="10" fill="#DB2777"/>
+    <rect x="0" y="28" width="290" height="10" fill="#DB2777"/>
+    <text x="14" y="24" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">📊 Executive Mgmt (/management)</text>
+    
+    <g transform="translate(12, 48)">
+      <text x="0" y="16" fill="#F472B6" font-family="monospace" font-size="11" font-weight="600">GET .../nirf/metrics/</text>
+      <text x="0" y="32" fill="#64748B" font-family="sans-serif" font-size="10">NIRF GPH &amp; GMS outcome metrics</text>
+      
+      <text x="0" y="56" fill="#F472B6" font-family="monospace" font-size="11" font-weight="600">GET .../fairness/audit/</text>
+      <text x="0" y="72" fill="#64748B" font-family="sans-serif" font-size="10">7,141-student demographic slice audit</text>
+      
+      <text x="0" y="96" fill="#F472B6" font-family="monospace" font-size="11" font-weight="600">GET .../agents/runs/</text>
+      <text x="0" y="112" fill="#64748B" font-family="sans-serif" font-size="10">Autonomous copilot trace logs</text>
+
+      <text x="0" y="136" fill="#F472B6" font-family="monospace" font-size="11" font-weight="600">GET .../reports/</text>
+      <text x="0" y="152" fill="#64748B" font-family="sans-serif" font-size="10">15 Pre-computed aggregation pipelines</text>
+    </g>
+  </g>
+
+  <!-- 6. Institutional Admin -->
+  <g transform="translate(675, 370)" filter="url(#shadow3)">
+    <rect width="285" height="215" rx="10" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <rect x="0" y="0" width="285" height="38" rx="10" fill="#EA580C"/>
+    <rect x="0" y="28" width="285" height="10" fill="#EA580C"/>
+    <text x="14" y="24" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700">🛡️ Institutional Admin (/admin)</text>
+    
+    <g transform="translate(12, 48)">
+      <text x="0" y="16" fill="#FB923C" font-family="monospace" font-size="11" font-weight="600">GET /api/admin/claims/</text>
+      <text x="0" y="32" fill="#64748B" font-family="sans-serif" font-size="10">Pending manual account claim queue</text>
+      
+      <text x="0" y="56" fill="#FB923C" font-family="monospace" font-size="11" font-weight="600">POST .../claims/{id}/resolve/</text>
+      <text x="0" y="72" fill="#64748B" font-family="sans-serif" font-size="10">Approve / reject identity linkage</text>
+      
+      <text x="0" y="96" fill="#FB923C" font-family="monospace" font-size="11" font-weight="600">GET /api/admin/tenants/</text>
+      <text x="0" y="112" fill="#64748B" font-family="sans-serif" font-size="10">Multi-tenant institution configuration</text>
+
+      <text x="0" y="136" fill="#FB923C" font-family="monospace" font-size="11" font-weight="600">GET /api/admin/iam/identities/</text>
+      <text x="0" y="152" fill="#64748B" font-family="sans-serif" font-size="10">Person identities &amp; memberships</text>
+    </g>
+  </g>
+</svg>
