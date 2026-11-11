@@ -366,3 +366,4 @@ def get_css() -> str:
       font-size: 8.5pt;
     }
     """
+
