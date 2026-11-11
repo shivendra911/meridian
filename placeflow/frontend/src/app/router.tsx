@@ -15,6 +15,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { RequireAuth, RequirePortal } from '../core/auth/guards';
 import { LoginPage } from '../core/auth/LoginPage';
 import { PortalRedirect } from './PortalRedirect';
+import { HomeGate } from '../public/HomeGate';
 import { ForbiddenPage } from './ForbiddenPage';
 import { NotFoundPage } from './NotFoundPage';
 
@@ -30,13 +31,12 @@ export const AppRouter: React.FC = () => {
   return (
     <Routes>
       {/* 1. Public Authentication Route */}
+      <Route path="/" element={<HomeGate />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forbidden" element={<ForbiddenPage />} />
 
       {/* 2. Authenticated Portal Trees */}
       <Route element={<RequireAuth />}>
-        {/* Workspace Root Redirect -> /<me.default_portal>/home */}
-        <Route path="/" element={<PortalRedirect />} />
 
         {/* Student Workspace */}
         <Route

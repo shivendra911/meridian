@@ -127,3 +127,22 @@ def revoke_all_account_sessions(account_id: str, except_session_id: Optional[str
     )
     return res.modified_count
 
+
+def list_account_sessions(account_id: str, db=None) -> List[Dict[str, Any]]:
+    """Lists all active (unexpired, unrevoked) sessions for an account."""
+    if db is None:
+        db = get_db()
+
+    now = datetime.now(timezone.utc)
+    cursor = db.auth_sessions.find(
+        {
+            "account_id": account_id,
+            "status": "ACTIVE",
+            "expires_at": {"$gt": now},
+        },
+        {"_id": 0, "token_hash": 0},
+    ).sort("last_activity_at", -1)
+
+    return list(cursor)
+
+

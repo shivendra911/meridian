@@ -21,6 +21,27 @@ PERSON_IDENTITIES_VALIDATOR = {
                 "enum": ["ACTIVE", "SUSPENDED", "DECEASED", "MERGED"],
             },
             "merged_into_person_id": {"bsonType": ["string", "null"]},
+            "preferred_name": {"bsonType": ["string", "null"]},
+            "avatar": {
+                "bsonType": ["object", "null"],
+                "properties": {
+                    "key": {"bsonType": "string"},
+                    "content_type": {"bsonType": "string"},
+                    "bytes": {"bsonType": "int"},
+                    "updated_at": {"bsonType": "date"},
+                },
+            },
+            "headline": {"bsonType": ["string", "null"]},
+            "locale": {"bsonType": ["string", "null"]},
+            "timezone": {"bsonType": ["string", "null"]},
+            "notification_prefs": {
+                "bsonType": ["object", "null"],
+                "properties": {
+                    "email": {"bsonType": "bool"},
+                    "in_app": {"bsonType": "bool"},
+                },
+            },
+            "onboarded_at": {"bsonType": ["date", "null"]},
             "national_identifiers": {
                 "bsonType": "array",
                 "items": {
@@ -318,6 +339,93 @@ AUTH_SESSIONS_VALIDATOR = {
     }
 }
 
+PERSON_AFFILIATIONS_VALIDATOR = {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+            "affiliation_id", "tenant_id", "person_id", "type",
+            "record_id", "status", "source", "created_at"
+        ],
+        "properties": {
+            "affiliation_id": {"bsonType": "string"},
+            "tenant_id": {"bsonType": "string"},
+            "person_id": {"bsonType": "string"},
+            "type": {
+                "enum": ["STUDENT", "FACULTY", "HOD", "DEAN", "ALUMNI"],
+            },
+            "record_id": {"bsonType": "string"},
+            "status": {
+                "enum": ["UNVERIFIED", "VERIFIED", "REVOKED"],
+            },
+            "verified_by": {"bsonType": ["string", "null"]},
+            "verified_at": {"bsonType": ["date", "null"]},
+            "source": {
+                "enum": ["IMPORT", "CLAIM", "ADMIN"],
+            },
+            "created_at": {"bsonType": "date"},
+            "metadata": {"bsonType": "object"},
+        },
+    }
+}
+
+STUDENT_PROFILES_VALIDATOR = {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": ["student_id", "tenant_id", "updated_at"],
+        "properties": {
+            "student_id": {"bsonType": "string"},
+            "tenant_id": {"bsonType": "string"},
+            "summary": {"bsonType": ["string", "null"]},
+            "skills": {
+                "bsonType": "array",
+                "items": {"bsonType": "string"},
+            },
+            "links": {
+                "bsonType": "array",
+            },
+            "resume_ref": {"bsonType": ["string", "null"]},
+            "updated_at": {"bsonType": "date"},
+        },
+    }
+}
+
+ACCOUNT_TOKENS_VALIDATOR = {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": ["token_hash", "account_id", "purpose", "expires_at", "attempts"],
+        "properties": {
+            "token_hash": {"bsonType": "string"},
+            "account_id": {"bsonType": "string"},
+            "purpose": {
+                "enum": ["INVITE", "RESET", "CLAIM_OTP"],
+            },
+            "expires_at": {"bsonType": "date"},
+            "used_at": {"bsonType": ["date", "null"]},
+            "attempts": {"bsonType": "int"},
+            "metadata": {"bsonType": "object"},
+            "created_at": {"bsonType": "date"},
+        },
+    }
+}
+
+NOTIFICATIONS_VALIDATOR = {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": ["notification_id", "tenant_id", "person_id", "kind", "title", "body", "created_at"],
+        "properties": {
+            "notification_id": {"bsonType": "string"},
+            "tenant_id": {"bsonType": "string"},
+            "person_id": {"bsonType": "string"},
+            "kind": {"bsonType": "string"},
+            "title": {"bsonType": "string"},
+            "body": {"bsonType": "string"},
+            "link": {"bsonType": ["string", "null"]},
+            "created_at": {"bsonType": "date"},
+            "read_at": {"bsonType": ["date", "null"]},
+        },
+    }
+}
+
 
 def setup_camp02_collections(db):
     """Creates collections and composite indexes for CAMP-02 Identity, Membership, Roles & Authorization."""
@@ -415,3 +523,44 @@ def setup_camp02_collections(db):
     db.auth_sessions.create_index([("session_id", 1)], unique=True, name="uq_session_id")
     db.auth_sessions.create_index([("token_hash", 1)], unique=True, name="uq_session_token")
     db.auth_sessions.create_index([("account_id", 1), ("status", 1)], name="ix_session_account_status")
+
+    # 11. person_affiliations
+    if "person_affiliations" not in db.list_collection_names():
+        db.create_collection("person_affiliations", validator=PERSON_AFFILIATIONS_VALIDATOR)
+    else:
+        db.command("collMod", "person_affiliations", validator=PERSON_AFFILIATIONS_VALIDATOR)
+    db.person_affiliations.create_index([("affiliation_id", 1)], unique=True, name="uq_affiliation_id")
+    db.person_affiliations.create_index(
+        [("tenant_id", 1), ("type", 1), ("record_id", 1)],
+        unique=True,
+        name="uq_tenant_type_record"
+    )
+    db.person_affiliations.create_index([("person_id", 1), ("tenant_id", 1)], name="ix_aff_person_tenant")
+
+    # 12. student_profiles
+    if "student_profiles" not in db.list_collection_names():
+        db.create_collection("student_profiles", validator=STUDENT_PROFILES_VALIDATOR)
+    else:
+        db.command("collMod", "student_profiles", validator=STUDENT_PROFILES_VALIDATOR)
+    db.student_profiles.create_index(
+        [("student_id", 1), ("tenant_id", 1)],
+        unique=True,
+        name="uq_student_profile"
+    )
+
+    # 13. account_tokens
+    if "account_tokens" not in db.list_collection_names():
+        db.create_collection("account_tokens", validator=ACCOUNT_TOKENS_VALIDATOR)
+    else:
+        db.command("collMod", "account_tokens", validator=ACCOUNT_TOKENS_VALIDATOR)
+    db.account_tokens.create_index([("token_hash", 1)], unique=True, name="uq_token_hash")
+    db.account_tokens.create_index([("expires_at", 1)], expireAfterSeconds=0, name="ttl_token_expires")
+    db.account_tokens.create_index([("account_id", 1), ("purpose", 1)], name="ix_account_purpose")
+
+    # 14. notifications
+    if "notifications" not in db.list_collection_names():
+        db.create_collection("notifications", validator=NOTIFICATIONS_VALIDATOR)
+    else:
+        db.command("collMod", "notifications", validator=NOTIFICATIONS_VALIDATOR)
+    db.notifications.create_index([("notification_id", 1)], unique=True, name="uq_notification_id")
+    db.notifications.create_index([("person_id", 1), ("read_at", 1), ("created_at", -1)], name="ix_notification_person_read")

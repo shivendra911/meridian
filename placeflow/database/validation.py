@@ -330,6 +330,61 @@ INSTITUTIONAL_RELATIONSHIPS = collection_schema(
         "created_at": date(),
     })
 
+PERSON_AFFILIATIONS = collection_schema(
+    ["affiliation_id", "tenant_id", "person_id", "type", "record_id", "status", "source", "created_at"],
+    {
+        "affiliation_id": string(),
+        "tenant_id": string(),
+        "person_id": string(),
+        "type": string(enum=["STUDENT", "FACULTY", "HOD", "DEAN", "ALUMNI"]),
+        "record_id": string(),
+        "status": string(enum=["UNVERIFIED", "VERIFIED", "REVOKED"]),
+        "verified_by": string(),
+        "verified_at": date(),
+        "source": string(enum=["IMPORT", "CLAIM", "ADMIN"]),
+        "created_at": date(),
+        "metadata": {"bsonType": "object"},
+    })
+
+STUDENT_PROFILES = collection_schema(
+    ["student_id", "tenant_id", "updated_at"],
+    {
+        "student_id": string(),
+        "tenant_id": string(),
+        "summary": string(),
+        "skills": array(string()),
+        "links": array(string()),
+        "resume_ref": string(),
+        "updated_at": date(),
+    })
+
+ACCOUNT_TOKENS = collection_schema(
+    ["token_hash", "account_id", "purpose", "expires_at", "attempts"],
+    {
+        "token_hash": string(),
+        "account_id": string(),
+        "purpose": string(enum=["INVITE", "RESET", "CLAIM_OTP"]),
+        "expires_at": date(),
+        "used_at": date(),
+        "attempts": whole(minimum=0),
+        "metadata": {"bsonType": "object"},
+        "created_at": date(),
+    })
+
+NOTIFICATIONS = collection_schema(
+    ["notification_id", "tenant_id", "person_id", "kind", "title", "body", "created_at"],
+    {
+        "notification_id": string(),
+        "tenant_id": string(),
+        "person_id": string(),
+        "kind": string(),
+        "title": string(),
+        "body": string(),
+        "link": string(),
+        "created_at": date(),
+        "read_at": date(),
+    })
+
 SCHEMAS = {
     "students": STUDENTS, "companies": COMPANIES, "jobs": JOBS,
     "applications": APPLICATIONS, "interviews": INTERVIEWS,
@@ -337,6 +392,10 @@ SCHEMAS = {
     "faculty": FACULTY, "department_heads": DEPARTMENT_HEADS,
     "school_heads": SCHOOL_HEADS, "admins": ADMINS, "placement_drives": PLACEMENT_DRIVES,
     "institutional_relationships": INSTITUTIONAL_RELATIONSHIPS,
+    "person_affiliations": PERSON_AFFILIATIONS,
+    "student_profiles": STUDENT_PROFILES,
+    "account_tokens": ACCOUNT_TOKENS,
+    "notifications": NOTIFICATIONS,
 }
 
 # Rules $jsonSchema cannot express (they compare two fields) go in $expr.
@@ -406,6 +465,15 @@ INDEXES = [
     ("students", [("assessment_status", 1)], {"name": "ix_student_assessment"}),
     ("students", [("survey_status", 1)], {"name": "ix_student_survey"}),
     ("consent_records", [("student_id", 1)], {"name": "ix_consent_student"}),
+    ("person_affiliations", [("affiliation_id", 1)], {"name": "uq_affiliation_id", "unique": True}),
+    ("person_affiliations", [("tenant_id", 1), ("type", 1), ("record_id", 1)], {"name": "uq_tenant_type_record", "unique": True}),
+    ("person_affiliations", [("person_id", 1), ("tenant_id", 1)], {"name": "ix_aff_person_tenant"}),
+    ("student_profiles", [("student_id", 1), ("tenant_id", 1)], {"name": "uq_student_profile", "unique": True}),
+    ("account_tokens", [("token_hash", 1)], {"name": "uq_token_hash", "unique": True}),
+    ("account_tokens", [("expires_at", 1)], {"name": "ttl_token_expires", "expireAfterSeconds": 0}),
+    ("account_tokens", [("account_id", 1), ("purpose", 1)], {"name": "ix_account_purpose"}),
+    ("notifications", [("notification_id", 1)], {"name": "uq_notification_id", "unique": True}),
+    ("notifications", [("person_id", 1), ("read_at", 1), ("created_at", -1)], {"name": "ix_notification_person_read"}),
 ]
 
 VIEW_NAME = "v_application_details"

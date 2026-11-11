@@ -45,6 +45,8 @@ backups/
 exports/
 ml/models/
 .git_placeflow_backup/
+media/
+avatars/
 
 # Raw User Datasets, Spreadsheets & Binary Dumps (Zero-Data Privacy Policy)
 *.xlsx

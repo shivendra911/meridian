@@ -122,6 +122,8 @@ class Principal:
     default_portal: str
     delegation: Optional[Dict[str, Any]] = None
     break_glass: Optional[Dict[str, Any]] = None
+    profile: Optional[Dict[str, Any]] = None
+    unread_notifications: int = 0
 
     @property
     def is_authenticated(self) -> bool:
@@ -183,6 +185,8 @@ class Principal:
             "default_portal": self.default_portal,
             "delegation": self.delegation,
             "break_glass": self.break_glass,
+            "profile": self.profile,
+            "unread_notifications": self.unread_notifications,
         }
 
 
@@ -233,6 +237,18 @@ def build_principal(
         a_copy["role_code"] = role_code
         formatted_assignments.append(a_copy)
 
+    # Compose platform profile and unread notifications count (PLATFORM_SPEC Section 2)
+    from api.account.profile_service import get_profile_summary, get_unread_notifications_count
+    profile_summary = get_profile_summary(
+        account_id=account_id,
+        person_id=person_id,
+        subject=subject,
+        tenant_id=tenant_id,
+        institution_id=institution_id,
+        db=db,
+    )
+    unread_notifs = get_unread_notifications_count(person_id, db=db)
+
     return Principal(
         account_id=account_id,
         person_id=person_id,
@@ -246,4 +262,6 @@ def build_principal(
         default_portal=default_portal,
         delegation=None,
         break_glass=None,
+        profile=profile_summary,
+        unread_notifications=unread_notifs,
     )

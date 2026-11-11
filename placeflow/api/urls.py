@@ -23,6 +23,7 @@ from api import (
     views_hierarchy,
 )
 from api.auth import views as views_auth
+from api.account import views as views_account
 
 urlpatterns = [
     # Authoritative Health & System Status Probe (Public Allowlist)
@@ -34,6 +35,11 @@ urlpatterns = [
     path("auth/logout/", views_auth.LogoutView.as_view(), name="auth_logout"),
     path("auth/me/", views_auth.MeView.as_view(), name="auth_me"),
     path("auth/switch-context/", views_auth.SwitchContextView.as_view(), name="auth_switch_context"),
+
+    # Meridian Platform Identity, Profiles & Cards (PLATFORM_SPEC)
+    path("account/", include("api.account.urls")),
+    path("people/<str:person_id>/card/", views_account.PersonCardView.as_view(), name="person_card"),
+    path("media/avatar/<str:person_id>/", views_account.MediaAvatarServeView.as_view(), name="media_avatar"),
 
     # Namespaced Role-Separated Portals (Phase 3 & Phase 6)
     path("student/", include("api.portals.student.urls")),
