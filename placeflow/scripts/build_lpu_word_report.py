@@ -7,6 +7,9 @@ institutional banner, side icons, page borders, student & faculty tables,
 rubrics, 18 document collections, CRUD queries, 15 aggregation pipelines,
 PyMongo ACID cascading, ML fairness governance, live prototype screenshots,
 and a comprehensive viva-voce preparation guide.
+
+Optimized for high page occupancy, zero redundant blank pages, and tight
+academic typography.
 """
 
 import os
@@ -17,8 +20,8 @@ from docx import Document
 from docx.shared import Inches, Pt, RGBColor, Length
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.oxml import parse_xml
-from docx.oxml.ns import nsdecls
+from docx.oxml import parse_xml, OxmlElement
+from docx.oxml.ns import nsdecls, qn
 
 # Set path for report_modules
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -78,6 +81,9 @@ IMAGE_MAP = {
     "__SVG_LOGO__": os.path.join(ASSETS_DIR, "lpu_side_icon.png")
 }
 
+# Track page break state globally to prevent double page breaks
+g_last_was_page_break = False
+
 # ==========================================
 # XML & STYLING HELPERS
 # ==========================================
@@ -87,7 +93,7 @@ def set_cell_background(cell, hex_color):
     shading_elm = parse_xml(f'<w:shd {nsdecls("w")} w:fill="{hex_color}"/>')
     cell._tc.get_or_add_tcPr().append(shading_elm)
 
-def set_cell_margins(cell, top=80, bottom=80, left=120, right=120):
+def set_cell_margins(cell, top=40, bottom=40, left=80, right=80):
     """Sets cell internal padding (in dxa: 20 dxa = 1 pt)."""
     tcMar = parse_xml(
         f'<w:tcMar {nsdecls("w")}>'
@@ -134,61 +140,52 @@ def add_page_border(section, color="1E293B", sz="8"):
     """Adds a page border frame matching LPU assignment sheets."""
     pg_borders_xml = (
         f'<w:pgBorders {nsdecls("w")} w:offsetFrom="page">'
-        f'<w:top w:val="single" w:sz="{sz}" w:space="24" w:color="{color}"/>'
-        f'<w:left w:val="single" w:sz="{sz}" w:space="24" w:color="{color}"/>'
-        f'<w:bottom w:val="single" w:sz="{sz}" w:space="24" w:color="{color}"/>'
-        f'<w:right w:val="single" w:sz="{sz}" w:space="24" w:color="{color}"/>'
+        f'<w:top w:val="single" w:sz="{sz}" w:space="20" w:color="{color}"/>'
+        f'<w:left w:val="single" w:sz="{sz}" w:space="20" w:color="{color}"/>'
+        f'<w:bottom w:val="single" w:sz="{sz}" w:space="20" w:color="{color}"/>'
+        f'<w:right w:val="single" w:sz="{sz}" w:space="20" w:color="{color}"/>'
         f'</w:pgBorders>'
     )
     section._sectPr.append(parse_xml(pg_borders_xml))
 
 def add_styled_heading(doc, text, level=1):
-    """Adds a styled heading with LPU brand colors and clean spacing."""
+    """Adds a styled heading with LPU brand colors and clean compact spacing."""
+    global g_last_was_page_break
+    g_last_was_page_break = False
+    
     p = doc.add_paragraph()
     p.paragraph_format.keep_with_next = True
-    p.paragraph_format.space_before = Pt(12 if level == 1 else (8 if level == 2 else 6))
-    p.paragraph_format.space_after = Pt(3 if level == 1 else 2)
+    p.paragraph_format.space_before = Pt(8 if level == 1 else (6 if level == 2 else 4))
+    p.paragraph_format.space_after = Pt(2 if level == 1 else 1.5)
     
     run = p.add_run(text)
     run.bold = True
     if level == 1:
-        run.font.size = Pt(14)
+        run.font.size = Pt(13)
         run.font.color.rgb = RGB_LPU_ORANGE
-        pBdr = parse_xml(f'<w:pBdr {nsdecls("w")}><w:bottom w:val="single" w:sz="6" w:space="3" w:color="{HEX_LPU_ORANGE}"/></w:pBdr>')
+        pBdr = parse_xml(f'<w:pBdr {nsdecls("w")}><w:bottom w:val="single" w:sz="6" w:space="2" w:color="{HEX_LPU_ORANGE}"/></w:pBdr>')
         p._p.get_or_add_pPr().append(pBdr)
     elif level == 2:
-        run.font.size = Pt(11.5)
+        run.font.size = Pt(11)
         run.font.color.rgb = RGB_DARK_NAVY
     elif level == 3:
-        run.font.size = Pt(10)
+        run.font.size = Pt(9.5)
         run.font.color.rgb = RGB_LPU_ORANGE
     else:
-        run.font.size = Pt(9.5)
+        run.font.size = Pt(9.0)
         run.font.color.rgb = RGB_DARK_NAVY
     return p
 
-def add_body_p(doc, text="", bold_prefix=None, space_after=3.5):
+def add_body_p(doc, text="", bold_prefix=None, space_after=2.5):
     """Adds a body paragraph formatted for high density and readability."""
+    global g_last_was_page_break
+    if not text and not bold_prefix:
+        return None
+    g_last_was_page_break = False
+    
     p = doc.add_paragraph()
     p.paragraph_format.space_before = Pt(0)
     p.paragraph_format.space_after = Pt(space_after)
-    p.paragraph_format.line_spacing = 1.12
-    if bold_prefix:
-        r_pre = p.add_run(bold_prefix)
-        r_pre.bold = True
-        r_pre.font.size = Pt(9.0)
-        r_pre.font.color.rgb = RGB_DARK_NAVY
-    if text:
-        r_text = p.add_run(text)
-        r_text.font.size = Pt(9.0)
-        r_text.font.color.rgb = RGB_BODY
-    return p
-
-def add_bullet_p(doc, text, bold_prefix=None):
-    """Adds a compact bullet point."""
-    p = doc.add_paragraph(style='List Bullet')
-    p.paragraph_format.space_before = Pt(0)
-    p.paragraph_format.space_after = Pt(2.0)
     p.paragraph_format.line_spacing = 1.10
     if bold_prefix:
         r_pre = p.add_run(bold_prefix)
@@ -201,21 +198,47 @@ def add_bullet_p(doc, text, bold_prefix=None):
         r_text.font.color.rgb = RGB_BODY
     return p
 
+def add_bullet_p(doc, text, bold_prefix=None, space_after=1.5):
+    """Adds a compact bullet point."""
+    global g_last_was_page_break
+    if not text and not bold_prefix:
+        return None
+    g_last_was_page_break = False
+    
+    p = doc.add_paragraph(style='List Bullet')
+    p.paragraph_format.space_before = Pt(0)
+    p.paragraph_format.space_after = Pt(space_after)
+    p.paragraph_format.line_spacing = 1.08
+    if bold_prefix:
+        r_pre = p.add_run(bold_prefix)
+        r_pre.bold = True
+        r_pre.font.size = Pt(8.5)
+        r_pre.font.color.rgb = RGB_DARK_NAVY
+    if text:
+        r_text = p.add_run(text)
+        r_text.font.size = Pt(8.5)
+        r_text.font.color.rgb = RGB_BODY
+    return p
+
 def add_callout_box(doc, text, title="ENGINEERING INVARIANT", border_color=HEX_LPU_ORANGE, bg_color=HEX_LIGHT_BG):
-    """Adds a publication-grade callout box with a thick accent border."""
+    """Adds a publication-grade callout box with a thick accent border without extra spacers."""
+    global g_last_was_page_break
+    g_last_was_page_break = False
+    
     table = doc.add_table(rows=1, cols=1)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
     
     cell = table.cell(0, 0)
-    cell.width = Inches(6.8)
+    cell.width = Inches(7.0)
     set_cell_background(cell, bg_color)
-    set_cell_margins(cell, top=80, bottom=80, left=140, right=120)
-    set_cell_borders(cell, left={'val': 'single', 'sz': '20', 'color': border_color})
+    set_cell_margins(cell, top=40, bottom=40, left=100, right=80)
+    set_cell_borders(cell, left={'val': 'single', 'sz': '18', 'color': border_color})
     
     p = cell.paragraphs[0]
     p.paragraph_format.space_before = Pt(0)
-    p.paragraph_format.space_after = Pt(1)
+    p.paragraph_format.space_after = Pt(0)
+    p.paragraph_format.line_spacing = 1.05
     if title:
         r_title = p.add_run(f"[{title}] ")
         r_title.bold = True
@@ -225,21 +248,20 @@ def add_callout_box(doc, text, title="ENGINEERING INVARIANT", border_color=HEX_L
     r_text = p.add_run(text)
     r_text.font.size = Pt(8.0)
     r_text.font.color.rgb = RGB_DARK_NAVY
-    
-    p_spacer = doc.add_paragraph()
-    p_spacer.paragraph_format.space_before = Pt(0)
-    p_spacer.paragraph_format.space_after = Pt(2)
 
 def add_code_block(doc, code_str, caption=None):
     """Adds a monospace formatted code box with syntax appearance."""
+    global g_last_was_page_break
+    g_last_was_page_break = False
+    
     table = doc.add_table(rows=1, cols=1)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
     
     cell = table.cell(0, 0)
-    cell.width = Inches(6.8)
+    cell.width = Inches(7.0)
     set_cell_background(cell, HEX_CODE_BG)
-    set_cell_margins(cell, top=60, bottom=60, left=120, right=100)
+    set_cell_margins(cell, top=40, bottom=40, left=80, right=60)
     set_cell_borders(cell, 
                      top={'val': 'single', 'sz': '4', 'color': HEX_BORDER},
                      bottom={'val': 'single', 'sz': '4', 'color': HEX_BORDER},
@@ -255,44 +277,49 @@ def add_code_block(doc, code_str, caption=None):
     for i, line in enumerate(lines):
         r = p.add_run(line + ("\n" if i < len(lines)-1 else ""))
         r.font.name = "Consolas"
-        r.font.size = Pt(7.5)
+        r.font.size = Pt(7.0)
         r.font.color.rgb = RGB_DARK_NAVY
         
     if caption:
         p_cap = doc.add_paragraph()
         p_cap.paragraph_format.space_before = Pt(1)
-        p_cap.paragraph_format.space_after = Pt(3)
+        p_cap.paragraph_format.space_after = Pt(2)
         p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
         r_cap = p_cap.add_run(f"Listing: {caption}")
-        r_cap.font.size = Pt(7.5)
+        r_cap.font.size = Pt(7.0)
         r_cap.italic = True
         r_cap.font.color.rgb = RGB_MUTED
 
-def add_image_box(doc, image_path, caption=None, width_inches=6.0):
+def add_image_box(doc, image_path, caption=None, width_inches=5.8):
     """Embeds an image centered with border and italic caption."""
+    global g_last_was_page_break
     if not os.path.exists(image_path):
         return
+    g_last_was_page_break = False
         
     p = doc.add_paragraph()
-    p.paragraph_format.space_before = Pt(4)
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_before = Pt(2)
+    p.paragraph_format.space_after = Pt(1)
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run()
     run.add_picture(image_path, width=Inches(width_inches))
     
     if caption:
         p_cap = doc.add_paragraph()
-        p_cap.paragraph_format.space_before = Pt(1)
-        p_cap.paragraph_format.space_after = Pt(4)
+        p_cap.paragraph_format.space_before = Pt(0.5)
+        p_cap.paragraph_format.space_after = Pt(2)
         p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
         r_cap = p_cap.add_run(f"Figure: {caption}")
-        r_cap.font.size = Pt(8.0)
+        r_cap.font.size = Pt(7.5)
         r_cap.italic = True
         r_cap.bold = True
         r_cap.font.color.rgb = RGB_DARK_NAVY
 
 def create_styled_table(doc, headers, data, col_widths=None):
     """Creates a high-density, beautifully styled data table."""
+    global g_last_was_page_break
+    g_last_was_page_break = False
+    
     table = doc.add_table(rows=len(data) + 1, cols=len(headers))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
@@ -300,17 +327,21 @@ def create_styled_table(doc, headers, data, col_widths=None):
     
     # Header Row
     hdr_cells = table.rows[0].cells
+    # Repeat header row on every page if table splits
+    trPr = table.rows[0]._tr.get_or_add_trPr()
+    trPr.append(parse_xml(f'<w:tblHeader {nsdecls("w")}/>'))
+    
     for i, title in enumerate(headers):
         hdr_cells[i].text = title
         set_cell_background(hdr_cells[i], HEX_NAVY)
-        set_cell_margins(hdr_cells[i], top=70, bottom=70, left=100, right=100)
+        set_cell_margins(hdr_cells[i], top=40, bottom=40, left=60, right=60)
         p = hdr_cells[i].paragraphs[0]
         p.paragraph_format.space_before = Pt(0)
         p.paragraph_format.space_after = Pt(0)
         p.alignment = WD_ALIGN_PARAGRAPH.LEFT
         for r in p.runs:
             r.bold = True
-            r.font.size = Pt(8.0)
+            r.font.size = Pt(7.5)
             r.font.color.rgb = RGB_WHITE
             
     # Data Rows
@@ -320,13 +351,13 @@ def create_styled_table(doc, headers, data, col_widths=None):
         for col_idx, cell_value in enumerate(row_data):
             row_cells[col_idx].text = str(cell_value)
             set_cell_background(row_cells[col_idx], bg_col)
-            set_cell_margins(row_cells[col_idx], top=50, bottom=50, left=100, right=100)
+            set_cell_margins(row_cells[col_idx], top=30, bottom=30, left=60, right=60)
             p = row_cells[col_idx].paragraphs[0]
             p.paragraph_format.space_before = Pt(0)
             p.paragraph_format.space_after = Pt(0)
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT
             for r in p.runs:
-                r.font.size = Pt(7.5)
+                r.font.size = Pt(7.0)
                 r.font.color.rgb = RGB_BODY
                 
     # Column widths
@@ -339,9 +370,6 @@ def create_styled_table(doc, headers, data, col_widths=None):
                     else:
                         row.cells[idx].width = Inches(width)
                     
-    p_spacer = doc.add_paragraph()
-    p_spacer.paragraph_format.space_before = Pt(0)
-    p_spacer.paragraph_format.space_after = Pt(2)
     return table
 
 def configure_document_setup():
@@ -350,10 +378,11 @@ def configure_document_setup():
     section = doc.sections[0]
     section.page_width = Inches(8.27)  # A4
     section.page_height = Inches(11.69)
-    section.top_margin = Inches(0.65)
-    section.bottom_margin = Inches(0.65)
-    section.left_margin = Inches(0.65)
-    section.right_margin = Inches(0.65)
+    # 0.5" top/bottom margins to allow full single-page cover and high page occupancy
+    section.top_margin = Inches(0.5)
+    section.bottom_margin = Inches(0.5)
+    section.left_margin = Inches(0.6)
+    section.right_margin = Inches(0.6)
     
     # Add page border frame
     add_page_border(section, color="1E293B", sz="8")
@@ -363,16 +392,10 @@ def configure_document_setup():
     
     # Running Header for Page 2 onwards
     header = section.header
-    hp = header.paragraphs[0]
-    hp.paragraph_format.space_before = Pt(0)
-    hp.paragraph_format.space_after = Pt(2)
-    hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    
-    # Header table for left side icon + right title
-    header_tbl = header.add_table(rows=1, cols=2, width=Inches(6.9))
+    header_tbl = header.add_table(rows=1, cols=2, width=Inches(7.0))
     header_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
     c_left = header_tbl.cell(0, 0)
-    c_left.width = Inches(1.5)
+    c_left.width = Inches(1.2)
     p_icon = c_left.paragraphs[0]
     p_icon.paragraph_format.space_before = Pt(0)
     p_icon.paragraph_format.space_after = Pt(0)
@@ -380,44 +403,38 @@ def configure_document_setup():
     side_icon_path = os.path.join(ASSETS_DIR, "lpu_side_icon.png")
     if os.path.exists(side_icon_path):
         r_img = p_icon.add_run()
-        r_img.add_picture(side_icon_path, width=Inches(0.38))
+        r_img.add_picture(side_icon_path, width=Inches(0.32))
         
     c_right = header_tbl.cell(0, 1)
-    c_right.width = Inches(5.4)
+    c_right.width = Inches(5.8)
     p_right = c_right.paragraphs[0]
     p_right.paragraph_format.space_before = Pt(0)
     p_right.paragraph_format.space_after = Pt(0)
     p_right.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     
     r_h1 = p_right.add_run("LOVELY PROFESSIONAL UNIVERSITY | CSE494: INTELLIGENT NOSQL DATABASES\n")
-    r_h1.font.size = Pt(7.5)
+    r_h1.font.size = Pt(7.0)
     r_h1.bold = True
     r_h1.font.color.rgb = RGB_LPU_ORANGE
     
     r_h2 = p_right.add_run("Meridian: Enterprise Campus Placement Automation Engine — Project Report")
-    r_h2.font.size = Pt(7.0)
+    r_h2.font.size = Pt(6.5)
     r_h2.font.color.rgb = RGB_MUTED
     
-    # Bottom border on header table
     set_cell_borders(c_left, bottom={'val': 'single', 'sz': '4', 'color': HEX_BORDER})
     set_cell_borders(c_right, bottom={'val': 'single', 'sz': '4', 'color': HEX_BORDER})
     
     # Running Footer
     footer = section.footer
-    fp = footer.paragraphs[0]
-    fp.paragraph_format.space_before = Pt(2)
-    fp.paragraph_format.space_after = Pt(0)
-    
-    # Footer table: Left = Project title, Right = Page numbering
-    footer_tbl = footer.add_table(rows=1, cols=2, width=Inches(6.9))
+    footer_tbl = footer.add_table(rows=1, cols=2, width=Inches(7.0))
     footer_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
     fc_left = footer_tbl.cell(0, 0)
-    fc_left.width = Inches(4.7)
+    fc_left.width = Inches(4.8)
     p_foot_l = fc_left.paragraphs[0]
     p_foot_l.paragraph_format.space_before = Pt(0)
     p_foot_l.paragraph_format.space_after = Pt(0)
     r_fl = p_foot_l.add_run("Meridian Campus Placement Engine | Department of Computer Science & Engineering")
-    r_fl.font.size = Pt(7.0)
+    r_fl.font.size = Pt(6.5)
     r_fl.font.color.rgb = RGB_MUTED
     
     fc_right = footer_tbl.cell(0, 1)
@@ -427,7 +444,7 @@ def configure_document_setup():
     p_foot_r.paragraph_format.space_after = Pt(0)
     p_foot_r.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     r_fr = p_foot_r.add_run("Academic Task 2 (Project Report)")
-    r_fr.font.size = Pt(7.0)
+    r_fr.font.size = Pt(6.5)
     r_fr.bold = True
     r_fr.font.color.rgb = RGB_DARK_NAVY
     
@@ -441,16 +458,16 @@ def configure_document_setup():
 # ==========================================
 
 def add_cover_page(doc):
-    """Creates the official LPU Cover & Evaluation Front Matter."""
-    # Institutional Header Banner
+    """Creates the official LPU Cover & Evaluation Front Matter precisely proportioned for Page 1."""
+    global g_last_was_page_break
     banner_path = os.path.join(ASSETS_DIR, "lpu_header_banner.png")
     if os.path.exists(banner_path):
         p_logo = doc.add_paragraph()
         p_logo.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p_logo.paragraph_format.space_before = Pt(0)
-        p_logo.paragraph_format.space_after = Pt(2)
+        p_logo.paragraph_format.space_after = Pt(1)
         run_logo = p_logo.add_run()
-        run_logo.add_picture(banner_path, width=Inches(3.6))
+        run_logo.add_picture(banner_path, width=Inches(2.6))
         
     p_inst = doc.add_paragraph()
     p_inst.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -458,16 +475,16 @@ def add_cover_page(doc):
     p_inst.paragraph_format.space_after = Pt(1)
     r_inst = p_inst.add_run("SCHOOL OF COMPUTER SCIENCE & ENGINEERING\nDEPARTMENT OF COMPUTER SCIENCE & ENGINEERING")
     r_inst.bold = True
-    r_inst.font.size = Pt(10.5)
+    r_inst.font.size = Pt(9.0)
     r_inst.font.color.rgb = RGB_DARK_NAVY
     
     p_task = doc.add_paragraph()
     p_task.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_task.paragraph_format.space_before = Pt(2)
-    p_task.paragraph_format.space_after = Pt(6)
+    p_task.paragraph_format.space_before = Pt(1)
+    p_task.paragraph_format.space_after = Pt(3)
     r_task = p_task.add_run("ACADEMIC TASK NO. 2 (PROJECT EVALUATION DOSSIER)")
     r_task.bold = True
-    r_task.font.size = Pt(12.5)
+    r_task.font.size = Pt(11.0)
     r_task.font.color.rgb = RGB_LPU_ORANGE
     
     # Academic Task Meta Box (Course Code, Dates, Marks)
@@ -479,20 +496,20 @@ def add_cover_page(doc):
             "Academic Task Type: Project\nMaximum Marks: 30 Marks\nCourse Outcomes: CO4, CO5, CO6\nBloom's Taxonomy: L2, L3"
         ]
     ]
-    create_styled_table(doc, meta_headers, meta_rows, [2.5, 2.2, 2.2])
+    create_styled_table(doc, meta_headers, meta_rows, [2.4, 2.3, 2.3])
     
     # Project Title Banner
     p_title = doc.add_paragraph()
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p_title.paragraph_format.space_before = Pt(4)
+    p_title.paragraph_format.space_before = Pt(3)
     p_title.paragraph_format.space_after = Pt(1)
     r_t1 = p_title.add_run("PROJECT TITLE: MERIDIAN (PLACEFLOW)\n")
     r_t1.bold = True
-    r_t1.font.size = Pt(13.5)
+    r_t1.font.size = Pt(12.0)
     r_t1.font.color.rgb = RGB_LPU_ORANGE
     
     r_t2 = p_title.add_run("Enterprise Multi-Perspective Campus Placement Automation Engine Powered by MongoDB 7.0+\nMulti-Document ACID Seat Cascading, and In-Process ML Fairness Governance")
-    r_t2.font.size = Pt(9.5)
+    r_t2.font.size = Pt(8.0)
     r_t2.italic = True
     r_t2.font.color.rgb = RGB_DARK_NAVY
     
@@ -505,39 +522,30 @@ def add_cover_page(doc):
             "Roll Number: [RK22XXXX / Enter Roll No.]\n"
             "Section / Group: [K22XX / Enter Section]\n"
             "Programme: Bachelor of Technology (B.Tech - CSE)\n"
-            "School of Computer Science & Engineering\n"
-            "Lovely Professional University, Phagwara, Punjab",
+            "School of Computer Science & Engineering, LPU",
             
             "Faculty / Evaluator: [Enter Course Instructor Name]\n"
             "Designation: Assistant Professor / Course Instructor\n"
             "Department: Department of Computer Science & Engineering\n"
-            "School: School of Computer Science & Engineering\n"
-            "Lovely Professional University, Phagwara, Punjab\n"
+            "School of Computer Science & Engineering, LPU\n"
             "Evaluator Signature: __________________________"
         ]
     ]
-    create_styled_table(doc, cred_headers, cred_rows, [3.45, 3.45])
+    create_styled_table(doc, cred_headers, cred_rows, [3.5, 3.5])
     
-    # Official Assignment Question Statement Box (as per CA_2_October.pdf)
+    # Official Assignment Question Statement Box (compacted for single-page fit)
     q_headers = ["Q#", "Question Statement & Demonstration Criteria", "CO Mapped", "Bloom's", "Max Marks"]
     q_statement_text = (
         "Design and implement a MongoDB-based application for a real-world problem of your choice. "
-        "The project should demonstrate your ability to design a suitable document structure, apply validation rules, "
-        "perform CRUD operations, connect MongoDB with Python using PyMongo, and retrieve meaningful information using aggregation queries.\n\n"
-        "Project Demonstration Criteria (Viva-Voce Requirements):\n"
-        "• The problem selected and its real-world relevance.\n"
-        "• Database and document design (18 collections, normalized vs embedded trade-offs).\n"
-        "• Validation rules implemented ($jsonSchema, additionalProperties: false, $expr invariants).\n"
-        "• CRUD queries used (Master catalog C1 to D2 with PyMongo & mongosh).\n"
-        "• Aggregation pipelines used (15 high-order analytic pipelines A1 to A15).\n"
-        "• PyMongo implementation (multi-document ACID seat cascading engine under snapshot isolation).\n"
-        "• Output obtained from queries and performance execution statistics (COLLSCAN vs IXSCAN).\n"
-        "• Why particular queries or database structures were selected."
+        "The project demonstrates document structure design, validation rules, CRUD operations, PyMongo integration, and aggregation queries.\n"
+        "Demonstration Criteria: • Problem & real-world relevance • Database & 18 collections design • Validation rules ($jsonSchema & $expr) "
+        "• CRUD queries (C1-D2) • Aggregation pipelines (A1-A15) • PyMongo multi-document ACID seat cascading "
+        "• Query outputs & performance profiling (COLLSCAN vs IXSCAN) • Architectural justifications."
     )
     q_rows = [
         ["Q1", q_statement_text, "CO4,\nCO5,\nCO6", "L2,\nL3", "30 Marks"]
     ]
-    create_styled_table(doc, q_headers, q_rows, [0.5, 4.6, 0.7, 0.6, 0.5])
+    create_styled_table(doc, q_headers, q_rows, [0.4, 4.8, 0.7, 0.6, 0.5])
     
     # Official Marks Distribution Table
     dist_headers = ["Assessment Component", "Maximum Marks", "Marks Awarded", "Evaluator Remarks"]
@@ -547,28 +555,36 @@ def add_cover_page(doc):
         ["3. Presentation & Viva-Voce (Technical Defense, Query Execution, Justification)", "10", "[     / 10 ]", "Rigorous defense covering query output and design justifications"],
         ["TOTAL EVALUATION SCORE", "30", "[     / 30 ]", "Final Grade Recommendation: _______________"]
     ]
-    create_styled_table(doc, dist_headers, dist_rows, [3.2, 1.1, 1.1, 1.5])
+    create_styled_table(doc, dist_headers, dist_rows, [3.2, 1.1, 1.1, 1.6])
     
+    # Exactly ONE page break to move cleanly to Page 2 for Chapter 1
     doc.add_page_break()
+    g_last_was_page_break = True
 
 # ==========================================
-# HTML TO DOCX ELEMENT CONVERTER
+# HTML TO DOCX ELEMENT CONVERTER (HIGH OCCUPANCY)
 # ==========================================
 
 def convert_html_to_docx(doc, html_content):
     """
     Parses HTML content from report_modules and adds styled Word elements.
-    Converts h1..h4, p, ul/ol, table, pre/code, callouts, and diagrams into docx.
+    Optimized for continuous page flow: converts stat-cards into compact
+    styled paragraphs (not standalone tables), suppresses redundant page breaks,
+    and removes empty paragraph spacers.
     """
+    global g_last_was_page_break
     soup = BeautifulSoup(html_content, "html.parser")
     
     for elem in soup.children:
         if isinstance(elem, Tag):
             tag_name = elem.name
+            classes = elem.get("class", [])
             
-            # Page Break
-            if "page-break" in elem.get("class", []):
-                doc.add_page_break()
+            # Page Break: Suppress if already on a fresh page!
+            if "page-break" in classes:
+                if not g_last_was_page_break:
+                    doc.add_page_break()
+                    g_last_was_page_break = True
                 continue
                 
             # Headings
@@ -592,7 +608,6 @@ def convert_html_to_docx(doc, html_content):
                 for li in elem.find_all("li"):
                     li_text = li.get_text().strip()
                     if li_text:
-                        # Check if leading bold
                         strong = li.find(["strong", "b"])
                         if strong and li_text.startswith(strong.get_text()):
                             prefix = strong.get_text() + " "
@@ -601,7 +616,7 @@ def convert_html_to_docx(doc, html_content):
                         else:
                             add_bullet_p(doc, li_text)
                             
-            # Images
+            # Standalone Images
             elif tag_name == "img":
                 src = elem.get("src", "")
                 alt = elem.get("alt", "")
@@ -611,15 +626,15 @@ def convert_html_to_docx(doc, html_content):
 
             # Preformatted Code
             elif tag_name == "pre":
-                code_text = elem.get_text()
-                add_code_block(doc, code_text)
+                code_text = elem.get_text().strip()
+                if code_text:
+                    add_code_block(doc, code_text)
                 
             # Tables
             elif tag_name == "table":
                 all_tr = elem.find_all("tr")
                 if not all_tr:
                     continue
-                # Extract headers
                 first_tr = all_tr[0]
                 headers = [th.get_text().strip() for th in first_tr.find_all(["th", "td"])]
                 data_rows = []
@@ -632,23 +647,31 @@ def convert_html_to_docx(doc, html_content):
                     
             # Div containers
             elif tag_name == "div":
-                classes = elem.get("class", [])
-                
-                # Callout box
-                if any("callout" in c for c in classes) or "stat-card" in classes:
+                # Stat Card: Format as a clean, dense paragraph with bold Navy title
+                # (Eliminates table fragmentation that leaves pages half empty!)
+                if "stat-card" in classes:
                     title_elem = elem.find(["h3", "h4", "strong", "b"])
-                    title_str = title_elem.get_text().strip() if title_elem else "ARCHITECTURAL NOTE"
+                    title_str = title_elem.get_text().strip() if title_elem else ""
+                    body_elem = elem.find("p")
+                    body_str = body_elem.get_text().strip() if body_elem else elem.get_text().strip()
+                    if title_str and body_str.startswith(title_str):
+                        body_str = body_str[len(title_str):].strip()
+                    add_body_p(doc, body_str, bold_prefix=f"• {title_str}: " if title_str else "• ", space_after=2.0)
+                    
+                # Major Architectural Callout Box
+                elif any("callout" in c for c in classes):
+                    title_elem = elem.find(["h3", "h4", "strong", "b"])
+                    title_str = title_elem.get_text().strip() if title_elem else "ARCHITECTURAL INVARIANT"
                     body_str = elem.get_text().strip()
                     if title_elem and body_str.startswith(title_str):
                         body_str = body_str[len(title_str):].strip()
                     add_callout_box(doc, body_str, title=title_str)
                     
-                # Diagram / Image / Prototype / Screenshot Container
+                # Diagram / Screenshot / Prototype Container
                 elif any(c in classes for c in ["diagram-container", "figure", "screenshot-container", "prototype-container"]):
                     caption_elem = elem.find(["div", "p", "figcaption"], class_=lambda c: c and "caption" in c)
                     caption_text = caption_elem.get_text().strip() if caption_elem else None
                     
-                    # 1. Check if an <img> tag is present inside
                     img_tag = elem.find("img")
                     if img_tag:
                         src = img_tag.get("src", "")
@@ -658,7 +681,6 @@ def convert_html_to_docx(doc, html_content):
                             add_image_box(doc, img_path, caption=caption_text if caption_text else alt)
                             continue
 
-                    # 2. Check if a text placeholder is present inside
                     raw_text = str(elem)
                     matched_img = False
                     for key, img_path in IMAGE_MAP.items():
@@ -668,23 +690,22 @@ def convert_html_to_docx(doc, html_content):
                                 matched_img = True
                             break
                     if not matched_img:
-                        # Fallback: check if there's text inside diagram
-                        diag_p = elem.find_all("p")
-                        for dp in diag_p:
+                        for dp in elem.find_all("p"):
                             add_body_p(doc, dp.get_text().strip())
                             
-                # Grid of cards or Side-by-Side Images
+                # Grid of Side-by-Side Images or Objective Cards
                 elif any("grid" in c for c in classes) or "kpi-container" in classes:
                     sub_diagrams = elem.find_all("div", class_=lambda c: c and any(k in c for k in ["diagram-container", "screenshot-container", "figure"]))
                     if sub_diagrams:
                         if len(sub_diagrams) == 2:
+                            # 2-column side-by-side images table (Architecture Diagram + Prototype Screenshot)
                             img_tbl = doc.add_table(rows=1, cols=2)
                             img_tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
                             img_tbl.autofit = False
                             for idx, diag in enumerate(sub_diagrams):
                                 cell = img_tbl.cell(0, idx)
-                                cell.width = Inches(3.4)
-                                set_cell_margins(cell, top=40, bottom=40, left=40, right=40)
+                                cell.width = Inches(3.5)
+                                set_cell_margins(cell, top=20, bottom=20, left=20, right=20)
                                 
                                 cap_elem = diag.find(["div", "p", "figcaption"], class_=lambda c: c and "caption" in c)
                                 cap_text = cap_elem.get_text().strip() if cap_elem else None
@@ -707,22 +728,19 @@ def convert_html_to_docx(doc, html_content):
                                 if img_path and os.path.exists(img_path):
                                     p_cell = cell.paragraphs[0]
                                     p_cell.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                                    p_cell.paragraph_format.space_before = Pt(2)
-                                    p_cell.paragraph_format.space_after = Pt(2)
-                                    p_cell.add_run().add_picture(img_path, width=Inches(3.2))
+                                    p_cell.paragraph_format.space_before = Pt(1)
+                                    p_cell.paragraph_format.space_after = Pt(1)
+                                    p_cell.add_run().add_picture(img_path, width=Inches(3.3))
                                     if cap_text:
                                         p_cap = cell.add_paragraph()
                                         p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
-                                        p_cap.paragraph_format.space_before = Pt(1)
-                                        p_cap.paragraph_format.space_after = Pt(3)
+                                        p_cap.paragraph_format.space_before = Pt(0.5)
+                                        p_cap.paragraph_format.space_after = Pt(2)
                                         r_c = p_cap.add_run(f"Figure: {cap_text}")
-                                        r_c.font.size = Pt(7.5)
+                                        r_c.font.size = Pt(7.0)
                                         r_c.italic = True
                                         r_c.bold = True
                                         r_c.font.color.rgb = RGB_DARK_NAVY
-                            p_spacer = doc.add_paragraph()
-                            p_spacer.paragraph_format.space_before = Pt(0)
-                            p_spacer.paragraph_format.space_after = Pt(2)
                         else:
                             for diag in sub_diagrams:
                                 cap_elem = diag.find(["div", "p", "figcaption"], class_=lambda c: c and "caption" in c)
@@ -741,16 +759,16 @@ def convert_html_to_docx(doc, html_content):
                                 if img_path and os.path.exists(img_path):
                                     add_image_box(doc, img_path, caption=cap_text)
                     else:
+                        # Grid of text cards: format as dense bullet points to prevent page breaks
                         cards = elem.find_all("div", recursive=False)
                         for card in cards:
                             c_title = card.find(["h3", "h4", "strong", "b"])
-                            t_str = c_title.get_text().strip() if c_title else "OBJECTIVE"
+                            t_str = c_title.get_text().strip() if c_title else ""
                             b_str = card.get_text().strip()
                             if c_title and b_str.startswith(t_str):
                                 b_str = b_str[len(t_str):].strip()
-                            add_callout_box(doc, b_str, title=t_str)
+                            add_bullet_p(doc, b_str, bold_prefix=f"{t_str}: " if t_str else None, space_after=1.5)
                 else:
-                    # Recursive processing of inner tags
                     inner_html = "".join(str(c) for c in elem.children)
                     convert_html_to_docx(doc, inner_html)
 
@@ -760,7 +778,11 @@ def convert_html_to_docx(doc, html_content):
 
 def add_chapter_viva_defense(doc):
     """Adds the complete Viva-Voce Defense Guide addressing all syllabus points."""
-    doc.add_page_break()
+    global g_last_was_page_break
+    if not g_last_was_page_break:
+        doc.add_page_break()
+        g_last_was_page_break = True
+        
     add_styled_heading(doc, "Chapter 12: Comprehensive Viva-Voce Defense & Technical Examination Guide", level=1)
     
     add_styled_heading(doc, "12.1 Strategic Defense of All Required Demonstration Points", level=2)
@@ -840,20 +862,17 @@ def add_chapter_viva_defense(doc):
     
     for q_title, a_text in viva_qa:
         add_styled_heading(doc, q_title, level=3)
-        add_body_p(doc, a_text)
-        p_spacer = doc.add_paragraph()
-        p_spacer.paragraph_format.space_before = Pt(0)
-        p_spacer.paragraph_format.space_after = Pt(2)
+        add_body_p(doc, a_text, space_after=2.0)
 
 # ==========================================
 # MAIN EXECUTION ROUTINE
 # ==========================================
 
 def generate_full_lpu_report():
-    print("[*] Initializing Master LPU Word Report Generation...")
+    print("[*] Initializing Master LPU Word Report Generation (High-Occupancy Optimized)...")
     doc = configure_document_setup()
     
-    print("[1/12] Generating Cover Page & Official LPU Front Matter...")
+    print("[1/12] Generating Single-Page Cover & Official LPU Front Matter...")
     add_cover_page(doc)
     
     print("[2/12] Ingesting & Formatting Chapter 1: Problem Statement & Objectives...")
