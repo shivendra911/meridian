@@ -7,6 +7,24 @@ from typing import Dict, Any, List, Optional
 from operations.students import get_student
 
 
+_CACHED_MODELS = None
+
+def _get_ml_models():
+    global _CACHED_MODELS
+    if _CACHED_MODELS is not None:
+        return _CACHED_MODELS
+    try:
+        from ml.placement_predictor import PLACEMENT_CLF_PATH, PACKAGE_REG_PATH, ENCODERS_PATH
+        import joblib
+        clf = joblib.load(PLACEMENT_CLF_PATH)
+        reg = joblib.load(PACKAGE_REG_PATH)
+        meta = joblib.load(ENCODERS_PATH)
+        _CACHED_MODELS = (clf, reg, meta)
+    except Exception:
+        _CACHED_MODELS = False
+    return _CACHED_MODELS
+
+
 def predict_student_placement(student: Dict[str, Any], db=None) -> Dict[str, Any]:
     """Computes placement likelihood and expected package for a student dictionary."""
     cgpa = float(student.get("cgpa", 7.0))
@@ -16,26 +34,27 @@ def predict_student_placement(student: Dict[str, Any], db=None) -> Dict[str, Any
     skill_count = len(skills) if isinstance(skills, list) else 0
     dept = student.get("department", "CSE")
 
-    try:
-        from ml.placement_predictor import PLACEMENT_CLF_PATH, PACKAGE_REG_PATH, ENCODERS_PATH
-        import joblib
-        import numpy as np
-
-        clf = joblib.load(PLACEMENT_CLF_PATH)
-        reg = joblib.load(PACKAGE_REG_PATH)
-        meta = joblib.load(ENCODERS_PATH)
-
+    models = _get_ml_models()
+    if models:
         try:
-            dept_encoded = meta["dept_encoder"].transform([dept])[0]
+            clf, reg, meta = models
+            import numpy as np
+
+            try:
+                dept_encoded = meta["dept_encoder"].transform([dept])[0]
+            except Exception:
+                dept_encoded = 0
+
+            app_count = 2  # default baseline applications
+            features = np.array([[cgpa, backlogs, year, skill_count, app_count, dept_encoded]])
+
+            prob = float(clf.predict_proba(features)[0][1])
+            expected_pkg = float(reg.predict(features)[0])
         except Exception:
-            dept_encoded = 0
-
-        app_count = 2  # default baseline applications
-        features = np.array([[cgpa, backlogs, year, skill_count, app_count, dept_encoded]])
-
-        prob = float(clf.predict_proba(features)[0][1])
-        expected_pkg = float(reg.predict(features)[0])
-    except Exception:
+            base = min(1.0, max(0.1, (cgpa / 10.0) * 0.7 + (min(skill_count, 6) / 6.0) * 0.3 - (backlogs * 0.15)))
+            prob = round(base, 2)
+            expected_pkg = round(max(3.5, (cgpa * 1.2) + (skill_count * 0.4) - (backlogs * 0.8)), 1)
+    else:
         # Robust analytical calculation if ML artifacts not trained
         base = min(1.0, max(0.1, (cgpa / 10.0) * 0.7 + (min(skill_count, 6) / 6.0) * 0.3 - (backlogs * 0.15)))
         prob = round(base, 2)
