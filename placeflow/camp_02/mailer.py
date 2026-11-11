@@ -51,3 +51,4 @@ def send_lifecycle_email(
     except Exception as exc:
         logger.error("Failed to send email to %s: %s", to_email, exc)
         return False
+

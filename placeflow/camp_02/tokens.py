@@ -261,3 +261,4 @@ def verify_and_consume_claim_otp(claim_id: str, raw_otp: str, db=None) -> Dict[s
     )
     token["used_at"] = now
     return token
+

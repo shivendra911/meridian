@@ -18,6 +18,7 @@ import { PortalRedirect } from './PortalRedirect';
 import { HomeGate } from '../public/HomeGate';
 import { ForbiddenPage } from './ForbiddenPage';
 import { NotFoundPage } from './NotFoundPage';
+import { DevCardsPage } from '../pages/DevCardsPage';
 
 // Portal Root Trees
 import { StudentRoutes } from '../portals/student/routes';
@@ -34,6 +35,11 @@ export const AppRouter: React.FC = () => {
       <Route path="/" element={<HomeGate />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forbidden" element={<ForbiddenPage />} />
+
+      {/* Dev-only Card System Review Gallery (PLATFORM_SPEC) */}
+      {import.meta.env.DEV && (
+        <Route path="/dev/cards" element={<DevCardsPage />} />
+      )}
 
       {/* 2. Authenticated Portal Trees */}
       <Route element={<RequireAuth />}>
