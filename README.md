@@ -20,6 +20,21 @@
 
 ---
 
+## 📑 Table of Contents
+
+- [🎬 Live Platform Demo](#-live-platform-demo)
+- [🏛️ Platform Architecture](#️-platform-architecture)
+- [🚀 Key Highlights & Architectural Moats](#-key-highlights--architectural-moats)
+  - [1. Six Purpose-Built Role Workspaces](#1-six-purpose-built-role-workspaces)
+  - [2. Design-System Cards with 5 Deterministic States](#2-design-system-cards-with-5-deterministic-states)
+  - [3. Server-Side Default-Deny RBAC & Account Lifecycle](#3-server-side-default-deny-rbac--account-lifecycle)
+  - [4. Operational Business Moats: Superday Solver & Seat Cascading](#4-operational-business-moats-superday-solver--seat-cascading)
+- [📋 Comprehensive REST API Reference (83+ Endpoints)](#-comprehensive-rest-api-reference-83-endpoints)
+- [🔑 Seeded Demo Credentials (DEBUG Mode)](#-seeded-demo-credentials-debug-mode)
+- [🛠️ Verification Commands](#️-verification-commands)
+
+---
+
 ## 🎬 Live Platform Demo
 
 <div align="center">
@@ -282,11 +297,16 @@ Every card in the system (`ProfileCard`, `DriveCard`, `ApplicationCard`, `Interv
 | **Lifecycle** | `POST` | `/api/auth/accept-invite/` | Public | Redeem invitation token & set password |
 | **Account** | `GET, PATCH` | `/api/account/profile/` | Authed | View & update editable profile extensions |
 | **Account** | `POST` | `/api/account/avatar/` | Authed | Multipart upload user avatar |
-| **Account** | `GET, POST` | `/api/account/sessions/` | Authed | List active sessions & revoke session |
-| **Account** | `GET, POST` | `/api/account/notifications/`| Authed | List notifications & mark as read |
+| **Account** | `GET` | `/api/account/sessions/` | Authed | List active user sessions with IP & device flags |
+| **Account** | `DELETE` | `/api/account/sessions/<session_id>/` | Authed | Terminate specific remote session |
+| **Account** | `POST` | `/api/account/sessions/revoke-others/` | Authed | Invalidate all other active sessions |
+| **Account** | `POST` | `/api/account/password/change/` | Authed | Self-service password change |
+| **Account** | `GET` | `/api/account/notifications/` | Authed | List notifications with unread count |
+| **Account** | `POST` | `/api/account/notifications/read/` | Authed | Mark notifications as read |
 | **People** | `GET` | `/api/people/<id>/card/` | Authed | Scoped person card with field-level masking |
 | **Media** | `GET` | `/api/media/avatar/<id>/` | Authed | Stream validated binary avatar image |
 | **Student** | `GET` | `/api/student/me/` | `portal.student` | Candidate context & mentor assignments |
+| **Student** | `POST` | `/api/student/profile/` | `portal.student` | Update headline, skills, and bio extensions |
 | **Student** | `GET` | `/api/student/opportunities/`| `placement.drive.view` | Eligible job drives matching criteria |
 | **Student** | `POST` | `/api/student/opportunities/<id>/apply/` | `placement.apply` | Submit job application with DPDP consent |
 | **Student** | `GET` | `/api/student/applications/` | `placement.apply` | Application history & stage progress |
@@ -294,32 +314,77 @@ Every card in the system (`ProfileCard`, `DriveCard`, `ApplicationCard`, `Interv
 | **Student** | `GET` | `/api/student/offers/` | `placement.offer.view` | Received offers & package details |
 | **Student** | `POST` | `/api/student/offers/<id>/respond/` | `placement.offer.respond` | Accept/reject offer (triggers seat cascading) |
 | **Student** | `GET` | `/api/student/academics/` | `academic.record.view`| NEP 2020 course progression & CIE scores |
-| **Student** | `GET, POST`| `/api/student/consents/` | `dpdp.consent.view` | DPDP 2023 purpose consent ledger |
+| **Student** | `GET` | `/api/student/consents/` | `dpdp.consent.view` | DPDP 2023 purpose consent ledger |
+| **Student** | `POST` | `/api/student/consents/record/` | `dpdp.consent.record` | Record DPDP recruiter sharing consent |
+| **Student** | `POST` | `/api/student/consents/withdraw/` | `dpdp.consent.record` | Revoke DPDP recruiter sharing consent |
 | **Student** | `GET` | `/api/student/insights/readiness/` | `portal.student` | In-process ML placement likelihood score |
+| **Student** | `GET` | `/api/student/insights/skills/` | `portal.student` | Recommended skill gaps & target certifications |
+| **Student** | `POST` | `/api/student/insights/whatif/` | `portal.student` | What-If career scenario & CGPA boost simulator |
 | **TPO** | `GET` | `/api/tpo/overview/` | `placement.overview.view` | Directorate placement rate & median CTC |
 | **TPO** | `GET, POST` | `/api/tpo/jobs/` | `placement.drive.create`| Campus recruitment drives & wizard setup |
+| **TPO** | `GET` | `/api/tpo/jobs/<id>/candidates/` | `placement.drive.view` | Candidate roster per placement drive |
 | **TPO** | `GET` | `/api/tpo/students/` | `student.roster.view` | Candidate roster with Verified Talent Index |
+| **TPO** | `GET` | `/api/tpo/students/<id>/` | `student.roster.view` | Detailed candidate dossier & academic ledger |
 | **TPO** | `GET, POST` | `/api/tpo/companies/` | `company.partner.view` | Corporate partner directory & tier policies |
 | **TPO** | `GET` | `/api/tpo/applications/` | `placement.application.view` | Global application ledger across drives |
+| **TPO** | `POST` | `/api/tpo/applications/<id>/status/` | `placement.application.manage` | Candidate interview stage advancement |
 | **TPO** | `GET` | `/api/tpo/interviews/` | `placement.interview.view`| Campus-wide interview schedules |
 | **TPO** | `GET` | `/api/tpo/placements/` | `placement.offer.view` | Confirmed placements register |
-| **TPO** | `GET, POST` | `/api/tpo/superday/` | `superday.arbitrate` | Detect & 1-click resolve room conflicts |
+| **TPO** | `GET` | `/api/tpo/superday/conflicts/` | `superday.arbitrate` | Detect room collisions and slot double-bookings |
+| **TPO** | `POST` | `/api/tpo/superday/resolve/` | `superday.arbitrate` | 1-Click atomic NP-hard slot rescheduling solver |
 | **TPO** | `GET` | `/api/tpo/insights/renege/` | `renege.radar.view` | Post-offer candidate renege flight radar |
+| **TPO** | `GET` | `/api/tpo/insights/fairness/` | `fairness.audit.view` | Disparate impact ratio audit across departments |
+| **TPO** | `GET` | `/api/tpo/insights/reports/` | `reports.view` | 15 Aggregation reports (Package distribution, etc.) |
+| **TPO** | `GET` | `/api/tpo/insights/reports/<id>/csv/` | `reports.export` | Streamed CSV report export |
+| **TPO** | `POST` | `/api/tpo/insights/whatif/` | `placement.overview.view` | Cohort-wide placement scenario simulation |
 | **TPO** | `GET` | `/api/tpo/models/` | `models.registry.view` | Placement ML models versioning & latency |
+| **TPO** | `POST` | `/api/tpo/models/retrain/` | `models.retrain` | Retraining pipeline for placement predictor |
 | **Faculty** | `GET` | `/api/faculty/mentees/` | `faculty.mentees.view` | Assigned mentee cohort with attendance flags |
+| **Faculty** | `GET` | `/api/faculty/mentees/<id>/` | `faculty.mentees.view` | Mentee dossier, backlog history & review notes |
 | **Faculty** | `GET` | `/api/faculty/summary/` | `faculty.mentees.view` | Mentorship cohort progression summary |
 | **HOD** | `GET` | `/api/hod/students/` | `hod.students.view` | Department student cohort |
+| **HOD** | `GET` | `/api/hod/students/<id>/` | `hod.students.view` | Student credit verification & interview history |
 | **HOD** | `GET` | `/api/hod/faculty/` | `hod.faculty.view` | Department faculty roster & mentoring loads |
 | **HOD** | `GET` | `/api/hod/summary/` | `hod.summary.view` | Department placement rate & year benchmarks |
 | **Management**| `GET` | `/api/management/nirf/metrics/` | `accreditation.nirf.view` | NIRF GPH & GMS accreditation metrics |
 | **Management**| `GET` | `/api/management/fairness/audit/` | `agent.fairness.audit` | Disparate impact fairness audit (7,141 cohort) |
+| **Management**| `GET` | `/api/management/consent/records/` | `dpdp.consent.audit` | Campus-wide DPDP Act compliance audit ledger |
 | **Management**| `GET` | `/api/management/agents/runs/` | `campus.ai.audit` | Autonomous Copilot execution ledger |
-| **Admin** | `GET` | `/api/admin/tenants/` | `tenant.manage` | Platform multi-tenant registry |
-| **Admin** | `GET` | `/api/admin/institutions/` | `institution.manage` | Institutional entities & campus mapping |
-| **Admin** | `GET, POST` | `/api/admin/claims/` | `iam.account.create` | Pending manual account verification queue |
+| **Management**| `GET` | `/api/management/reports/` | `management.reports.view` | Executive summaries across schools & colleges |
+| **Admin** | `GET, POST` | `/api/admin/tenants/` | `tenant.manage` | Platform multi-tenant registry |
+| **Admin** | `GET, POST` | `/api/admin/institutions/` | `institution.manage` | Institutional entities & campus mapping |
+| **Admin** | `GET, POST` | `/api/admin/campuses/` | `campus.manage` | Physical campus sites & facilities |
+| **Admin** | `GET` | `/api/admin/hierarchy/` | `hierarchy.manage` | Organizational school & department structure |
+| **Admin** | `GET` | `/api/admin/summary/` | `admin.summary.view` | Global system status, active sessions & tenant count |
+| **Admin** | `GET` | `/api/admin/claims/` | `iam.account.create` | Pending manual account verification queue |
+| **Admin** | `POST` | `/api/admin/claims/<id>/resolve/` | `iam.account.create` | Approve or reject pending identity claim |
+| **Admin** | `POST` | `/api/admin/affiliations/link/` | `iam.account.create` | Associate person identity with institutional record |
+| **Admin** | `POST` | `/api/admin/affiliations/unlink/` | `iam.account.create` | Sever person link from institutional record |
+| **Admin** | `POST` | `/api/admin/accounts/<id>/resend-invite/` | `iam.account.create` | Re-issue cryptographic onboarding invite token |
+| **Admin** | `POST` | `/api/admin/accounts/<id>/force-reset/` | `iam.account.create` | Force password reset on next login |
+| **Admin** | `POST` | `/api/admin/accounts/<id>/deactivate/` | `iam.account.create` | Lock account & terminate active sessions |
 | **Admin** | `GET` | `/api/admin/iam/identities/` | `iam.view` | Person identity catalogue (CAMP-02) |
 | **Admin** | `GET` | `/api/admin/iam/accounts/` | `iam.view` | User accounts registry |
 | **Admin** | `GET` | `/api/admin/iam/roles/` | `iam.roles.view` | System RBAC roles & permissions catalogue |
+| **Admin** | `GET` | `/api/admin/iam/assignments/` | `iam.assignments.view` | Role assignments & downward inheritance scopes |
+| **Admin** | `GET` | `/api/admin/iam/delegations/` | `iam.delegations.view` | Role delegation ledger across faculty & staff |
+| **Admin** | `GET` | `/api/admin/iam/memberships/` | `iam.view` | Department & campus membership rosters |
+| **Admin** | `GET, POST` | `/api/admin/academic/qualifications/` | `academic.manage` | Degree qualification definitions |
+| **Admin** | `GET, POST` | `/api/admin/academic/programs/` | `academic.manage` | NEP 2020 Degree programs & credit curricula |
+| **Admin** | `GET, POST` | `/api/admin/academic/courses/` | `academic.manage` | Course catalog, prerequisites & credit weights |
+| **Admin** | `GET` | `/api/admin/ai/traces/` | `campus.ai.audit` | AI Gateway LLM reasoning traces & latency |
+| **Campus AI** | `POST` | `/api/v4/ai/query/` | `campus.ai.query` | Conversational query with campus context |
+| **Campus AI** | `POST` | `/api/v4/ai/rag/` | `campus.ai.query` | Vector retrieval across institutional policy |
+| **Campus AI** | `POST` | `/api/v4/ai/agent/execute/` | `campus.ai.execute` | Autonomous Copilot task execution |
+| **Campus AI** | `GET` | `/api/v4/ai/traces/` | `campus.ai.audit` | LLM reasoning traces, prompt hashes & token costs |
+| **Campus AI** | `GET` | `/api/v4/ai/quotas/` | `campus.ai.audit` | Institutional token rate limits & quotas |
+| **Academic** | `GET, POST` | `/api/v4/academic/qualifications/` | `academic.manage` | Degree qualifications catalog (Certificate, B.Tech) |
+| **Academic** | `GET, POST` | `/api/v4/academic/programs/` | `academic.manage` | Degree programs with credit requirements |
+| **Academic** | `GET, POST` | `/api/v4/academic/courses/` | `academic.manage` | Course definitions, syllabus & CIE/SEE splits |
+| **Academic** | `GET, POST` | `/api/v4/academic/calendars/` | `academic.manage` | Semester terms & examination windows |
+| **Academic** | `GET, POST` | `/api/v4/academic/students/` | `academic.record.view` | Student academic enrollment registry |
+| **Academic** | `GET` | `/api/v4/academic/students/<id>/ledger/` | `academic.record.view` | Tamper-evident credit ledger & CIE marks |
+| **Academic** | `POST` | `/api/v4/academic/progression/evaluate/` | `academic.manage` | Real-time progression & graduation evaluator |
 
 ---
 
@@ -362,7 +427,7 @@ cd placeflow/frontend; npm run build; npm test -- --run
 $env:PYTHONPATH="placeflow"; & placeflow\.venv\Scripts\python.exe -m pytest -q
 
 # 4. Live Endpoint Verification (83 / 83 Verified)
-& placeflow\.venv\Scripts\python.exe .\.gemini\antigravity\brain\7b696f20-c376-403b-815c-ef08a7d26f4a\scratch\verify_all_endpoints.py
+& placeflow\.venv\Scripts\python.exe placeflow/scripts/verify_all_endpoints.py
 ```
 
 ---

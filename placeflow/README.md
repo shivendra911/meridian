@@ -21,6 +21,7 @@
 
 ---
 
+<a id="live-platform-demo"></a>
 ## 🎬 Live Platform Demo
 
 <div align="center">
@@ -33,12 +34,22 @@
 
 ---
 
+<a id="table-of-contents"></a>
 ## 📑 Table of Contents
 
+- [🎬 Live Platform Demo](#live-platform-demo)
 1. [Executive Overview & Platform Vision](#1-executive-overview--platform-vision)
 2. [Interactive Visual Topology & Architecture](#2-interactive-visual-topology--architecture)
 3. [The Six Role-Partitioned Portals](#3-the-six-role-partitioned-portals)
+   - [3.1 🎓 The Student Perspective (/student)](#31--the-student-perspective-student)
+   - [3.2 🏢 The TPO Placement Directorate Perspective (/tpo)](#32--the-tpo-placement-directorate-perspective-tpo)
+   - [3.3 🧑‍🏫 The Faculty Advisory Perspective (/faculty)](#33--the-faculty-advisory-perspective-faculty)
+   - [3.4 🏛️ The Department Head (HOD) Perspective (/hod)](#34-️-the-department-head-hod-perspective-hod)
+   - [3.5 📊 The Executive Management Perspective (/management)](#35--the-executive-management-perspective-management)
+   - [3.6 🛡️ The Institutional Administrator Perspective (/admin)](#36-️-the-institutional-administrator-perspective-admin)
+   - [Portal Route Isolation & Boundary Invariants](#portal-route-isolation--boundary-invariants)
 4. [One AppShell & The Design-System Card Architecture](#4-one-appshell--the-design-system-card-architecture)
+   - [The 5 Deterministic Card States](#the-5-deterministic-card-states)
 5. [Account Lifecycle, Onboarding & Self-Service Claims](#5-account-lifecycle-onboarding--self-service-claims)
 6. [Machine Learning & Institutional Talent Intelligence](#6-machine-learning--institutional-talent-intelligence)
 7. [Comprehensive REST API Reference (83+ Endpoints)](#7-comprehensive-rest-api-reference-83-endpoints)
@@ -52,6 +63,8 @@
    - [7.8 HOD Department Leadership Portal](#78-hod-department-leadership-portal)
    - [7.9 Executive Management Portal](#79-executive-management-portal)
    - [7.10 Institutional Admin & Governance Portal](#710-institutional-admin--governance-portal)
+   - [7.11 Campus AI & Copilot Infrastructure](#711-campus-ai--copilot-infrastructure-apiv4ai)
+   - [7.12 Core Campus NEP 2020 Academic Structure](#712-core-campus-nep-2020-academic-structure-apiv4academic)
 8. [Seeded Demo Accounts & Credentials Matrix](#8-seeded-demo-accounts--credentials-matrix)
 9. [Local Quickstart & Running Servers](#9-local-quickstart--running-servers)
 10. [Test Suites & Boundary Verification](#10-test-suites--boundary-verification)
@@ -486,17 +499,27 @@ Meridian incorporates four in-process Python predictive models designed specific
 - **Access**: Authenticated
 - **Response**: `200 OK` (List of active IP, user-agent, creation date, and `is_current` flags).
 
-#### `POST /api/account/sessions/<session_id>/revoke/`
+#### `DELETE /api/account/sessions/<session_id>/`
 - **Access**: Authenticated
-- **Response**: `200 OK`
+- **Response**: `200 OK` (`{"status": "SESSION_REVOKED"}`)
+
+#### `POST /api/account/sessions/revoke-others/`
+- **Access**: Authenticated
+- **Response**: `200 OK` (`{"status": "OTHER_SESSIONS_REVOKED", "revoked_count": 3}`)
+
+#### `POST /api/account/password/change/`
+- **Access**: Authenticated
+- **Request**: `{"current_password": "OldPassword123!", "new_password": "NewSecurePassword123!"}`
+- **Response**: `200 OK` (`{"status": "PASSWORD_CHANGED"}`)
 
 #### `GET /api/account/notifications/`
 - **Access**: Authenticated
 - **Response**: `200 OK` (`{"unread_count": 0, "notifications": [...]}`)
 
-#### `POST /api/account/notifications/<id>/read/`
+#### `POST /api/account/notifications/read/`
 - **Access**: Authenticated
-- **Response**: `200 OK`
+- **Request**: `{"notification_ids": ["notif_001"]}` or `{"all": true}`
+- **Response**: `200 OK` (`{"marked_read": 1}`)
 
 ---
 
@@ -551,6 +574,7 @@ Meridian incorporates four in-process Python predictive models designed specific
 | Method | Endpoint | Permissions | Description |
 | :--- | :--- | :--- | :--- |
 | `GET` | `/api/student/me/` | `portal.student` | Candidate context, assigned mentor, and tier restrictions |
+| `POST` | `/api/student/profile/` | `portal.student` | Update candidate headline, skills, and bio extensions |
 | `GET` | `/api/student/opportunities/` | `placement.drive.view` | Eligible job drives filtered by verified CGPA and backlogs |
 | `POST` | `/api/student/opportunities/<job_id>/apply/` | `placement.apply` | Atomic application submission with DPDP consent verification |
 | `GET` | `/api/student/applications/` | `placement.apply` | Application history, review stages, and interview schedules |
@@ -562,6 +586,8 @@ Meridian incorporates four in-process Python predictive models designed specific
 | `POST` | `/api/student/consents/record/` | `dpdp.consent.record` | Authorize recruiter data sharing under purpose specifications |
 | `POST` | `/api/student/consents/withdraw/` | `dpdp.consent.record` | Instant revocation of recruiter data sharing consent |
 | `GET` | `/api/student/insights/readiness/` | `portal.student` | ML Placement Likelihood and Conformal Package Band |
+| `GET` | `/api/student/insights/skills/` | `portal.student` | Recommended skill gaps & micro-credentials for target roles |
+| `POST` | `/api/student/insights/whatif/` | `portal.student` | What-If simulator: CGPA boost & certification scenario modeling |
 
 ---
 
@@ -580,20 +606,22 @@ Meridian incorporates four in-process Python predictive models designed specific
 | `GET` | `/api/tpo/overview/` | `placement.overview.view` | Telemetry KPIs: Placement rate, median CTC, active loops |
 | `GET` | `/api/tpo/jobs/` | `placement.drive.view` | Active, upcoming, and completed campus recruitment drives |
 | `POST` | `/api/tpo/jobs/` | `placement.drive.create` | 6-Step Placement Drive creation wizard submission |
-| `GET` | `/api/tpo/jobs/<job_id>/candidates/`| `placement.drive.view` | Shortlisted, eligible, and interviewed applicants |
+| `GET` | `/api/tpo/jobs/<job_id>/candidates/`| `placement.drive.view` | Shortlisted, eligible, and interviewed applicants per drive |
 | `GET` | `/api/tpo/companies/` | `company.partner.view` | Corporate recruiting partners and tier categorizations |
 | `POST` | `/api/tpo/companies/` | `company.partner.manage`| Register corporate partner and recruitment agreements |
 | `GET` | `/api/tpo/students/` | `student.roster.view` | Cohort-wide candidate registry with Verified Talent Index (VTI) |
+| `GET` | `/api/tpo/students/<student_id>/` | `student.roster.view` | Detailed candidate dossier, academic credits, and interview history |
 | `GET` | `/api/tpo/applications/` | `placement.application.view` | Global application ledger across all corporate drives |
 | `POST` | `/api/tpo/applications/<id>/status/` | `placement.application.manage` | Advance candidate through interview stages |
 | `GET` | `/api/tpo/interviews/` | `placement.interview.view` | All scheduled interview slots across campus venues |
 | `GET` | `/api/tpo/placements/` | `placement.offer.view` | Authoritative confirmed placement register |
 | `GET` | `/api/tpo/superday/conflicts/` | `superday.arbitrate` | Detect concurrent interview double-bookings and room clashes |
-| `POST` | `/api/tpo/superday/resolve/` | `superday.arbitrate` | 1-Click atomic rescheduling solver |
+| `POST` | `/api/tpo/superday/resolve/` | `superday.arbitrate` | 1-Click atomic NP-hard slot & room rescheduling solver |
 | `GET` | `/api/tpo/insights/renege/` | `renege.radar.view` | Renege radar: high-risk candidates with post-offer leakage |
 | `GET` | `/api/tpo/insights/fairness/` | `fairness.audit.view` | Disparate impact ratio audit across academic departments |
 | `GET` | `/api/tpo/insights/reports/` | `reports.view` | 15 Aggregation reports (Package distribution, tier stats, etc.) |
 | `GET` | `/api/tpo/insights/reports/<id>/csv/` | `reports.export` | Streamed CSV report export |
+| `POST` | `/api/tpo/insights/whatif/` | `placement.overview.view` | Cohort-wide placement scenario & market shift simulator |
 | `GET` | `/api/tpo/models/` | `models.registry.view` | Machine Learning model versioning, accuracy, and latency |
 | `POST` | `/api/tpo/models/retrain/` | `models.retrain` | Trigger retraining pipeline for placement predictor |
 
@@ -636,24 +664,58 @@ Meridian incorporates four in-process Python predictive models designed specific
 
 | Method | Endpoint | Permissions | Description |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/api/admin/tenants/` | `tenant.manage` | Platform multi-tenant registry |
-| `GET` | `/api/admin/institutions/` | `institution.manage` | Multi-institution hierarchy |
-| `GET` | `/api/admin/campuses/` | `campus.manage` | Physical campus sites and facilities |
+| `GET, POST` | `/api/admin/tenants/` | `tenant.manage` | Platform multi-tenant registry |
+| `GET, POST` | `/api/admin/institutions/` | `institution.manage` | Multi-institution hierarchy |
+| `GET, POST` | `/api/admin/campuses/` | `campus.manage` | Physical campus sites and facilities |
 | `GET` | `/api/admin/hierarchy/` | `hierarchy.manage` | Organizational school and department structure |
 | `GET` | `/api/admin/summary/` | `admin.summary.view` | Global system status, active sessions, and tenant count |
 | `GET` | `/api/admin/claims/` | `iam.account.create` | Pending manual account verification queue |
 | `POST` | `/api/admin/claims/<id>/resolve/` | `iam.account.create` | Approve or reject pending identity claim |
 | `POST` | `/api/admin/affiliations/link/` | `iam.account.create` | Associate person identity with institutional record |
-| `POST` | `/api/admin/affiliations/unlink/` | `iam.account.create` | Remove person link |
+| `POST` | `/api/admin/affiliations/unlink/` | `iam.account.create` | Sever person link from institutional record |
 | `POST` | `/api/admin/accounts/<id>/resend-invite/`| `iam.account.create`| Re-issue cryptographic onboarding invitation token |
-| `POST` | `/api/admin/accounts/<id>/force-reset/` | `iam.account.create` | Invalidate password and enforce password reset |
+| `POST` | `/api/admin/accounts/<id>/force-reset/` | `iam.account.create` | Invalidate password and enforce password reset on next login |
 | `POST` | `/api/admin/accounts/<id>/deactivate/` | `iam.account.create` | Lock account and terminate all active sessions |
 | `GET` | `/api/admin/iam/identities/` | `iam.view` | Person identity directory (CAMP-02) |
 | `GET` | `/api/admin/iam/accounts/` | `iam.view` | Active user account registry |
 | `GET` | `/api/admin/iam/roles/` | `iam.roles.view` | System RBAC roles and permissions catalogue |
 | `GET` | `/api/admin/iam/assignments/` | `iam.assignments.view`| Role assignments and downward inheritance scopes |
-| `GET` | `/api/admin/academic/programs/` | `academic.manage` | NEP 2020 Degree programs (B.Tech, M.Tech, Ph.D) |
-| `GET` | `/api/admin/ai/traces/` | `campus.ai.audit` | Detailed AI Gateway LLM reasoning traces |
+| `GET` | `/api/admin/iam/delegations/` | `iam.delegations.view`| Role delegation ledger across faculty & staff |
+| `GET` | `/api/admin/iam/memberships/` | `iam.view` | Department and campus membership rosters |
+| `GET, POST` | `/api/admin/academic/qualifications/` | `academic.manage` | Degree qualification definitions (B.Tech, M.Tech, Ph.D) |
+| `GET, POST` | `/api/admin/academic/programs/` | `academic.manage` | NEP 2020 Degree programs & credit curricula |
+| `GET, POST` | `/api/admin/academic/courses/` | `academic.manage` | NEP 2020 course catalog, prerequisites & credit weights |
+| `GET` | `/api/admin/ai/traces/` | `campus.ai.audit` | Detailed AI Gateway LLM reasoning traces & latency |
+
+---
+
+### 7.11 Campus AI & Copilot Infrastructure (`/api/v4/ai/*`)
+
+Meridian provides institutional AI gateway endpoints for RAG-augmented campus assistants, placement copilots, and token governance:
+
+| Method | Endpoint | Permissions | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/v4/ai/query/` | `campus.ai.query` | Natural language conversational query with campus knowledge context |
+| `POST` | `/api/v4/ai/rag/` | `campus.ai.query` | Vector search & retrieval across institutional documents & policy regulations |
+| `POST` | `/api/v4/ai/agent/execute/` | `campus.ai.execute`| Autonomous Copilot agent task execution with sandboxed tools |
+| `GET` | `/api/v4/ai/traces/` | `campus.ai.audit` | Comprehensive LLM reasoning traces, prompt hashes, and token expenditures |
+| `GET` | `/api/v4/ai/quotas/` | `campus.ai.audit` | Department and tenant AI token consumption rate limits and quotas |
+
+---
+
+### 7.12 Core Campus NEP 2020 Academic Structure (`/api/v4/academic/*`)
+
+Meridian implements statutory National Education Policy (NEP 2020) academic progressions, multiple entry/exit milestones, and credit bank ledgers:
+
+| Method | Endpoint | Permissions | Description |
+| :--- | :--- | :--- | :--- |
+| `GET, POST` | `/api/v4/academic/qualifications/` | `academic.manage` | Degree qualifications catalog (Certificate, Diploma, B.Tech, Honours) |
+| `GET, POST` | `/api/v4/academic/programs/` | `academic.manage` | Degree programs with credit distribution requirements (Major, Minor, Electives) |
+| `GET, POST` | `/api/v4/academic/courses/` | `academic.manage` | Course definitions, syllabus credits, prerequisites, and CIE/SEE splits |
+| `GET, POST` | `/api/v4/academic/calendars/` | `academic.manage` | Institutional academic calendars, semester terms, and grading windows |
+| `GET, POST` | `/api/v4/academic/students/` | `academic.record.view` | Student academic enrollment registry with batch cohort assignments |
+| `GET` | `/api/v4/academic/students/<id>/ledger/` | `academic.record.view` | Cryptographic tamper-evident student credit ledger & CIE marks |
+| `POST` | `/api/v4/academic/progression/evaluate/` | `academic.manage` | Real-time multi-exit milestone and graduation progression evaluator |
 
 ---
 
@@ -750,7 +812,7 @@ placeflow\.venv\Scripts\python.exe -m pytest -q
 # Output: 203 passed in 97s
 
 # 5. Full Live Endpoint Verification (83 Endpoints across all roles)
-& placeflow\.venv\Scripts\python.exe ..\.gemini\antigravity\brain\7b696f20-c376-403b-815c-ef08a7d26f4a\scratch\verify_all_endpoints.py
+& placeflow\.venv\Scripts\python.exe scripts/verify_all_endpoints.py
 # Output: 83 passed, 0 failed (100%)
 ```
 
