@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { Company } from '../../../types';
-import { Building2, PlusCircle, ArrowRight } from 'lucide-react';
+import { Building2, PlusCircle, ArrowRight, LayoutGrid, List } from 'lucide-react';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { StatCard } from '../../../components/ui/StatCard';
 import { Button } from '../../../components/ui/Button';
@@ -11,12 +11,16 @@ import { Modal } from '../../../components/ui/Modal';
 import { toast } from 'sonner';
 import { Skeleton } from '../../../components/ui/Skeleton';
 import { EmptyState } from '../../../components/ui/EmptyState';
+import { CompanyCard, useDocumentTitle } from '../../../ui';
 
 export const CompaniesPage: React.FC = () => {
+  useDocumentTitle('Corporate Partners');
   const navigate = useNavigate();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [loading, setLoading] = useState(true);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+
   const [name, setName] = useState('');
   const [industry, setIndustry] = useState('Technology & Software');
   const [location, setLocation] = useState('Bengaluru');
@@ -69,34 +73,60 @@ export const CompaniesPage: React.FC = () => {
         description="Master registry of verified corporate recruiters and enterprise partners."
         badge={<Badge variant="institutional" size="xs">Authoritative Directory</Badge>}
         actions={
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => setIsRegisterOpen(true)}
-            leftIcon={<PlusCircle size={14} />}
-          >
-            Register Corporate Partner
-          </Button>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center bg-canvas p-1 rounded-lg border border-line">
+              <button
+                type="button"
+                onClick={() => setViewMode('cards')}
+                className={`p-1.5 rounded transition-colors ${
+                  viewMode === 'cards' ? 'bg-surface text-brand shadow-xs' : 'text-ink-muted hover:text-ink'
+                }`}
+                title="Cards view"
+              >
+                <LayoutGrid size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('table')}
+                className={`p-1.5 rounded transition-colors ${
+                  viewMode === 'table' ? 'bg-surface text-brand shadow-xs' : 'text-ink-muted hover:text-ink'
+                }`}
+                title="Table view"
+              >
+                <List size={14} />
+              </button>
+            </div>
+
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setIsRegisterOpen(true)}
+              leftIcon={<PlusCircle size={14} />}
+            >
+              Register Partner
+            </Button>
+          </div>
         }
       />
 
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          label="Corporate Partners"
-          value={loading ? '—' : companies.length}
-          hint="Registered Organizations"
+          label="Total Corporate Partners"
+          value={companies.length}
+          hint="Active recruiting accounts"
           icon={Building2}
         />
         <StatCard
-          label="Industry Domains"
-          value={loading ? '—' : industriesCount}
-          hint="Diverse Hiring Sectors"
+          label="Industry Sectors"
+          value={industriesCount}
+          hint="Domains represented"
           icon={Building2}
         />
         <StatCard
-          label="Active Recruiters"
-          value={loading ? '—' : companies.length}
-          hint="Eligible to Post JNFs"
+          label="Super Dream Recruiters"
+          value={companies.filter((c) => c.tier === 'Super Dream').length}
+          hint=">10 LPA packages"
           icon={Building2}
         />
         <StatCard
@@ -121,6 +151,22 @@ export const CompaniesPage: React.FC = () => {
           actionLabel="Register Partner"
           onAction={() => setIsRegisterOpen(true)}
         />
+      ) : viewMode === 'cards' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {companies.map((c) => (
+            <CompanyCard
+              key={c.company_id}
+              data={{
+                company_id: c.company_id,
+                name: c.name,
+                industry: c.industry,
+                location: c.location,
+                tier: c.tier || 'Enterprise Partner',
+              }}
+              onClick={() => navigate(`/tpo/companies/${c.company_id}`)}
+            />
+          ))}
+        </div>
       ) : (
         <div className="rounded-lg border border-line bg-surface overflow-hidden">
           <div className="overflow-x-auto">
@@ -139,7 +185,7 @@ export const CompaniesPage: React.FC = () => {
                 {companies.map((c) => (
                   <tr
                     key={c.company_id}
-                    onClick={() => navigate(`/tpo/tpo/companies/${c.company_id}`)}
+                    onClick={() => navigate(`/tpo/companies/${c.company_id}`)}
                     className="h-11 hover:bg-canvas/50 transition-colors cursor-pointer"
                   >
                     <td className="py-2 px-4 font-mono font-medium text-brand">{c.company_id}</td>
@@ -151,7 +197,7 @@ export const CompaniesPage: React.FC = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/tpo/tpo/companies/${c.company_id}`);
+                          navigate(`/tpo/companies/${c.company_id}`);
                         }}
                         className="text-brand hover:underline inline-flex items-center gap-1 font-medium cursor-pointer"
                       >
@@ -172,56 +218,60 @@ export const CompaniesPage: React.FC = () => {
         isOpen={isRegisterOpen}
         onClose={() => setIsRegisterOpen(false)}
         title="Register Corporate Partner"
-        subtitle="Add a new participating recruitment employer to the institution directory"
-        size="md"
       >
-        <form onSubmit={handleRegisterCompany} className="space-y-4 text-xs font-sans">
+        <form onSubmit={handleRegisterCompany} className="space-y-4">
           <div>
-            <label className="block font-medium text-ink mb-1">Company / Organization Name *</label>
+            <label className="block text-xs font-medium text-ink mb-1">Company Name</label>
             <input
               type="text"
               required
+              placeholder="e.g. Acme Corp Technologies"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Goldman Sachs"
-              className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
+              className="w-full px-3 py-1.5 text-xs bg-canvas border border-line rounded focus:bg-surface focus:outline-hidden"
             />
           </div>
 
-          <div>
-            <label className="block font-medium text-ink mb-1">Industry Sector</label>
-            <input
-              type="text"
-              value={industry}
-              onChange={(e) => setIndustry(e.target.value)}
-              placeholder="e.g. Financial Technology & Investment Banking"
-              className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
-            />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-ink mb-1">Industry Sector</label>
+              <select
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                className="w-full px-2 py-1.5 text-xs bg-canvas border border-line rounded focus:bg-surface focus:outline-hidden cursor-pointer"
+              >
+                <option value="Technology & Software">Technology & Software</option>
+                <option value="Financial Services & Fintech">Financial Services & Fintech</option>
+                <option value="Management Consulting">Management Consulting</option>
+                <option value="E-Commerce & Retail">E-Commerce & Retail</option>
+                <option value="Manufacturing & Core Engineering">Manufacturing & Core Engineering</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-ink mb-1">Location / HQ</label>
+              <input
+                type="text"
+                placeholder="e.g. Bengaluru, IN"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="w-full px-3 py-1.5 text-xs bg-canvas border border-line rounded focus:bg-surface focus:outline-hidden"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block font-medium text-ink mb-1">Primary Location / Office</label>
-            <input
-              type="text"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="e.g. Bengaluru / Hyderabad"
-              className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
-            />
-          </div>
-
-          <div>
-            <label className="block font-medium text-ink mb-1">Campus Recruitment Contact Email</label>
+            <label className="block text-xs font-medium text-ink mb-1">Primary Recruiter Contact Email</label>
             <input
               type="email"
+              placeholder="campus-recruitment@company.com"
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
-              placeholder="e.g. university-recruiting@partner.com"
-              className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
+              className="w-full px-3 py-1.5 text-xs bg-canvas border border-line rounded focus:bg-surface focus:outline-hidden font-mono"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-line">
+          <div className="flex justify-end gap-2 pt-2">
             <Button variant="ghost" size="sm" type="button" onClick={() => setIsRegisterOpen(false)}>
               Cancel
             </Button>
@@ -234,4 +284,3 @@ export const CompaniesPage: React.FC = () => {
     </div>
   );
 };
-

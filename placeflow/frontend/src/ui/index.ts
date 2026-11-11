@@ -16,4 +16,5 @@ export * from '../components/ui/Tabs';
 export * from './ErrorState';
 export * from './format';
 export * from './cards';
+export * from './useDocumentTitle';
 

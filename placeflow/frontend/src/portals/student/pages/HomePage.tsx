@@ -1,12 +1,12 @@
 /**
- * PlaceFlow / Meridian — Student Portal Home (Phase 5).
+ * PlaceFlow / Meridian — Student Portal Home (Phase 6).
  *
- * Implements authoritative candidate dashboard:
- * - Eligibility summary & VTI tier entitlement
- * - Next interview / drive deadline alert
- * - Recruitment pipeline stepper
- * - Recommended opportunities with server-computed eligibility explanation
- * - 5 states: loading, empty, error, forbidden, populated.
+ * Implements "What needs me now" candidate command center:
+ * - Actionable TaskCards (verification, interviews, deadlines)
+ * - Authoritative KPIs with StatCard
+ * - InterviewCard for scheduled rounds
+ * - DriveCards for recommended campus drives
+ * - Completely eliminates ad-hoc markup.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -15,21 +15,33 @@ import {
   Compass,
   FileText,
   Clock,
-  Award,
-  ArrowRight,
   CheckCircle2,
   AlertCircle,
   Building2,
   Calendar,
   Sparkles,
   ShieldCheck,
+  CheckSquare,
 } from 'lucide-react';
 import { studentApi, StudentProfile, StudentOpportunity, StudentInterview, StudentApplication } from '../api';
-import { PageHeader, StatCard, Card, Badge, Skeleton, Button } from '../../../ui';
+import {
+  PageHeader,
+  StatCard,
+  Card,
+  Badge,
+  Skeleton,
+  Button,
+  DriveCard,
+  InterviewCard,
+  TaskCard,
+  useDocumentTitle,
+} from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
 
 export const StudentHomePage: React.FC = () => {
+  useDocumentTitle('Student Workspace');
   const navigate = useNavigate();
+
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [opportunities, setOpportunities] = useState<StudentOpportunity[]>([]);
   const [interviews, setInterviews] = useState<StudentInterview[]>([]);
@@ -72,6 +84,11 @@ export const StudentHomePage: React.FC = () => {
           <Skeleton className="h-24 rounded-xl" />
           <Skeleton className="h-24 rounded-xl" />
         </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
+          <Skeleton className="h-28 rounded-xl" />
+        </div>
         <Skeleton className="h-64 rounded-xl" />
       </div>
     );
@@ -86,7 +103,7 @@ export const StudentHomePage: React.FC = () => {
   const offeredCount = applications.filter((a) => a.status === 'Offered' || a.status === 'Accepted').length;
 
   return (
-    <div className="space-y-6 font-sans">
+    <div className="space-y-8 font-sans">
       <PageHeader
         title={`Welcome back, ${profile?.name || 'Candidate'}`}
         description="Your personal campus-to-career hub. Track job notifications, eligibility, and interviews."
@@ -103,7 +120,84 @@ export const StudentHomePage: React.FC = () => {
         }
       />
 
-      {/* KPI Cards */}
+      {/* 1. "What Needs Me Now" Actionable Task Cards */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <CheckSquare size={16} className="text-brand" />
+          <h2 className="text-sm font-bold text-ink uppercase tracking-wider">
+            What Needs Me Now
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <TaskCard
+            data={{
+              task_id: 'task_profile',
+              title: 'Review verified academic profile & add skills',
+              due: new Date(Date.now() + 24 * 3600 * 1000 * 3),
+              priority: 'MEDIUM',
+              icon: ShieldCheck,
+              action_label: 'Review Profile',
+            }}
+            onAction={() => navigate('/account/profile')}
+          />
+
+          {nextInterview ? (
+            <TaskCard
+              data={{
+                task_id: 'task_interview',
+                title: `Prepare for Round ${nextInterview.round}: ${nextInterview.company_name || 'Partner Company'}`,
+                due: nextInterview.scheduled_start,
+                priority: 'HIGH',
+                icon: Clock,
+                action_label: 'View Slot Details',
+              }}
+              onAction={() => {
+                const el = document.getElementById('upcoming-interview-slot');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
+          ) : eligibleJobs.length > 0 ? (
+            <TaskCard
+              data={{
+                task_id: 'task_eligible',
+                title: `Apply to ${eligibleJobs[0].company_name} - ${eligibleJobs[0].title}`,
+                due: eligibleJobs[0].deadline || new Date(Date.now() + 24 * 3600 * 1000 * 2),
+                priority: 'HIGH',
+                icon: Compass,
+                action_label: 'Inspect Drive',
+              }}
+              onAction={() => navigate('/student/opportunities')}
+            />
+          ) : (
+            <TaskCard
+              data={{
+                task_id: 'task_all_clear',
+                title: 'All recruitment actions up to date',
+                due: null,
+                priority: 'LOW',
+                icon: CheckCircle2,
+                action_label: 'Browse Catalog',
+              }}
+              onAction={() => navigate('/student/opportunities')}
+            />
+          )}
+
+          <TaskCard
+            data={{
+              task_id: 'task_dpdp',
+              title: 'Verify recruiter visibility and DPDP consents',
+              due: null,
+              priority: 'LOW',
+              icon: FileText,
+              action_label: 'Privacy Settings',
+            }}
+            onAction={() => navigate('/account/privacy')}
+          />
+        </div>
+      </div>
+
+      {/* 2. KPI Metrics Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Placement Standing"
@@ -131,45 +225,62 @@ export const StudentHomePage: React.FC = () => {
         />
       </div>
 
-      {/* Next Milestone Banner */}
-      {nextInterview ? (
-        <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-              <Calendar size={18} />
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-blue-950">
-                Upcoming Interview: Round {nextInterview.round} ({nextInterview.mode})
-              </div>
-              <div className="text-[11px] text-blue-700">
-                Scheduled for {new Date(nextInterview.scheduled_start).toLocaleString()} &bull; Venue: {nextInterview.venue || 'Online Portal'}
-              </div>
-            </div>
+      {/* 3. Upcoming Interview Slot Card */}
+      {nextInterview && (
+        <div id="upcoming-interview-slot" className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Clock size={16} className="text-brand" />
+            <h3 className="text-sm font-bold text-ink">Upcoming Scheduled Interview</h3>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/student/applications')}
-          >
-            View Pipeline
-          </Button>
+          <div className="max-w-xl">
+            <InterviewCard
+              data={{
+                interview_id: nextInterview.interview_id,
+                role: nextInterview.role || 'Software Engineering Candidate',
+                company_name: nextInterview.company_name || 'Partner Recruiter',
+                round_name: `Round ${nextInterview.round}`,
+                scheduled_start: nextInterview.scheduled_start,
+                scheduled_end: nextInterview.scheduled_end,
+                mode: nextInterview.mode,
+                venue_or_link: nextInterview.venue_or_link,
+                interviewer_name: nextInterview.interviewer,
+              }}
+              onJoin={
+                nextInterview.venue_or_link?.startsWith('http')
+                  ? () => window.open(nextInterview.venue_or_link, '_blank')
+                  : undefined
+              }
+            />
+          </div>
         </div>
-      ) : null}
+      )}
 
-      {/* Pipeline Stepper Card */}
-      <Card title="Recruitment Pipeline Progression" subtitle="Stage-by-stage status of your placement journey">
-        <div className="py-2">
-          <div className="flex items-center justify-between text-xs font-semibold text-ink mb-2">
-            <span className={applications.length > 0 ? 'text-brand' : 'text-ink-muted'}>1. Applied ({applications.length})</span>
+      {/* 4. Recruitment Pipeline Progress Stepper */}
+      <Card>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-ink">Recruitment Journey Pipeline</h3>
+            <span className="text-xs text-ink-muted">
+              {applications.length} active process{applications.length === 1 ? '' : 'es'}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between text-xs font-medium">
+            <span className={applications.length > 0 ? 'text-brand font-bold' : 'text-ink-muted'}>
+              1. Applied ({applications.length})
+            </span>
             <span className="text-slate-300">&rarr;</span>
-            <span className={applications.some((a) => a.status === 'Shortlisted') ? 'text-brand' : 'text-ink-muted'}>
+            <span className={applications.some((a) => a.status === 'Shortlisted') ? 'text-brand font-bold' : 'text-ink-muted'}>
               2. Shortlisted ({applications.filter((a) => a.status === 'Shortlisted').length})
             </span>
             <span className="text-slate-300">&rarr;</span>
-            <span className={interviews.length > 0 ? 'text-brand' : 'text-ink-muted'}>3. Interviews ({interviews.length})</span>
+            <span className={interviews.length > 0 ? 'text-brand font-bold' : 'text-ink-muted'}>
+              3. Interviews ({interviews.length})
+            </span>
             <span className="text-slate-300">&rarr;</span>
-            <span className={offeredCount > 0 ? 'text-emerald-600 font-bold' : 'text-ink-muted'}>4. Offered ({offeredCount})</span>
+            <span className={offeredCount > 0 ? 'text-emerald-600 font-bold' : 'text-ink-muted'}>
+              4. Offered ({offeredCount})
+            </span>
           </div>
           <div className="w-full bg-line rounded-full h-2 overflow-hidden">
             <div
@@ -184,8 +295,8 @@ export const StudentHomePage: React.FC = () => {
         </div>
       </Card>
 
-      {/* Recommended Drives with Server-Computed Reasons */}
-      <div className="space-y-3">
+      {/* 5. Recommended Drives Built with DriveCard */}
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-semibold text-ink flex items-center gap-1.5">
@@ -198,7 +309,7 @@ export const StudentHomePage: React.FC = () => {
           </div>
           <Button variant="ghost" size="sm" onClick={() => navigate('/student/opportunities')}>
             <span>View All ({opportunities.length})</span>
-            <ArrowRight size={13} />
+            <Compass size={13} className="ml-1" />
           </Button>
         </div>
 
@@ -209,52 +320,23 @@ export const StudentHomePage: React.FC = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {opportunities.slice(0, 4).map((job) => (
-              <div
+              <DriveCard
                 key={job.job_id}
+                data={{
+                  drive_id: job.job_id,
+                  job_id: job.job_id,
+                  company_name: job.company_name,
+                  role: job.title,
+                  tier: job.tier,
+                  package_lpa: job.package_lpa,
+                  deadline: job.deadline,
+                  eligible: job.eligible,
+                  ineligibility_reason: !job.eligible && job.reasons?.length ? job.reasons[0] : null,
+                  applied: job.has_applied,
+                }}
                 onClick={() => navigate('/student/opportunities')}
-                className="p-4 rounded-xl border border-line bg-surface hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between gap-3"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <div>
-                      <div className="text-xs font-semibold text-ink line-clamp-1">{job.title}</div>
-                      <div className="text-[11px] text-ink-muted flex items-center gap-1 mt-0.5">
-                        <Building2 size={12} className="shrink-0" />
-                        <span>{job.company_name}</span>
-                      </div>
-                    </div>
-                    <Badge variant={job.eligible ? 'success' : 'neutral'} size="xs">
-                      {job.eligible ? 'Eligible' : 'Not Eligible'}
-                    </Badge>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-xs mt-2">
-                    <span className="font-semibold text-success font-mono">₹{job.package_lpa} LPA</span>
-                    <span className="text-ink-muted">&bull;</span>
-                    <span className="text-ink-muted font-mono">{job.tier}</span>
-                    <span className="text-ink-muted">&bull;</span>
-                    <span className="text-ink-muted">{job.vacancies} vacancies</span>
-                  </div>
-
-                  {/* Server-computed eligibility reason */}
-                  {!job.eligible && job.reasons && job.reasons.length > 0 && (
-                    <div className="mt-2.5 p-2 rounded bg-amber-50 border border-amber-200 text-[11px] text-amber-800 flex items-start gap-1.5">
-                      <AlertCircle size={13} className="shrink-0 mt-0.5 text-amber-600" />
-                      <span>{job.reasons[0]}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="pt-2 border-t border-line flex items-center justify-between text-xs">
-                  <span className="text-[11px] text-ink-muted">
-                    {job.has_applied ? 'Applied' : 'Not yet applied'}
-                  </span>
-                  <span className="text-brand font-medium inline-flex items-center gap-1 group-hover:underline">
-                    <span>Inspect</span>
-                    <ArrowRight size={12} />
-                  </span>
-                </div>
-              </div>
+                onApply={() => navigate('/student/opportunities')}
+              />
             ))}
           </div>
         )}

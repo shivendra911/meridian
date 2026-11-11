@@ -2,6 +2,7 @@
  * PlaceFlow / Meridian — Executive Decision Centre Home (Phase 6).
  *
  * Institutional leadership overview: placement outcomes, NIRF status, compliance flags, AI audit alerts.
+ * Features "What needs me now" executive task center.
  */
 
 import React from 'react';
@@ -17,14 +18,15 @@ import {
   Cpu,
 } from 'lucide-react';
 import { useAuth } from '../../../core/auth/useAuth';
-import { PageHeader, StatCard, Card, Badge, Button } from '../../../ui';
+import { PageHeader, StatCard, Card, Badge, Button, TaskCard, useDocumentTitle } from '../../../ui';
 
 export const ManagementHomePage: React.FC = () => {
+  useDocumentTitle('Executive Management');
   const { me } = useAuth();
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-6 font-sans">
+    <div className="space-y-8 font-sans">
       <PageHeader
         title={`Executive Directorate — ${me?.display_name || 'Vice Chancellor'}`}
         description="Multi-campus statutory governance, NIRF graduation outcomes, regulatory compliance, and AI auditing."
@@ -41,7 +43,49 @@ export const ManagementHomePage: React.FC = () => {
         }
       />
 
-      {/* KPI Row */}
+      {/* 1. What Needs Me Now — Actionable TaskCards */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-bold text-ink-muted uppercase tracking-wider">
+          What Needs Me Now
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <TaskCard
+            data={{
+              task_id: 'task_nirf_filing',
+              title: 'NIRF Metric 4: Graduation outcome accreditation filing review',
+              due: new Date(Date.now() + 24 * 3600 * 1000 * 5),
+              priority: 'HIGH',
+              icon: Award,
+              action_label: 'Review Metric',
+            }}
+            onAction={() => navigate('/management/accreditation')}
+          />
+          <TaskCard
+            data={{
+              task_id: 'task_dpdp_audit',
+              title: 'Quarterly DPDP consent ledger & student data protection audit',
+              due: new Date(Date.now() + 24 * 3600 * 1000 * 7),
+              priority: 'MEDIUM',
+              icon: ShieldCheck,
+              action_label: 'Audit Privacy',
+            }}
+            onAction={() => navigate('/management/compliance')}
+          />
+          <TaskCard
+            data={{
+              task_id: 'task_campus_outcomes',
+              title: 'Multi-campus placement velocity & compensation band analysis',
+              due: new Date(Date.now() + 24 * 3600 * 1000 * 10),
+              priority: 'LOW',
+              icon: TrendingUp,
+              action_label: 'Inspect Outcomes',
+            }}
+            onAction={() => navigate('/management/placements')}
+          />
+        </div>
+      </div>
+
+      {/* 2. KPI Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Institutional Placement"
@@ -58,81 +102,81 @@ export const ManagementHomePage: React.FC = () => {
         <StatCard
           label="Statutory DPDP Consent"
           value="98.2%"
-          hint="Active candidate grants"
+          hint="DigiLocker / APAAR compliance"
           icon={ShieldCheck}
         />
         <StatCard
-          label="AI Model Audit Status"
-          value="Clean"
-          hint="Zero disparate impact breaches"
-          icon={Cpu}
+          label="Super Dream Packages"
+          value="18.6%"
+          hint="Offers above 10 LPA"
+          icon={TrendingUp}
         />
       </div>
 
-      {/* Institutional Governance Panels */}
+      {/* 3. Executive Overview Panels */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card title="Multi-Campus Placement Performance" subtitle="Campus-wise intake and median package">
+        <Card title="Campus Velocity Comparison" subtitle="Graduation year 2026 outcomes by constituent campus">
           <div className="space-y-3">
-            {[
-              { campus: 'Main Campus (Delhi NCR)', rate: '92.1%', median: '₹9.8 LPA', count: 840 },
-              { campus: 'South Campus (Bengaluru)', rate: '86.4%', median: '₹11.2 LPA', count: 620 },
-              { campus: 'West Campus (Pune)', rate: '81.5%', median: '₹8.4 LPA', count: 480 },
-            ].map((c, idx) => (
-              <div key={idx} className="p-3.5 rounded-xl border border-line bg-canvas flex items-center justify-between text-xs">
-                <div>
-                  <div className="font-bold text-ink">{c.campus}</div>
-                  <div className="text-[11px] text-ink-muted">{c.count} eligible graduates</div>
-                </div>
-                <div className="text-right">
-                  <div className="font-bold text-success font-mono">{c.rate} Placed</div>
-                  <div className="text-[11px] text-ink-muted font-mono">Median: {c.median}</div>
-                </div>
+            <div>
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="font-semibold text-ink">Bengaluru Main Campus</span>
+                <span className="font-mono text-ink font-bold">92.1% (612/664)</span>
               </div>
-            ))}
+              <div className="w-full bg-line rounded-full h-2">
+                <div className="bg-brand h-2 rounded-full" style={{ width: '92.1%' }} />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="font-semibold text-ink">North Tech Campus</span>
+                <span className="font-mono text-ink font-bold">86.4% (388/449)</span>
+              </div>
+              <div className="w-full bg-line rounded-full h-2">
+                <div className="bg-brand h-2 rounded-full" style={{ width: '86.4%' }} />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="font-semibold text-ink">Pune Innovation Campus</span>
+                <span className="font-mono text-ink font-bold">82.0% (246/300)</span>
+              </div>
+              <div className="w-full bg-line rounded-full h-2">
+                <div className="bg-brand h-2 rounded-full" style={{ width: '82%' }} />
+              </div>
+            </div>
           </div>
         </Card>
 
-        <Card title="Statutory Compliance &amp; AI Safety Alerts" subtitle="Continuous algorithmic audit & regulatory telemetry">
+        <Card title="Accreditation & Compliance Health" subtitle="Statutory rankings readiness and audit log telemetry">
           <div className="space-y-3 text-xs">
-            <div className="p-3 rounded-lg border border-emerald-200 bg-emerald-50/40 flex items-start gap-2.5">
-              <ShieldCheck size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+            <div className="p-3 rounded-lg border border-emerald-200 bg-emerald-50/40 flex items-center justify-between">
               <div>
-                <div className="font-bold text-ink">Equal Opportunity &amp; Disparate Impact</div>
-                <p className="text-[11px] text-emerald-800 mt-0.5">
-                  Demographic parity ratio: 0.94 (&gt; 0.80 Four-Fifths Rule). Zero algorithmic discrimination detected.
-                </p>
+                <span className="font-semibold text-ink block">NIRF 2026 Ready</span>
+                <span className="text-[11px] text-emerald-800">Verified placement and median package metrics aligned</span>
               </div>
+              <Badge variant="success" size="xs">Compliant</Badge>
             </div>
 
-            <div className="p-3 rounded-lg border border-line bg-canvas flex items-start gap-2.5">
-              <ShieldCheck size={16} className="text-brand shrink-0 mt-0.5" />
+            <div className="p-3 rounded-lg border border-emerald-200 bg-emerald-50/40 flex items-center justify-between">
               <div>
-                <div className="font-bold text-ink">DPDP Act 2023 Statutory Audit</div>
-                <p className="text-[11px] text-ink-muted mt-0.5">
-                  1,894 active affirmative consent receipts locked in append-only database audit collection.
-                </p>
+                <span className="font-semibold text-ink block">DPDP Act (India)</span>
+                <span className="text-[11px] text-emerald-800">Zero non-consensual candidate data sharing detected</span>
               </div>
+              <Badge variant="success" size="xs">Passed</Badge>
+            </div>
+
+            <div className="p-3 rounded-lg border border-line bg-canvas flex items-center justify-between">
+              <div>
+                <span className="font-semibold text-ink block">AI Demographic Fairness</span>
+                <span className="text-[11px] text-ink-muted">Parity ratio within 0.80 - 1.25 four-fifths standard</span>
+              </div>
+              <Badge variant="institutional" size="xs">Monitored</Badge>
             </div>
           </div>
         </Card>
-      </div>
-
-      {/* Direct Nav Buttons */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Button variant="outline" size="sm" onClick={() => navigate('/management/placements')}>
-          <span>System-Wide Placements</span>
-          <ArrowRight size={13} />
-        </Button>
-        <Button variant="outline" size="sm" onClick={() => navigate('/management/accreditation')}>
-          <span>NIRF Outcomes Console</span>
-          <ArrowRight size={13} />
-        </Button>
-        <Button variant="outline" size="sm" onClick={() => navigate('/management/compliance')}>
-          <span>Compliance &amp; AI Audit</span>
-          <ArrowRight size={13} />
-        </Button>
       </div>
     </div>
   );
 };
-

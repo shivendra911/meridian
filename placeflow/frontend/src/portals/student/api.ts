@@ -69,6 +69,10 @@ export interface StudentInterview {
   scheduled_end: string;
   mode: string;
   venue?: string;
+  venue_or_link?: string;
+  role?: string;
+  company_name?: string;
+  interviewer?: string;
   status: string;
 }
 

@@ -5,8 +5,10 @@
 import React from 'react';
 import { ShieldAlert, ArrowLeft, LogOut } from 'lucide-react';
 import { useAuth } from '../core/auth/useAuth';
+import { useDocumentTitle } from '../ui';
 
 export const ForbiddenPage: React.FC = () => {
+  useDocumentTitle('Access Denied (403)');
   const { me, logout } = useAuth();
   const defaultPortal = me?.default_portal || 'student';
 

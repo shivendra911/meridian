@@ -5,8 +5,10 @@
 import React from 'react';
 import { FileQuestion, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../core/auth/useAuth';
+import { useDocumentTitle } from '../ui';
 
 export const NotFoundPage: React.FC = () => {
+  useDocumentTitle('Page Not Found (404)');
   const { me } = useAuth();
   const defaultPortal = me?.default_portal || 'student';
 

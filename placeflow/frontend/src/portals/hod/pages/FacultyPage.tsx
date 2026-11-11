@@ -2,12 +2,12 @@
  * PlaceFlow / Meridian — HOD Faculty Roster (Phase 6).
  *
  * Read-only departmental faculty roster, teaching loads, and assigned mentee counts.
- * Strictly avoids leaking global IAM administrative controls.
+ * Strictly avoids leaking global IAM administrative controls; uses PersonChip for faculty.
  */
 
 import React from 'react';
 import { Users, BookOpen, Mail, Phone, Award } from 'lucide-react';
-import { PageHeader, StatCard, Card, Badge } from '../../../ui';
+import { PageHeader, StatCard, Card, Badge, PersonChip, useDocumentTitle } from '../../../ui';
 
 interface FacultyMember {
   id: string;
@@ -50,6 +50,8 @@ const CSE_FACULTY: FacultyMember[] = [
 ];
 
 export const HodFacultyPage: React.FC = () => {
+  useDocumentTitle('Department Faculty Roster');
+
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
@@ -82,7 +84,22 @@ export const HodFacultyPage: React.FC = () => {
               {CSE_FACULTY.map((f) => (
                 <tr key={f.id} className="h-12 hover:bg-canvas/50 transition-colors">
                   <td className="py-2 px-4 font-mono font-bold text-brand">{f.id}</td>
-                  <td className="py-2 px-4 font-semibold text-ink">{f.name}</td>
+                  <td className="py-2 px-4">
+                    <PersonChip
+                      name={f.name}
+                      role={f.designation}
+                      person_id={f.id}
+                      profileData={{
+                        person_id: f.id,
+                        name: f.name,
+                        department: 'Computer Science & Engineering',
+                        headline: f.specialization,
+                        roles: [f.designation],
+                        is_verified: true,
+                        email: f.email,
+                      }}
+                    />
+                  </td>
                   <td className="py-2 px-4 text-ink-muted">{f.designation}</td>
                   <td className="py-2 px-4 text-ink">{f.specialization}</td>
                   <td className="py-2 px-4">
@@ -105,4 +122,3 @@ export const HodFacultyPage: React.FC = () => {
     </div>
   );
 };
-

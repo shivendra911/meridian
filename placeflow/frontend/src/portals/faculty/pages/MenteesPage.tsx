@@ -1,13 +1,13 @@
 /**
  * PlaceFlow / Meridian — Faculty Mentee Roster (Phase 6).
  *
- * Scoped advising dashboard for assigned student mentees.
+ * Scoped advising dashboard for assigned student mentees using PersonChip.
  */
 
 import React, { useState } from 'react';
 import { Users, Search, AlertCircle, CheckCircle2, MessageSquare, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
-import { PageHeader, StatCard, Card, Badge, Button } from '../../../ui';
+import { PageHeader, StatCard, Card, Badge, Button, PersonChip, useDocumentTitle } from '../../../ui';
 
 interface Mentee {
   id: string;
@@ -29,6 +29,7 @@ const DEMO_MENTEES: Mentee[] = [
 ];
 
 export const FacultyMenteesPage: React.FC = () => {
+  useDocumentTitle('Student Mentorship Roster');
   const [search, setSearch] = useState('');
   const [mentees, setMentees] = useState<Mentee[]>(DEMO_MENTEES);
 
@@ -52,7 +53,7 @@ export const FacultyMenteesPage: React.FC = () => {
       </div>
 
       {/* Roster Table */}
-      <Card title="Mentee Dossiers &amp; Placement Readiness" subtitle="Real-time academic standing and placement pipeline status">
+      <Card title="Mentee Dossiers & Placement Readiness" subtitle="Real-time academic standing and placement pipeline status">
         <div className="mb-4 flex items-center justify-between">
           <input
             type="text"
@@ -81,7 +82,22 @@ export const FacultyMenteesPage: React.FC = () => {
               {filtered.map((m) => (
                 <tr key={m.id} className="h-11 hover:bg-canvas/50 transition-colors">
                   <td className="py-2 px-4 font-mono font-bold text-brand">{m.id}</td>
-                  <td className="py-2 px-4 font-medium text-ink">{m.name}</td>
+                  <td className="py-2 px-4">
+                    <PersonChip
+                      name={m.name}
+                      role={m.dept}
+                      person_id={m.id}
+                      profileData={{
+                        person_id: m.id,
+                        name: m.name,
+                        reg_no: m.id,
+                        department: m.dept,
+                        cgpa: m.cgpa,
+                        roles: ['Student Mentee'],
+                        is_verified: true,
+                      }}
+                    />
+                  </td>
                   <td className="py-2 px-4 font-mono text-ink font-semibold">{m.cgpa.toFixed(2)}</td>
                   <td className="py-2 px-4 font-mono">
                     <span className={m.attendance < 75 ? 'text-red-600 font-bold' : 'text-ink'}>
@@ -114,4 +130,3 @@ export const FacultyMenteesPage: React.FC = () => {
     </div>
   );
 };
-

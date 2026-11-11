@@ -266,6 +266,7 @@ export interface Company {
   location: string;
   website?: string;
   contact_email?: string;
+  tier?: string;
 }
 
 export interface Application {

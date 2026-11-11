@@ -25,12 +25,14 @@ import { Card } from '../../../components/ui/Card';
 import { Badge } from '../../../components/ui/Badge';
 import { Button } from '../../../components/ui/Button';
 import { Skeleton } from '../../../components/ui/Skeleton';
+import { TaskCard, useDocumentTitle } from '../../../ui';
 
 interface OverviewPageProps {
   onNavigateTab?: (tab: string) => void;
 }
 
 export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => {
+  useDocumentTitle('TPO Operations & Command');
   const navigate = useNavigate();
   const { activeTenant, activeInstitution, activeCampus } = useTenant();
   const [data, setData] = useState<OverviewData | null>(null);
@@ -119,6 +121,48 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
           </div>
         }
       />
+
+      {/* What Needs Me Now — Actionable TaskCards */}
+      <div className="space-y-3">
+        <h3 className="text-xs font-bold text-ink-muted uppercase tracking-wider">
+          What Needs Me Now
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <TaskCard
+            data={{
+              task_id: 'task_superday',
+              title: 'Superday Solver: Room & panel schedule conflicts',
+              due: new Date(Date.now() + 3600 * 1000 * 4),
+              priority: 'HIGH',
+              icon: Zap,
+              action_label: 'Resolve Conflicts',
+            }}
+            onAction={() => navigate('/tpo/interviews')}
+          />
+          <TaskCard
+            data={{
+              task_id: 'task_renege',
+              title: 'Renege Radar: 2 high-risk post-offer candidate alerts',
+              due: new Date(Date.now() + 24 * 3600 * 1000 * 2),
+              priority: 'MEDIUM',
+              icon: Radar,
+              action_label: 'Inspect Risk',
+            }}
+            onAction={() => navigate('/tpo/insights/renege')}
+          />
+          <TaskCard
+            data={{
+              task_id: 'task_drives',
+              title: 'Open JNF Drives: 4 pending recruiter approvals',
+              due: new Date(Date.now() + 24 * 3600 * 1000 * 3),
+              priority: 'MEDIUM',
+              icon: Briefcase,
+              action_label: 'Review Drives',
+            }}
+            onAction={() => navigate('/tpo/drives')}
+          />
+        </div>
+      </div>
 
       {/* 2. Top Metric Row (Max 4 StatCards, tabular-nums) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

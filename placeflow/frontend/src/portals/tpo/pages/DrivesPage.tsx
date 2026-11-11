@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { Job } from '../../../types';
-import { Briefcase, ArrowRight, Sparkles, Search, Filter } from 'lucide-react';
+import { Briefcase, ArrowRight, Sparkles, Search, Filter, LayoutGrid, List } from 'lucide-react';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { StatCard } from '../../../components/ui/StatCard';
 import { Card } from '../../../components/ui/Card';
@@ -12,14 +12,17 @@ import { Skeleton } from '../../../components/ui/Skeleton';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { PlacementDriveWizard } from '../../../pages/workspaces/PlacementDriveWizard';
 import { resolveCompanyName } from '../../../utils/formatters';
+import { DriveCard, useDocumentTitle } from '../../../ui';
 
 export const DrivesPage: React.FC = () => {
+  useDocumentTitle('Placement Drives (JNFs)');
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [tierFilter, setTierFilter] = useState('ALL');
+  const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
 
   const fetchJobs = () => {
     setLoading(true);
@@ -127,6 +130,30 @@ export const DrivesPage: React.FC = () => {
                 {tier}
               </button>
             ))}
+
+            {/* View Mode Switcher */}
+            <div className="flex items-center ml-2 pl-2 border-l border-line gap-1">
+              <button
+                type="button"
+                onClick={() => setViewMode('cards')}
+                className={`p-1.5 rounded transition-colors ${
+                  viewMode === 'cards' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+                }`}
+                title="Cards view"
+              >
+                <LayoutGrid size={14} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('table')}
+                className={`p-1.5 rounded transition-colors ${
+                  viewMode === 'table' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+                }`}
+                title="Table view"
+              >
+                <List size={14} />
+              </button>
+            </div>
           </div>
         </div>
       </Card>
@@ -150,6 +177,25 @@ export const DrivesPage: React.FC = () => {
           actionLabel={search || tierFilter !== 'ALL' ? undefined : 'Create Placement Drive'}
           onAction={search || tierFilter !== 'ALL' ? undefined : () => setIsWizardOpen(true)}
         />
+      ) : viewMode === 'cards' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredJobs.map((j) => (
+            <DriveCard
+              key={j.job_id}
+              data={{
+                drive_id: j.job_id,
+                job_id: j.job_id,
+                company_name: resolveCompanyName(j.company_id),
+                role: j.title,
+                tier: j.tier,
+                package_lpa: j.package_lpa,
+                eligible: true,
+              }}
+              onClick={() => navigate(`/tpo/drives/${j.job_id}`)}
+              onApply={() => navigate(`/tpo/drives/${j.job_id}`)}
+            />
+          ))}
+        </div>
       ) : (
         <div className="rounded-lg border border-line bg-surface overflow-hidden">
           <div className="overflow-x-auto">
