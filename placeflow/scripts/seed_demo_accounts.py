@@ -358,8 +358,6 @@ def seed_demo_accounts(db=None):
                 "account_type": "HUMAN",
                 "username": username,
                 "email": email,
-                "password_hash": pwd_hash,
-                "password_salt": salt,
                 "status": "ACTIVE",
                 "failed_login_attempts": 0,
                 "created_at": now,
@@ -374,11 +372,15 @@ def seed_demo_accounts(db=None):
                     "person_id": person_id,
                     "username": username,
                     "email": email,
-                    "password_hash": pwd_hash,
-                    "password_salt": salt,
                     "status": "ACTIVE",
                     "failed_login_attempts": 0,
                     "updated_at": now,
+                },
+                "$unset": {
+                    "password_hash": "",
+                    "password_salt": "",
+                    "token_hash": "",
+                    "raw_token": "",
                 }},
             )
 
@@ -476,6 +478,16 @@ def seed_demo_accounts(db=None):
             "subject_id": resolved["id"] if resolved else "none",
             "effective_perms": total_perms,
         })
+
+    # Ensure no secrets leak on any account document in database
+    db.accounts.update_many({}, {
+        "$unset": {
+            "password_hash": "",
+            "password_salt": "",
+            "token_hash": "",
+            "raw_token": "",
+        }
+    })
 
     return results
 

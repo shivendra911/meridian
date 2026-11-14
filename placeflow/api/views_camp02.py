@@ -21,6 +21,17 @@ from camp_02.sessions import create_auth_session, revoke_session, revoke_all_acc
 from camp_02.authorizer import can
 from camp_02.provisioning import ingest_student_cohort
 
+SECRET_KEYS = frozenset({"password_hash", "password_salt", "token_hash", "raw_token"})
+
+
+def strip_secrets(obj: Any) -> Any:
+    """Recursively removes sensitive secret keys from response payloads."""
+    if isinstance(obj, dict):
+        return {k: strip_secrets(v) for k, v in obj.items() if k not in SECRET_KEYS}
+    elif isinstance(obj, list):
+        return [strip_secrets(item) for item in obj]
+    return obj
+
 
 def _get_tenant_id(request) -> str:
     return request.headers.get("X-Tenant-ID") or request.query_params.get("tenant_id") or "global"
@@ -67,8 +78,8 @@ def identity_detail_view(request, person_id: str):
         p = get_person_by_id(person_id, db=db)
         # Fetch memberships and accounts
         mems = list(db.institution_memberships.find({"person_id": person_id}, {"_id": 0}))
-        accs = list(db.accounts.find({"person_id": person_id}, {"_id": 0}))
-        return Response({"person": p, "memberships": mems, "accounts": accs})
+        accs = list(db.accounts.find({"person_id": person_id}, {"_id": 0, "password_hash": 0, "password_salt": 0, "token_hash": 0, "raw_token": 0}))
+        return Response(strip_secrets({"person": p, "memberships": mems, "accounts": accs}))
     except Exception as exc:
         return Response({"error": str(exc)}, status=status.HTTP_404_NOT_FOUND)
 
@@ -77,8 +88,8 @@ def identity_detail_view(request, person_id: str):
 def accounts_list_view(request):
     db = get_db()
     t_id = _get_tenant_id(request)
-    cursor = db.accounts.find({}, {"_id": 0}).sort("created_at", -1).limit(50)
-    return Response({"accounts": list(cursor)})
+    cursor = db.accounts.find({}, {"_id": 0, "password_hash": 0, "password_salt": 0, "token_hash": 0, "raw_token": 0}).sort("created_at", -1).limit(50)
+    return Response(strip_secrets({"accounts": list(cursor)}))
 
 
 @api_view(["POST"])
@@ -89,7 +100,7 @@ def account_lock_view(request, account_id: str):
         acc = transition_account_status(account_id, "LOCKED", reason=reason, db=db)
         # Invalidate all active sessions for this account
         revoke_all_account_sessions(account_id, reason="account_locked", db=db)
-        return Response({"message": f"Account '{account_id}' locked.", "account": acc})
+        return Response(strip_secrets({"message": f"Account '{account_id}' locked.", "account": acc}))
     except Exception as exc:
         return Response({"error": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -100,7 +111,7 @@ def account_unlock_view(request, account_id: str):
     reason = request.data.get("reason", "Administrative unlock")
     try:
         acc = transition_account_status(account_id, "ACTIVE", reason=reason, db=db)
-        return Response({"message": f"Account '{account_id}' unlocked.", "account": acc})
+        return Response(strip_secrets({"message": f"Account '{account_id}' unlocked.", "account": acc}))
     except Exception as exc:
         return Response({"error": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -305,8 +316,11 @@ def break_glass_view(request):
 @api_view(["GET"])
 def sessions_view(request):
     db = get_db()
-    cursor = db.auth_sessions.find({"status": "ACTIVE"}, {"_id": 0, "token_hash": 0}).sort("last_activity_at", -1).limit(50)
-    return Response({"sessions": list(cursor)})
+    cursor = db.auth_sessions.find(
+        {"status": "ACTIVE"},
+        {"_id": 0, "token_hash": 0, "raw_token": 0, "password_hash": 0, "password_salt": 0}
+    ).sort("last_activity_at", -1).limit(50)
+    return Response(strip_secrets({"sessions": list(cursor)}))
 
 
 @api_view(["POST"])

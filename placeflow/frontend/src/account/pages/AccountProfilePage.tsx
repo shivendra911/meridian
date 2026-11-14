@@ -172,7 +172,7 @@ export const AccountProfilePage: React.FC = () => {
                 </span>
               </h2>
               <p className="text-xs text-ink-muted">
-                Authoritative academic data maintained by the campus registrar and placement office.
+                Official academic data maintained by the campus registrar and placement office.
               </p>
             </div>
           </div>
@@ -210,7 +210,7 @@ export const AccountProfilePage: React.FC = () => {
           {official.cgpa && (
             <div className="p-3.5 rounded-xl border border-line bg-canvas">
               <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
-                Authoritative CGPA
+                Verified CGPA
               </span>
               <span className="text-xs font-bold text-ink font-mono">{official.cgpa} / 10.0</span>
             </div>

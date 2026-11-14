@@ -202,12 +202,45 @@ def portal_access(portal: str) -> Type[BasePermission]:
     return _PortalAccessClass
 
 
+def is_recruiter(user) -> bool:
+    """Returns True if the authenticated principal is an external corporate recruiter."""
+    if not user or not getattr(user, "is_authenticated", False):
+        return False
+    subj = getattr(user, "subject", None) or {}
+    if subj.get("type") == "company":
+        return True
+    assignments = getattr(user, "assignments", []) or []
+    if any(a.get("role_code") == "RECRUITER_EXTERNAL" for a in assignments):
+        return True
+    return getattr(user, "role_code", "") == "RECRUITER_EXTERNAL"
+
+
+class BlockRecruiter(BasePermission):
+    """Denies access to external recruiter accounts on institution-wide data."""
+
+    def has_permission(self, request, view) -> bool:
+        user = getattr(request, "user", None)
+        if is_recruiter(user):
+            audit_log(
+                event_type="RECRUITER_ACCESS_DENIED",
+                principal=user,
+                permission="recruiter.restricted",
+                path=request.path,
+                method=request.method,
+                decision="DENIED",
+                reason_code="RECRUITER_RESTRICTED",
+            )
+            return False
+        return True
+
+
 def portal_gated(view_target, portal: str):
     """Subclasses a DRF view class or wraps a function view to enforce PortalAccess(portal)."""
     import inspect
     from functools import wraps
     from rest_framework.response import Response
     from rest_framework import status
+    from api.auth.authentication import SessionTokenAuthentication
 
     if inspect.isclass(view_target):
         class _GatedView(view_target):
@@ -224,6 +257,15 @@ def portal_gated(view_target, portal: str):
         @wraps(view_target)
         def _gated_func(request, *args, **kwargs):
             user = getattr(request, "user", None)
+            if not user or not getattr(user, "is_authenticated", False):
+                try:
+                    auth_res = SessionTokenAuthentication().authenticate(request)
+                    if auth_res:
+                        request.user, request.auth = auth_res
+                        user = request.user
+                except Exception as exc:
+                    return JsonResponse({"error": "AuthenticationFailed", "detail": str(exc)}, status=status.HTTP_401_UNAUTHORIZED)
+
             if not user or not getattr(user, "is_authenticated", False):
                 return JsonResponse({"error": "AuthenticationRequired"}, status=status.HTTP_401_UNAUTHORIZED)
             portals = getattr(user, "portals", [])

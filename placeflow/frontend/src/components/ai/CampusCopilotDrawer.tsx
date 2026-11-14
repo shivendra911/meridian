@@ -103,7 +103,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
   const [error, setError] = useState<string | null>(null);
 
   // Agent form parameters
-  const candidateId = me?.subject?.id || me?.person_id || me?.account_id || 'STU001';
+  const candidateId = me?.subject?.id || me?.person_id || me?.account_id || '';
   const [jnfCompany, setJnfCompany] = useState('Microsoft India');
   const [jnfCtc, setJnfCtc] = useState('26.5');
   const [jnfCgpa, setJnfCgpa] = useState('7.5');

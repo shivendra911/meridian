@@ -4,38 +4,68 @@
  * Scoped advising dashboard for assigned student mentees using PersonChip.
  */
 
-import React, { useState } from 'react';
-import { Users, AlertCircle, CheckCircle2, MessageSquare} from 'lucide-react';
-import { toast } from 'sonner';
-import { PageHeader, StatCard, Card, Badge, Button, PersonChip, useDocumentTitle } from '../../../ui';
+import React, { useState, useEffect } from 'react';
+import { Users, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { PageHeader, StatCard, Card, Badge, PersonChip, EmptyState, Skeleton, useDocumentTitle } from '../../../ui';
+import { facultyApi } from '../api';
 
-interface Mentee {
-  id: string;
+interface MenteeRecord {
+  student_id: string;
   name: string;
-  dept: string;
-  cgpa: number;
-  attendance: number;
-  backlogs: number;
-  placementStatus: string;
-  riskLevel: 'Low' | 'Moderate' | 'High';
+  department?: string | null;
+  dept?: string | null;
+  cgpa?: number | null;
+  attendance_percentage?: number | null;
+  attendance?: number | null;
+  backlogs?: number | null;
+  placement_status?: string | null;
+  risk_level?: 'Low' | 'Moderate' | 'High' | null;
 }
-
-const DEMO_MENTEES: Mentee[] = [
-  { id: '2023CSB001', name: 'Aarav Sharma', dept: 'CSE', cgpa: 8.65, attendance: 89.4, backlogs: 0, placementStatus: 'Placed (Super Dream)', riskLevel: 'Low' },
-  { id: '2023CSB002', name: 'Diya Patel', dept: 'CSE', cgpa: 8.92, attendance: 92.1, backlogs: 0, placementStatus: 'Interview Scheduled', riskLevel: 'Low' },
-  { id: '2023CSB014', name: 'Rohan Verma', dept: 'CSE', cgpa: 6.40, attendance: 68.2, backlogs: 1, placementStatus: 'Eligible (Regular)', riskLevel: 'High' },
-  { id: '2023CSB029', name: 'Priya Nair', dept: 'CSE', cgpa: 7.45, attendance: 78.5, backlogs: 0, placementStatus: 'Applied (2 drives)', riskLevel: 'Moderate' },
-  { id: '2023CSB045', name: 'Karan Mehta', dept: 'CSE', cgpa: 7.10, attendance: 81.0, backlogs: 0, placementStatus: 'Eligible', riskLevel: 'Low' },
-];
 
 export const FacultyMenteesPage: React.FC = () => {
   useDocumentTitle('Student Mentorship Roster');
   const [search, setSearch] = useState('');
-  const [mentees, _setMentees] = useState<Mentee[]>(DEMO_MENTEES);
+  const [mentees, setMentees] = useState<MenteeRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    facultyApi
+      .getMentees()
+      .then((res) => {
+        if (active) {
+          setMentees(res.students || []);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setMentees([]);
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setLoading(false);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const filtered = mentees.filter((m) =>
-    m.name.toLowerCase().includes(search.toLowerCase()) || m.id.toLowerCase().includes(search.toLowerCase())
+    (m.name || '').toLowerCase().includes(search.toLowerCase()) ||
+    (m.student_id || '').toLowerCase().includes(search.toLowerCase())
   );
+
+  const atRiskCount = mentees.filter((m) => {
+    const att = m.attendance_percentage ?? m.attendance;
+    return (att != null && att < 75) || (m.backlogs ?? 0) > 0 || (m.cgpa != null && m.cgpa < 6.5);
+  }).length;
+
+  const placedCount = mentees.filter((m) =>
+    (m.placement_status || '').toLowerCase().includes('placed')
+  ).length;
 
   return (
     <div className="space-y-6 font-sans">
@@ -48,8 +78,8 @@ export const FacultyMenteesPage: React.FC = () => {
       {/* KPI Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard label="Total Mentees" value={mentees.length} hint="Assigned by HOD" icon={Users} />
-        <StatCard label="At-Risk Candidates" value={1} hint="Immediate counseling required" icon={AlertCircle} />
-        <StatCard label="Placement Confirmed" value={1} hint="Formal offer accepted" icon={CheckCircle2} />
+        <StatCard label="At-Risk Candidates" value={atRiskCount} hint="Immediate counseling required" icon={AlertCircle} />
+        <StatCard label="Placement Confirmed" value={placedCount} hint="Formal offer accepted" icon={CheckCircle2} />
       </div>
 
       {/* Roster Table */}
@@ -64,68 +94,86 @@ export const FacultyMenteesPage: React.FC = () => {
           />
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-xs h-10">
-                <th className="py-2.5 px-4 font-semibold">Roll Number</th>
-                <th className="py-2.5 px-4 font-semibold">Candidate Name</th>
-                <th className="py-2.5 px-4 font-semibold">CGPA</th>
-                <th className="py-2.5 px-4 font-semibold">Attendance</th>
-                <th className="py-2.5 px-4 font-semibold">Backlogs</th>
-                <th className="py-2.5 px-4 font-semibold">Placement Standing</th>
-                <th className="py-2.5 px-4 font-semibold">Risk Tier</th>
-                <th className="py-2.5 px-4 text-right font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line">
-              {filtered.map((m) => (
-                <tr key={m.id} className="h-11 hover:bg-canvas/50 transition-colors">
-                  <td className="py-2 px-4 font-mono font-bold text-brand">{m.id}</td>
-                  <td className="py-2 px-4">
-                    <PersonChip
-                      name={m.name}
-                      role={m.dept}
-                      person_id={m.id}
-                      profileData={{
-                        person_id: m.id,
-                        name: m.name,
-                        reg_no: m.id,
-                        department: m.dept,
-                        cgpa: m.cgpa,
-                        roles: ['Student Mentee'],
-                        is_verified: true,
-                      }}
-                    />
-                  </td>
-                  <td className="py-2 px-4 font-mono text-ink font-semibold">{m.cgpa.toFixed(2)}</td>
-                  <td className="py-2 px-4 font-mono">
-                    <span className={m.attendance < 75 ? 'text-red-600 font-bold' : 'text-ink'}>
-                      {m.attendance}%
-                    </span>
-                  </td>
-                  <td className="py-2 px-4 font-mono text-ink">{m.backlogs}</td>
-                  <td className="py-2 px-4 font-medium text-ink">{m.placementStatus}</td>
-                  <td className="py-2 px-4">
-                    <Badge variant={m.riskLevel === 'High' ? 'danger' : m.riskLevel === 'Moderate' ? 'institutional' : 'success'} size="xs">
-                      {m.riskLevel} Risk
-                    </Badge>
-                  </td>
-                  <td className="py-2 px-4 text-right">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toast.success(`Advising session note initiated for ${m.name}.`)}
-                      leftIcon={<MessageSquare size={13} />}
-                    >
-                      Counsel
-                    </Button>
-                  </td>
+        {loading ? (
+          <div className="space-y-3 p-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        ) : filtered.length === 0 ? (
+          <EmptyState
+            title="No Mentees Found"
+            description={search ? 'No candidate records match your search filter.' : 'No mentees have been assigned to your advising cohort.'}
+          />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-xs h-10">
+                  <th className="py-2.5 px-4 font-semibold">Roll Number</th>
+                  <th className="py-2.5 px-4 font-semibold">Candidate Name</th>
+                  <th className="py-2.5 px-4 font-semibold">CGPA</th>
+                  <th className="py-2.5 px-4 font-semibold">Attendance</th>
+                  <th className="py-2.5 px-4 font-semibold">Backlogs</th>
+                  <th className="py-2.5 px-4 font-semibold">Placement Standing</th>
+                  <th className="py-2.5 px-4 font-semibold">Risk Tier</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {filtered.map((m) => {
+                  const att = m.attendance_percentage ?? m.attendance;
+                  const dept = m.department || m.dept || 'Engineering';
+                  const isHighRisk = (att != null && att < 75) || (m.backlogs ?? 0) > 0;
+                  const riskLabel = m.risk_level || (isHighRisk ? 'High' : 'Low');
+
+                  return (
+                    <tr key={m.student_id} className="h-11 hover:bg-canvas/50 transition-colors">
+                      <td className="py-2 px-4 font-mono font-bold text-brand">{m.student_id}</td>
+                      <td className="py-2 px-4">
+                        <PersonChip
+                          name={m.name}
+                          role={dept}
+                          person_id={m.student_id}
+                          profileData={{
+                            person_id: m.student_id,
+                            name: m.name,
+                            reg_no: m.student_id,
+                            department: dept,
+                            cgpa: m.cgpa != null ? Number(m.cgpa) : undefined,
+                            roles: ['Student Mentee'],
+                            is_verified: true,
+                          }}
+                        />
+                      </td>
+                      <td className="py-2 px-4 text-ink font-semibold">
+                        {m.cgpa != null ? Number(m.cgpa).toFixed(2) : '—'}
+                      </td>
+                      <td className="py-2 px-4">
+                        {att != null ? (
+                          <span className={att < 75 ? 'text-red-600 font-bold' : 'text-ink'}>
+                            {att}%
+                          </span>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                      <td className="py-2 px-4 text-ink">{m.backlogs ?? 0}</td>
+                      <td className="py-2 px-4 font-medium text-ink">{m.placement_status || 'Eligible'}</td>
+                      <td className="py-2 px-4">
+                        <Badge
+                          variant={riskLabel === 'High' ? 'danger' : riskLabel === 'Moderate' ? 'neutral' : 'success'}
+                          size="xs"
+                        >
+                          {riskLabel} Risk
+                        </Badge>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </Card>
     </div>
   );

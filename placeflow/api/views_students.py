@@ -10,7 +10,7 @@ from operations import students, applications
 from operations.authenticity import calculate_talent_authenticity
 from operations.errors import friendly
 from operations.consent import get_student_consents
-from api.auth.permissions import perm, any_of
+from api.auth.permissions import perm, any_of, BlockRecruiter
 from api.auth.queries import scoped_find, scoped_get
 
 
@@ -21,8 +21,8 @@ class StudentListView(APIView):
     """
     def get_permissions(self):
         if self.request.method in ("POST", "PUT", "PATCH", "DELETE"):
-            return [perm("student.profile.update_admin")()]
-        return [perm("student.profile.read")()]
+            return [BlockRecruiter(), perm("student.profile.update_admin")()]
+        return [BlockRecruiter(), perm("student.profile.read")()]
 
     def get(self, request):
         db = get_db()

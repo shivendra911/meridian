@@ -47,7 +47,7 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
 
   return (
     <div className="flex min-h-screen bg-canvas font-sans text-ink antialiased">
-      {/* 1. Authoritative Sidebar */}
+      {/* 1. Navigation Sidebar */}
       <Sidebar
         portal={portal}
         nav={nav}

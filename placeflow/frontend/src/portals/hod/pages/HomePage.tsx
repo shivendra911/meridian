@@ -5,7 +5,7 @@
  * Includes "What needs me now" actionable task center.
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Users,
@@ -13,19 +13,48 @@ import {
   BookOpen,
   CheckSquare,
   AlertTriangle,
-  ArrowRight} from 'lucide-react';
+  ArrowRight,
+} from 'lucide-react';
 import { useAuth } from '../../../core/auth/useAuth';
 import { PageHeader, StatCard, Card, Badge, Button, TaskCard, useDocumentTitle } from '../../../ui';
+import { hodApi } from '../api';
 
 export const HodHomePage: React.FC = () => {
   useDocumentTitle('Department Administration (HOD)');
   const { me } = useAuth();
   const navigate = useNavigate();
+  const [students, setStudents] = useState<any[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    hodApi
+      .getStudents()
+      .then((res) => {
+        if (active) {
+          setStudents(res.students || []);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setStudents([]);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const placedCount = students.filter((s) => (s.placement_status || '').toLowerCase().includes('placed')).length;
+  const atRiskCount = students.filter((s) => {
+    const att = s.attendance_percentage ?? s.attendance;
+    return (att != null && att < 75) || (s.backlogs ?? 0) > 0;
+  }).length;
+  const placementRate = students.length > 0 ? `${Math.round((placedCount / students.length) * 100)}%` : '—';
 
   return (
     <div className="space-y-8 font-sans">
       <PageHeader
-        title={`Department Leadership — ${me?.display_name || 'Dr. Sweety Sehgal'}`}
+        title={`Department Leadership — ${me?.display_name || 'Department Head'}`}
         description="Head of Department administrative command: departmental placements, faculty workload, and curriculum approvals."
         badge={<Badge variant="institutional" size="xs">Department of CSE</Badge>}
         actions={
@@ -49,9 +78,9 @@ export const HodHomePage: React.FC = () => {
           <TaskCard
             data={{
               task_id: 'task_curriculum_review',
-              title: 'Approve 3 pending NEP curriculum elective revisions',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 2),
-              priority: 'HIGH',
+              title: 'Review pending NEP curriculum elective revisions',
+              due: null,
+              priority: 'MEDIUM',
               icon: BookOpen,
               action_label: 'Review Electives',
             }}
@@ -60,9 +89,11 @@ export const HodHomePage: React.FC = () => {
           <TaskCard
             data={{
               task_id: 'task_at_risk_students',
-              title: 'Review 12 at-risk student academic performance dossiers',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 3),
-              priority: 'HIGH',
+              title: atRiskCount > 0
+                ? `Review ${atRiskCount} at-risk student academic performance dossiers`
+                : 'Audit student academic performance dossiers and attendance',
+              due: null,
+              priority: atRiskCount > 0 ? 'HIGH' : 'MEDIUM',
               icon: AlertTriangle,
               action_label: 'Audit Dossiers',
             }}
@@ -72,8 +103,8 @@ export const HodHomePage: React.FC = () => {
             data={{
               task_id: 'task_faculty_workload',
               title: 'Audit faculty teaching workload & advising distribution',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 5),
-              priority: 'MEDIUM',
+              due: null,
+              priority: 'LOW',
               icon: Users,
               action_label: 'Faculty Roster',
             }}
@@ -85,57 +116,51 @@ export const HodHomePage: React.FC = () => {
       {/* 2. KPI Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          label="Department Placement Rate"
-          value="84.6%"
-          hint="214 / 253 Eligible Students Placed"
+          label="Department Cohort"
+          value={students.length}
+          hint="Enrolled Student Scope"
+          icon={Users}
+        />
+        <StatCard
+          label="Placement Rate"
+          value={placementRate}
+          hint={`${placedCount} / ${students.length} Candidates Placed`}
           icon={Award}
         />
         <StatCard
-          label="Pending Curriculum Approvals"
-          value={3}
-          hint="NEP syllabus revisions"
-          icon={CheckSquare}
-        />
-        <StatCard
           label="At-Risk Students"
-          value={12}
+          value={atRiskCount}
           hint="Attendance < 75% or Backlogs > 0"
           icon={AlertTriangle}
         />
         <StatCard
-          label="Teaching Faculty Load"
-          value="14.2 hrs"
-          hint="Weekly average classroom contact"
-          icon={Users}
+          label="Approvals Queue"
+          value="Active"
+          hint="Board of Studies Sign-Off"
+          icon={CheckSquare}
         />
       </div>
 
       {/* 3. Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card title="Department Placement Standing" subtitle="Cohort breakdown for 2026 graduating batch">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-ink-muted">Super Dream (&gt;10 LPA)</span>
-              <span className="font-bold text-ink font-mono">54 Placed (21.3%)</span>
+        <Card title="Department Placement Standing" subtitle="Cohort breakdown for graduating batch">
+          <div className="space-y-4 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="text-ink-muted">Placed Candidates</span>
+              <span className="font-semibold text-ink">{placedCount}</span>
             </div>
-            <div className="w-full bg-line rounded-full h-2">
-              <div className="bg-purple-600 h-2 rounded-full" style={{ width: '21.3%' }} />
+            <div className="flex items-center justify-between">
+              <span className="text-ink-muted">Unplaced / In-Process Candidates</span>
+              <span className="font-semibold text-ink">{Math.max(0, students.length - placedCount)}</span>
             </div>
-
-            <div className="flex items-center justify-between text-xs pt-1">
-              <span className="text-ink-muted">Dream (6-10 LPA)</span>
-              <span className="font-bold text-ink font-mono">112 Placed (44.3%)</span>
+            <div className="flex items-center justify-between">
+              <span className="text-ink-muted">At-Risk Intervention Needed</span>
+              <span className="font-semibold text-red-600">{atRiskCount}</span>
             </div>
-            <div className="w-full bg-line rounded-full h-2">
-              <div className="bg-blue-600 h-2 rounded-full" style={{ width: '44.3%' }} />
-            </div>
-
-            <div className="flex items-center justify-between text-xs pt-1">
-              <span className="text-ink-muted">Regular (&lt;6 LPA)</span>
-              <span className="font-bold text-ink font-mono">48 Placed (18.9%)</span>
-            </div>
-            <div className="w-full bg-line rounded-full h-2">
-              <div className="bg-slate-500 h-2 rounded-full" style={{ width: '18.9%' }} />
+            <div className="pt-2">
+              <Button variant="outline" size="sm" onClick={() => navigate('/hod/students')} className="w-full">
+                View Full Student Registry &rarr;
+              </Button>
             </div>
           </div>
         </Card>

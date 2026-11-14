@@ -5,9 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { Save } from 'lucide-react';
-import { toast } from 'sonner';
-import { PageHeader, Card, Badge, Button} from '../../../ui';
+import { PageHeader, Card, Badge, EmptyState, useDocumentTitle } from '../../../ui';
 
 interface CourseOffering {
   code: string;
@@ -41,6 +39,7 @@ const FACULTY_COURSES: CourseOffering[] = [
 ];
 
 export const FacultyCoursesPage: React.FC = () => {
+  useDocumentTitle('Teaching & Course Delivery');
   const [selectedCourse, setSelectedCourse] = useState<CourseOffering>(FACULTY_COURSES[0]);
 
   return (
@@ -74,15 +73,15 @@ export const FacultyCoursesPage: React.FC = () => {
             <div className="grid grid-cols-3 gap-2 py-3 border-y border-line my-3 text-xs">
               <div>
                 <span className="text-xs text-ink-muted uppercase block">Enrolled</span>
-                <span className="font-semibold text-ink font-mono">{course.enrolled}</span>
+                <span className="font-semibold text-ink">{course.enrolled}</span>
               </div>
               <div>
                 <span className="text-xs text-ink-muted uppercase block">Avg Attend.</span>
-                <span className="font-semibold text-success font-mono">{course.attendanceAvg}%</span>
+                <span className="font-semibold text-success">{course.attendanceAvg}%</span>
               </div>
               <div>
                 <span className="text-xs text-ink-muted uppercase block">Progress</span>
-                <span className="font-semibold text-brand font-mono">{course.syllabusProgress}%</span>
+                <span className="font-semibold text-brand">{course.syllabusProgress}%</span>
               </div>
             </div>
 
@@ -97,62 +96,13 @@ export const FacultyCoursesPage: React.FC = () => {
       {/* Selected Course Gradebook & Roster */}
       <Card
         title={`${selectedCourse.code} — Internal Assessment Gradebook (${selectedCourse.section})`}
-        subtitle="Record test scores and verify exam eligibility"
+        subtitle="Continuous internal evaluation and examination eligibility"
       >
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-xs h-10">
-                <th className="py-2.5 px-4 font-semibold">Roll Number</th>
-                <th className="py-2.5 px-4 font-semibold">Student Name</th>
-                <th className="py-2.5 px-4 font-semibold">Attendance</th>
-                <th className="py-2.5 px-4 font-semibold">Quiz 1 (10)</th>
-                <th className="py-2.5 px-4 font-semibold">Mid-Term (30)</th>
-                <th className="py-2.5 px-4 font-semibold">CIE Total (50)</th>
-                <th className="py-2.5 px-4 font-semibold">Exam Eligibility</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line">
-              {[
-                { id: 'STU001', name: 'Aarav Sharma', att: 89.4, q: 9, m: 27, cie: 45, ok: true },
-                { id: 'STU002', name: 'Diya Patel', att: 92.1, q: 10, m: 28, cie: 47, ok: true },
-                { id: 'STU014', name: 'Rohan Verma', att: 68.2, q: 6, m: 18, cie: 30, ok: false },
-                { id: 'STU029', name: 'Priya Nair', att: 78.5, q: 8, m: 24, cie: 40, ok: true },
-              ].map((row) => (
-                <tr key={row.id} className="h-11 hover:bg-canvas/50 transition-colors">
-                  <td className="py-2 px-4 font-mono font-semibold text-brand">{row.id}</td>
-                  <td className="py-2 px-4 font-medium text-ink">{row.name}</td>
-                  <td className="py-2 px-4 font-mono">
-                    <span className={row.att < 75 ? 'text-red-600 font-bold' : 'text-ink'}>
-                      {row.att}%
-                    </span>
-                  </td>
-                  <td className="py-2 px-4 font-mono text-ink">{row.q}</td>
-                  <td className="py-2 px-4 font-mono text-ink">{row.m}</td>
-                  <td className="py-2 px-4 font-mono font-bold text-ink">{row.cie}</td>
-                  <td className="py-2 px-4">
-                    <Badge variant={row.ok ? 'success' : 'danger'} size="xs">
-                      {row.ok ? 'Eligible' : 'Attendance Shortage'}
-                    </Badge>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="pt-4 flex justify-end">
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => toast.success('Gradebook updates saved to campus SIS.')}
-            leftIcon={<Save size={14} />}
-          >
-            Save Internal Marks
-          </Button>
-        </div>
+        <EmptyState
+          title="Not available yet"
+          description="Continuous assessment gradebook and SIS section rosters will appear once connected to the academic grading module."
+        />
       </Card>
     </div>
   );
 };
-

@@ -4,25 +4,52 @@
  * Surfaces "What needs me now" command center, academic verification queue, and scheduled lectures.
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Users,
   BookOpen,
   CheckSquare,
-  AlertTriangle} from 'lucide-react';
+  AlertTriangle,
+} from 'lucide-react';
 import { useAuth } from '../../../core/auth/useAuth';
-import { PageHeader, StatCard, Card, Badge, Button, TaskCard, PersonChip, useDocumentTitle } from '../../../ui';
+import { PageHeader, StatCard, Card, Badge, Button, TaskCard, PersonChip, EmptyState, useDocumentTitle } from '../../../ui';
+import { facultyApi } from '../api';
 
 export const FacultyHomePage: React.FC = () => {
   useDocumentTitle('Faculty Advising');
   const { me } = useAuth();
   const navigate = useNavigate();
+  const [mentees, setMentees] = useState<any[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    facultyApi
+      .getMentees()
+      .then((res) => {
+        if (active) {
+          setMentees(res.students || []);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setMentees([]);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const atRiskMentees = mentees.filter((m) => {
+    const att = m.attendance_percentage ?? m.attendance;
+    return (att != null && att < 75) || (m.backlogs ?? 0) > 0 || (m.cgpa != null && m.cgpa < 6.5);
+  });
 
   return (
     <div className="space-y-8 font-sans">
       <PageHeader
-        title={`Faculty Advising — ${me?.display_name || 'Prof. Faculty'}`}
+        title={`Faculty Advising — ${me?.display_name || 'Faculty Member'}`}
         description="Monitor student academic performance, verify coursework eligibility, and manage mentee counseling."
         badge={<Badge variant="institutional" size="xs">Faculty Workspace</Badge>}
         actions={
@@ -46,9 +73,11 @@ export const FacultyHomePage: React.FC = () => {
           <TaskCard
             data={{
               task_id: 'task_counsel',
-              title: 'Counsel at-risk mentee Rohan Verma (Attendance 68.2%)',
-              due: new Date(Date.now() + 24 * 3600 * 1000),
-              priority: 'HIGH',
+              title: atRiskMentees.length > 0
+                ? `Counsel ${atRiskMentees.length} at-risk mentee(s) regarding academic progression`
+                : 'Review academic progress and attendance standing for assigned cohort',
+              due: null,
+              priority: atRiskMentees.length > 0 ? 'HIGH' : 'MEDIUM',
               icon: AlertTriangle,
               action_label: 'Open Dossier',
             }}
@@ -57,9 +86,9 @@ export const FacultyHomePage: React.FC = () => {
           <TaskCard
             data={{
               task_id: 'task_approvals',
-              title: 'Approve 4 pending CIE verification & leave requests',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 2),
-              priority: 'HIGH',
+              title: 'Review pending CIE verification and student leave requests',
+              due: null,
+              priority: 'MEDIUM',
               icon: CheckSquare,
               action_label: 'Review Queue',
             }}
@@ -68,9 +97,9 @@ export const FacultyHomePage: React.FC = () => {
           <TaskCard
             data={{
               task_id: 'task_curriculum',
-              title: 'Update CS301 mid-term outcome mapping & syllabus',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 4),
-              priority: 'MEDIUM',
+              title: 'Review assigned course delivery outcomes and lecture schedule',
+              due: null,
+              priority: 'LOW',
               icon: BookOpen,
               action_label: 'View Course',
             }}
@@ -83,26 +112,26 @@ export const FacultyHomePage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Assigned Mentees"
-          value={18}
-          hint="CSE Batch 2025/26"
+          value={mentees.length}
+          hint="Advising Cohort Scope"
           icon={Users}
         />
         <StatCard
           label="Mentees Needing Attention"
-          value={3}
-          hint="Attendance < 75% or CGPA < 7.0"
+          value={atRiskMentees.length}
+          hint="Attendance < 75% or Backlogs > 0"
           icon={AlertTriangle}
         />
         <StatCard
           label="Teaching Sections"
           value={2}
-          hint="CS301 & CS405"
+          hint="Assigned Course Sections"
           icon={BookOpen}
         />
         <StatCard
-          label="Pending Approvals"
-          value={4}
-          hint="CIE verification & leave requests"
+          label="Approvals"
+          value="Active"
+          hint="Departmental Queue"
           icon={CheckSquare}
         />
       </div>
@@ -129,56 +158,47 @@ export const FacultyHomePage: React.FC = () => {
           </div>
         </Card>
 
-        <Card title="Mentees Needing Academic Support" subtitle="Early warning triggers based on SIS attendance & backlogs">
-          <div className="space-y-3">
-            <div className="p-3 rounded-lg border border-red-200 bg-red-50/40 flex items-center justify-between">
-              <div className="space-y-1">
-                <PersonChip
-                  name="Rohan Verma"
-                  role="CSE Mentee"
-                  person_id="STU014"
-                  profileData={{
-                    person_id: 'STU014',
-                    name: 'Rohan Verma',
-                    reg_no: 'STU014',
-                    department: 'CSE',
-                    cgpa: 6.40,
-                    roles: ['Student Mentee'],
-                    is_verified: true,
-                  }}
-                  onClick={() => navigate('/faculty/mentees')}
-                />
-                <div className="text-xs text-red-700 pl-1">Attendance: 68.2% &bull; CGPA: 6.40 (1 Backlog)</div>
-              </div>
-              <Button variant="outline" size="sm" onClick={() => navigate('/faculty/mentees')}>
-                Counsel
-              </Button>
+        <Card title="Mentees Needing Academic Support" subtitle="Early warning triggers based on attendance & backlogs">
+          {atRiskMentees.length === 0 ? (
+            <EmptyState
+              title="All Mentees on Track"
+              description="All assigned students currently satisfy academic progression and statutory attendance criteria."
+            />
+          ) : (
+            <div className="space-y-3">
+              {atRiskMentees.map((m) => {
+                const att = m.attendance_percentage ?? m.attendance;
+                const dept = m.department || m.dept || 'Engineering';
+                return (
+                  <div key={m.student_id} className="p-3 rounded-lg border border-red-200 bg-red-50/40 flex items-center justify-between">
+                    <div className="space-y-1">
+                      <PersonChip
+                        name={m.name}
+                        role={`${dept} Mentee`}
+                        person_id={m.student_id}
+                        profileData={{
+                          person_id: m.student_id,
+                          name: m.name,
+                          reg_no: m.student_id,
+                          department: dept,
+                          cgpa: m.cgpa != null ? Number(m.cgpa) : undefined,
+                          roles: ['Student Mentee'],
+                          is_verified: true,
+                        }}
+                        onClick={() => navigate('/faculty/mentees')}
+                      />
+                      <div className="text-xs text-red-700 pl-1">
+                        Attendance: {att != null ? `${att}%` : 'N/A'} &bull; CGPA: {m.cgpa != null ? Number(m.cgpa).toFixed(2) : 'N/A'} ({m.backlogs ?? 0} Backlogs)
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" onClick={() => navigate('/faculty/mentees')}>
+                      Counsel
+                    </Button>
+                  </div>
+                );
+              })}
             </div>
-
-            <div className="p-3 rounded-lg border border-amber-200 bg-amber-50/40 flex items-center justify-between">
-              <div className="space-y-1">
-                <PersonChip
-                  name="Priya Nair"
-                  role="CSE Mentee"
-                  person_id="STU029"
-                  profileData={{
-                    person_id: 'STU029',
-                    name: 'Priya Nair',
-                    reg_no: 'STU029',
-                    department: 'CSE',
-                    cgpa: 7.45,
-                    roles: ['Student Mentee'],
-                    is_verified: true,
-                  }}
-                  onClick={() => navigate('/faculty/mentees')}
-                />
-                <div className="text-xs text-amber-800 pl-1">Placement Standing: Unregistered for Super Dream</div>
-              </div>
-              <Button variant="outline" size="sm" onClick={() => navigate('/faculty/mentees')}>
-                Inspect
-              </Button>
-            </div>
-          </div>
+          )}
         </Card>
       </div>
     </div>

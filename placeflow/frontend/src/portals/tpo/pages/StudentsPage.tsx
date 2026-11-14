@@ -373,7 +373,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
           Loading Verified Registry Records...
         </div>
       ) : students.length === 0 ? (
-        <div className="bg-white border border-dashed border-slate-300 rounded p-12 text-center text-slate-500 text-xs">
+        <div className="bg-white border border-line rounded p-12 text-center text-slate-500 text-xs">
           No candidates match the specified discipline or search filters.
         </div>
       ) : viewMode === 'table' ? (

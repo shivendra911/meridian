@@ -931,7 +931,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
             </div>
 
             {/* Tree Branch Visual */}
-            <div className="border-l-2 border-dashed border-slate-300 ml-6 pl-6 space-y-6">
+            <div className="border-l-2 border-slate-300 ml-6 pl-6 space-y-6">
               {/* Level 2: HOD */}
               <div>
                 <span className="text-xs uppercase font-bold text-slate-400 block mb-2">
@@ -951,7 +951,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
               </div>
 
               {/* Level 3: Faculty */}
-              <div className="border-l-2 border-dashed border-slate-300 ml-6 pl-6">
+              <div className="border-l-2 border-slate-300 ml-6 pl-6">
                 <span className="text-xs uppercase font-bold text-slate-400 block mb-2">
                   Level 3: Faculty Mentors (508 Active Mentors)
                 </span>
@@ -966,7 +966,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
               </div>
 
               {/* Level 4: Students */}
-              <div className="border-l-2 border-dashed border-slate-300 ml-12 pl-6">
+              <div className="border-l-2 border-slate-300 ml-12 pl-6">
                 <span className="text-xs uppercase font-bold text-slate-400 block mb-1">
                   Level 4: Verified Student Cohort (7,133 Students)
                 </span>

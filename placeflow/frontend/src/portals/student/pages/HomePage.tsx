@@ -9,7 +9,7 @@
  * - Completely eliminates ad-hoc markup.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Compass,
@@ -41,10 +41,13 @@ import {
   TaskCard,
   useDocumentTitle} from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
+import { AuthContext } from '../../../core/auth/AuthProvider';
 
 export const StudentHomePage: React.FC = () => {
   useDocumentTitle('Student Workspace');
   const navigate = useNavigate();
+  const auth = useContext(AuthContext);
+  const canConsent = auth ? (auth.can('consent.grant.record') || auth.can('consent.withdraw.process')) : true;
 
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [opportunities, setOpportunities] = useState<StudentOpportunity[]>([]);
@@ -59,12 +62,13 @@ export const StudentHomePage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
+      const conPromise = canConsent ? studentApi.getConsents().catch(() => []) : Promise.resolve([]);
       const [profData, oppData, intData, appData, conData, offData] = await Promise.all([
         studentApi.getMe(),
         studentApi.getOpportunities(),
         studentApi.getInterviews(),
         studentApi.getApplications(),
-        studentApi.getConsents().catch(() => []),
+        conPromise,
         studentApi.getOffers().catch(() => []),
       ]);
       setProfile(profData);

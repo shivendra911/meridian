@@ -74,8 +74,7 @@ export const TenantProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const list = res.tenants || [];
       setTenants(list);
 
-      const savedTenantId = localStorage.getItem('placeflow_tenant_id');
-      const matched = list.find((t) => t.id === savedTenantId) || list.find((t) => t.slug === 'iit-bombay') || list[0] || null;
+      const matched = list.find((t) => t.slug === 'iit-bombay') || list[0] || null;
 
       if (matched) {
         setActiveTenant(matched);

@@ -11,7 +11,7 @@ from operations import jobs, applications, interviews, placements
 from operations.ids import insert_with_id
 from operations.errors import friendly
 from operations.cascading import atomic_placement_with_cascading
-from api.auth.permissions import perm, any_of
+from api.auth.permissions import perm, any_of, BlockRecruiter
 from api.auth.queries import scoped_find, scoped_get
 from camp_02.notify import notify, get_person_id_for_student
 
@@ -105,8 +105,8 @@ class ApplicationListView(APIView):
     """Application ledger and registration endpoint."""
     def get_permissions(self):
         if self.request.method in ("POST", "PUT", "PATCH", "DELETE"):
-            return [any_of("placement.application.create", "placement.drive.manage")()]
-        return [perm("placement.application.view")()]
+            return [BlockRecruiter(), any_of("placement.application.create", "placement.drive.manage")()]
+        return [BlockRecruiter(), perm("placement.application.view")()]
 
     def get(self, request):
         db = get_db()
@@ -165,7 +165,7 @@ class ApplicationStatusView(APIView):
 
 class InterviewListView(APIView):
     """Official master interview schedule and slot booking."""
-    permission_classes = [perm("placement.interview.schedule")]
+    permission_classes = [BlockRecruiter, perm("placement.interview.schedule")]
 
     def get(self, request):
         db = get_db()
@@ -205,7 +205,7 @@ class InterviewListView(APIView):
 
 class PlacementListView(APIView):
     """Placement register and atomic multi-tier cascading placement execution."""
-    permission_classes = [perm("placement.offer.record")]
+    permission_classes = [BlockRecruiter, perm("placement.offer.record")]
 
     def get(self, request):
         db = get_db()

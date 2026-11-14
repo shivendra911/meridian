@@ -14,7 +14,6 @@ import {
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { StatCard } from '../../../components/ui/StatCard';
 import { Card } from '../../../components/ui/Card';
-import { Badge } from '../../../components/ui/Badge';
 import { Button } from '../../../components/ui/Button';
 import { Skeleton } from '../../../components/ui/Skeleton';
 import { TaskCard, useDocumentTitle, ErrorState } from '../../../ui';
@@ -131,7 +130,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
             data={{
               task_id: 'task_superday',
               title: 'Superday Solver: Room & panel schedule conflicts',
-              due: new Date(Date.now() + 3600 * 1000 * 4),
+              due: null,
               priority: 'HIGH',
               icon: Zap,
               action_label: 'Resolve Conflicts',
@@ -141,8 +140,8 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
           <TaskCard
             data={{
               task_id: 'task_renege',
-              title: 'Renege Radar: 2 high-risk post-offer candidate alerts',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 2),
+              title: 'Renege Radar: High-risk post-offer candidate alerts',
+              due: null,
               priority: 'MEDIUM',
               icon: Radar,
               action_label: 'Inspect Risk',
@@ -152,8 +151,8 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
           <TaskCard
             data={{
               task_id: 'task_drives',
-              title: 'Open JNF Drives: 4 pending recruiter approvals',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 3),
+              title: 'Open JNF Drives: Pending recruiter approvals',
+              due: null,
               priority: 'MEDIUM',
               icon: Briefcase,
               action_label: 'Review Drives',
@@ -312,7 +311,6 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
               <div className="p-3 rounded-lg border border-line bg-canvas space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-ink">MoE AISHE Verification</span>
-                  <Badge variant="success" size="xs">Verified</Badge>
                 </div>
                 <p className="text-xs text-ink-muted m-0">
                   Primary campus registry locked &amp; attested.
@@ -322,7 +320,6 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
               <div className="p-3 rounded-lg border border-line bg-canvas space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-ink">Superday Schedule Arbiter</span>
-                  <Badge variant="neutral" size="xs">Active</Badge>
                 </div>
                 <p className="text-xs text-ink-muted m-0">
                   Terminal scheduling constraint engine.
@@ -332,10 +329,9 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
               <div className="p-3 rounded-lg border border-line bg-canvas space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-ink">DPDP Act 2023 Consent</span>
-                  <Badge variant="success" size="xs">Compliant</Badge>
                 </div>
                 <p className="text-xs text-ink-muted m-0">
-                  Authoritative student data consent notices attested.
+                  Verified student data consent notices attested.
                 </p>
               </div>
             </div>

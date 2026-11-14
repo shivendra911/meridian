@@ -29,17 +29,12 @@ import {
 
 import { client } from './core/api/client';
 
-let currentTenantId: string = localStorage.getItem('placeflow_tenant_id') || '3f0708bc-4852-4900-a0b2-5e27865a36fe';
-
-export function setApiTenantHeader(tenantId: string) {
-  currentTenantId = tenantId;
-  if (tenantId) {
-    localStorage.setItem('placeflow_tenant_id', tenantId);
-  }
+export function setApiTenantHeader(_tenantId: string) {
+  // Session decides the tenant; no hardcoded tenant header or localStorage
 }
 
 export function getApiTenantHeader(): string {
-  return currentTenantId;
+  return '';
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -329,30 +324,21 @@ export const api = {
   getTenants: () =>
     request<{ tenants: PlatformTenant[]; count: number }>('/v4/tenants/'),
 
-  getInstitutions: (tenantId: string) =>
-    request<{ institutions: PlatformInstitution[]; count: number }>('/v4/institutions/', {
-      headers: { 'X-Tenant-ID': tenantId },
-    }),
+  getInstitutions: (_tenantId?: string) =>
+    request<{ institutions: PlatformInstitution[]; count: number }>('/v4/institutions/'),
 
-  getInstitutionReadiness: (tenantId: string, institutionId: string) =>
-    request<ReadinessReport>(`/v4/institutions/${institutionId}/readiness/`, {
-      headers: { 'X-Tenant-ID': tenantId },
-    }),
+  getInstitutionReadiness: (_tenantId: string, institutionId: string) =>
+    request<ReadinessReport>(`/v4/institutions/${institutionId}/readiness/`),
 
-  getHierarchyTree: (tenantId: string, institutionId: string) =>
-    request<{ hierarchy_tree: OrganizationalTreeNode[] }>(`/v4/institutions/${institutionId}/hierarchy/`, {
-      headers: { 'X-Tenant-ID': tenantId },
-    }),
+  getHierarchyTree: (_tenantId: string, institutionId: string) =>
+    request<{ hierarchy_tree: OrganizationalTreeNode[] }>(`/v4/institutions/${institutionId}/hierarchy/`),
 
-  getCampuses: (tenantId: string) =>
-    request<{ campuses: Campus[] }>('/v4/campuses/', {
-      headers: { 'X-Tenant-ID': tenantId },
-    }),
+  getCampuses: (_tenantId?: string) =>
+    request<{ campuses: Campus[] }>('/v4/campuses/'),
 
-  restructureUnitParent: (tenantId: string, institutionId: string, unitId: string, newParentId: string, reason: string) =>
+  restructureUnitParent: (_tenantId: string, institutionId: string, unitId: string, newParentId: string, reason: string) =>
     request<{ relation_id: string }>(`/v4/institutions/${institutionId}/restructure/`, {
       method: 'POST',
-      headers: { 'X-Tenant-ID': tenantId },
       body: JSON.stringify({ unit_id: unitId, new_parent_id: newParentId, change_reason: reason }),
     }),
 
@@ -389,8 +375,7 @@ export const api = {
     if (institutionId) params.append('institution_id', institutionId);
     if (campusId) params.append('campus_id', campusId);
     return request<{ resolved_config: Record<string, unknown>; hierarchy: Record<string, unknown> }>(
-      `/v4/config/resolve/?${params.toString()}`,
-      { headers: { 'X-Tenant-ID': tenantId } }
+      `/v4/config/resolve/?${params.toString()}`
     );
   },
 

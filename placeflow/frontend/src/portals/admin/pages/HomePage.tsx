@@ -51,7 +51,7 @@ export const AdminHomePage: React.FC = () => {
             data={{
               task_id: 'task_admin_claims',
               title: 'Review ambiguous student account self-service claims',
-              due: new Date(Date.now() + 24 * 3600 * 1000),
+              due: null,
               priority: 'HIGH',
               icon: UserCheck,
               action_label: 'Resolve Claims',
@@ -62,7 +62,7 @@ export const AdminHomePage: React.FC = () => {
             data={{
               task_id: 'task_admin_iam',
               title: 'Audit active break-glass delegations and IAM scopes',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 2),
+              due: null,
               priority: 'HIGH',
               icon: Key,
               action_label: 'Audit IAM',
@@ -73,7 +73,7 @@ export const AdminHomePage: React.FC = () => {
             data={{
               task_id: 'task_admin_hierarchy',
               title: 'CAMP-01 Multi-campus organizational hierarchy sync',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 4),
+              due: null,
               priority: 'MEDIUM',
               icon: Network,
               action_label: 'View Hierarchy',
