@@ -14,97 +14,109 @@ from camp_02.assignments import list_active_role_assignments, get_effective_user
 PORTAL_PRIORITY = ["tpo", "admin", "management", "hod", "faculty", "student"]
 
 
+ROLE_PORTALS_MAP: Dict[str, List[str]] = {
+    "STUDENT_MEMBER": ["student"],
+    "PLACEMENT_REP": ["student"],
+    "FACULTY_MENTOR": ["faculty"],
+    "DEPT_COORDINATOR": ["faculty"],
+    "DEPARTMENT_HEAD": ["hod"],
+    "SCHOOL_HEAD": ["hod"],
+    "TPO_COORDINATOR": ["tpo"],
+    "TPO_ADMIN": ["tpo"],
+    "INSTITUTION_HEAD": ["management"],
+    "AUDITOR": ["management"],
+    "INSTITUTION_ADMIN": ["admin"],
+    "SUPER_ADMIN": ["admin"],
+    "RECRUITER_EXTERNAL": [],
+}
+
+ROLE_DEFAULT_PORTAL_MAP: Dict[str, str] = {
+    "STUDENT_MEMBER": "student",
+    "PLACEMENT_REP": "student",
+    "FACULTY_MENTOR": "faculty",
+    "DEPT_COORDINATOR": "faculty",
+    "DEPARTMENT_HEAD": "hod",
+    "SCHOOL_HEAD": "hod",
+    "TPO_COORDINATOR": "tpo",
+    "TPO_ADMIN": "tpo",
+    "INSTITUTION_HEAD": "management",
+    "AUDITOR": "management",
+    "INSTITUTION_ADMIN": "admin",
+    "SUPER_ADMIN": "admin",
+    "RECRUITER_EXTERNAL": "",
+}
+
+ROLE_PREF_ORDER: List[str] = [
+    "SUPER_ADMIN",
+    "INSTITUTION_ADMIN",
+    "INSTITUTION_HEAD",
+    "TPO_ADMIN",
+    "TPO_COORDINATOR",
+    "SCHOOL_HEAD",
+    "DEPARTMENT_HEAD",
+    "AUDITOR",
+    "DEPT_COORDINATOR",
+    "FACULTY_MENTOR",
+    "PLACEMENT_REP",
+    "STUDENT_MEMBER",
+    "RECRUITER_EXTERNAL",
+]
+
+
 def compute_portals(
     permissions: frozenset[str],
     subject: Optional[Dict[str, Any]] = None,
     assignments: Optional[List[Dict[str, Any]]] = None,
 ) -> Tuple[List[str], str]:
-    """Computes available portals and default portal from effective permissions and subject.
+    """Computes available portals and default portal from primary role assignment.
     
-    Portals entry permissions (from docs/RBAC_SPEC.md Section 2):
-    - student: student.profile.update_self + placement.application.create
-    - faculty: student.profile.read at OU scope and a faculty subject
-    - hod: academic.curriculum.approve or academic.progression.evaluate
-    - tpo: placement.drive.manage or placement.jnf.approve
-    - management: nirf.report.view or agent.trace.view
-    - admin: iam.role.assign or organization.unit.create or configuration.version.create
-    
-    Default portal priority: tpo > admin > management > hod > faculty > student.
+    Default portal rule: the portal corresponding to the account's primary role assignment.
+    Portals list: narrowed to the specific workspace intended for the active roles.
     """
-    has_wildcard = "*" in permissions
-    portals: List[str] = []
+    assigned_roles: List[str] = []
+    if assignments:
+        for a in assignments:
+            if isinstance(a, dict):
+                rc = a.get("role_code")
+                if not rc and a.get("role_id"):
+                    rc = a.get("role_id", "").replace("role_sys_", "").upper()
+                if rc and rc not in assigned_roles:
+                    assigned_roles.append(rc)
 
-    # 1. Student Portal
-    can_student = (
-        has_wildcard
-        or (
-            "student.profile.update_self" in permissions
-            and "placement.application.create" in permissions
-        )
-    )
-    if can_student:
-        portals.append("student")
-
-    # 2. Faculty Portal
-    subj_type = subject.get("type") if subject else None
-    can_faculty = (
-        has_wildcard
-        or (
-            "student.profile.read" in permissions
-            and subj_type in ("faculty", "department_head", "school_head")
-        )
-    )
-    if can_faculty:
-        portals.append("faculty")
-
-    # 3. HOD Portal
-    can_hod = (
-        has_wildcard
-        or "academic.curriculum.approve" in permissions
-        or "academic.progression.evaluate" in permissions
-    )
-    if can_hod:
-        portals.append("hod")
-
-    # 4. TPO Portal
-    can_tpo = (
-        has_wildcard
-        or "placement.drive.manage" in permissions
-        or "placement.jnf.approve" in permissions
-    )
-    if can_tpo:
-        portals.append("tpo")
-
-    # 5. Management Portal
-    can_mgmt = (
-        has_wildcard
-        or "nirf.report.view" in permissions
-        or "agent.trace.view" in permissions
-    )
-    if can_mgmt:
-        portals.append("management")
-
-    # 6. Admin Portal
-    can_admin = (
-        has_wildcard
-        or "iam.role.assign" in permissions
-        or "organization.unit.create" in permissions
-        or "configuration.version.create" in permissions
-    )
-    if can_admin:
-        portals.append("admin")
-
-    # Default portal by priority
-    default_portal = "student"
-    for p in PORTAL_PRIORITY:
-        if p in portals:
-            default_portal = p
+    # 1. Primary role assignment resolution
+    primary_role: Optional[str] = None
+    for r in ROLE_PREF_ORDER:
+        if r in assigned_roles:
+            primary_role = r
             break
-    if not portals:
-        portals = ["student"]
-        default_portal = "student"
 
-    return portals, default_portal
+    if primary_role:
+        default_portal = ROLE_DEFAULT_PORTAL_MAP.get(primary_role, "")
+        # Narrow portal entry: dominant institutional roles map strictly to their primary workspace
+        if primary_role in (
+            "TPO_ADMIN", "TPO_COORDINATOR", "INSTITUTION_HEAD", "AUDITOR",
+            "DEPARTMENT_HEAD", "SCHOOL_HEAD", "INSTITUTION_ADMIN", "SUPER_ADMIN", "RECRUITER_EXTERNAL"
+        ):
+            portals = list(ROLE_PORTALS_MAP.get(primary_role, []))
+        else:
+            portals = []
+            for r in ROLE_PREF_ORDER:
+                if r in assigned_roles:
+                    for p in ROLE_PORTALS_MAP.get(r, []):
+                        if p not in portals:
+                            portals.append(p)
+        return portals, default_portal
+
+    # 2. Subject fallback when no formal role assignment is loaded
+    subj_type = subject.get("type") if subject else None
+    if subj_type == "student":
+        return ["student"], "student"
+    if subj_type == "recruiter":
+        return [], ""
+    if subj_type in ("faculty", "department_head", "school_head"):
+        return ["faculty"], "faculty"
+
+    return [], ""
 
 
 @dataclass(frozen=True)
@@ -225,9 +237,6 @@ def build_principal(
     for item in effective_perms_list:
         all_perms.update(item.get("permissions", []))
 
-    frozen_perms = frozenset(all_perms)
-    portals, default_portal = compute_portals(frozen_perms, subject=subject, assignments=raw_assignments)
-
     # Attach role_code to assignments
     formatted_assignments = []
     for a in raw_assignments:
@@ -236,6 +245,9 @@ def build_principal(
         a_copy = dict(a)
         a_copy["role_code"] = role_code
         formatted_assignments.append(a_copy)
+
+    frozen_perms = frozenset(all_perms)
+    portals, default_portal = compute_portals(frozen_perms, subject=subject, assignments=formatted_assignments)
 
     # Compose platform profile and unread notifications count (PLATFORM_SPEC Section 2)
     from api.account.profile_service import get_profile_summary, get_unread_notifications_count

@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Set
 
 from database.connection import get_db
+from api.auth.queries import scoped_get
 
 DEFAULT_TENANT_ID = "3f0708bc-4852-4900-a0b2-5e27865a36fe"
 
@@ -72,7 +73,7 @@ def get_profile_summary(
         )
 
     if subject and subject.get("type") == "student":
-        student = db.students.find_one({"student_id": subject.get("id")}, {"_id": 0}) or {}
+        student = scoped_get("students", None, {"student_id": subject.get("id")}, db=db) or {}
         dept = student.get("department", "CSE")
         sem = (student.get("year", 4) * 2) - 1 if student.get("year") else 7
         affiliation_label = f"B.Tech {dept}, Semester {sem}"
@@ -157,7 +158,7 @@ def get_full_composed_profile(
             official_data = dict(aff.get("metadata") or {})
             rec_id = aff.get("record_id")
             if aff.get("type") == "STUDENT" and rec_id:
-                stu = db.students.find_one({"student_id": rec_id}, {"_id": 0}) or {}
+                stu = scoped_get("students", None, {"student_id": rec_id}, db=db) or {}
                 official_data.update({
                     "reg_no": stu.get("reg_no"),
                     "department": stu.get("department"),
@@ -198,7 +199,7 @@ def get_full_composed_profile(
         if student_aff:
             sid = student_aff["record_id"]
             extension = db.student_profiles.find_one({"student_id": sid}, {"_id": 0})
-            student_record = db.students.find_one({"student_id": sid}, {"_id": 0})
+            student_record = scoped_get("students", None, {"student_id": sid}, db=db)
 
     # Completeness calculation
     completeness_factors = [
@@ -356,7 +357,7 @@ def get_person_card(
     if target_student_aff:
         role_labels.append("Student")
         sid = target_student_aff.get("record_id")
-        student_doc = db.students.find_one({"student_id": sid}, {"_id": 0}) or {}
+        student_doc = scoped_get("students", viewer_user, {"student_id": sid}, db=db) or {}
         department = student_doc.get("department", "")
         if not headline:
             headline = f"B.Tech {department}, Semester {(student_doc.get('year', 4) * 2) - 1 if student_doc.get('year') else 7}"

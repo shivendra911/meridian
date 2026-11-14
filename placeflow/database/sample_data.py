@@ -14,13 +14,17 @@ def history(*steps):
     return [{"status": status, "at": days(offset)} for status, offset in steps]
 
 
-def student(n, name, dept, cgpa, backlogs, skills, tier=None):
+def student(n, name, dept, cgpa, backlogs, skills, tier=None, mentor_id=None, school=None):
     doc = {"student_id": f"STU{n:03d}", "name": name,
            "email": f"{name.split()[0].lower()}{n}@univ.edu", "department": dept, "year": 4,
            "cgpa": cgpa, "backlogs": backlogs, "skills": skills,
            "placement_status": "Placed" if tier else "Unplaced", "created_at": days(-120)}
     if tier:
         doc["highest_tier"] = tier
+    if mentor_id:
+        doc["mentor_id"] = mentor_id
+    if school:
+        doc["school"] = school
     return doc
 
 
@@ -63,14 +67,14 @@ COMPANIES = [
 ]
 
 STUDENTS = [
-    student(1, "Aarav Sharma", "CSE", 8.9, 0, ["Java", "Spring Boot", "MySQL"]),
-    student(2, "Diya Patel", "CSE", 9.2, 0, ["Python", "ML", "SQL"], "Dream"),
-    student(3, "Rohan Mehta", "ECE", 7.4, 1, ["C", "Embedded", "Python"]),
-    student(4, "Sneha Reddy", "ISE", 8.1, 0, ["Java", "React", "Docker"]),
-    student(5, "Karan Singh", "CSE", 6.8, 2, ["C++", "DSA"]),
-    student(6, "Ananya Iyer", "IT", 8.6, 0, ["Python", "Django", "AWS"], "Normal"),
-    student(7, "Vikram Nair", "ME", 7.9, 0, ["AutoCAD", "Python"]),
-    student(8, "Meera Joshi", "CSE", 9.5, 0, ["Java", "DSA", "System Design"]),  # no applications: at-risk demo
+    student(1, "Aarav Sharma", "CSE", 8.9, 0, ["Java", "Spring Boot", "MySQL"], mentor_id="11266", school="School of Computing"),
+    student(2, "Diya Patel", "CSE", 9.2, 0, ["Python", "ML", "SQL"], "Dream", mentor_id="11266", school="School of Computing"),
+    student(3, "Rohan Mehta", "ECE", 7.4, 1, ["C", "Embedded", "Python"], mentor_id="FAC_ECE_01", school="School of Electronics & Communication"),
+    student(4, "Sneha Reddy", "ISE", 8.1, 0, ["Java", "React", "Docker"], mentor_id="FAC_ISE_01", school="School of Computing"),
+    student(5, "Karan Singh", "CSE", 6.8, 2, ["C++", "DSA"], mentor_id="FAC_CSE_02", school="School of Computing"),
+    student(6, "Ananya Iyer", "IT", 8.6, 0, ["Python", "Django", "AWS"], "Normal", mentor_id="FAC_IT_01", school="School of Computing"),
+    student(7, "Vikram Nair", "ME", 7.9, 0, ["AutoCAD", "Python"], mentor_id="FAC_ME_01", school="School of Mechanical Engineering"),
+    student(8, "Meera Joshi", "CSE", 9.5, 0, ["Java", "DSA", "System Design"], mentor_id="FAC_CSE_02", school="School of Computing"),  # no applications: at-risk demo
 ]
 
 JOBS = [

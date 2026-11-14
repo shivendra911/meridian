@@ -57,12 +57,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`rounded-lg border border-line bg-surface p-3.5 flex items-center justify-between gap-3 transition-colors ${
+      className={`rounded-lg border border-line bg-surface p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${
         onClick ? 'cursor-pointer hover:border-slate-300 hover:bg-slate-50' : ''
       } ${className}`}
     >
       {/* Icon + Title + Due */}
-      <div className="flex items-center gap-3 min-w-0 flex-1">
+      <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1 w-full">
         <div
           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
             isHighPriority ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-700'
@@ -72,11 +72,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         </div>
 
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-ink truncate m-0" title={displayTitle}>
+          <p className="text-sm font-medium text-ink line-clamp-2 leading-snug m-0" title={displayTitle}>
             {displayTitle}
           </p>
           {data.due && !isMasked && (
-            <div className="mt-0.5 flex items-center gap-1 text-xs text-ink-muted">
+            <div className="mt-1 flex items-center gap-1 text-xs text-ink-muted">
               <Clock size={11} className="text-slate-400 shrink-0" />
               <span>Due {formatRelative(data.due)}</span>
             </div>
@@ -92,7 +92,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             e.stopPropagation();
             onAction();
           }}
-          className="inline-flex shrink-0 items-center gap-1 rounded bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 transition-colors"
+          className="inline-flex self-end sm:self-center shrink-0 items-center gap-1 rounded bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 transition-colors"
         >
           <span>{data.action_label || 'View'}</span>
           <ArrowRight size={12} />

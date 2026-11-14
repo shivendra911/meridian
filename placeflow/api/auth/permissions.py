@@ -144,3 +144,113 @@ def check_resource_access(
         db=db,
     )
 
+
+class PortalAccess(BasePermission):
+    """Enforces that the authenticated principal possesses entry rights for the given portal."""
+
+    def __init__(self, portal: str = ""):
+        self.portal = portal
+
+    def __call__(self):
+        return self
+
+    def has_permission(self, request, view) -> bool:
+        user = getattr(request, "user", None)
+        if not user or not getattr(user, "is_authenticated", False):
+            return False
+        portals = getattr(user, "portals", [])
+        portal_name = self.portal or getattr(view, "portal_name", "")
+        if not portal_name:
+            return True
+        allowed = portal_name in portals
+        if not allowed:
+            audit_log(
+                event_type="PORTAL_ACCESS_DENIED",
+                principal=user,
+                permission=f"portal.{portal_name}",
+                path=request.path,
+                method=request.method,
+                decision="DENIED",
+                reason_code="PORTAL_NOT_ASSIGNED",
+            )
+        return allowed
+
+
+def portal_access(portal: str) -> Type[BasePermission]:
+    """Generates a DRF BasePermission class requiring membership in the specified portal."""
+
+    class _PortalAccessClass(BasePermission):
+        def has_permission(self, request, view) -> bool:
+            user = getattr(request, "user", None)
+            if not user or not getattr(user, "is_authenticated", False):
+                return False
+            portals = getattr(user, "portals", [])
+            allowed = portal in portals
+            if not allowed:
+                audit_log(
+                    event_type="PORTAL_ACCESS_DENIED",
+                    principal=user,
+                    permission=f"portal.{portal}",
+                    path=request.path,
+                    method=request.method,
+                    decision="DENIED",
+                    reason_code="PORTAL_NOT_ASSIGNED",
+                )
+            return allowed
+
+    _PortalAccessClass.__name__ = f"PortalAccess_{portal.capitalize()}"
+    return _PortalAccessClass
+
+
+def portal_gated(view_target, portal: str):
+    """Subclasses a DRF view class or wraps a function view to enforce PortalAccess(portal)."""
+    import inspect
+    from functools import wraps
+    from rest_framework.response import Response
+    from rest_framework import status
+
+    if inspect.isclass(view_target):
+        class _GatedView(view_target):
+            portal_name = portal
+
+            def get_permissions(self):
+                return [portal_access(portal)()] + super().get_permissions()
+
+        _GatedView.__name__ = f"{portal.capitalize()}_{view_target.__name__}"
+        return _GatedView
+    else:
+        from django.http import JsonResponse
+
+        @wraps(view_target)
+        def _gated_func(request, *args, **kwargs):
+            user = getattr(request, "user", None)
+            if not user or not getattr(user, "is_authenticated", False):
+                return JsonResponse({"error": "AuthenticationRequired"}, status=status.HTTP_401_UNAUTHORIZED)
+            portals = getattr(user, "portals", [])
+            if portal not in portals:
+                audit_log(
+                    event_type="PORTAL_ACCESS_DENIED",
+                    principal=user,
+                    permission=f"portal.{portal}",
+                    path=request.path,
+                    method=request.method,
+                    decision="DENIED",
+                    reason_code="PORTAL_NOT_ASSIGNED",
+                )
+                return JsonResponse({"error": "PortalAccessDenied", "detail": f"Account does not have access to {portal} portal"}, status=status.HTTP_403_FORBIDDEN)
+            return view_target(request, *args, **kwargs)
+
+        return _gated_func
+
+
+class PortalBaseView:
+    """Base mixin automatically prepending portal access checks to view permissions."""
+    portal_name: str = ""
+
+    def get_permissions(self):
+        perms = super().get_permissions()
+        if self.portal_name:
+            return [portal_access(self.portal_name)()] + perms
+        return perms
+
+

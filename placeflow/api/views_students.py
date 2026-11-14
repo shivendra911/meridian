@@ -11,6 +11,7 @@ from operations.authenticity import calculate_talent_authenticity
 from operations.errors import friendly
 from operations.consent import get_student_consents
 from api.auth.permissions import perm, any_of
+from api.auth.queries import scoped_find, scoped_get
 
 
 class StudentListView(APIView):
@@ -18,7 +19,10 @@ class StudentListView(APIView):
     Returns candidate registry with search, filtering, VTI scores, and risk bands.
     Accepts POST to register new candidates under strict $jsonSchema rules.
     """
-    permission_classes = [perm("student.profile.read")]
+    def get_permissions(self):
+        if self.request.method in ("POST", "PUT", "PATCH", "DELETE"):
+            return [perm("student.profile.update_admin")()]
+        return [perm("student.profile.read")()]
 
     def get(self, request):
         db = get_db()
@@ -56,7 +60,7 @@ class StudentListView(APIView):
                 {"remarks": {"$regex": search_query, "$options": "i"}},
             ]
 
-        rows = list(db.students.find(query, {"_id": 0}).sort("student_id", 1).limit(300))
+        rows = scoped_find("students", request.user, extra=query, sort="student_id", limit=300, db=db)
 
         # Annotate with VTI authenticity score and ML prediction (fast cached path)
         try:
@@ -112,9 +116,11 @@ class StudentDetailView(APIView):
         db = get_db()
         raw_id = student_id.strip()
         # Fast indexed lookup across student_id (case-insensitive) and reg_no
-        student = db.students.find_one(
+        student = scoped_get(
+            "students",
+            request.user,
             {"$or": [{"student_id": raw_id}, {"student_id": raw_id.upper()}, {"reg_no": raw_id}]},
-            {"_id": 0}
+            db=db,
         )
         if not student:
             return Response({"error": f"Candidate '{raw_id}' not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -128,10 +134,10 @@ class StudentDetailView(APIView):
         eligible_jobs = applications.eligible_jobs(db, student)
 
         # 3. Candidate Applications
-        apps = list(db.v_application_details.find({"student_id": sid}, {"_id": 0}))
+        apps = scoped_find("v_application_details", request.user, extra={"student_id": sid}, db=db)
 
         # 4. Interviews
-        interviews = list(db.interviews.find({"student_id": sid}, {"_id": 0}).sort("scheduled_start", 1))
+        interviews = scoped_find("interviews", request.user, extra={"student_id": sid}, sort="scheduled_start", db=db)
 
         # 5. AI Predictions & Skill Gap Recommendations
         ai_pred = student.get("ai_risk")
@@ -151,7 +157,9 @@ class StudentDetailView(APIView):
             pass
 
         # 6. DPDP Consents
-        consents = get_student_consents(db, sid)
+        consents = scoped_find("consents", request.user, extra={"student_id": sid}, db=db)
+        if not consents:
+            consents = get_student_consents(db, sid)
 
         return Response({
             "student": student,
@@ -173,5 +181,3 @@ class FacultyMenteesView(StudentListView):
 class HodStudentsView(StudentListView):
     """Departmental student cohort list. Strictly requires department head permissions."""
     permission_classes = [any_of("academic.curriculum.approve", "academic.progression.evaluate")]
-
-

@@ -20,7 +20,6 @@ import {
 import {
   PageHeader,
   StatCard,
-  Badge,
   Button,
   Skeleton,
   EmptyState,
@@ -106,8 +105,7 @@ export const StudentApplicationsPage: React.FC = () => {
     <div className="space-y-6 font-sans">
       <PageHeader
         title="Application & Decision Ledger"
-        description="Authoritative status of active drive applications, evaluation stages, and employment offers."
-        badge={<Badge variant="institutional" size="xs">Authoritative State</Badge>}
+        description="Status of active drive applications, evaluation stages, and employment offers."
         actions={
           <Button
             variant="outline"

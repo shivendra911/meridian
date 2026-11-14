@@ -5,22 +5,27 @@ PlaceFlow Django API — Recruitment Operations & Multi-Tier Cascading Engine
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied
 from database.connection import get_db
 from operations import jobs, applications, interviews, placements
 from operations.ids import insert_with_id
 from operations.errors import friendly
 from operations.cascading import atomic_placement_with_cascading
 from api.auth.permissions import perm, any_of
+from api.auth.queries import scoped_find, scoped_get
 from camp_02.notify import notify, get_person_id_for_student
 
 
 class CompanyListView(APIView):
     """Lists and registers participating corporate partner organizations."""
-    permission_classes = [any_of("placement.company.create", "placement.company.verify", "placement.drive.manage")]
+    def get_permissions(self):
+        if self.request.method in ("POST", "PUT", "PATCH", "DELETE"):
+            return [perm("placement.company.create")()]
+        return [any_of("placement.company.create", "placement.company.verify", "placement.drive.manage")()]
 
     def get(self, request):
         db = get_db()
-        companies = list(db.companies.find({}, {"_id": 0}).sort("company_id", 1))
+        companies = scoped_find("companies", request.user, sort="company_id", db=db)
         return Response({"count": len(companies), "companies": companies}, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -34,11 +39,14 @@ class CompanyListView(APIView):
 
 class JobListView(APIView):
     """Lists open JNFs (Job Notification Forms) and registers new corporate drives."""
-    permission_classes = [perm("placement.drive.manage")]
+    def get_permissions(self):
+        if self.request.method in ("POST", "PUT", "PATCH", "DELETE"):
+            return [perm("placement.drive.manage")()]
+        return [any_of("placement.drive.manage", "placement.application.view")()]
 
     def get(self, request):
         db = get_db()
-        job_list = list(db.jobs.find({}, {"_id": 0}).sort("job_id", 1))
+        job_list = scoped_find("jobs", request.user, sort="job_id", db=db)
         return Response({"count": len(job_list), "jobs": job_list}, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -52,7 +60,7 @@ class JobListView(APIView):
             query = {}
             if depts:
                 query["department"] = {"$in": depts}
-            for stu in db.students.find(query, {"student_id": 1, "person_id": 1}).limit(50):
+            for stu in scoped_find("students", request.user, extra=query, limit=50, db=db):
                 spid = stu.get("person_id") or get_person_id_for_student(stu.get("student_id"), db=db)
                 if spid:
                     notify(
@@ -70,11 +78,11 @@ class JobListView(APIView):
 
 class JobDetailView(APIView):
     """Retrieves full details of a single placement drive / JNF."""
-    permission_classes = [perm("placement.drive.manage")]
+    permission_classes = [any_of("placement.drive.manage", "placement.application.view")]
 
     def get(self, request, job_id):
         db = get_db()
-        job = db.jobs.find_one({"job_id": job_id}, {"_id": 0})
+        job = scoped_get("jobs", request.user, {"job_id": job_id}, db=db)
         if not job:
             return Response({"error": f"Job opening '{job_id}' not found."}, status=status.HTTP_404_NOT_FOUND)
         return Response(job, status=status.HTTP_200_OK)
@@ -86,7 +94,7 @@ class JobCandidatesView(APIView):
 
     def get(self, request, job_id):
         db = get_db()
-        job = db.jobs.find_one({"job_id": job_id})
+        job = scoped_get("jobs", request.user, {"job_id": job_id}, db=db)
         if not job:
             return Response({"error": f"Job opening '{job_id}' not found."}, status=status.HTTP_404_NOT_FOUND)
         candidates = applications.eligible_candidates(db, job)
@@ -95,11 +103,14 @@ class JobCandidatesView(APIView):
 
 class ApplicationListView(APIView):
     """Application ledger and registration endpoint."""
-    permission_classes = [perm("placement.application.view")]
+    def get_permissions(self):
+        if self.request.method in ("POST", "PUT", "PATCH", "DELETE"):
+            return [any_of("placement.application.create", "placement.drive.manage")()]
+        return [perm("placement.application.view")()]
 
     def get(self, request):
         db = get_db()
-        apps = list(db.v_application_details.find({}, {"_id": 0}).sort("applied_at", -1).limit(300))
+        apps = scoped_find("v_application_details", request.user, sort=[("applied_at", -1)], limit=300, db=db)
         return Response({"count": len(apps), "applications": apps}, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -108,6 +119,12 @@ class ApplicationListView(APIView):
         jid = request.data.get("job_id")
         if not sid or not jid:
             return Response({"error": "student_id and job_id are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # IDOR prevention on apply: students can only apply for themselves
+        user_subj = getattr(request.user, "subject", {}) or {}
+        if user_subj.get("type") == "student" and user_subj.get("id") != sid:
+            raise PermissionDenied("Students may only submit applications for their own identity.")
+
         try:
             app_id = applications.apply_for_job(db, sid, jid)
             return Response({"status": "SUCCESS", "application_id": app_id}, status=status.HTTP_201_CREATED)
@@ -127,10 +144,10 @@ class ApplicationStatusView(APIView):
             return Response({"error": "status is required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             applications.update_status(db, application_id, new_status, note)
-            app_doc = db.applications.find_one({"application_id": application_id})
+            app_doc = scoped_get("applications", request.user, {"application_id": application_id}, db=db)
             if app_doc:
                 sid = app_doc.get("student_id")
-                job_doc = db.jobs.find_one({"job_id": app_doc.get("job_id")}) or {}
+                job_doc = scoped_get("jobs", request.user, {"job_id": app_doc.get("job_id")}, db=db) or {}
                 pid = get_person_id_for_student(sid, db=db)
                 if pid:
                     notify(
@@ -152,7 +169,7 @@ class InterviewListView(APIView):
 
     def get(self, request):
         db = get_db()
-        loops = list(db.interviews.find({}, {"_id": 0}).sort("scheduled_start", 1).limit(300))
+        loops = scoped_find("interviews", request.user, sort="scheduled_start", limit=300, db=db)
         return Response({"count": len(loops), "interviews": loops}, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -168,7 +185,7 @@ class InterviewListView(APIView):
                 mode=d["mode"],
                 venue=d.get("venue")
             )
-            app_doc = db.applications.find_one({"application_id": d["application_id"]})
+            app_doc = scoped_get("applications", request.user, {"application_id": d["application_id"]}, db=db)
             if app_doc:
                 sid = app_doc.get("student_id")
                 pid = get_person_id_for_student(sid, db=db)
@@ -192,7 +209,7 @@ class PlacementListView(APIView):
 
     def get(self, request):
         db = get_db()
-        records = list(db.placements.find({}, {"_id": 0}).sort("placement_date", -1))
+        records = scoped_find("placements", request.user, sort=[("placement_date", -1)], db=db)
         return Response({"count": len(records), "placements": records}, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -203,7 +220,7 @@ class PlacementListView(APIView):
             return Response({"error": "student_id and job_id are required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             plc_id, cascaded_id = atomic_placement_with_cascading(db, sid, jid)
-            job_doc = db.jobs.find_one({"job_id": jid}) or {}
+            job_doc = scoped_get("jobs", request.user, {"job_id": jid}, db=db) or {}
             pid = get_person_id_for_student(sid, db=db)
             if pid:
                 notify(
@@ -222,4 +239,3 @@ class PlacementListView(APIView):
             }, status=status.HTTP_201_CREATED)
         except Exception as exc:
             return Response({"status": "ERROR", "message": friendly(exc)}, status=status.HTTP_400_BAD_REQUEST)
-

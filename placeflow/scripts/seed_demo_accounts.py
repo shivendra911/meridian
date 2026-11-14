@@ -217,6 +217,54 @@ def seed_demo_accounts(db=None):
     inst = db.institutions.find_one({"tenant_id": tenant_id})
     institution_id = inst["institution_id"] if inst else "inst_default"
 
+    # Seed demo student mentors and schools
+    from database.sample_data import STUDENTS
+    for s in STUDENTS:
+        db.students.update_one(
+            {"student_id": s["student_id"]},
+            {"$set": {
+                "name": s["name"],
+                "department": s["department"],
+                "school": s.get("school", "School of Computing"),
+                "mentor_id": s.get("mentor_id"),
+            }},
+            upsert=True,
+        )
+
+    # Seed institutional mentorship topology
+    mentorship_rels = [
+        {
+            "relation_id": "REL_STU_MEN_STU001_11266",
+            "from_type": "STUDENT",
+            "from_id": "STU001",
+            "from_name": "Aarav Sharma",
+            "relation_type": "MENTORED_BY",
+            "to_type": "FACULTY",
+            "to_id": "11266",
+            "to_name": "Dr. Janpreet Singh",
+            "metadata": {"school": "School of Computing", "department": "CSE"},
+            "created_at": now,
+        },
+        {
+            "relation_id": "REL_STU_MEN_STU002_11266",
+            "from_type": "STUDENT",
+            "from_id": "STU002",
+            "from_name": "Diya Patel",
+            "relation_type": "MENTORED_BY",
+            "to_type": "FACULTY",
+            "to_id": "11266",
+            "to_name": "Dr. Janpreet Singh",
+            "metadata": {"school": "School of Computing", "department": "CSE"},
+            "created_at": now,
+        },
+    ]
+    for rel in mentorship_rels:
+        db.institutional_relationships.update_one(
+            {"relation_id": rel["relation_id"]},
+            {"$set": rel},
+            upsert=True,
+        )
+
     results = []
 
     for spec in DEMO_SPECS:

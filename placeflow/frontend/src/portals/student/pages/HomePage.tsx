@@ -18,13 +18,22 @@ import {
   CheckCircle2,
   Sparkles,
   ShieldCheck,
-  CheckSquare} from 'lucide-react';
-import { studentApi, StudentProfile, StudentOpportunity, StudentInterview, StudentApplication } from '../api';
+  CheckSquare,
+  Award,
+} from 'lucide-react';
+import {
+  studentApi,
+  StudentProfile,
+  StudentOpportunity,
+  StudentInterview,
+  StudentApplication,
+  StudentConsent,
+  StudentOffer,
+} from '../api';
 import {
   PageHeader,
   StatCard,
   Card,
-  Badge,
   Skeleton,
   Button,
   DriveCard,
@@ -41,6 +50,8 @@ export const StudentHomePage: React.FC = () => {
   const [opportunities, setOpportunities] = useState<StudentOpportunity[]>([]);
   const [interviews, setInterviews] = useState<StudentInterview[]>([]);
   const [applications, setApplications] = useState<StudentApplication[]>([]);
+  const [offers, setOffers] = useState<StudentOffer[]>([]);
+  const [consents, setConsents] = useState<StudentConsent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -48,16 +59,20 @@ export const StudentHomePage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const [profData, oppData, intData, appData] = await Promise.all([
+      const [profData, oppData, intData, appData, conData, offData] = await Promise.all([
         studentApi.getMe(),
         studentApi.getOpportunities(),
         studentApi.getInterviews(),
         studentApi.getApplications(),
+        studentApi.getConsents().catch(() => []),
+        studentApi.getOffers().catch(() => []),
       ]);
       setProfile(profData);
       setOpportunities(oppData || []);
       setInterviews(intData || []);
       setApplications(appData || []);
+      setConsents(conData || []);
+      setOffers(offData || []);
     } catch (err: any) {
       setError(err);
     } finally {
@@ -97,12 +112,102 @@ export const StudentHomePage: React.FC = () => {
   const nextInterview = interviews.find((i) => i.status !== 'Completed' && i.status !== 'Cancelled');
   const offeredCount = applications.filter((a) => a.status === 'Offered' || a.status === 'Accepted').length;
 
+  // Derive actionable tasks directly from student's live records
+  const pendingOffer = offers.find((o) => !o.response_status || o.response_status === null);
+  const pendingConsent = consents.find((c) => c.status === 'PENDING');
+  const needsProfileUpdate = !profile?.skills || profile.skills.length === 0;
+  const unappliedEligible = eligibleJobs.filter((j) => !j.has_applied);
+
+  const actionableTasks: Array<{
+    task_id: string;
+    title: string;
+    due?: string | Date | null;
+    priority: 'HIGH' | 'MEDIUM' | 'LOW';
+    icon: any;
+    action_label: string;
+    action: () => void;
+  }> = [];
+
+  if (pendingOffer) {
+    actionableTasks.push({
+      task_id: `offer_${pendingOffer.placement_id}`,
+      title: `Respond to placement offer from ${pendingOffer.role || 'Corporate Partner'} (${pendingOffer.package_lpa} LPA)`,
+      due: null,
+      priority: 'HIGH',
+      icon: Award,
+      action_label: 'Review Offer',
+      action: () => navigate('/student/applications'),
+    });
+  }
+
+  if (nextInterview) {
+    actionableTasks.push({
+      task_id: `interview_${nextInterview.interview_id}`,
+      title: `Prepare for Round ${nextInterview.round}: ${nextInterview.company_name ? `${nextInterview.company_name} (${nextInterview.role || 'Interview'})` : nextInterview.role || 'Interview Round'}`,
+      due: nextInterview.scheduled_start,
+      priority: 'HIGH',
+      icon: Clock,
+      action_label: 'View Slot Details',
+      action: () => {
+        const el = document.getElementById('upcoming-interview-slot');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      },
+    });
+  }
+
+  if (unappliedEligible.length > 0) {
+    actionableTasks.push({
+      task_id: `eligible_${unappliedEligible[0].job_id}`,
+      title: `Apply to ${unappliedEligible[0].company_name} — ${unappliedEligible[0].title}`,
+      due: unappliedEligible[0].deadline || null,
+      priority: unappliedEligible[0].tier === 'SUPER_DREAM' || unappliedEligible[0].tier === 'DREAM' ? 'HIGH' : 'MEDIUM',
+      icon: Compass,
+      action_label: 'Inspect Drive',
+      action: () => navigate('/student/opportunities'),
+    });
+  }
+
+  if (needsProfileUpdate) {
+    actionableTasks.push({
+      task_id: 'task_profile_skills',
+      title: 'Complete candidate dossier: add verified technical skills & projects',
+      due: null,
+      priority: 'MEDIUM',
+      icon: ShieldCheck,
+      action_label: 'Update Skills',
+      action: () => navigate('/student/profile'),
+    });
+  }
+
+  if (pendingConsent) {
+    actionableTasks.push({
+      task_id: `consent_${pendingConsent.purpose}`,
+      title: `Review pending data privacy disclosure consent (${pendingConsent.purpose_title || pendingConsent.purpose})`,
+      due: null,
+      priority: 'LOW',
+      icon: FileText,
+      action_label: 'Review Consents',
+      action: () => navigate('/student/profile'),
+    });
+  }
+
+  if (actionableTasks.length === 0) {
+    actionableTasks.push({
+      task_id: 'task_all_clear',
+      title: 'All recruitment actions up to date. Explore active campus drives.',
+      due: null,
+      priority: 'LOW',
+      icon: CheckCircle2,
+      action_label: 'Browse Catalog',
+      action: () => navigate('/student/opportunities'),
+    });
+  }
+
   return (
     <div className="space-y-8 font-sans">
       <PageHeader
         title={`Welcome back, ${profile?.name || 'Candidate'}`}
         description="Your personal campus-to-career hub. Track job notifications, eligibility, and interviews."
-        badge={<Badge variant="institutional" size="xs">Live Registry</Badge>}
         actions={
           <Button
             variant="primary"
@@ -125,70 +230,20 @@ export const StudentHomePage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <TaskCard
-            data={{
-              task_id: 'task_profile',
-              title: 'Review verified academic profile & add skills',
-              due: new Date(Date.now() + 24 * 3600 * 1000 * 3),
-              priority: 'MEDIUM',
-              icon: ShieldCheck,
-              action_label: 'Review Profile',
-            }}
-            onAction={() => navigate('/account/profile')}
-          />
-
-          {nextInterview ? (
+          {actionableTasks.slice(0, 3).map((task) => (
             <TaskCard
+              key={task.task_id}
               data={{
-                task_id: 'task_interview',
-                title: `Prepare for Round ${nextInterview.round}: ${nextInterview.company_name || 'Partner Company'}`,
-                due: nextInterview.scheduled_start,
-                priority: 'HIGH',
-                icon: Clock,
-                action_label: 'View Slot Details',
+                task_id: task.task_id,
+                title: task.title,
+                due: task.due,
+                priority: task.priority,
+                icon: task.icon,
+                action_label: task.action_label,
               }}
-              onAction={() => {
-                const el = document.getElementById('upcoming-interview-slot');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
+              onAction={task.action}
             />
-          ) : eligibleJobs.length > 0 ? (
-            <TaskCard
-              data={{
-                task_id: 'task_eligible',
-                title: `Apply to ${eligibleJobs[0].company_name} - ${eligibleJobs[0].title}`,
-                due: eligibleJobs[0].deadline || new Date(Date.now() + 24 * 3600 * 1000 * 2),
-                priority: 'HIGH',
-                icon: Compass,
-                action_label: 'Inspect Drive',
-              }}
-              onAction={() => navigate('/student/opportunities')}
-            />
-          ) : (
-            <TaskCard
-              data={{
-                task_id: 'task_all_clear',
-                title: 'All recruitment actions up to date',
-                due: null,
-                priority: 'LOW',
-                icon: CheckCircle2,
-                action_label: 'Browse Catalog',
-              }}
-              onAction={() => navigate('/student/opportunities')}
-            />
-          )}
-
-          <TaskCard
-            data={{
-              task_id: 'task_dpdp',
-              title: 'Verify recruiter visibility and DPDP consents',
-              due: null,
-              priority: 'LOW',
-              icon: FileText,
-              action_label: 'Privacy Settings',
-            }}
-            onAction={() => navigate('/account/privacy')}
-          />
+          ))}
         </div>
       </div>
 
@@ -231,8 +286,8 @@ export const StudentHomePage: React.FC = () => {
             <InterviewCard
               data={{
                 interview_id: nextInterview.interview_id,
-                role: nextInterview.role || 'Software Engineering Candidate',
-                company_name: nextInterview.company_name || 'Partner Recruiter',
+                role: nextInterview.role || '',
+                company_name: nextInterview.company_name || '',
                 round_name: `Round ${nextInterview.round}`,
                 scheduled_start: nextInterview.scheduled_start,
                 scheduled_end: nextInterview.scheduled_end,
@@ -292,7 +347,7 @@ export const StudentHomePage: React.FC = () => {
 
       {/* 5. Recommended Drives Built with DriveCard */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <div>
             <h3 className="text-sm font-semibold text-ink flex items-center gap-1.5">
               <Sparkles size={14} className="text-brand" />
@@ -302,9 +357,14 @@ export const StudentHomePage: React.FC = () => {
               Live recruitment drives matching your academic criteria and discipline.
             </p>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/student/opportunities')}>
-            <span>View All ({opportunities.length})</span>
-            <Compass size={13} className="ml-1" />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="shrink-0 whitespace-nowrap flex items-center gap-1"
+            rightIcon={<Compass size={13} />}
+            onClick={() => navigate('/student/opportunities')}
+          >
+            View All ({opportunities.length})
           </Button>
         </div>
 

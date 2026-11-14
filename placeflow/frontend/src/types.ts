@@ -347,10 +347,13 @@ export interface OverviewData {
     rates: number[];
     rows: Array<{
       department: string;
-      total_students: number;
-      placed_students: number;
-      placement_pct: number;
-      avg_package: number;
+      total_students?: number;
+      placed_students?: number;
+      students?: number;
+      placed?: number;
+      placement_pct?: number;
+      pct?: number;
+      avg_package?: number;
     }>;
   };
   tier_distribution: {

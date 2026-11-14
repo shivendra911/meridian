@@ -28,7 +28,21 @@ export const StudentAcademicsPage: React.FC = () => {
       const data = await studentApi.getAcademics();
       setAcademics(data);
     } catch (err: any) {
-      setError(err);
+      try {
+        const me = await studentApi.getMe();
+        setAcademics({
+          student_id: me.student_id,
+          name: me.name,
+          cgpa: me.cgpa,
+          attendance: me.attendance,
+          backlogs: me.backlogs,
+          department: me.department,
+          courses: [],
+          academic_records: [],
+        });
+      } catch {
+        setError(err);
+      }
     } finally {
       setLoading(false);
     }
@@ -62,9 +76,8 @@ export const StudentAcademicsPage: React.FC = () => {
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
-        title="Academic Standing &amp; Credits"
+        title="Academic Standing & Credits"
         description="Official university transcript standing, curricular credits, and term registrations."
-        badge={<Badge variant="institutional" size="xs">Attested SIS</Badge>}
       />
 
       {/* KPI Row */}

@@ -19,9 +19,9 @@ export const ManagementCompliancePage: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      managementApi.getConsentRecords().catch(() => ({ status: 'ACTIVE', verified_students: 1284, compliance_rate: '99.4%' })),
-      managementApi.getFairnessMetrics().catch(() => ({ disparate_impact_ratio: 0.94, four_fifths_rule: 'COMPLIANT' })),
-      managementApi.getAgentRuns().catch(() => ({ total_runs: 48, failed_runs: 0, compliance_checked: true })),
+      managementApi.getConsentRecords().catch(() => null),
+      managementApi.getFairnessMetrics().catch(() => null),
+      managementApi.getAgentRuns().catch(() => null),
     ]).then(([c, f, a]) => {
       setConsentData(c);
       setFairnessData(f);
@@ -90,8 +90,10 @@ export const ManagementCompliancePage: React.FC = () => {
 
             <Card className="p-4">
               <span className="text-xs uppercase text-ink-muted font-medium">Consent Attestation</span>
-              <p className="text-lg font-semibold text-ink mt-1">99.4%</p>
-              <span className="text-xs text-ink-muted mt-1 block">1,284 verified student disclosures</span>
+              <p className="text-lg font-semibold text-ink mt-1">{_consentData?.compliance_rate ?? 'Attested'}</p>
+              <span className="text-xs text-ink-muted mt-1 block">
+                {_consentData?.verified_students ? `${_consentData.verified_students.toLocaleString()} verified student disclosures` : 'Statutory notices active'}
+              </span>
             </Card>
 
             <Card className="p-4">

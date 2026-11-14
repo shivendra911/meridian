@@ -97,13 +97,8 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
     <div className="space-y-6 font-sans">
       {/* 1. Page Header */}
       <PageHeader
-        title={activeInstitution ? activeInstitution.legal_name : activeTenant?.name || 'Institutional Command Hub'}
-        description={`${activeCampus?.campus_name || 'Main Campus'} • Directorate of Career & Placement Operations`}
-        badge={
-          <Badge variant="success" size="xs">
-            System Online &bull; Active
-          </Badge>
-        }
+        title={activeInstitution ? activeInstitution.legal_name : activeTenant?.name || 'Overview'}
+        description={`${activeCampus?.campus_name || 'Main Campus'} • Placement`}
         actions={
           <div className="flex items-center gap-2">
             <Button
@@ -120,7 +115,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
               onClick={() => setIsWizardOpen(true)}
               leftIcon={<Briefcase size={14} />}
             >
-              Create Placement Drive
+              New drive
             </Button>
           </div>
         }
@@ -181,8 +176,6 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
           value={`${kpis.placement_pct || 0}%`}
           hint="Verified Offers Accepted"
           icon={Award}
-          change="+4.2% YoY"
-          changeType="up"
         />
         <StatCard
           label="Corporate Partners"
@@ -209,22 +202,26 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
           >
             <div className="space-y-3">
               {branch_velocity.rows && branch_velocity.rows.length > 0 ? (
-                branch_velocity.rows.map((row) => (
-                  <div key={row.department} className="space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span className="font-medium text-ink">{row.department}</span>
-                      <span className="tabular-nums text-ink-muted">
-                        {row.placed_students} / {row.total_students} ({row.placement_pct}%)
-                      </span>
+                branch_velocity.rows.map((row) => {
+                  const placed = row.placed ?? row.placed_students ?? 0;
+                  const total = row.students ?? row.total_students ?? 0;
+                  return (
+                    <div key={row.department} className="space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium text-ink">{row.department}</span>
+                        <span className="tabular-nums text-ink-muted">
+                          {placed} / {total} ({row.placement_pct}%)
+                        </span>
+                      </div>
+                      <div className="w-full bg-line rounded-full h-1.5 overflow-hidden">
+                        <div
+                          className="bg-brand h-full rounded-full transition-all duration-150"
+                          style={{ width: `${Math.min(100, row.placement_pct || 0)}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="w-full bg-line rounded-full h-1.5 overflow-hidden">
-                      <div
-                        className="bg-brand h-full rounded-full transition-all duration-150"
-                        style={{ width: `${Math.min(100, row.placement_pct || 0)}%` }}
-                      />
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <div className="text-xs text-ink-muted py-4 text-center">
                   No department velocity records recorded
@@ -324,21 +321,21 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
 
               <div className="p-3 rounded-lg border border-line bg-canvas space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-ink">Superday Lab Integrity</span>
-                  <Badge variant="success" size="xs">Zero Clashes</Badge>
+                  <span className="font-semibold text-ink">Superday Schedule Arbiter</span>
+                  <Badge variant="neutral" size="xs">Active</Badge>
                 </div>
                 <p className="text-xs text-ink-muted m-0">
-                  Terminal scheduling constraint engine running live.
+                  Terminal scheduling constraint engine.
                 </p>
               </div>
 
               <div className="p-3 rounded-lg border border-line bg-canvas space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-ink">DPDP Act 2023 Consent</span>
-                  <Badge variant="success" size="xs">98.2% Active</Badge>
+                  <Badge variant="success" size="xs">Compliant</Badge>
                 </div>
                 <p className="text-xs text-ink-muted m-0">
-                  Authoritative student data consent recorded.
+                  Authoritative student data consent notices attested.
                 </p>
               </div>
             </div>

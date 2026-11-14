@@ -30,27 +30,27 @@ export interface StudentProfile {
 }
 
 export const StudentProfileSchema = z.object({
-  student_id: z.string(),
-  name: z.string(),
-  email: z.string(),
-  phone: z.string().nullable().optional(),
+  student_id: z.string().nullable().optional().transform((v) => v ?? ''),
+  name: z.string().nullable().optional().transform((v) => v ?? ''),
+  email: z.string().nullable().optional().transform((v) => v ?? ''),
+  phone: z.union([z.string(), z.number()]).nullable().optional().transform((v) => v != null ? String(v) : undefined),
   department: z.string().nullable().optional().default(''),
-  cgpa: z.number().nullable().optional().transform((v) => v ?? 0),
-  attendance: z.number().nullable().optional().transform((v) => v ?? 0),
-  backlogs: z.number().nullable().optional().transform((v) => v ?? 0),
+  cgpa: z.coerce.number().nullable().optional().transform((v) => v ?? 0),
+  attendance: z.coerce.number().nullable().optional().transform((v) => v ?? 0),
+  backlogs: z.coerce.number().nullable().optional().transform((v) => v ?? 0),
   skills: z.array(z.string()).nullable().optional().transform((v) => v ?? []),
   remarks: z.string().nullable().optional(),
   placement_status: z.string().nullable().optional(),
   tier_entitlement: z.string().nullable().optional(),
   ml_opt_out: z.boolean().nullable().optional(),
   mentorship_relations: z.array(z.object({
-    from_id: z.string(),
-    to_id: z.string(),
-    relation_type: z.string(),
+    from_id: z.string().nullable().optional().transform((v) => v ?? ''),
+    to_id: z.string().nullable().optional().transform((v) => v ?? ''),
+    relation_type: z.string().nullable().optional().transform((v) => v ?? ''),
   })).nullable().optional().transform((v) => v ?? []),
   vti: z.object({
-    overall: z.number().nullable().optional().transform((v) => v ?? 0),
-    percentile: z.number().nullable().optional().transform((v) => v ?? 0),
+    overall: z.coerce.number().nullable().optional().transform((v) => v ?? 0),
+    percentile: z.coerce.number().nullable().optional().transform((v) => v ?? 0),
     category: z.string().nullable().optional().default(''),
   }).nullable().optional(),
 }).passthrough();
@@ -221,14 +221,14 @@ export interface StudentAcademics {
 }
 
 export const StudentAcademicsSchema = z.object({
-  student_id: z.string(),
+  student_id: z.string().nullable().optional().transform((v) => v ?? ''),
   name: z.string().nullable().optional().transform((v) => v ?? ''),
-  cgpa: z.number().nullable().optional().transform((v) => v ?? 0),
-  attendance: z.number().nullable().optional().transform((v) => v ?? 0),
-  backlogs: z.number().nullable().optional().transform((v) => v ?? 0),
+  cgpa: z.coerce.number().nullable().optional().transform((v) => v ?? 0),
+  attendance: z.coerce.number().nullable().optional().transform((v) => v ?? 0),
+  backlogs: z.coerce.number().nullable().optional().transform((v) => v ?? 0),
   department: z.string().nullable().optional().transform((v) => v ?? ''),
-  year: z.number().nullable().optional(),
-  batch: z.string().nullable().optional(),
+  year: z.union([z.number(), z.string()]).nullable().optional().transform((v) => typeof v === 'string' ? parseInt(v, 10) || undefined : v ?? undefined),
+  batch: z.union([z.number(), z.string()]).nullable().optional().transform((v) => v != null ? String(v) : undefined),
   academic_records: z.array(z.any()).nullable().optional().transform((v) => v ?? []),
   courses: z.array(z.any()).nullable().optional().transform((v) => v ?? []),
 }).passthrough();

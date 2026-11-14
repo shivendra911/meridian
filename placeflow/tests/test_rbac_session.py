@@ -174,3 +174,31 @@ def test_switch_context_updates_institution():
     me_res = client.get("/api/auth/me/")
     assert me_res.status_code == 200
     assert me_res.data["institution_id"] == "inst_secondary_campus"
+
+
+def test_all_13_demo_accounts_portal_and_default_routing():
+    """Validates that each demo account receives their authoritative narrowed portals and default portal."""
+    expected_routing = {
+        "student": (["student"], "student"),
+        "placement_rep": (["student"], "student"),
+        "faculty": (["faculty"], "faculty"),
+        "coordinator": (["faculty"], "faculty"),
+        "hod": (["hod"], "hod"),
+        "dean": (["hod"], "hod"),
+        "tpo_coordinator": (["tpo"], "tpo"),
+        "tpo_admin": (["tpo"], "tpo"),
+        "vice_chancellor": (["management"], "management"),
+        "admin": (["admin"], "admin"),
+        "superadmin": (["admin"], "admin"),
+        "auditor": (["management"], "management"),
+        "recruiter": ([], ""),
+    }
+
+    client = APIClient()
+    for username, (expected_portals, expected_default) in expected_routing.items():
+        res = client.post("/api/auth/login/", {"username": username, "password": "password123"}, format="json")
+        assert res.status_code == 200, f"Login failed for {username}: {res.data}"
+        me = res.data["me"]
+        assert me["portals"] == expected_portals, f"{username} expected portals {expected_portals}, got {me['portals']}"
+        assert me["default_portal"] == expected_default, f"{username} expected default {expected_default}, got {me['default_portal']}"
+

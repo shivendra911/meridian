@@ -12,8 +12,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from database.connection import get_db
-from api.auth.permissions import perm, any_of
-from api.auth.scoping import ScopeResolver
+from api.auth.permissions import perm, any_of, PortalBaseView
+from api.auth.queries import scoped_find, scoped_get
 from api.auth.masking import mask_records
 from operations.applications import check_eligibility, apply_for_job
 from operations.errors import PlaceFlowError
@@ -21,8 +21,9 @@ from operations.consent import record_consent, withdraw_consent, get_student_con
 from camp_02.notify import notify, get_tpo_person_ids
 
 
-class StudentBaseView(APIView):
+class StudentBaseView(PortalBaseView, APIView):
     """Base class extracting authoritative student subject ID from the active principal."""
+    portal_name = "student"
 
     def get_student_id(self, request) -> str:
         user = getattr(request, "user", None)
@@ -44,7 +45,7 @@ class StudentMeView(StudentBaseView):
             return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
         db = get_db()
-        student = db.students.find_one({"student_id": student_id}, {"_id": 0})
+        student = scoped_get("students", request.user, {"student_id": student_id}, db=db)
         if not student:
             return Response({"error": "CandidateRecordNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -69,7 +70,7 @@ class StudentProfileUpdateView(StudentBaseView):
             return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
         db = get_db()
-        student = db.students.find_one({"student_id": student_id})
+        student = scoped_get("students", request.user, {"student_id": student_id}, db=db)
         if not student:
             return Response({"error": "CandidateRecordNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -82,7 +83,7 @@ class StudentProfileUpdateView(StudentBaseView):
         if update_data:
             db.students.update_one({"student_id": student_id}, {"$set": update_data})
 
-        updated = db.students.find_one({"student_id": student_id}, {"_id": 0})
+        updated = scoped_get("students", request.user, {"student_id": student_id}, db=db)
         return Response(mask_records(updated, request.user), status=status.HTTP_200_OK)
 
 
@@ -96,14 +97,16 @@ class StudentOpportunitiesView(StudentBaseView):
             return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
         db = get_db()
-        student = db.students.find_one({"student_id": student_id})
+        student = scoped_get("students", request.user, {"student_id": student_id}, db=db)
         if not student:
             return Response({"error": "CandidateRecordNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
-        jobs = list(db.jobs.find({"status": "Open"}, {"_id": 0}))
+        jobs = scoped_find("jobs", request.user, extra={"status": "Open"}, db=db)
         company_ids = [j.get("company_id") for j in jobs if j.get("company_id")]
-        companies = {c["company_id"]: c for c in db.companies.find({"company_id": {"$in": company_ids}}, {"_id": 0})}
-        applied_jobs = set(db.applications.distinct("job_id", {"student_id": student_id}))
+        comps = scoped_find("companies", request.user, extra={"company_id": {"$in": company_ids}}, db=db)
+        companies = {c["company_id"]: c for c in comps}
+        student_apps = scoped_find("applications", request.user, extra={"student_id": student_id}, db=db)
+        applied_jobs = {a.get("job_id") for a in student_apps if a.get("job_id")}
 
         decorated_jobs = []
         for j in jobs:
@@ -161,10 +164,12 @@ class StudentApplicationsListView(StudentBaseView):
             return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
         db = get_db()
-        apps = list(db.applications.find({"student_id": student_id}, {"_id": 0}).sort("application_date", -1))
+        apps = scoped_find("applications", request.user, extra={"student_id": student_id}, sort=[("application_date", -1)], db=db)
         job_ids = [a.get("job_id") for a in apps if a.get("job_id")]
-        jobs = {j["job_id"]: j for j in db.jobs.find({"job_id": {"$in": job_ids}}, {"_id": 0})}
-        companies = {c["company_id"]: c["name"] for c in db.companies.find({}, {"_id": 0, "company_id": 1, "name": 1})}
+        jobs_list = scoped_find("jobs", request.user, extra={"job_id": {"$in": job_ids}}, db=db)
+        jobs = {j["job_id"]: j for j in jobs_list}
+        all_companies = scoped_find("companies", request.user, db=db)
+        companies = {c["company_id"]: c.get("name", "") for c in all_companies}
 
         for a in apps:
             j = jobs.get(a.get("job_id"), {})
@@ -186,7 +191,18 @@ class StudentInterviewsListView(StudentBaseView):
             return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
         db = get_db()
-        interviews = list(db.interviews.find({"student_id": student_id}, {"_id": 0}).sort("scheduled_start", 1))
+        interviews = scoped_find("interviews", request.user, extra={"student_id": student_id}, sort="scheduled_start", db=db)
+
+        # Enrich with company_name and role (job_title)
+        for inv in interviews:
+            app_id = inv.get("application_id")
+            app = scoped_get("applications", request.user, {"application_id": app_id}, db=db) if app_id else None
+            job = scoped_get("jobs", request.user, {"job_id": app.get("job_id")}, db=db) if app else None
+            comp = scoped_get("companies", request.user, {"company_id": job.get("company_id")}, db=db) if job else None
+            inv["role"] = job.get("title", "Candidate") if job else "Candidate"
+            inv["job_title"] = job.get("title", "Candidate") if job else "Candidate"
+            inv["company_name"] = comp.get("name", "Corporate Partner") if comp else "Corporate Partner"
+
         return Response(interviews, status=status.HTTP_200_OK)
 
 
@@ -200,7 +216,7 @@ class StudentOffersListView(StudentBaseView):
             return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
         db = get_db()
-        offers = list(db.placements.find({"student_id": student_id}, {"_id": 0}).sort("placement_date", -1))
+        offers = scoped_find("placements", request.user, extra={"student_id": student_id}, sort=[("placement_date", -1)], db=db)
         return Response(offers, status=status.HTTP_200_OK)
 
 
@@ -218,7 +234,7 @@ class StudentOfferRespondView(StudentBaseView):
             return Response({"error": "InvalidAction", "message": "Action must be ACCEPT or DECLINE."}, status=status.HTTP_400_BAD_REQUEST)
 
         db = get_db()
-        offer = db.placements.find_one({"placement_id": offer_id, "student_id": student_id})
+        offer = scoped_get("placements", request.user, {"placement_id": offer_id, "student_id": student_id}, db=db)
         if not offer:
             # 404 to avoid leaking existence of out-of-scope offers
             return Response({"error": "OfferNotFound"}, status=status.HTTP_404_NOT_FOUND)
@@ -231,7 +247,7 @@ class StudentOfferRespondView(StudentBaseView):
         )
 
         # Notify TPO officers about student response
-        stu_doc = db.students.find_one({"student_id": student_id}, {"name": 1})
+        stu_doc = scoped_get("students", request.user, {"student_id": student_id}, db=db)
         stu_name = (stu_doc or {}).get("name") or student_id
         for tpid in get_tpo_person_ids(db=db):
             notify(
@@ -327,7 +343,7 @@ class StudentAcademicsView(StudentBaseView):
             return Response({"error": "CandidateProfileNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
         db = get_db()
-        student = db.students.find_one({"student_id": student_id}, {"_id": 0})
+        student = scoped_get("students", request.user, {"student_id": student_id}, db=db)
         if not student:
             return Response({"error": "CandidateRecordNotFound"}, status=status.HTTP_404_NOT_FOUND)
 
@@ -428,4 +444,3 @@ class StudentWhatIfView(StudentBaseView):
             tenant_id=tenant_id,
         )
         return Response(result, status=status.HTTP_200_OK)
-

@@ -5,7 +5,7 @@
  * Features "What needs me now" executive task center.
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   TrendingUp,
@@ -14,11 +14,20 @@ import {
   BarChart2} from 'lucide-react';
 import { useAuth } from '../../../core/auth/useAuth';
 import { PageHeader, StatCard, Card, Badge, Button, TaskCard, useDocumentTitle } from '../../../ui';
+import { managementApi } from '../api';
 
 export const ManagementHomePage: React.FC = () => {
   useDocumentTitle('Executive Management');
   const { me } = useAuth();
   const navigate = useNavigate();
+
+  const [nirf, setNirf] = useState<any>(null);
+  const [consent, setConsent] = useState<any>(null);
+
+  useEffect(() => {
+    managementApi.getNirfMetrics().then(setNirf).catch(() => null);
+    managementApi.getConsentRecords().then(setConsent).catch(() => null);
+  }, []);
 
   return (
     <div className="space-y-8 font-sans">
@@ -83,26 +92,26 @@ export const ManagementHomePage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Institutional Placement"
-          value="88.4%"
-          hint="Across all campuses"
+          value={nirf?.placement_pct !== undefined ? `${nirf.placement_pct}%` : '—'}
+          hint={nirf?.cohort_size ? `${nirf.placed_count || 0} / ${nirf.cohort_size} placed` : 'Across active cohorts'}
           icon={TrendingUp}
         />
         <StatCard
           label="NIRF Metric Standing"
-          value="74.2 / 100"
+          value={nirf?.total_nirf_go_80 !== undefined ? `${nirf.total_nirf_go_80} / 80` : '—'}
           hint="Graduation Outcome (GO) Score"
           icon={Award}
         />
         <StatCard
           label="Statutory DPDP Consent"
-          value="98.2%"
-          hint="DigiLocker / APAAR compliance"
+          value={consent?.compliance_rate ?? 'Attested'}
+          hint={consent?.verified_students ? `${consent.verified_students.toLocaleString()} candidate records` : 'DigiLocker / APAAR compliance'}
           icon={ShieldCheck}
         />
         <StatCard
-          label="Super Dream Packages"
-          value="18.6%"
-          hint="Offers above 10 LPA"
+          label="Median Package"
+          value={nirf?.salary_stats?.median_package_lpa ? `${nirf.salary_stats.median_package_lpa} LPA` : '—'}
+          hint="Attested CTC benchmark"
           icon={TrendingUp}
         />
       </div>

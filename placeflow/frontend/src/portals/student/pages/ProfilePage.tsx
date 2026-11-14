@@ -25,6 +25,7 @@ import {
   SkillRecommendations} from '../api';
 import { PageHeader, Card, Badge, Button, Skeleton } from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
+import { useAuth } from '../../../core/auth/useAuth';
 
 const CONSENT_PURPOSES = [
   {
@@ -45,6 +46,8 @@ const CONSENT_PURPOSES = [
 ];
 
 export const StudentProfilePage: React.FC = () => {
+  const { can } = useAuth();
+  const canConsent = can('consent.grant.record') || can('consent.withdraw.process');
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [consents, setConsents] = useState<StudentConsent[]>([]);
   const [readiness, setReadiness] = useState<PlacementReadiness | null>(null);
@@ -67,7 +70,7 @@ export const StudentProfilePage: React.FC = () => {
     try {
       const [profData, conData, readData, recData] = await Promise.all([
         studentApi.getMe(),
-        studentApi.getConsents(),
+        canConsent ? studentApi.getConsents().catch(() => []) : Promise.resolve([]),
         studentApi.getReadinessInsights().catch(() => null),
         studentApi.getSkillRecommendations().catch(() => null),
       ]);
@@ -185,9 +188,8 @@ export const StudentProfilePage: React.FC = () => {
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
-        title="Candidate Profile &amp; Privacy"
+        title="Candidate Profile & Privacy"
         description="Manage your professional dossier, verified skills portfolio, and DPDP Act 2023 consent ledger."
-        badge={<Badge variant="institutional" size="xs">Self Governed</Badge>}
       />
 
       {/* Profile Overview Card */}
@@ -460,44 +462,46 @@ export const StudentProfilePage: React.FC = () => {
           </div>
 
           {/* Granular Purpose Consents */}
-          <div className="space-y-3 pt-2">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-ink-muted">
-              Statutory Processing Purposes
-            </h4>
+          {canConsent && (
+            <div className="space-y-3 pt-2">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-ink-muted">
+                Statutory Processing Purposes
+              </h4>
 
-            {CONSENT_PURPOSES.map((p) => {
-              const active = isConsentActive(p.key);
-              return (
-                <div
-                  key={p.key}
-                  className="p-3.5 rounded-xl border border-line bg-surface flex items-start justify-between gap-4"
-                >
-                  <div className="space-y-0.5">
-                    <div className="text-xs font-bold text-ink flex items-center gap-2">
-                      {active ? (
-                        <ShieldCheck size={15} className="text-emerald-600" />
-                      ) : (
-                        <ShieldAlert size={15} className="text-amber-500" />
-                      )}
-                      <span>{p.label}</span>
-                      <Badge variant={active ? 'success' : 'neutral'} size="xs">
-                        {active ? 'Consent Active' : 'Withdrawn'}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-ink-muted">{p.description}</p>
-                  </div>
-
-                  <Button
-                    variant={active ? 'outline' : 'primary'}
-                    size="sm"
-                    onClick={() => handleConsentToggle(p.key, active)}
+              {CONSENT_PURPOSES.map((p) => {
+                const active = isConsentActive(p.key);
+                return (
+                  <div
+                    key={p.key}
+                    className="p-3.5 rounded-xl border border-line bg-surface flex items-start justify-between gap-4"
                   >
-                    <span>{active ? 'Withdraw Consent' : 'Grant Consent'}</span>
-                  </Button>
-                </div>
-              );
-            })}
-          </div>
+                    <div className="space-y-0.5">
+                      <div className="text-xs font-bold text-ink flex items-center gap-2">
+                        {active ? (
+                          <ShieldCheck size={15} className="text-emerald-600" />
+                        ) : (
+                          <ShieldAlert size={15} className="text-amber-500" />
+                        )}
+                        <span>{p.label}</span>
+                        <Badge variant={active ? 'success' : 'neutral'} size="xs">
+                          {active ? 'Consent Active' : 'Withdrawn'}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-ink-muted">{p.description}</p>
+                    </div>
+
+                    <Button
+                      variant={active ? 'outline' : 'primary'}
+                      size="sm"
+                      onClick={() => handleConsentToggle(p.key, active)}
+                    >
+                      <span>{active ? 'Withdraw Consent' : 'Grant Consent'}</span>
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </Card>
     </div>

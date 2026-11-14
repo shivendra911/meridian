@@ -9,6 +9,7 @@ from database.connection import get_db
 from operations.superday import detect_conflicts, auto_resolve_conflicts
 from operations.errors import friendly
 from api.auth.permissions import perm
+from api.auth.queries import scoped_find
 
 
 class SuperdayConflictsView(APIView):
@@ -18,7 +19,7 @@ class SuperdayConflictsView(APIView):
     def get(self, request):
         db = get_db()
         conflicts = detect_conflicts(db)
-        interviews = list(db.interviews.find({}, {"_id": 0}).sort("scheduled_start", 1))
+        interviews = scoped_find("interviews", request.user, sort="scheduled_start", db=db)
 
         return Response({
             "clashes_count": len(conflicts),

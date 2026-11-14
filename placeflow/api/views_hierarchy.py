@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from database.connection import get_db
 from api.auth.permissions import perm, any_of
+from api.auth.queries import scoped_find, scoped_get
 
 
 class InstitutionalSummaryView(APIView):
@@ -161,7 +162,7 @@ class FacultyDetailView(APIView):
             return Response({"error": f"Faculty mentor '{fid}' not found"}, status=status.HTTP_404_NOT_FOUND)
 
         # Retrieve full student mentees
-        mentees = list(db.students.find({"mentor_id": fid}, {"_id": 0}).sort("name", 1))
+        mentees = scoped_find("students", request.user, extra={"mentor_id": fid}, sort="name", db=db)
 
         # Categorize actionable student groups
         pending_students = [s for s in mentees if s.get("survey_status") == "Pending"]
@@ -276,9 +277,11 @@ class UnifiedPersonProfileView(APIView):
         ident = identifier.strip()
 
         # 1. Search student
-        student = db.students.find_one(
+        student = scoped_get(
+            "students",
+            request.user,
             {"$or": [{"student_id": ident}, {"reg_no": ident}, {"email": ident}]},
-            {"_id": 0}
+            db=db,
         )
         if student:
             mentor = db.faculty.find_one({"faculty_id": student.get("mentor_id")}, {"_id": 0, "name": 1, "email": 1, "phone": 1, "designation": 1})

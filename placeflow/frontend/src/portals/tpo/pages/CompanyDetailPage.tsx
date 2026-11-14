@@ -141,7 +141,7 @@ export const CompanyDetailPage: React.FC = () => {
             icon={Briefcase}
             title="No placement drives posted by this partner"
             description="Create a Job Notification Form (JNF) drive for this partner to begin accepting applications."
-            actionLabel="Create Placement Drive"
+            actionLabel="New drive"
             onAction={() => navigate('/tpo/drives')}
           />
         ) : (

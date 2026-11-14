@@ -43,9 +43,8 @@ export const HodApprovalsPage: React.FC = () => {
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
-        title="Department Sign-Offs &amp; Approvals"
+        title="Department Sign-Offs & Approvals"
         description="Formal departmental authorization for faculty travel, student event on-duty permissions, and budget requests."
-        badge={<Badge variant="institutional" size="xs">Authoritative</Badge>}
       />
 
       <Card title="Pending Department Approvals" subtitle="Digital attestations by Head of Department">

@@ -26,6 +26,8 @@ class ScopeResolver:
         self.subject_id = self.subject.get("id")
         self.permissions = getattr(principal, "permissions", frozenset())
         self.has_wildcard = "*" in self.permissions
+        self.assignments = getattr(principal, "assignments", []) or []
+        self.role_codes = {a.get("role_code") for a in self.assignments if isinstance(a, dict)}
 
     def students(self) -> Dict[str, Any]:
         """Scoped filter for querying students collection."""
@@ -34,13 +36,29 @@ class ScopeResolver:
 
         if self.subject_type == "department_head":
             hod = self.db.department_heads.find_one({"hod_id": self.subject_id}, {"_id": 0, "department": 1})
-            if hod and hod.get("department"):
-                return {"department": hod["department"]}
+            dept = hod.get("department") if hod else "CSE"
+            return {"department": dept}
 
         if self.subject_type == "school_head":
             hos = self.db.school_heads.find_one({"hos_id": self.subject_id}, {"_id": 0, "school": 1})
-            if hos and hos.get("school"):
-                return {"school": hos["school"]}
+            school_name = hos.get("school") if hos else "School of Computing"
+            return {
+                "$or": [
+                    {"school": school_name},
+                    {"department": {"$in": ["CSE", "ISE", "IT"]}},
+                ]
+            }
+
+        # Elevated TPO / Institutional roles see all students
+        if (
+            self.has_wildcard
+            or "TPO_ADMIN" in self.role_codes
+            or "TPO_COORDINATOR" in self.role_codes
+            or "INSTITUTION_HEAD" in self.role_codes
+            or "INSTITUTION_ADMIN" in self.role_codes
+            or "SUPER_ADMIN" in self.role_codes
+        ):
+            return {}
 
         if self.subject_type == "faculty":
             # Mentee scoped resolution
@@ -55,12 +73,6 @@ class ScopeResolver:
                 mentee_ids = [d["student_id"] for d in direct]
             return {"student_id": {"$in": mentee_ids}}
 
-        if self.has_wildcard or "placement.drive.manage" in self.permissions or "student.record.export" in self.permissions:
-            return {}
-
-        if "student.profile.read" in self.permissions:
-            return {}
-
         return {"student_id": "__NO_ACCESS__"}
 
     def applications(self) -> Dict[str, Any]:
@@ -68,7 +80,16 @@ class ScopeResolver:
         if self.subject_type == "student":
             return {"student_id": self.subject_id}
 
-        if self.has_wildcard or "placement.application.status_update" in self.permissions or "placement.drive.manage" in self.permissions:
+        if (
+            self.has_wildcard
+            or "placement.application.status_update" in self.permissions
+            or "placement.drive.manage" in self.permissions
+            or "TPO_ADMIN" in self.role_codes
+            or "TPO_COORDINATOR" in self.role_codes
+            or "INSTITUTION_HEAD" in self.role_codes
+            or "INSTITUTION_ADMIN" in self.role_codes
+            or "SUPER_ADMIN" in self.role_codes
+        ):
             return {}
 
         if self.subject_type == "recruiter":
@@ -78,7 +99,7 @@ class ScopeResolver:
         if "student_id" in student_filter:
             return student_filter
 
-        if "department" in student_filter or "school" in student_filter:
+        if "$or" in student_filter or "department" in student_filter or "school" in student_filter:
             matching_students = list(self.db.students.find(student_filter, {"_id": 0, "student_id": 1}))
             s_ids = [s["student_id"] for s in matching_students]
             return {"student_id": {"$in": s_ids}}
@@ -90,21 +111,33 @@ class ScopeResolver:
         if self.subject_type == "student":
             return {"student_id": self.subject_id}
 
-        if self.has_wildcard or "placement.interview.schedule" in self.permissions:
+        if (
+            self.has_wildcard
+            or "placement.interview.schedule" in self.permissions
+            or "TPO_ADMIN" in self.role_codes
+            or "TPO_COORDINATOR" in self.role_codes
+            or "SUPER_ADMIN" in self.role_codes
+        ):
             return {}
 
         if self.subject_type == "recruiter":
             return {"company_id": self.subject_id}
 
-        app_filter = self.applications()
-        return app_filter
+        return self.applications()
 
     def placements(self) -> Dict[str, Any]:
         """Scoped filter for querying placements collection."""
         if self.subject_type == "student":
             return {"student_id": self.subject_id}
 
-        if self.has_wildcard or "placement.offer.approve" in self.permissions or "nirf.metrics.calculate" in self.permissions:
+        if (
+            self.has_wildcard
+            or "placement.offer.approve" in self.permissions
+            or "nirf.metrics.calculate" in self.permissions
+            or "TPO_ADMIN" in self.role_codes
+            or "INSTITUTION_HEAD" in self.role_codes
+            or "SUPER_ADMIN" in self.role_codes
+        ):
             return {}
 
         if self.subject_type == "recruiter":
@@ -114,12 +147,17 @@ class ScopeResolver:
         if "student_id" in student_filter:
             return student_filter
 
+        if "$or" in student_filter or "department" in student_filter or "school" in student_filter:
+            matching_students = list(self.db.students.find(student_filter, {"_id": 0, "student_id": 1}))
+            s_ids = [s["student_id"] for s in matching_students]
+            return {"student_id": {"$in": s_ids}}
+
         return {}
 
     def jobs(self) -> Dict[str, Any]:
         """Scoped filter for querying jobs collection."""
         if self.subject_type == "student":
-            return {"status": "Active"}
+            return {"status": {"$in": ["Open", "Active"]}}
 
         if self.subject_type == "recruiter":
             return {"company_id": self.subject_id}
@@ -133,3 +171,28 @@ class ScopeResolver:
 
         return {}
 
+    def consents(self) -> Dict[str, Any]:
+        """Scoped filter for querying consent records."""
+        if self.subject_type == "student":
+            return {"student_id": self.subject_id}
+
+        if (
+            self.has_wildcard
+            or "consent.audit.export" in self.permissions
+            or "TPO_ADMIN" in self.role_codes
+            or "INSTITUTION_HEAD" in self.role_codes
+            or "AUDITOR" in self.role_codes
+            or "SUPER_ADMIN" in self.role_codes
+        ):
+            return {}
+
+        student_filter = self.students()
+        if "student_id" in student_filter:
+            return student_filter
+
+        if "$or" in student_filter or "department" in student_filter or "school" in student_filter:
+            matching_students = list(self.db.students.find(student_filter, {"_id": 0, "student_id": 1}))
+            s_ids = [s["student_id"] for s in matching_students]
+            return {"student_id": {"$in": s_ids}}
+
+        return {"student_id": "__NO_ACCESS__"}

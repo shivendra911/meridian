@@ -737,7 +737,7 @@ When running in `DEBUG=True`, Meridian automatically seeds 13 deterministic demo
 | `admin` | `password123` | `INSTITUTION_ADMIN`| `INSTITUTION` | 29 | `/admin` |
 | `superadmin` | `password123` | `SUPER_ADMIN` | `GLOBAL` | 1 | `/admin` |
 | `auditor` | `password123` | `AUDITOR` | `INSTITUTION` | 6 | `/management` |
-| `recruiter` | `password123` | `RECRUITER_EXTERNAL`| `COMP001` (Accenture)| 5 | `/tpo` |
+| `recruiter` | `password123` | `RECRUITER_EXTERNAL`| `COMP001` (Accenture)| 5 | None (`portals: []`) |
 
 ---
 
@@ -747,6 +747,9 @@ When running in `DEBUG=True`, Meridian automatically seeds 13 deterministic demo
 - **Python**: 3.10+ (tested with Python 3.10 and 3.14)
 - **Node.js**: v18+ and `npm`
 - **MongoDB**: 7.0+ Replica Set (`rs0`) running on `localhost:27017`
+
+> [!NOTE]
+> **Do not install `pytest-django`**: It forces `DEBUG=False` across the test environment, which blocks `seed_demo_accounts.py` from executing demo setups safely. The project uses standard `pytest` configured in `placeflow/pytest.ini`.
 
 ### 1. Start MongoDB 7.0 Replica Set
 ```powershell
@@ -763,12 +766,16 @@ cd placeflow
 
 # Install requirements
 pip install -r requirements.txt
+pip install -r requirements-dev.txt
+pip install -r requirements-ml.txt
 
-# Seed Database Schemas & Demo Accounts
-$env:PYTHONPATH="."
+# 1. Initialize Collections, JSONSchemas & Indexes
+python setup_database.py
+
+# 2. Seed Authoritative Demo Accounts & Roles
 python scripts/seed_demo_accounts.py
 
-# Launch Django REST Framework Backend
+# 3. Launch Django REST Framework Backend
 python manage.py runserver 127.0.0.1:8000
 ```
 *Backend active at `http://127.0.0.1:8000/api/`*
@@ -794,26 +801,21 @@ Meridian enforces 100% test passing before any commit:
 ```powershell
 # 1. Architecture Boundaries (Zero cross-portal imports)
 cd placeflow/frontend
-node scripts/check-boundaries.mjs
-# Output: Boundaries OK
+npm run lint
+# Output: Boundaries OK (0 errors, 0 warnings)
 
-# 2. Frontend Production Build
+# 2. Frontend Production Build & Typecheck
 npm run build
 # Output: tsc -b && vite build (0 errors)
 
 # 3. Frontend Unit Tests (Vitest)
-npm test -- --run
-# Output: 5 passed (28 tests)
+npx vitest run
+# Output: 8 passed (50 tests)
 
 # 4. Backend Automated Test Suite (Pytest)
 cd ..
-$env:PYTHONPATH="placeflow"
-placeflow\.venv\Scripts\python.exe -m pytest -q
-# Output: 203 passed in 97s
-
-# 5. Full Live Endpoint Verification (83 Endpoints across all roles)
-& placeflow\.venv\Scripts\python.exe scripts/verify_all_endpoints.py
-# Output: 83 passed, 0 failed (100%)
+placeflow\.venv\Scripts\python.exe -m pytest placeflow/tests
+# Output: 213 passed (100%)
 ```
 
 ---
