@@ -7,31 +7,23 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  User,
-  Shield,
   ShieldCheck,
   ShieldAlert,
   Save,
   Plus,
   X,
   Sparkles,
-  Lock,
-  Mail,
-  Phone,
-  BookOpen,
   TrendingUp,
   CheckCircle2,
-  AlertCircle,
-} from 'lucide-react';
+  AlertCircle} from 'lucide-react';
 import { toast } from 'sonner';
 import {
   studentApi,
   StudentProfile,
   StudentConsent,
   PlacementReadiness,
-  SkillRecommendations,
-} from '../api';
-import { PageHeader, StatCard, Card, Badge, Button, Skeleton } from '../../../ui';
+  SkillRecommendations} from '../api';
+import { PageHeader, Card, Badge, Button, Skeleton } from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
 
 const CONSENT_PURPOSES = [
@@ -180,7 +172,14 @@ export const StudentProfilePage: React.FC = () => {
   }
 
   const isConsentActive = (purpose: string) => {
-    return consents.some((c) => c.purpose === purpose && c.status === 'Active');
+    return consents.some(
+      (c) =>
+        c.purpose === purpose &&
+        (c.status === 'Active' ||
+          c.status === 'ACTIVE' ||
+          c.status === 'GRANTED_BY_DEFAULT' ||
+          c.status === 'GRANTED')
+    );
   };
 
   return (
@@ -195,34 +194,34 @@ export const StudentProfilePage: React.FC = () => {
       <Card title="Student Dossier" subtitle="SIS Attested Academic Identity">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
           <div className="p-3 rounded-lg border border-line bg-canvas">
-            <span className="text-ink-muted text-[11px] block">Full Name</span>
+            <span className="text-ink-muted text-xs block">Full Name</span>
             <span className="text-ink font-semibold text-sm">{profile?.name}</span>
           </div>
 
           <div className="p-3 rounded-lg border border-line bg-canvas">
-            <span className="text-ink-muted text-[11px] block">University Roll Number</span>
+            <span className="text-ink-muted text-xs block">University Roll Number</span>
             <span className="text-brand font-mono font-bold text-sm">{profile?.student_id}</span>
           </div>
 
           <div className="p-3 rounded-lg border border-line bg-canvas">
-            <span className="text-ink-muted text-[11px] block">Institutional Email</span>
+            <span className="text-ink-muted text-xs block">Institutional Email</span>
             <span className="text-ink font-medium">{profile?.email}</span>
           </div>
 
           <div className="p-3 rounded-lg border border-line bg-canvas">
-            <span className="text-ink-muted text-[11px] block">Academic Discipline</span>
+            <span className="text-ink-muted text-xs block">Academic Discipline</span>
             <span className="text-ink font-semibold">{profile?.department}</span>
           </div>
 
           <div className="p-3 rounded-lg border border-line bg-canvas">
-            <span className="text-ink-muted text-[11px] block">Placement Status</span>
+            <span className="text-ink-muted text-xs block">Placement Status</span>
             <Badge variant="success" size="xs">
               {profile?.placement_status || 'Eligible'}
             </Badge>
           </div>
 
           <div className="p-3 rounded-lg border border-line bg-canvas">
-            <span className="text-ink-muted text-[11px] block">Entitled Tier</span>
+            <span className="text-ink-muted text-xs block">Entitled Tier</span>
             <span className="font-mono font-semibold text-brand">
               {profile?.tier_entitlement || 'All Institutional Tiers'}
             </span>
@@ -249,11 +248,11 @@ export const StudentProfilePage: React.FC = () => {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="p-3 bg-canvas border border-line rounded-xl">
-                <div className="text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-1">
+                <div className="text-xs font-bold text-ink-muted uppercase tracking-wider mb-1">
                   Readiness Score
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold font-serif text-brand">
+                  <span className="text-2xl font-bold  text-brand">
                     {readiness.placement_probability ?? 0}%
                   </span>
                   <Badge
@@ -271,11 +270,11 @@ export const StudentProfilePage: React.FC = () => {
               </div>
 
               <div className="p-3 bg-canvas border border-line rounded-xl">
-                <div className="text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-1">
+                <div className="text-xs font-bold text-ink-muted uppercase tracking-wider mb-1">
                   Indicative Package
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-bold font-serif text-ink">
+                  <span className="text-2xl font-bold  text-ink">
                     ₹{readiness.expected_package_lpa ?? '--'} <span className="text-xs font-sans font-normal text-ink-muted">LPA</span>
                   </span>
                   <Badge variant="ai">80% Interval</Badge>
@@ -283,13 +282,13 @@ export const StudentProfilePage: React.FC = () => {
               </div>
 
               <div className="p-3 bg-canvas border border-line rounded-xl">
-                <div className="text-[10px] font-bold text-ink-muted uppercase tracking-wider mb-1">
+                <div className="text-xs font-bold text-ink-muted uppercase tracking-wider mb-1">
                   Model Governance
                 </div>
                 <div className="text-xs text-ink font-mono font-medium">
                   {readiness.model_version ? `v${readiness.model_version}` : 'v2.0.0'} &bull; Tier-B
                 </div>
-                <div className="text-[10px] text-ink-muted mt-1">
+                <div className="text-xs text-ink-muted mt-1">
                   Human coordinators make final selections
                 </div>
               </div>
@@ -298,7 +297,7 @@ export const StudentProfilePage: React.FC = () => {
             {/* Explainability Drivers */}
             {readiness.drivers && readiness.drivers.length > 0 && (
               <div className="pt-2">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-ink-muted mb-2 flex items-center gap-1.5">
+                <div className="text-xs font-bold uppercase tracking-wider text-ink-muted mb-2 flex items-center gap-1.5">
                   <TrendingUp size={13} className="text-brand" />
                   <span>Directional Explainability Factors</span>
                 </div>
@@ -328,12 +327,12 @@ export const StudentProfilePage: React.FC = () => {
             {/* Market-Recommended Skills */}
             {skillRecs && skillRecs.recommendations && skillRecs.recommendations.length > 0 && (
               <div className="pt-2 border-t border-line">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-ink-muted mb-2 flex items-center justify-between">
+                <div className="text-xs font-bold uppercase tracking-wider text-ink-muted mb-2 flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
                     <Sparkles size={13} className="text-amber-500" />
                     <span>In-Demand Skills for Your Target Roles</span>
                   </span>
-                  <span className="text-[10px] text-ink-muted font-normal lowercase">
+                  <span className="text-xs text-ink-muted font-normal lowercase">
                     {skillRecs.market_demand_basis || 'active drives catalog'}
                   </span>
                 </div>
@@ -440,7 +439,7 @@ export const StudentProfilePage: React.FC = () => {
                 <Sparkles size={14} className="text-amber-500" />
                 <span>Automated AI Decisioning &amp; Ranking Opt-Out</span>
               </div>
-              <p className="text-[11px] text-ink-muted max-w-xl">
+              <p className="text-xs text-ink-muted max-w-xl">
                 When enabled, your profile will be evaluated solely against deterministic rule cutoffs (CGPA, branch),
                 and all neural predictive scoring models will be bypassed.
               </p>
@@ -485,7 +484,7 @@ export const StudentProfilePage: React.FC = () => {
                         {active ? 'Consent Active' : 'Withdrawn'}
                       </Badge>
                     </div>
-                    <p className="text-[11px] text-ink-muted">{p.description}</p>
+                    <p className="text-xs text-ink-muted">{p.description}</p>
                   </div>
 
                   <Button

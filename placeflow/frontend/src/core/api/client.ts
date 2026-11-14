@@ -11,7 +11,7 @@
 
 import { ApiError } from './errors';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -103,7 +103,8 @@ class ApiClient {
 
     // Build URL with query params
     const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    const url = new URL(`${API_BASE}${cleanEndpoint}`);
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://127.0.0.1:5173';
+    const url = new URL(`${API_BASE}${cleanEndpoint}`, baseUrl);
     if (options.params) {
       Object.entries(options.params).forEach(([key, val]) => {
         if (val !== undefined && val !== null) {

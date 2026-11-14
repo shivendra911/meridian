@@ -13,7 +13,7 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
   const [loading, setLoading] = useState(true);
   const [computing, setComputing] = useState(false);
   const [result, setResult] = useState<WhatIfResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   // Form parameters
   const [targetCgpa, setTargetCgpa] = useState<number>(8.5);
@@ -78,10 +78,10 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
       {/* Header */}
       <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex items-start justify-between">
         <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
+          <div className="text-xs font-bold tracking-widest uppercase text-slate-500 mb-1">
             SECTION 9 &bull; ML-23 ADVISORY EXPLAINABILITY &amp; ML-07 CONFORMAL BANDS
           </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
+          <h1 className="text-xl font-bold  text-slate-900 m-0">
             What-If Career Simulator &amp; Competency Estimator
           </h1>
           <p className="text-xs text-slate-600 mt-1 max-w-2xl">
@@ -107,11 +107,11 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Controls Panel */}
           <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle h-fit">
-            <h2 className="text-sm font-bold font-serif text-slate-900 mb-1 flex items-center gap-2">
+            <h2 className="text-sm font-bold  text-slate-900 mb-1 flex items-center gap-2">
               <Sliders size={14} className="text-cardinal" />
               <span>Adjust Hypothetical Parameters</span>
             </h2>
-            <div className="text-[11px] text-slate-500 mb-4">
+            <div className="text-xs text-slate-500 mb-4">
               Test how profile modifications shift placement odds and unlock recruiters.
             </div>
 
@@ -190,25 +190,25 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
               {/* Likelihood Shift Cards */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white border border-slate-200 rounded p-4 shadow-subtle">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase">
+                  <div className="text-xs font-semibold text-slate-500 uppercase">
                     Baseline Likelihood
                   </div>
                   <div className="text-2xl font-bold font-mono text-slate-700 mt-1">
                     {result.baseline.placement_probability}%
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-1">
+                  <div className="text-xs text-slate-500 mt-1">
                     Risk Band: <span className="font-semibold text-slate-700">{result.baseline.risk_level}</span>
                   </div>
                 </div>
 
                 <div className="bg-white border border-emerald-300 border-t-3 border-t-emerald-600 rounded p-4 shadow-subtle">
-                  <div className="text-[11px] font-semibold text-emerald-800 uppercase">
+                  <div className="text-xs font-semibold text-emerald-800 uppercase">
                     Simulated Likelihood
                   </div>
                   <div className="text-2xl font-bold font-mono text-emerald-700 mt-1">
                     {result.simulated.placement_probability}%
                   </div>
-                  <div className="text-[11px] text-emerald-700 mt-1 font-semibold">
+                  <div className="text-xs text-emerald-700 mt-1 font-semibold">
                     Shift:{' '}
                     <span className="font-mono">
                       {result.simulated.placement_probability >= result.baseline.placement_probability ? '+' : ''}
@@ -222,10 +222,10 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
               <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <h3 className="text-sm font-bold font-serif text-slate-900 m-0">
+                    <h3 className="text-sm font-bold  text-slate-900 m-0">
                       Conformal Package Band Estimate (ML-07)
                     </h3>
-                    <div className="text-[11px] text-slate-500">
+                    <div className="text-xs text-slate-500">
                       Quantile gradient boosting with 80% coverage intervals
                     </div>
                   </div>
@@ -236,19 +236,19 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
 
                 <div className="grid grid-cols-3 gap-3 text-center bg-slate-50 p-4 rounded border border-slate-200">
                   <div>
-                    <div className="text-[10px] uppercase font-semibold text-slate-500">Lower Bound (80%)</div>
+                    <div className="text-xs uppercase font-semibold text-slate-500">Lower Bound (80%)</div>
                     <div className="text-lg font-bold font-mono text-slate-800 mt-1">
                       ₹{result.simulated.package_band_80.lower_bound_lpa} LPA
                     </div>
                   </div>
                   <div className="border-x border-slate-200">
-                    <div className="text-[10px] uppercase font-semibold text-cardinal">Median Expected CTC</div>
+                    <div className="text-xs uppercase font-semibold text-cardinal">Median Expected CTC</div>
                     <div className="text-xl font-bold font-mono text-cardinal mt-1">
                       ₹{result.simulated.package_band_80.median_lpa} LPA
                     </div>
                   </div>
                   <div>
-                    <div className="text-[10px] uppercase font-semibold text-emerald-700">Upper Bound (80%)</div>
+                    <div className="text-xs uppercase font-semibold text-emerald-700">Upper Bound (80%)</div>
                     <div className="text-lg font-bold font-mono text-emerald-700 mt-1">
                       ₹{result.simulated.package_band_80.upper_bound_lpa} LPA
                     </div>
@@ -258,10 +258,10 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
 
               {/* Plain-Language Explanations (ML-23 / FR-ML-004) */}
               <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle">
-                <h3 className="text-sm font-bold font-serif text-slate-900 mb-1">
+                <h3 className="text-sm font-bold  text-slate-900 mb-1">
                   Actionable Career Recommendations
                 </h3>
-                <div className="text-[11px] text-slate-500 mb-3">
+                <div className="text-xs text-slate-500 mb-3">
                   Plain-language explainability without verdicts ("people first" AI governance)
                 </div>
 

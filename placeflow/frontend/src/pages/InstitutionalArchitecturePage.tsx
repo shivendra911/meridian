@@ -5,24 +5,20 @@ import {
   PlatformInstitution,
   Campus,
   OrganizationalTreeNode,
-  ReadinessReport,
-} from '../types';
+  ReadinessReport} from '../types';
 import {
-  Building,
   GitFork,
   MapPin,
   CheckCircle2,
   XCircle,
   Activity,
   Layers,
-  ArrowRight,
   ShieldCheck,
   Zap,
   Search,
   Sliders,
   Globe,
-  ExternalLink,
-} from 'lucide-react';
+  ExternalLink} from 'lucide-react';
 import { InstitutionalOnboardingBuilder } from '../components/institutional/InstitutionalOnboardingBuilder';
 
 interface DirectoryResult {
@@ -196,7 +192,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
         <div className="flex items-center gap-2.5">
           <span className="font-semibold text-slate-800 text-xs font-mono">{node.unit_code}</span>
           <span className="text-slate-900 font-medium text-xs">{node.name}</span>
-          <span className={`text-[10px] px-2 py-0.5 rounded border ${typeColors[node.unit_type] || 'bg-slate-100 text-slate-700'}`}>
+          <span className={`text-xs px-2 py-0.5 rounded border ${typeColors[node.unit_type] || 'bg-slate-100 text-slate-700'}`}>
             {node.unit_type}
           </span>
         </div>
@@ -209,7 +205,6 @@ export const InstitutionalArchitecturePage: React.FC = () => {
     );
   };
 
-  const selectedTenant = tenants.find((t) => t.id === selectedTenantId);
   const selectedInst = institutions.find((i) => i.institution_id === selectedInstId);
 
   if (loading) {
@@ -226,10 +221,10 @@ export const InstitutionalArchitecturePage: React.FC = () => {
       {/* Directorate Header */}
       <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
+          <div className="text-xs font-bold tracking-widest uppercase text-slate-500 mb-1">
             CAMP-01 &bull; TENANT &amp; INSTITUTION ARCHITECTURE FOUNDATION
           </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
+          <h1 className="text-xl font-bold  text-slate-900 m-0">
             Institutional Topology &amp; Governance Directorate
           </h1>
           <p className="text-xs text-slate-600 mt-1 max-w-2xl">
@@ -240,7 +235,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
         {/* Workspace Switcher */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <div className="bg-slate-50 border border-slate-300 rounded p-2 text-xs">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Active Tenant Boundary</span>
+            <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Active Tenant Boundary</span>
             <select
               value={selectedTenantId}
               onChange={(e) => setSelectedTenantId(e.target.value)}
@@ -255,7 +250,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
           </div>
 
           <div className="bg-slate-50 border border-slate-300 rounded p-2 text-xs">
-            <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Active Institution</span>
+            <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Active Institution</span>
             <select
               value={selectedInstId}
               onChange={(e) => setSelectedInstId(e.target.value)}
@@ -275,7 +270,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
       {selectedInst && (
         <div className="bg-slate-900 text-white rounded p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded bg-cardinal text-white flex items-center justify-center font-serif font-bold text-lg border border-red-700">
+            <div className="w-10 h-10 rounded bg-cardinal text-white flex items-center justify-center  font-bold text-lg border border-red-700">
               {selectedInst.institution_code.slice(0, 2)}
             </div>
             <div>
@@ -381,14 +376,14 @@ export const InstitutionalArchitecturePage: React.FC = () => {
         <div className="bg-white border border-slate-200 rounded p-6 shadow-subtle space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 font-serif m-0">
+              <h3 className="text-sm font-bold text-slate-900  m-0">
                 Institutional Containment Tree (Acyclic Graph)
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
                 Structural containment relationships resolved via MongoDB $graphLookup with runtime cycle detection.
               </p>
             </div>
-            <span className="text-[11px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+            <span className="text-xs font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
               ADR-C01-012 Acyclic Invariant Guaranteed
             </span>
           </div>
@@ -413,12 +408,12 @@ export const InstitutionalArchitecturePage: React.FC = () => {
               <div key={c.campus_id} className="bg-white border border-slate-200 rounded p-5 shadow-xs">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                    <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
                       {c.campus_code}
                     </span>
                     <h4 className="text-sm font-bold text-slate-900 m-0">{c.campus_name}</h4>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold border border-blue-200">
+                  <span className="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold border border-blue-200">
                     {c.campus_kind}
                   </span>
                 </div>
@@ -437,7 +432,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
         <div className="bg-white border border-slate-200 rounded p-6 shadow-subtle space-y-6">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 font-serif m-0">
+              <h3 className="text-sm font-bold text-slate-900  m-0">
                 12-Point Institutional Readiness Evaluation Gate
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -472,7 +467,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
                   )}
                   <span className="font-medium">{item.criterion}</span>
                 </div>
-                <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${
+                <span className={`text-xs font-bold uppercase px-1.5 py-0.5 rounded ${
                   item.passed ? 'bg-emerald-200 text-emerald-900' : 'bg-red-200 text-red-900'
                 }`}>
                   {item.passed ? 'PASS' : 'REQUIRED'}
@@ -488,14 +483,14 @@ export const InstitutionalArchitecturePage: React.FC = () => {
         <div className="bg-white border border-slate-200 rounded p-6 shadow-subtle space-y-6">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 font-serif m-0">
+              <h3 className="text-sm font-bold text-slate-900  m-0">
                 Verified Public Institutional Directory (AISHE Registry)
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
                 Section 3 &amp; ADR-C01-003: Public directory identities maintained separately from customer tenant workspaces.
               </p>
             </div>
-            <span className="text-[11px] font-mono text-blue-800 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
+            <span className="text-xs font-mono text-blue-800 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
               Ministry of Education Verified
             </span>
           </div>
@@ -537,7 +532,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-xs font-bold text-cardinal">{entry.aishe_code}</span>
                       {entry.is_verified && (
-                        <span className="text-[9px] bg-emerald-100 text-emerald-800 font-semibold px-1.5 py-0.2 rounded border border-emerald-300">
+                        <span className="text-xs bg-emerald-100 text-emerald-800 font-semibold px-1.5 py-0.2 rounded border border-emerald-300">
                           VERIFIED
                         </span>
                       )}
@@ -572,7 +567,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
         <div className="bg-white border border-slate-200 rounded p-6 shadow-subtle space-y-6">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 font-serif m-0">
+              <h3 className="text-sm font-bold text-slate-900  m-0">
                 4-Tier Hierarchical Configuration Resolution
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -590,24 +585,24 @@ export const InstitutionalArchitecturePage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
             <div className="p-3 bg-slate-50 rounded border border-slate-200">
-              <div className="text-[10px] uppercase font-bold text-slate-400">Level 1</div>
+              <div className="text-xs uppercase font-bold text-slate-400">Level 1</div>
               <div className="font-semibold text-slate-900 mt-0.5">Platform Defaults</div>
-              <div className="text-[11px] text-slate-500 mt-1">Global statutory baselines &amp; system constraints</div>
+              <div className="text-xs text-slate-500 mt-1">Global statutory baselines &amp; system constraints</div>
             </div>
             <div className="p-3 bg-slate-50 rounded border border-slate-200">
-              <div className="text-[10px] uppercase font-bold text-slate-400">Level 2</div>
+              <div className="text-xs uppercase font-bold text-slate-400">Level 2</div>
               <div className="font-semibold text-slate-900 mt-0.5">Tenant Overrides</div>
-              <div className="text-[11px] text-slate-500 mt-1">Customer-level governance &amp; billing rules</div>
+              <div className="text-xs text-slate-500 mt-1">Customer-level governance &amp; billing rules</div>
             </div>
             <div className="p-3 bg-blue-50 rounded border border-blue-200">
-              <div className="text-[10px] uppercase font-bold text-blue-600">Level 3</div>
+              <div className="text-xs uppercase font-bold text-blue-600">Level 3</div>
               <div className="font-semibold text-blue-900 mt-0.5">Institution Profile</div>
-              <div className="text-[11px] text-blue-700 mt-1">Academic calendar, time zones &amp; branding</div>
+              <div className="text-xs text-blue-700 mt-1">Academic calendar, time zones &amp; branding</div>
             </div>
             <div className="p-3 bg-slate-50 rounded border border-slate-200">
-              <div className="text-[10px] uppercase font-bold text-slate-400">Level 4</div>
+              <div className="text-xs uppercase font-bold text-slate-400">Level 4</div>
               <div className="font-semibold text-slate-900 mt-0.5">Campus Specifics</div>
-              <div className="text-[11px] text-slate-500 mt-1">Physical site operating hours &amp; geo-fencing</div>
+              <div className="text-xs text-slate-500 mt-1">Physical site operating hours &amp; geo-fencing</div>
             </div>
           </div>
 
@@ -625,7 +620,7 @@ export const InstitutionalArchitecturePage: React.FC = () => {
         <div className="bg-white border border-slate-200 rounded p-6 shadow-subtle space-y-6">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div>
-              <h3 className="text-sm font-bold text-slate-900 font-serif m-0">
+              <h3 className="text-sm font-bold text-slate-900  m-0">
                 10-Step Institutional Onboarding Pipeline
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
@@ -660,9 +655,9 @@ export const InstitutionalArchitecturePage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
                 {onboardResult.pipeline_log.map((step) => (
                   <div key={step.step} className="p-3 rounded bg-slate-50 border border-slate-200 text-xs">
-                    <div className="text-[10px] font-bold text-slate-400">STEP {step.step}</div>
+                    <div className="text-xs font-bold text-slate-400">STEP {step.step}</div>
                     <div className="font-semibold text-slate-800 mt-0.5">{step.title}</div>
-                    <div className="mt-2 flex items-center gap-1 text-[11px] text-emerald-700 font-bold">
+                    <div className="mt-2 flex items-center gap-1 text-xs text-emerald-700 font-bold">
                       <CheckCircle2 size={12} />
                       <span>{step.status}</span>
                     </div>

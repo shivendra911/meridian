@@ -12,16 +12,11 @@ import {
   Key,
   Layers,
   Network,
-  Cpu,
   ArrowRight,
-  CheckCircle2,
-  AlertCircle,
-  Activity,
   Server,
-  UserCheck,
-} from 'lucide-react';
+  UserCheck} from 'lucide-react';
 import { useAuth } from '../../../core/auth/useAuth';
-import { PageHeader, StatCard, Card, Badge, Button, TaskCard, useDocumentTitle } from '../../../ui';
+import { PageHeader, StatCard, Badge, Button, TaskCard, useDocumentTitle } from '../../../ui';
 
 export const AdminHomePage: React.FC = () => {
   useDocumentTitle('System Administration');

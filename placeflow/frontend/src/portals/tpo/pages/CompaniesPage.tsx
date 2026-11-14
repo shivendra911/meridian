@@ -4,9 +4,7 @@ import { api } from '../api';
 import { Company } from '../../../types';
 import { Building2, PlusCircle, ArrowRight, LayoutGrid, List } from 'lucide-react';
 import { PageHeader } from '../../../components/ui/PageHeader';
-import { StatCard } from '../../../components/ui/StatCard';
 import { Button } from '../../../components/ui/Button';
-import { Badge } from '../../../components/ui/Badge';
 import { Modal } from '../../../components/ui/Modal';
 import { toast } from 'sonner';
 import { Skeleton } from '../../../components/ui/Skeleton';
@@ -65,13 +63,21 @@ export const CompaniesPage: React.FC = () => {
   };
 
   const industriesCount = new Set(companies.map((c) => c.industry)).size;
+  const superDreamCount = companies.filter((c) => c.tier === 'Super Dream').length;
 
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
         title="Corporate Partners"
-        description="Master registry of verified corporate recruiters and enterprise partners."
-        badge={<Badge variant="institutional" size="xs">Authoritative Directory</Badge>}
+        description={
+          <span className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
+            <span className="font-medium text-ink">{companies.length} partners</span>
+            <span>·</span>
+            <span>{superDreamCount} Super Dream</span>
+            <span>·</span>
+            <span>{industriesCount} industry sectors</span>
+          </span>
+        }
         actions={
           <div className="flex items-center gap-2">
             <div className="flex items-center bg-canvas p-1 rounded-lg border border-line">
@@ -109,34 +115,6 @@ export const CompaniesPage: React.FC = () => {
         }
       />
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Total Corporate Partners"
-          value={companies.length}
-          hint="Active recruiting accounts"
-          icon={Building2}
-        />
-        <StatCard
-          label="Industry Sectors"
-          value={industriesCount}
-          hint="Domains represented"
-          icon={Building2}
-        />
-        <StatCard
-          label="Super Dream Recruiters"
-          value={companies.filter((c) => c.tier === 'Super Dream').length}
-          hint=">10 LPA packages"
-          icon={Building2}
-        />
-        <StatCard
-          label="Placement Charter"
-          value="v3 Approved"
-          hint="Standard MoU Enforced"
-          icon={Building2}
-        />
-      </div>
-
       {loading ? (
         <div className="rounded-lg border border-line bg-surface p-6 space-y-3">
           <Skeleton className="h-6 w-1/4" />
@@ -172,7 +150,7 @@ export const CompaniesPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10 sticky top-0">
+                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-xs h-10 sticky top-0">
                   <th className="py-2 px-4 font-medium">Company ID</th>
                   <th className="py-2 px-4 font-medium">Organization Name</th>
                   <th className="py-2 px-4 font-medium">Sector</th>

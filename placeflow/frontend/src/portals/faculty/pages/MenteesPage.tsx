@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { Users, Search, AlertCircle, CheckCircle2, MessageSquare, ArrowRight } from 'lucide-react';
+import { Users, AlertCircle, CheckCircle2, MessageSquare} from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader, StatCard, Card, Badge, Button, PersonChip, useDocumentTitle } from '../../../ui';
 
@@ -21,17 +21,17 @@ interface Mentee {
 }
 
 const DEMO_MENTEES: Mentee[] = [
-  { id: 'STU001', name: 'Aarav Sharma', dept: 'CSE', cgpa: 8.65, attendance: 89.4, backlogs: 0, placementStatus: 'Placed (Super Dream)', riskLevel: 'Low' },
-  { id: 'STU002', name: 'Diya Patel', dept: 'CSE', cgpa: 8.92, attendance: 92.1, backlogs: 0, placementStatus: 'Interview Scheduled', riskLevel: 'Low' },
-  { id: 'STU014', name: 'Rohan Verma', dept: 'CSE', cgpa: 6.40, attendance: 68.2, backlogs: 1, placementStatus: 'Eligible (Regular)', riskLevel: 'High' },
-  { id: 'STU029', name: 'Priya Nair', dept: 'CSE', cgpa: 7.45, attendance: 78.5, backlogs: 0, placementStatus: 'Applied (2 drives)', riskLevel: 'Moderate' },
-  { id: 'STU045', name: 'Karan Mehta', dept: 'CSE', cgpa: 7.10, attendance: 81.0, backlogs: 0, placementStatus: 'Eligible', riskLevel: 'Low' },
+  { id: '2023CSB001', name: 'Aarav Sharma', dept: 'CSE', cgpa: 8.65, attendance: 89.4, backlogs: 0, placementStatus: 'Placed (Super Dream)', riskLevel: 'Low' },
+  { id: '2023CSB002', name: 'Diya Patel', dept: 'CSE', cgpa: 8.92, attendance: 92.1, backlogs: 0, placementStatus: 'Interview Scheduled', riskLevel: 'Low' },
+  { id: '2023CSB014', name: 'Rohan Verma', dept: 'CSE', cgpa: 6.40, attendance: 68.2, backlogs: 1, placementStatus: 'Eligible (Regular)', riskLevel: 'High' },
+  { id: '2023CSB029', name: 'Priya Nair', dept: 'CSE', cgpa: 7.45, attendance: 78.5, backlogs: 0, placementStatus: 'Applied (2 drives)', riskLevel: 'Moderate' },
+  { id: '2023CSB045', name: 'Karan Mehta', dept: 'CSE', cgpa: 7.10, attendance: 81.0, backlogs: 0, placementStatus: 'Eligible', riskLevel: 'Low' },
 ];
 
 export const FacultyMenteesPage: React.FC = () => {
   useDocumentTitle('Student Mentorship Roster');
   const [search, setSearch] = useState('');
-  const [mentees, setMentees] = useState<Mentee[]>(DEMO_MENTEES);
+  const [mentees, _setMentees] = useState<Mentee[]>(DEMO_MENTEES);
 
   const filtered = mentees.filter((m) =>
     m.name.toLowerCase().includes(search.toLowerCase()) || m.id.toLowerCase().includes(search.toLowerCase())
@@ -67,7 +67,7 @@ export const FacultyMenteesPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-[11px] h-10">
+              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-xs h-10">
                 <th className="py-2.5 px-4 font-semibold">Roll Number</th>
                 <th className="py-2.5 px-4 font-semibold">Candidate Name</th>
                 <th className="py-2.5 px-4 font-semibold">CGPA</th>

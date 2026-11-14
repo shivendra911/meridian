@@ -1,14 +1,38 @@
 /**
- * PlaceFlow / Meridian — HOD Portal API Layer (Phase 6).
+ * PlaceFlow / Meridian — HOD Portal API Layer.
+ * Validates network responses at the edge with Zod schemas.
+ * Throws ApiError('BadResponse') on validation failure.
  */
 
 import { client } from '../../core/api/client';
+import { parseEdge, z } from '../../core/api/parseEdge';
 
 export const hodApi = {
-  getInstitutionalSummary: () => client.get<any>('/hod/summary/'),
-  getStudents: () => client.get<{ count: number; students: any[] }>('/hod/students/'),
-  getStudent: (id: string) => client.get<any>(`/hod/students/${id}/`),
-  getFaculty: () => client.get<{ count: number; faculty: any[] }>('/hod/faculty/'),
+  getInstitutionalSummary: async (): Promise<Record<string, any>> => {
+    const raw = await client.get<unknown>('/hod/summary/');
+    return parseEdge(z.record(z.string(), z.any()), raw);
+  },
+
+  getStudents: async (): Promise<{ count: number; students: any[] }> => {
+    const raw = await client.get<unknown>('/hod/students/');
+    return parseEdge(z.object({
+      count: z.number().default(0),
+      students: z.array(z.any()).default([]),
+    }), raw);
+  },
+
+  getStudent: async (id: string): Promise<Record<string, any>> => {
+    const raw = await client.get<unknown>(`/hod/students/${id}/`);
+    return parseEdge(z.record(z.string(), z.any()), raw);
+  },
+
+  getFaculty: async (): Promise<{ count: number; faculty: any[] }> => {
+    const raw = await client.get<unknown>('/hod/faculty/');
+    return parseEdge(z.object({
+      count: z.number().default(0),
+      faculty: z.array(z.any()).default([]),
+    }), raw);
+  },
 };
 
 export const api = hodApi;

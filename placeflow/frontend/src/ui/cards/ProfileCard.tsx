@@ -1,8 +1,9 @@
 import React from 'react';
-import { ShieldCheck, User, ExternalLink, Lock } from 'lucide-react';
+import { ShieldCheck, ExternalLink, Lock } from 'lucide-react';
 import { Avatar } from './Avatar';
 import { EntityCard } from './EntityCard';
 import { ProfileCardSkeleton } from './CardSkeleton';
+import { formatRoleLabel } from '../format';
 
 export interface ProfileCardData {
   person_id?: string;
@@ -87,20 +88,20 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
               data.roles.map((r) => (
                 <span
                   key={r}
-                  className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-700"
+                  className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-700"
                 >
-                  {r}
+                  {formatRoleLabel(r)}
                 </span>
               ))
             ) : (
-              <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-700">
+              <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-700">
                 Member
               </span>
             )}
 
             {data.is_verified !== false && (
               <span
-                className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200"
+                className="inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200"
                 title="Official records verified by institution authority"
               >
                 <ShieldCheck size={11} className="shrink-0 text-emerald-600" />
@@ -132,7 +133,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
         {hiddenFields.length > 0 && (
           <div
             data-testid="profile-card-masked-chip"
-            className="mt-2 flex items-center gap-1.5 rounded bg-slate-50 border border-slate-200 px-2.5 py-1 text-[11px] text-ink-muted"
+            className="mt-2 flex items-center gap-1.5 rounded bg-slate-50 border border-slate-200 px-2.5 py-1 text-xs text-ink-muted"
           >
             <Lock size={12} className="text-slate-500 shrink-0" />
             <span className="truncate">

@@ -6,13 +6,11 @@ import {
   AlertCircle,
   ArrowRight,
   Sparkles,
-  Shield,
   Briefcase,
   GraduationCap,
-  Users,
-} from 'lucide-react';
+  Users} from 'lucide-react';
 import { useAuth } from './useAuth';
-import { formatApiError } from '../api/errors';
+import { Logo } from '../../ui/Logo';
 
 const DEMO_ACCOUNTS = [
   { username: 'student', label: 'Student', name: 'Aarav Sharma', role: 'STUDENT_MEMBER', portal: 'student' },
@@ -71,7 +69,7 @@ export const LoginPage: React.FC = () => {
         const targetPortal = authUser.default_portal || (authUser.portals && authUser.portals[0]) || 'student';
         navigate(`/${targetPortal}/home`, { replace: true });
       }
-    } catch (err: any) {
+    } catch {
       // Standardized generic credentials message
       setErrorMsg('Invalid username or password.');
     } finally {
@@ -95,12 +93,12 @@ export const LoginPage: React.FC = () => {
 
         {/* Brand Header */}
         <div className="relative z-10 flex items-center gap-3">
-          <Link to="/" className="w-10 h-10 rounded-xl bg-white text-brand flex items-center justify-center font-bold text-lg shadow-lg">
-            M
+          <Link to="/">
+            <Logo size="lg" />
           </Link>
           <div>
             <span className="font-bold text-lg tracking-tight block leading-tight">Meridian</span>
-            <span className="text-[11px] text-white/70 block">Campus-to-Career OS</span>
+            <span className="text-xs text-white/70 block">Campus-to-Career OS</span>
           </div>
         </div>
 
@@ -111,7 +109,7 @@ export const LoginPage: React.FC = () => {
             <span>Institutional Governance & Careers</span>
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight leading-tight">
-            One platform connecting students, faculty, recruiters, and leadership.
+            One platform connecting students, faculty, and institutional leadership.
           </h1>
           <p className="text-sm text-white/80 leading-relaxed">
             Role-partitioned workspaces, real-time superday scheduling, automated NIRF analytics, and DPDP-compliant verification.
@@ -120,21 +118,21 @@ export const LoginPage: React.FC = () => {
           <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/10">
             <div className="flex items-center gap-2">
               <Briefcase size={16} className="text-white/60 shrink-0" />
-              <div className="text-[11px]">
+              <div className="text-xs">
                 <strong className="block text-white font-semibold">TPO Automation</strong>
                 <span className="text-white/60">Live Superday</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <GraduationCap size={16} className="text-white/60 shrink-0" />
-              <div className="text-[11px]">
+              <div className="text-xs">
                 <strong className="block text-white font-semibold">Student Hub</strong>
                 <span className="text-white/60">Verified Records</span>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Users size={16} className="text-white/60 shrink-0" />
-              <div className="text-[11px]">
+              <div className="text-xs">
                 <strong className="block text-white font-semibold">Mentorship</strong>
                 <span className="text-white/60">Faculty & HOD</span>
               </div>
@@ -158,8 +156,8 @@ export const LoginPage: React.FC = () => {
         <div className="mx-auto w-full max-w-sm">
           {/* Mobile Brand Mark */}
           <div className="lg:hidden text-center mb-6">
-            <Link to="/" className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand text-white font-bold text-xl mb-2 shadow-xs">
-              M
+            <Link to="/" className="inline-block mb-2">
+              <Logo size="lg" />
             </Link>
             <h2 className="text-xl font-bold text-ink">Meridian</h2>
           </div>
@@ -260,11 +258,11 @@ export const LoginPage: React.FC = () => {
           {import.meta.env.DEV && (
             <div className="mt-6 pt-5 border-t border-line">
               <div className="flex items-center justify-between mb-2.5">
-                <span className="text-[10px] font-semibold text-ink-muted flex items-center gap-1.5 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-ink-muted flex items-center gap-1.5 uppercase tracking-wider">
                   <Sparkles size={12} className="text-amber-500" />
                   Demo Workspaces
                 </span>
-                <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 font-mono">
+                <span className="text-xs text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 font-mono">
                   Dev Only
                 </span>
               </div>
@@ -276,11 +274,11 @@ export const LoginPage: React.FC = () => {
                     onClick={() => handleQuickDemo(acc.username)}
                     className="p-1.5 text-left rounded-lg border border-line bg-canvas hover:bg-slate-100 hover:border-slate-300 transition-colors text-xs flex flex-col group cursor-pointer"
                   >
-                    <span className="font-semibold text-ink group-hover:text-brand flex items-center justify-between text-[11px]">
+                    <span className="font-semibold text-ink group-hover:text-brand flex items-center justify-between text-xs">
                       {acc.label}
-                      <span className="text-[9px] font-normal text-ink-muted font-mono">/{acc.portal}</span>
+                      <span className="text-xs font-normal text-ink-muted font-mono">/{acc.portal}</span>
                     </span>
-                    <span className="text-[10px] text-ink-muted truncate">{acc.name}</span>
+                    <span className="text-xs text-ink-muted truncate">{acc.name}</span>
                   </button>
                 ))}
               </div>

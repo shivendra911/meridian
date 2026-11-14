@@ -6,6 +6,7 @@ import {
   formatRelative,
   initials,
   maskedChip,
+  formatRoleLabel,
 } from '../format';
 
 describe('formatLpa', () => {
@@ -96,3 +97,36 @@ describe('maskedChip', () => {
     expect(maskedChip('Email')).toBe('Hidden: Email');
   });
 });
+
+describe('formatRoleLabel', () => {
+  it('maps standard system role codes to human titles', () => {
+    expect(formatRoleLabel('TPO_ADMIN')).toBe('Placement officer');
+    expect(formatRoleLabel('TPO_COORDINATOR')).toBe('Placement coordinator');
+    expect(formatRoleLabel('FACULTY_MENTOR')).toBe('Faculty mentor');
+    expect(formatRoleLabel('DEPARTMENT_HEAD')).toBe('Head of department');
+    expect(formatRoleLabel('SCHOOL_HEAD')).toBe('Dean');
+    expect(formatRoleLabel('INSTITUTION_HEAD')).toBe('Vice chancellor');
+    expect(formatRoleLabel('STUDENT_MEMBER')).toBe('Student');
+    expect(formatRoleLabel('INSTITUTION_ADMIN')).toBe('Administrator');
+  });
+
+  it('maps affiliation aliases cleanly', () => {
+    expect(formatRoleLabel('STUDENT')).toBe('Student');
+    expect(formatRoleLabel('FACULTY')).toBe('Faculty mentor');
+    expect(formatRoleLabel('HOD')).toBe('Head of department');
+    expect(formatRoleLabel('DEAN')).toBe('Dean');
+    expect(formatRoleLabel('ALUMNI')).toBe('Alumni');
+  });
+
+  it('converts unknown role codes to Title Case', () => {
+    expect(formatRoleLabel('PLACEMENT_COORDINATOR_SPECIAL')).toBe('Placement Coordinator Special');
+    expect(formatRoleLabel('CAMPUS_DIRECTOR')).toBe('Campus Director');
+  });
+
+  it('handles null/undefined gracefully', () => {
+    expect(formatRoleLabel(null)).toBe('Member');
+    expect(formatRoleLabel(undefined)).toBe('Member');
+    expect(formatRoleLabel('')).toBe('Member');
+  });
+});
+

@@ -109,6 +109,7 @@ class LegacyRouteDeprecationMiddleware:
         "/api/hod/",
         "/api/management/",
         "/api/admin/",
+        "/api/account/",
     )
 
     def __init__(self, get_response):

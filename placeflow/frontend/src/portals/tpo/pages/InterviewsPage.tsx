@@ -14,14 +14,11 @@ import {
   CalendarClock,
   Video,
   MapPin,
-  CheckCircle2,
   AlertTriangle,
   RefreshCw,
   Search,
   Filter,
-  User,
-  Clock,
-} from 'lucide-react';
+  Clock} from 'lucide-react';
 
 export const InterviewsPage: React.FC = () => {
   const [interviews, setInterviews] = useState<Interview[]>([]);
@@ -175,7 +172,7 @@ export const InterviewsPage: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-line bg-canvas text-ink-muted font-medium uppercase tracking-wider text-[11px]">
+                    <tr className="border-b border-line bg-canvas text-ink-muted font-medium uppercase tracking-wider text-xs">
                       <th className="px-4 py-3">Interview ID</th>
                       <th className="px-4 py-3">Candidate</th>
                       <th className="px-4 py-3">Round</th>
@@ -192,7 +189,7 @@ export const InterviewsPage: React.FC = () => {
                         </td>
                         <td className="px-4 py-3.5 font-medium text-ink">
                           <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded-full bg-line text-ink flex items-center justify-center font-mono text-[10px]">
+                            <div className="h-6 w-6 rounded-full bg-line text-ink flex items-center justify-center font-mono text-xs">
                               {item.student_id?.slice(-2)}
                             </div>
                             <span className="font-mono text-xs">{item.student_id}</span>
@@ -209,10 +206,10 @@ export const InterviewsPage: React.FC = () => {
                               <MapPin className="h-3.5 w-3.5 text-brand" />
                             )}
                             <span>{item.mode}</span>
-                            {item.venue && <span className="text-[11px] text-ink-muted">({item.venue})</span>}
+                            {item.venue && <span className="text-xs text-ink-muted">({item.venue})</span>}
                           </div>
                         </td>
-                        <td className="px-4 py-3.5 font-mono text-ink-muted text-[11px]">
+                        <td className="px-4 py-3.5 font-mono text-ink-muted text-xs">
                           <div className="flex items-center gap-1">
                             <Clock className="h-3 w-3 text-ink-muted" />
                             <span>

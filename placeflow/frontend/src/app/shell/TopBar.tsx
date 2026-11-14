@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Search, HelpCircle } from 'lucide-react';
+import { Menu, Search, HelpCircle, Sparkles } from 'lucide-react';
 import { Breadcrumbs } from './Breadcrumbs';
 import { NotificationsBell } from './NotificationsBell';
 import { UserMenu } from './UserMenu';
@@ -8,12 +8,14 @@ export interface TopBarProps {
   onOpenMobileSidebar: () => void;
   onOpenCommandPalette: () => void;
   onOpenShortcuts?: () => void;
+  onOpenCopilot?: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
   onOpenMobileSidebar,
   onOpenCommandPalette,
   onOpenShortcuts,
+  onOpenCopilot,
 }) => {
   return (
     <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between border-b border-line bg-surface px-4 lg:px-6">
@@ -45,7 +47,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             <Search size={14} className="text-slate-400 shrink-0" />
             <span className="truncate">Search students, drives, companies...</span>
           </div>
-          <kbd className="hidden sm:inline-flex items-center rounded border border-line bg-surface px-1.5 py-0.5 text-[10px] font-mono text-ink-muted">
+          <kbd className="hidden sm:inline-flex items-center rounded border border-line bg-surface px-1.5 py-0.5 text-xs font-mono text-ink-muted">
             Ctrl K
           </kbd>
         </button>
@@ -61,8 +63,24 @@ export const TopBar: React.FC<TopBarProps> = ({
         </button>
       </div>
 
-      {/* Right: Notifications, Help, User Menu */}
+      {/* Right: Copilot, Notifications, Help, User Menu */}
       <div className="flex items-center gap-2 shrink-0">
+        {onOpenCopilot && (
+          <button
+            type="button"
+            onClick={onOpenCopilot}
+            className="flex items-center gap-1.5 rounded-lg border border-line bg-canvas px-2.5 py-1.5 text-xs font-semibold text-brand-red hover:bg-red-50 hover:border-red-200 transition-colors shadow-2xs"
+            title="Campus AI Copilot (Ctrl + /)"
+            aria-label="Open Campus AI Copilot"
+          >
+            <Sparkles size={14} className="text-brand-red shrink-0" />
+            <span className="hidden sm:inline">Copilot</span>
+            <kbd className="hidden md:inline-flex items-center rounded bg-surface border border-line px-1 py-0.2 text-xs font-mono text-ink-muted">
+              Ctrl /
+            </kbd>
+          </button>
+        )}
+
         <NotificationsBell />
 
         {onOpenShortcuts && (

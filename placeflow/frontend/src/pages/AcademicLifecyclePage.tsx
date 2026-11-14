@@ -6,25 +6,18 @@ import {
   UserCheck,
   Award,
   Layers,
-  Clock,
-  ArrowRight,
-  ShieldCheck,
   AlertCircle,
   CheckCircle2,
-  RefreshCw,
-  Plus,
-  GitBranch,
-  Search,
-} from 'lucide-react';
+  RefreshCw} from 'lucide-react';
 import { useTenant } from '../context/TenantContext';
 import { CurriculumDesigner } from '../components/academic/CurriculumDesigner';
 
 export const AcademicLifecyclePage: React.FC = () => {
-  const { activeTenant, activeInstitution } = useTenant();
+  const { activeTenant: _activeTenant, activeInstitution: _activeInstitution } = useTenant();
 
   const [activeTab, setActiveTab] = useState<'programs' | 'courses' | 'designer' | 'calendars' | 'students' | 'progression'>('programs');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_loading, _setLoading] = useState(false);
+  const [_error, _setError] = useState<string | null>(null);
 
   // Demo datasets reflecting CAMP-03 MongoDB collections
   const [qualifications] = useState([
@@ -257,12 +250,12 @@ export const AcademicLifecyclePage: React.FC = () => {
                       <td className="px-4 py-3 font-mono">{c.L}-{c.T}-{c.P}-{c.S}</td>
                       <td className="px-4 py-3 font-semibold text-emerald-400">{c.credits.toFixed(1)}</td>
                       <td className="px-4 py-3">
-                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[11px]">
+                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-xs">
                           {c.cat}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded text-[11px] ${
+                        <span className={`px-2 py-0.5 rounded text-xs ${
                           c.prereq === 'None' ? 'text-slate-500' : 'bg-purple-950/80 text-purple-300 border border-purple-800/60'
                         }`}>
                           {c.prereq}
@@ -301,7 +294,7 @@ export const AcademicLifecyclePage: React.FC = () => {
                 {cal.terms.map((t) => (
                   <div key={t} className="p-2.5 rounded bg-slate-800/60 border border-slate-700/60 flex items-center justify-between text-xs">
                     <span className="text-white font-medium">{t}</span>
-                    <span className="text-[11px] text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/60">
+                    <span className="text-xs text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/60">
                       Window Open
                     </span>
                   </div>
@@ -384,7 +377,7 @@ export const AcademicLifecyclePage: React.FC = () => {
                 onChange={(e) => setSimEarnedCredits(parseFloat(e.target.value))}
                 className="w-full accent-blue-600"
               />
-              <span className="text-[11px] text-slate-500">Min 20.0 credits required for year promotion</span>
+              <span className="text-xs text-slate-500">Min 20.0 credits required for year promotion</span>
             </div>
 
             <div>
@@ -415,7 +408,7 @@ export const AcademicLifecyclePage: React.FC = () => {
                 onChange={(e) => setSimBacklogs(parseInt(e.target.value, 10))}
                 className="w-full accent-blue-600"
               />
-              <span className="text-[11px] text-slate-500">&gt; 4 backlogs triggers retention / year repeat</span>
+              <span className="text-xs text-slate-500">&gt; 4 backlogs triggers retention / year repeat</span>
             </div>
           </div>
 
@@ -438,13 +431,13 @@ export const AcademicLifecyclePage: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
-                <span className="text-[11px] text-slate-400 block">Computed Academic Standing</span>
+                <span className="text-xs text-slate-400 block">Computed Academic Standing</span>
                 <span className="text-sm font-semibold text-white mt-1 block">
                   {progressionDecision?.standing}
                 </span>
               </div>
               <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
-                <span className="text-[11px] text-slate-400 block">Placement Eligibility Feed</span>
+                <span className="text-xs text-slate-400 block">Placement Eligibility Feed</span>
                 <span className="text-sm font-semibold text-emerald-400 mt-1 block">
                   Authoritative Facts Emitted
                 </span>

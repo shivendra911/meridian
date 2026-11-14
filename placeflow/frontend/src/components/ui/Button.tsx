@@ -41,7 +41,7 @@ export const Button: React.FC<ButtonProps> = ({
     'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 select-none cursor-pointer border focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
 
   const sizeStyles: Record<ButtonSize, string> = {
-    xs: 'text-[11px] px-2 py-1 gap-1.5 font-medium',
+    xs: 'text-xs px-2 py-1 gap-1.5 font-medium',
     sm: 'text-xs px-2.5 py-1.5 gap-1.5 font-medium',
     md: 'text-xs px-3.5 py-2 gap-2 font-medium',
     lg: 'text-sm px-4 py-2.5 gap-2.5 font-medium',
@@ -84,7 +84,7 @@ export const Button: React.FC<ButtonProps> = ({
           <span>{children}</span>
           {rightIcon && <span className="shrink-0">{rightIcon}</span>}
           {hotkey && (
-            <kbd className="ml-1 px-1 py-0.2 bg-black/10 text-current text-[10px] font-mono rounded border border-black/15">
+            <kbd className="ml-1 px-1 py-0.2 bg-black/10 text-current text-xs font-mono rounded border border-black/15">
               {hotkey}
             </kbd>
           )}

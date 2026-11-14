@@ -5,16 +5,11 @@ import { api } from '../api';
 import { Job, Application, Placement, Interview } from '../../../types';
 import {
   Briefcase,
-  Building2,
   Calendar,
-  CheckCircle2,
   Users,
   Award,
   ArrowLeft,
-  HelpCircle,
-  Clock,
-  Sparkles,
-} from 'lucide-react';
+  HelpCircle} from 'lucide-react';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
@@ -24,8 +19,7 @@ import { Skeleton } from '../../../components/ui/Skeleton';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import {
   EligibilityExplainerDrawer,
-  EligibilityReport,
-} from '../../../components/recruitment/EligibilityExplainerDrawer';
+  EligibilityReport} from '../../../components/recruitment/EligibilityExplainerDrawer';
 import { resolveCompanyName } from '../../../utils/formatters';
 
 export const DriveDetailPage: React.FC = () => {
@@ -95,10 +89,11 @@ export const DriveDetailPage: React.FC = () => {
   }
 
   const handleOpenEligibilityExplainer = (app?: Application) => {
+    if (!app?.student_id) return;
     const report: EligibilityReport = {
-      studentId: app?.student_id || 'STU001',
-      studentName: app?.student_name || app?.student?.name || (app?.student_id === 'STU001' ? 'Aarav Sharma' : app?.student_id || 'Aarav Sharma'),
-      department: app?.department || app?.student?.department || 'Computer Science & Engineering',
+      studentId: app.student_id,
+      studentName: app.student_name || app.student?.name || app.student_id,
+      department: app.department || app.student?.department || 'Engineering',
       batch: 'Batch 2026',
       companyName: resolveCompanyName(job.company_id),
       jobTitle: job.title,
@@ -169,25 +164,25 @@ export const DriveDetailPage: React.FC = () => {
       {/* Drive Meta Banner */}
       <div className="rounded-lg border border-line bg-surface p-4 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
         <div>
-          <span className="text-ink-muted block text-[11px]">CTC Package</span>
+          <span className="text-ink-muted block text-xs">CTC Package</span>
           <span className="text-lg font-semibold tabular-nums text-success">
             ₹{job.package_lpa} LPA
           </span>
         </div>
         <div>
-          <span className="text-ink-muted block text-[11px]">Vacancies / Filled</span>
+          <span className="text-ink-muted block text-xs">Vacancies / Filled</span>
           <span className="text-lg font-semibold tabular-nums text-ink">
             {job.filled} / {job.vacancies}
           </span>
         </div>
         <div>
-          <span className="text-ink-muted block text-[11px]">Cutoff CGPA</span>
+          <span className="text-ink-muted block text-xs">Cutoff CGPA</span>
           <span className="text-lg font-semibold tabular-nums text-ink">
             {job.eligibility?.min_cgpa?.toFixed(2) || '7.00'}
           </span>
         </div>
         <div>
-          <span className="text-ink-muted block text-[11px]">Total Applicants</span>
+          <span className="text-ink-muted block text-xs">Total Applicants</span>
           <span className="text-lg font-semibold tabular-nums text-brand">
             {applications.length} Students
           </span>
@@ -268,7 +263,7 @@ export const DriveDetailPage: React.FC = () => {
             <div className="p-3 rounded-lg border border-line bg-canvas flex items-center justify-between">
               <div>
                 <span className="font-semibold text-ink block">Academic Discipline</span>
-                <span className="text-ink-muted text-[11px]">
+                <span className="text-ink-muted text-xs">
                   {job.eligibility?.departments?.join(', ') || 'CSE, IT, ECE'}
                 </span>
               </div>
@@ -278,7 +273,7 @@ export const DriveDetailPage: React.FC = () => {
             <div className="p-3 rounded-lg border border-line bg-canvas flex items-center justify-between">
               <div>
                 <span className="font-semibold text-ink block">Academic Threshold</span>
-                <span className="text-ink-muted text-[11px] tabular-nums">
+                <span className="text-ink-muted text-xs tabular-nums">
                   CGPA &ge; {job.eligibility?.min_cgpa?.toFixed(2) || '7.00'} &bull; Backlogs &le;{' '}
                   {job.eligibility?.max_backlogs ?? 0}
                 </span>
@@ -289,7 +284,7 @@ export const DriveDetailPage: React.FC = () => {
             <div className="p-3 rounded-lg border border-line bg-canvas flex items-center justify-between">
               <div>
                 <span className="font-semibold text-ink block">DPDP Act 2023 Consent</span>
-                <span className="text-ink-muted text-[11px]">
+                <span className="text-ink-muted text-xs">
                   Mandatory student consent attestation required before shortlisting
                 </span>
               </div>
@@ -310,7 +305,7 @@ export const DriveDetailPage: React.FC = () => {
           <div className="rounded-lg border border-line bg-surface overflow-hidden">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10">
+                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-xs h-10">
                   <th className="py-2 px-4 font-medium">Application ID</th>
                   <th className="py-2 px-4 font-medium">Candidate</th>
                   <th className="py-2 px-4 font-medium">Date</th>
@@ -327,7 +322,7 @@ export const DriveDetailPage: React.FC = () => {
                         onClick={() => navigate(`/tpo/students/${app.student_id}`)}
                         className="text-left hover:text-brand hover:underline font-semibold cursor-pointer"
                       >
-                        {app.student_name || app.student?.name || (app.student_id === 'STU001' ? 'Aarav Sharma' : app.student_id)} <span className="font-normal text-ink-muted font-mono text-[11px]">({app.student_id})</span>
+                        {app.student_name || app.student?.name || app.student_id} <span className="font-normal text-ink-muted font-mono text-xs">({app.student_id})</span>
                       </button>
                     </td>
                     <td className="py-2 px-4 text-ink-muted font-mono tabular-nums">
@@ -349,7 +344,7 @@ export const DriveDetailPage: React.FC = () => {
                     <td className="py-2 px-4 text-right">
                       <button
                         onClick={() => handleOpenEligibilityExplainer(app)}
-                        className="text-[11px] font-medium text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
+                        className="text-xs font-medium text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
                       >
                         <HelpCircle size={13} />
                         <span>Explain Match</span>
@@ -374,7 +369,7 @@ export const DriveDetailPage: React.FC = () => {
           <div className="rounded-lg border border-line bg-surface overflow-hidden">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10">
+                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-xs h-10">
                   <th className="py-2 px-4 font-medium">Interview ID</th>
                   <th className="py-2 px-4 font-medium">Candidate</th>
                   <th className="py-2 px-4 font-medium">Round</th>
@@ -411,7 +406,7 @@ export const DriveDetailPage: React.FC = () => {
           <div className="rounded-lg border border-line bg-surface overflow-hidden">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10">
+                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-xs h-10">
                   <th className="py-2 px-4 font-medium">Placement ID</th>
                   <th className="py-2 px-4 font-medium">Candidate Roll</th>
                   <th className="py-2 px-4 font-medium">Package</th>

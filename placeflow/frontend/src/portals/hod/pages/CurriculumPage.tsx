@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react';
-import { BookOpen, CheckCircle2, Check, X, Clock, FileText, Layers } from 'lucide-react';
+import { Check, X} from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader, Card, Badge, Button, EmptyState } from '../../../ui';
 

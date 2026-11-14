@@ -1,23 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import {
   Search,
-  SlidersHorizontal,
   ChevronDown,
   ChevronUp,
   Download,
   CheckSquare,
   Square,
   CheckCircle2,
-  AlertTriangle,
   X,
-  Layers,
   ChevronLeft,
   ChevronRight,
-  Filter,
-} from 'lucide-react';
-import { Badge } from './Badge';
+  Filter} from 'lucide-react';
 import { Button } from './Button';
-import { Modal } from './Modal';
 
 export interface ColumnDef<T> {
   key: string;
@@ -184,7 +178,7 @@ export function AdvancedDataGrid<T extends Record<string, any>>({
       {/* 1. Preset Views Bar */}
       {presetViews.length > 0 && (
         <div className="px-4 pt-3 pb-2 border-b border-slate-100 flex flex-wrap items-center gap-1.5 bg-slate-50/60">
-          <span className="text-[11px] font-semibold text-slate-400 mr-2 flex items-center gap-1">
+          <span className="text-xs font-semibold text-slate-400 mr-2 flex items-center gap-1">
             <Filter size={11} /> Saved Views:
           </span>
           {presetViews.map((preset) => {
@@ -205,7 +199,7 @@ export function AdvancedDataGrid<T extends Record<string, any>>({
                 <span>{preset.label}</span>
                 {preset.count !== undefined && (
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                    className={`text-xs px-1.5 py-0.2 rounded font-mono ${
                       isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
                     }`}
                   >
@@ -246,7 +240,7 @@ export function AdvancedDataGrid<T extends Record<string, any>>({
         {/* Action Controls */}
         <div className="flex items-center gap-2 self-end sm:self-auto">
           {/* Density toggle */}
-          <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-[11px]">
+          <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
             <button
               onClick={() => setDensity('comfortable')}
               className={`px-2 py-1 rounded font-medium transition-all ${

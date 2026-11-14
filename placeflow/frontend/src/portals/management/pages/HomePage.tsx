@@ -11,12 +11,7 @@ import {
   TrendingUp,
   Award,
   ShieldCheck,
-  ShieldAlert,
-  BarChart2,
-  Building2,
-  ArrowRight,
-  Cpu,
-} from 'lucide-react';
+  BarChart2} from 'lucide-react';
 import { useAuth } from '../../../core/auth/useAuth';
 import { PageHeader, StatCard, Card, Badge, Button, TaskCard, useDocumentTitle } from '../../../ui';
 
@@ -28,9 +23,8 @@ export const ManagementHomePage: React.FC = () => {
   return (
     <div className="space-y-8 font-sans">
       <PageHeader
-        title={`Executive Directorate — ${me?.display_name || 'Vice Chancellor'}`}
+        title={`Executive Management — ${me?.display_name || 'Vice Chancellor'}`}
         description="Multi-campus statutory governance, NIRF graduation outcomes, regulatory compliance, and AI auditing."
-        badge={<Badge variant="institutional" size="xs">Apex University System</Badge>}
         actions={
           <Button
             variant="primary"
@@ -154,7 +148,7 @@ export const ManagementHomePage: React.FC = () => {
             <div className="p-3 rounded-lg border border-emerald-200 bg-emerald-50/40 flex items-center justify-between">
               <div>
                 <span className="font-semibold text-ink block">NIRF 2026 Ready</span>
-                <span className="text-[11px] text-emerald-800">Verified placement and median package metrics aligned</span>
+                <span className="text-xs text-emerald-800">Verified placement and median package metrics aligned</span>
               </div>
               <Badge variant="success" size="xs">Compliant</Badge>
             </div>
@@ -162,7 +156,7 @@ export const ManagementHomePage: React.FC = () => {
             <div className="p-3 rounded-lg border border-emerald-200 bg-emerald-50/40 flex items-center justify-between">
               <div>
                 <span className="font-semibold text-ink block">DPDP Act (India)</span>
-                <span className="text-[11px] text-emerald-800">Zero non-consensual candidate data sharing detected</span>
+                <span className="text-xs text-emerald-800">Zero non-consensual candidate data sharing detected</span>
               </div>
               <Badge variant="success" size="xs">Passed</Badge>
             </div>
@@ -170,7 +164,7 @@ export const ManagementHomePage: React.FC = () => {
             <div className="p-3 rounded-lg border border-line bg-canvas flex items-center justify-between">
               <div>
                 <span className="font-semibold text-ink block">AI Demographic Fairness</span>
-                <span className="text-[11px] text-ink-muted">Parity ratio within 0.80 - 1.25 four-fifths standard</span>
+                <span className="text-xs text-ink-muted">Parity ratio within 0.80 - 1.25 four-fifths standard</span>
               </div>
               <Badge variant="institutional" size="xs">Monitored</Badge>
             </div>

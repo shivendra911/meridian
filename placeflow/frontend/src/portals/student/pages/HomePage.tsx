@@ -16,13 +16,9 @@ import {
   FileText,
   Clock,
   CheckCircle2,
-  AlertCircle,
-  Building2,
-  Calendar,
   Sparkles,
   ShieldCheck,
-  CheckSquare,
-} from 'lucide-react';
+  CheckSquare} from 'lucide-react';
 import { studentApi, StudentProfile, StudentOpportunity, StudentInterview, StudentApplication } from '../api';
 import {
   PageHeader,
@@ -34,8 +30,7 @@ import {
   DriveCard,
   InterviewCard,
   TaskCard,
-  useDocumentTitle,
-} from '../../../ui';
+  useDocumentTitle} from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
 
 export const StudentHomePage: React.FC = () => {

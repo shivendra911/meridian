@@ -133,3 +133,38 @@ export function formatNumber(value: number | string | null | undefined): string 
   return new Intl.NumberFormat('en-IN').format(num);
 }
 
+export const ROLE_LABELS: Record<string, string> = {
+  TPO_ADMIN: 'Placement officer',
+  TPO_COORDINATOR: 'Placement coordinator',
+  FACULTY_MENTOR: 'Faculty mentor',
+  DEPARTMENT_HEAD: 'Head of department',
+  SCHOOL_HEAD: 'Dean',
+  INSTITUTION_HEAD: 'Vice chancellor',
+  STUDENT_MEMBER: 'Student',
+  INSTITUTION_ADMIN: 'Administrator',
+  SUPER_ADMIN: 'Super administrator',
+  PLACEMENT_REP: 'Placement representative',
+  DEPT_COORDINATOR: 'Department coordinator',
+  AUDITOR: 'Auditor',
+  RECRUITER_EXTERNAL: 'Recruiter',
+  // Affiliation aliases
+  STUDENT: 'Student',
+  FACULTY: 'Faculty mentor',
+  HOD: 'Head of department',
+  DEAN: 'Dean',
+  ALUMNI: 'Alumni',
+};
+
+/** Formats system role codes and affiliation types into human-readable titles. */
+export function formatRoleLabel(code?: string | null): string {
+  if (!code) return 'Member';
+  const trimmed = code.trim();
+  if (ROLE_LABELS[trimmed]) {
+    return ROLE_LABELS[trimmed];
+  }
+  return trimmed
+    .replace(/[_-]+/g, ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+

@@ -5,8 +5,8 @@
  */
 
 import React, { useState } from 'react';
-import { Users, Search, AlertCircle, Award, CheckCircle2 } from 'lucide-react';
-import { PageHeader, StatCard, Card, Badge, Button } from '../../../ui';
+import { Users, AlertCircle, Award} from 'lucide-react';
+import { PageHeader, StatCard, Card, Badge} from '../../../ui';
 
 interface StudentRow {
   id: string;
@@ -61,7 +61,7 @@ export const HodStudentsPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-[11px] h-10">
+              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-xs h-10">
                 <th className="py-2.5 px-4 font-semibold">Roll Number</th>
                 <th className="py-2.5 px-4 font-semibold">Candidate Name</th>
                 <th className="py-2.5 px-4 font-semibold">CGPA</th>

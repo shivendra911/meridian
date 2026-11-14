@@ -33,7 +33,7 @@ function getPalette(name?: string | null): string {
 }
 
 const SIZE_CLASSES: Record<number, { container: string; text: string; ring: string }> = {
-  20: { container: 'w-5 h-5', text: 'text-[10px] font-semibold', ring: 'w-1.5 h-1.5 -bottom-0.5 -right-0.5' },
+  20: { container: 'w-5 h-5', text: 'text-xs font-semibold', ring: 'w-1.5 h-1.5 -bottom-0.5 -right-0.5' },
   24: { container: 'w-6 h-6', text: 'text-xs font-semibold', ring: 'w-2 h-2 -bottom-0.5 -right-0.5' },
   32: { container: 'w-8 h-8', text: 'text-xs font-semibold', ring: 'w-2.5 h-2.5 bottom-0 right-0' },
   40: { container: 'w-10 h-10', text: 'text-sm font-semibold', ring: 'w-3 h-3 bottom-0 right-0' },

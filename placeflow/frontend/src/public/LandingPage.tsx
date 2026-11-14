@@ -10,6 +10,7 @@ import {
   Settings2, FileSearch, GitBranch, CalendarClock, Radar, Lock, BarChart3, Menu, X,
   Briefcase, Eye,
 } from 'lucide-react';
+import { Logo as UiLogo } from '../ui/Logo';
 
 /* ----------------------------- content ----------------------------- */
 
@@ -92,7 +93,7 @@ const SAMPLE_DRIVES = [
 
 const Logo: React.FC<{ light?: boolean }> = ({ light }) => (
   <Link to="/" className="flex items-center gap-2.5">
-    <span className="w-8 h-8 rounded-lg bg-accent text-white flex items-center justify-center font-bold text-sm">M</span>
+    <UiLogo size="md" />
     <span className={`font-semibold tracking-tight text-base ${light ? 'text-white' : 'text-ink'}`}>Meridian</span>
   </Link>
 );
@@ -104,13 +105,13 @@ const ProductPreview: React.FC = () => (
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-line bg-canvas">
         <span className="w-2.5 h-2.5 rounded-full bg-slate-300" /><span className="w-2.5 h-2.5 rounded-full bg-slate-300" /><span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
         <span className="ml-3 text-xs text-ink-muted">Placement Office · Overview</span>
-        <span className="ml-auto text-[11px] text-ink-muted">Sample data</span>
+        <span className="ml-auto text-xs text-ink-muted">Sample data</span>
       </div>
       <div className="p-5 space-y-5">
         <div className="grid grid-cols-3 gap-3">
           {[['Open drives', '12'], ['Applications', '1,284'], ['Offers', '214']].map(([l, v]) => (
             <div key={l} className="rounded-lg border border-line p-3">
-              <p className="text-[11px] font-medium text-ink-muted">{l}</p>
+              <p className="text-xs font-medium text-ink-muted">{l}</p>
               <p className="mt-1 text-xl font-semibold tabular-nums">{v}</p>
             </div>
           ))}
@@ -120,7 +121,7 @@ const ProductPreview: React.FC = () => (
           <div className="space-y-1.5">
             {[['Applied', 100], ['Shortlisted', 62], ['Interviewed', 38], ['Offered', 17]].map(([l, w]) => (
               <div key={l as string} className="flex items-center gap-3">
-                <span className="w-20 text-[11px] text-ink-muted">{l}</span>
+                <span className="w-20 text-xs text-ink-muted">{l}</span>
                 <div className="flex-1 h-2 rounded-full bg-canvas"><div className="h-2 rounded-full bg-brand" style={{ width: `${w}%`, opacity: 0.35 + (Number(w) / 160) }} /></div>
               </div>
             ))}
@@ -134,8 +135,8 @@ const ProductPreview: React.FC = () => (
                 <p className="text-sm font-medium truncate">{d.co}</p>
                 <p className="text-xs text-ink-muted truncate">{d.role}</p>
               </div>
-              <span className="hidden sm:inline text-[11px] px-2 py-0.5 rounded bg-canvas text-ink-muted">{d.tier}</span>
-              <span className={`text-[11px] px-2 py-0.5 rounded ${d.status === 'Open' ? 'bg-green-50 text-success' : 'bg-amber-50 text-warning'}`}>{d.status}</span>
+              <span className="hidden sm:inline text-xs px-2 py-0.5 rounded bg-canvas text-ink-muted">{d.tier}</span>
+              <span className={`text-xs px-2 py-0.5 rounded ${d.status === 'Open' ? 'bg-green-50 text-success' : 'bg-amber-50 text-warning'}`}>{d.status}</span>
             </div>
           ))}
         </div>
@@ -243,11 +244,11 @@ export const LandingPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-3 content-start">
               {[active.stat, active.stat2].map(([l, v]) => (
                 <div key={l} className="rounded-lg border border-line bg-surface p-4">
-                  <p className="text-[11px] font-medium text-ink-muted">{l}</p>
+                  <p className="text-xs font-medium text-ink-muted">{l}</p>
                   <p className="mt-1 text-2xl font-semibold tabular-nums">{v}</p>
                 </div>
               ))}
-              <p className="col-span-2 text-[11px] text-ink-muted">Illustrative sample values</p>
+              <p className="col-span-2 text-xs text-ink-muted">Illustrative sample values</p>
             </div>
           </div>
         </div>
@@ -304,7 +305,7 @@ export const LandingPage: React.FC = () => {
           <div className="rounded-xl bg-white/5 border border-white/10 overflow-x-auto">
             <table className="w-full text-sm min-w-[460px]">
               <thead>
-                <tr className="text-left text-[11px] uppercase tracking-wide text-slate-400">
+                <tr className="text-left text-xs uppercase tracking-wide text-slate-400">
                   <th className="px-4 py-3 font-medium">Can see</th>
                   {MATRIX_COLS.map((c) => <th key={c} className="px-2 py-3 font-medium text-center">{c}</th>)}
                 </tr>

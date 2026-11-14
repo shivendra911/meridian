@@ -8,8 +8,7 @@ import {
   AdminProfile,
   InstitutionalSummary,
   PlacementDrive,
-  Student,
-} from '../types';
+  Student} from '../types';
 import { PageHeader } from '../components/ui/PageHeader';
 import { StatCard } from '../components/ui/StatCard';
 import { Card } from '../components/ui/Card';
@@ -22,32 +21,21 @@ import {
   GraduationCap,
   Building2,
   CheckCircle2,
-  Clock,
   AlertTriangle,
-  Briefcase,
   Search,
   ChevronRight,
   ShieldAlert,
-  ArrowRight,
-  TrendingUp,
   FileCheck2,
-  Sparkles,
-  GitFork,
-  ExternalLink,
-  Award,
   Phone,
   Mail,
-  MapPin,
-  ShieldCheck,
-  BookOpen,
-} from 'lucide-react';
+  BookOpen} from 'lucide-react';
 import { toast } from 'sonner';
 
 export const InstitutionalHierarchyPage: React.FC = () => {
   const navigate = useNavigate();
 
   // Primary data states
-  const [loading, setLoading] = useState(true);
+  const [_loading, setLoading] = useState(true);
   const [summaryData, setSummaryData] = useState<InstitutionalSummary | null>(null);
   const [hosList, setHosList] = useState<HosProfile[]>([]);
   const [hodList, setHodList] = useState<HodProfile[]>([]);
@@ -142,7 +130,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
         setFacultyDetail(res);
         setDrawerLoading(false);
       })
-      .catch((err) => {
+      .catch((_err) => {
         toast.error('Failed to load mentor cohort details');
         setDrawerLoading(false);
       });
@@ -226,13 +214,13 @@ export const InstitutionalHierarchyPage: React.FC = () => {
       <div className="bg-gradient-to-r from-slate-900 via-navy-900 to-slate-800 rounded-lg p-4 text-white shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            <span className="px-2 py-0.5 rounded text-xs font-bold tracking-wider uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
               CAMP-02 Multi-Role Synthesis
             </span>
             <span className="text-slate-400">&bull;</span>
             <span className="text-xs text-slate-300">Unified Academic Appointments</span>
           </div>
-          <h2 className="font-serif font-bold text-lg text-white mt-1 m-0">
+          <h2 className=" font-bold text-lg text-white mt-1 m-0">
             De-Siloed Institutional Faculty & Governance Network
           </h2>
           <p className="text-xs text-slate-300 mt-0.5 m-0 max-w-2xl">
@@ -242,23 +230,23 @@ export const InstitutionalHierarchyPage: React.FC = () => {
 
         <div className="flex items-center gap-2 flex-wrap">
           <div className="bg-white/10 backdrop-blur-xs border border-white/10 rounded px-3 py-1.5 text-center">
-            <span className="text-[10px] text-slate-300 block uppercase font-mono">Teachers</span>
+            <span className="text-xs text-slate-300 block uppercase font-mono">Teachers</span>
             <span className="text-sm font-bold text-white font-mono">{summaryData?.kpis.multi_role_breakdown?.active_teachers || 542}</span>
           </div>
           <div className="bg-white/10 backdrop-blur-xs border border-white/10 rounded px-3 py-1.5 text-center">
-            <span className="text-[10px] text-slate-300 block uppercase font-mono">Faculty HODs</span>
+            <span className="text-xs text-slate-300 block uppercase font-mono">Faculty HODs</span>
             <span className="text-sm font-bold text-amber-300 font-mono">{summaryData?.kpis.multi_role_breakdown?.teachers_serving_as_hod || 54}</span>
           </div>
           <div className="bg-white/10 backdrop-blur-xs border border-white/10 rounded px-3 py-1.5 text-center">
-            <span className="text-[10px] text-slate-300 block uppercase font-mono">Faculty Deans</span>
+            <span className="text-xs text-slate-300 block uppercase font-mono">Faculty Deans</span>
             <span className="text-sm font-bold text-sky-300 font-mono">{summaryData?.kpis.multi_role_breakdown?.teachers_serving_as_hos || 4}</span>
           </div>
           <div className="bg-white/10 backdrop-blur-xs border border-white/10 rounded px-3 py-1.5 text-center">
-            <span className="text-[10px] text-slate-300 block uppercase font-mono">TPO Coordinators</span>
+            <span className="text-xs text-slate-300 block uppercase font-mono">TPO Coordinators</span>
             <span className="text-sm font-bold text-purple-300 font-mono">{summaryData?.kpis.multi_role_breakdown?.faculty_placement_coordinators || 4}</span>
           </div>
           <div className="bg-white/10 backdrop-blur-xs border border-white/10 rounded px-3 py-1.5 text-center">
-            <span className="text-[10px] text-slate-300 block uppercase font-mono">Exec Admins</span>
+            <span className="text-xs text-slate-300 block uppercase font-mono">Exec Admins</span>
             <span className="text-sm font-bold text-emerald-300 font-mono">{summaryData?.kpis.total_administrators || 6}</span>
           </div>
         </div>
@@ -303,7 +291,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                       </Badge>
                     </div>
 
-                    <h3 className="font-serif font-bold text-lg text-slate-900 mt-2 m-0">
+                    <h3 className=" font-bold text-lg text-slate-900 mt-2 m-0">
                       {hos.name}
                     </h3>
                     <p className="text-xs text-slate-500 font-medium mt-0.5 m-0">
@@ -342,19 +330,19 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                     {/* 4 Key Numbers */}
                     <div className="grid grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-100 text-center">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">HODs</span>
+                        <span className="text-xs uppercase font-bold text-slate-400 block">HODs</span>
                         <span className="text-sm font-bold text-slate-800 font-mono">{hos.hod_count}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Faculty</span>
+                        <span className="text-xs uppercase font-bold text-slate-400 block">Faculty</span>
                         <span className="text-sm font-bold text-slate-800 font-mono">{hos.faculty_count}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Pending</span>
+                        <span className="text-xs uppercase font-bold text-slate-400 block">Pending</span>
                         <span className="text-sm font-bold text-amber-700 font-mono">{hos.form_pending_count}</span>
                       </div>
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Placed</span>
+                        <span className="text-xs uppercase font-bold text-slate-400 block">Placed</span>
                         <span className="text-sm font-bold text-emerald-700 font-mono">{hos.placed_count}</span>
                       </div>
                     </div>
@@ -410,7 +398,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
           <Card className="overflow-hidden p-0 border border-slate-200">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-700">
-                <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-200">
+                <thead className="bg-slate-50 text-xs uppercase font-bold text-slate-500 border-b border-slate-200">
                   <tr>
                     <th className="py-3 px-4">HOD UID</th>
                     <th className="py-3 px-4">Department Head</th>
@@ -430,11 +418,11 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                       </td>
                       <td className="py-3 px-4">
                         <span className="font-semibold text-slate-900 block">{hod.name}</span>
-                        <span className="text-[10px] text-slate-400 font-mono">{hod.email}</span>
+                        <span className="text-xs text-slate-400 font-mono">{hod.email}</span>
                       </td>
                       <td className="py-3 px-4">
                         <span className="text-slate-800 block">{hod.school}</span>
-                        <span className="text-[10px] text-slate-400">Reports to: {hod.hos_name}</span>
+                        <span className="text-xs text-slate-400">Reports to: {hod.hos_name}</span>
                       </td>
                       <td className="py-3 px-4 text-center font-mono font-bold text-slate-800">
                         {hod.faculty_count}
@@ -449,7 +437,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                       </td>
                       <td className="py-3 px-4 text-center">
                         <div className="w-32 mx-auto">
-                          <div className="flex justify-between text-[10px] mb-0.5">
+                          <div className="flex justify-between text-xs mb-0.5">
                             <span className="text-emerald-700 font-semibold">{hod.form_filled_count} filled</span>
                             <span className="text-amber-700 font-semibold">{hod.form_pending_count} pend</span>
                           </div>
@@ -579,7 +567,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
               >
                 <div>
                   <div className="flex items-center justify-between flex-wrap gap-1">
-                    <span className="font-mono text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                    <span className="font-mono text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
                       {f.faculty_id}
                     </span>
                     <div className="flex items-center gap-1 flex-wrap">
@@ -596,22 +584,22 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <h4 className="font-serif font-bold text-base text-slate-900 mt-2 m-0 flex items-center gap-1.5">
+                  <h4 className=" font-bold text-base text-slate-900 mt-2 m-0 flex items-center gap-1.5">
                     {f.name}
                   </h4>
-                  <p className="text-[11px] text-slate-700 font-semibold mt-0.5 line-clamp-1 m-0">
+                  <p className="text-xs text-slate-700 font-semibold mt-0.5 line-clamp-1 m-0">
                     {f.academic_rank || f.designation} &bull; {f.department}
                   </p>
-                  <p className="text-[10px] text-slate-400 mt-0.5 m-0 font-mono">
+                  <p className="text-xs text-slate-400 mt-0.5 m-0 font-mono">
                     Office: {f.office_location || 'Main Faculty Block'} &bull; Dean: {f.hos_name}
                   </p>
 
                   {/* Courses Taught Chips */}
                   {f.courses_taught && f.courses_taught.length > 0 && (
                     <div className="flex items-center gap-1 mt-2 flex-wrap">
-                      <span className="text-[9px] text-slate-400 font-mono">Teaching:</span>
+                      <span className="text-xs text-slate-400 font-mono">Teaching:</span>
                       {f.courses_taught.map((c) => (
-                        <span key={c} className="text-[9px] bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded font-mono border border-slate-200">
+                        <span key={c} className="text-xs bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded font-mono border border-slate-200">
                           {c}
                         </span>
                       ))}
@@ -620,22 +608,22 @@ export const InstitutionalHierarchyPage: React.FC = () => {
 
                   <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-100 text-center">
                     <div className="bg-slate-50 rounded p-1.5">
-                      <span className="text-[9px] uppercase font-bold text-slate-400 block">Mentees</span>
+                      <span className="text-xs uppercase font-bold text-slate-400 block">Mentees</span>
                       <span className="text-xs font-bold text-slate-900 font-mono">{f.mentees_count}</span>
                     </div>
                     <div className="bg-emerald-50 rounded p-1.5">
-                      <span className="text-[9px] uppercase font-bold text-emerald-700 block">Eligible</span>
+                      <span className="text-xs uppercase font-bold text-emerald-700 block">Eligible</span>
                       <span className="text-xs font-bold text-emerald-800 font-mono">{f.assessment_eligible_count}</span>
                     </div>
                     <div className="bg-amber-50 rounded p-1.5">
-                      <span className="text-[9px] uppercase font-bold text-amber-700 block">Pending</span>
+                      <span className="text-xs uppercase font-bold text-amber-700 block">Pending</span>
                       <span className="text-xs font-bold text-amber-800 font-mono">{f.form_pending_count}</span>
                     </div>
                   </div>
 
                   {/* Progress */}
                   <div className="mt-3">
-                    <div className="flex justify-between text-[10px] text-slate-500 mb-1">
+                    <div className="flex justify-between text-xs text-slate-500 mb-1">
                       <span>Survey Response Rate</span>
                       <span className="font-bold text-slate-800">{f.completion_rate}%</span>
                     </div>
@@ -648,7 +636,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
                   <span className="text-slate-500">{f.already_placed_count} Placed Elsewhere</span>
                   <span className="text-navy-900 font-semibold flex items-center gap-0.5">
                     Inspect Cohort <ChevronRight size={12} />
@@ -672,7 +660,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                 <span className="text-slate-300">&bull;</span>
                 <span className="text-xs font-mono text-slate-500">Governance & Regulatory Directorate</span>
               </div>
-              <h2 className="font-serif font-bold text-xl text-slate-900 mt-1 m-0">
+              <h2 className=" font-bold text-xl text-slate-900 mt-1 m-0">
                 Institutional Administrators & Executive Officers
               </h2>
               <p className="text-xs text-slate-500 mt-0.5 m-0">
@@ -680,7 +668,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
               </p>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Total Active Administrators</span>
+              <span className="text-xs uppercase font-bold text-slate-400 block">Total Active Administrators</span>
               <span className="text-2xl font-bold font-mono text-navy-900">{adminsList.length}</span>
             </div>
           </div>
@@ -698,23 +686,23 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                     </Badge>
                   </div>
 
-                  <h3 className="font-serif font-bold text-lg text-slate-900 mt-2.5 m-0">
+                  <h3 className=" font-bold text-lg text-slate-900 mt-2.5 m-0">
                     {adm.name}
                   </h3>
                   <p className="text-xs text-slate-800 font-semibold mt-0.5 m-0">
                     {adm.role}
                   </p>
-                  <p className="text-[11px] text-slate-500 mt-0.5 m-0 font-mono">
+                  <p className="text-xs text-slate-500 mt-0.5 m-0 font-mono">
                     {adm.office} &bull; {adm.email}
                   </p>
 
                   <div className="mt-4 pt-3 border-t border-slate-100">
-                    <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1.5">
+                    <span className="text-xs font-bold uppercase text-slate-400 block mb-1.5">
                       Assigned IAM Permissions ({adm.permissions.length})
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {adm.permissions.map((p) => (
-                        <span key={p} className="text-[9px] bg-slate-100 text-slate-700 font-mono px-1.5 py-0.5 rounded border border-slate-200">
+                        <span key={p} className="text-xs bg-slate-100 text-slate-700 font-mono px-1.5 py-0.5 rounded border border-slate-200">
                           {p}
                         </span>
                       ))}
@@ -725,7 +713,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                 <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                   {adm.faculty_id ? (
                     <>
-                      <span className="text-slate-500 font-mono text-[11px]">
+                      <span className="text-slate-500 font-mono text-xs">
                         Teacher UID: {adm.faculty_id}
                       </span>
                       <Button
@@ -738,7 +726,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                       </Button>
                     </>
                   ) : (
-                    <span className="text-slate-400 text-[11px]">Direct Executive Officer</span>
+                    <span className="text-slate-400 text-xs">Direct Executive Officer</span>
                   )}
                 </div>
               </Card>
@@ -760,7 +748,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                 <span className="text-slate-300">&bull;</span>
                 <span className="text-xs font-mono text-slate-500">ID: {driveData.drive_id}</span>
               </div>
-              <h2 className="font-serif font-bold text-xl text-slate-900 mt-1 m-0">
+              <h2 className=" font-bold text-xl text-slate-900 mt-1 m-0">
                 {driveData.company_name} &bull; {driveData.role_title}
               </h2>
               <p className="text-xs text-slate-500 mt-0.5 m-0">
@@ -768,7 +756,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
               </p>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Total Candidate Pool</span>
+              <span className="text-xs uppercase font-bold text-slate-400 block">Total Candidate Pool</span>
               <span className="text-2xl font-bold font-mono text-navy-900">
                 {driveData.total_candidates.toLocaleString()}
               </span>
@@ -777,12 +765,12 @@ export const InstitutionalHierarchyPage: React.FC = () => {
 
           {/* Drive Funnel Visualization */}
           <Card className="p-6">
-            <h3 className="font-serif font-bold text-base text-slate-900 mb-4 m-0">
+            <h3 className=" font-bold text-base text-slate-900 mb-4 m-0">
               Recruitment Conversion & Eligibility Funnel
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-                <span className="text-[10px] font-bold uppercase text-slate-500 block">1. Total Ingested Pool</span>
+                <span className="text-xs font-bold uppercase text-slate-500 block">1. Total Ingested Pool</span>
                 <span className="text-xl font-bold text-slate-900 font-mono block mt-1">
                   {driveData.total_candidates.toLocaleString()}
                 </span>
@@ -790,7 +778,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
               </div>
 
               <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-                <span className="text-[10px] font-bold uppercase text-emerald-800 block">2. Company Shortlisted</span>
+                <span className="text-xs font-bold uppercase text-emerald-800 block">2. Company Shortlisted</span>
                 <span className="text-xl font-bold text-emerald-900 font-mono block mt-1">
                   {driveData.eligible_count.toLocaleString()}
                 </span>
@@ -800,7 +788,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
               </div>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <span className="text-[10px] font-bold uppercase text-blue-800 block">3. Survey Responded</span>
+                <span className="text-xs font-bold uppercase text-blue-800 block">3. Survey Responded</span>
                 <span className="text-xl font-bold text-blue-900 font-mono block mt-1">
                   {driveData.form_filled_count.toLocaleString()}
                 </span>
@@ -810,7 +798,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
               </div>
 
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                <span className="text-[10px] font-bold uppercase text-purple-800 block">4. Email Confirmed</span>
+                <span className="text-xs font-bold uppercase text-purple-800 block">4. Email Confirmed</span>
                 <span className="text-xl font-bold text-purple-900 font-mono block mt-1">
                   {driveData.responses_yes.toLocaleString()}
                 </span>
@@ -822,7 +810,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
           {/* Breakdown of Ineligibility & Remarks Issues */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card className="p-5">
-              <h4 className="font-serif font-bold text-sm text-slate-900 mb-3 m-0 flex items-center gap-1.5">
+              <h4 className=" font-bold text-sm text-slate-900 mb-3 m-0 flex items-center gap-1.5">
                 <AlertTriangle size={15} className="text-amber-600" />
                 Student-Reported Survey Issues ({driveData.responses_no.toLocaleString()})
               </h4>
@@ -832,7 +820,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                     <span className="font-semibold text-xs text-slate-800 block">
                       Received "Not Eligible" message from Accenture
                     </span>
-                    <span className="text-[10px] text-slate-500">Student received direct rejection email</span>
+                    <span className="text-xs text-slate-500">Student received direct rejection email</span>
                   </div>
                   <Badge variant="neutral" size="sm">
                     {driveData.rejection_breakdown?.received_not_eligible_mail || 690}
@@ -844,7 +832,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                     <span className="font-semibold text-xs text-slate-800 block">
                       Registered through link but no further update
                     </span>
-                    <span className="text-[10px] text-slate-500">Awaiting scheduling or background screening</span>
+                    <span className="text-xs text-slate-500">Awaiting scheduling or background screening</span>
                   </div>
                   <Badge variant="neutral" size="sm">
                     {driveData.rejection_breakdown?.registered_link_no_update || 589}
@@ -856,7 +844,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                     <span className="font-semibold text-xs text-slate-800 block">
                       Never received any registration email
                     </span>
-                    <span className="text-[10px] text-slate-500">Spam folder check or email address error</span>
+                    <span className="text-xs text-slate-500">Spam folder check or email address error</span>
                   </div>
                   <Badge variant="neutral" size="sm">
                     {driveData.rejection_breakdown?.no_registration_mail_received || 498}
@@ -866,7 +854,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
             </Card>
 
             <Card className="p-5">
-              <h4 className="font-serif font-bold text-sm text-slate-900 mb-3 m-0 flex items-center gap-1.5">
+              <h4 className=" font-bold text-sm text-slate-900 mb-3 m-0 flex items-center gap-1.5">
                 <ShieldAlert size={15} className="text-cardinal" />
                 Mentor-Flagged Discrepancies & Remarks
               </h4>
@@ -910,7 +898,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-serif font-bold text-base text-slate-900 m-0">
+              <h3 className=" font-bold text-base text-slate-900 m-0">
                 Institutional Reporting Topology & Graph Relations
               </h3>
               <p className="text-xs text-slate-500 mt-0.5 m-0">
@@ -925,16 +913,16 @@ export const InstitutionalHierarchyPage: React.FC = () => {
           <div className="bg-slate-50 border border-slate-200 rounded-lg p-6 font-mono text-xs text-slate-800 space-y-6">
             {/* Level 1: HOS */}
             <div>
-              <span className="text-[10px] uppercase font-bold text-slate-400 block mb-2">
+              <span className="text-xs uppercase font-bold text-slate-400 block mb-2">
                 Level 1: Executive School Deans (4 HOS Nodes)
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {hosList.map((h) => (
                   <div key={h.hos_id} className="bg-white border-2 border-navy-900 rounded p-3 shadow-xs">
-                    <span className="text-[9px] uppercase font-bold text-navy-800 block">{h.hos_id}</span>
+                    <span className="text-xs uppercase font-bold text-navy-800 block">{h.hos_id}</span>
                     <span className="font-bold text-xs text-slate-900 block">{h.name}</span>
-                    <span className="text-[10px] text-slate-500 block truncate">{h.school}</span>
-                    <span className="text-[10px] text-emerald-700 font-bold block mt-1">
+                    <span className="text-xs text-slate-500 block truncate">{h.school}</span>
+                    <span className="text-xs text-emerald-700 font-bold block mt-1">
                       {h.students_count.toLocaleString()} Students &bull; {h.faculty_count} Mentors
                     </span>
                   </div>
@@ -946,15 +934,15 @@ export const InstitutionalHierarchyPage: React.FC = () => {
             <div className="border-l-2 border-dashed border-slate-300 ml-6 pl-6 space-y-6">
               {/* Level 2: HOD */}
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block mb-2">
+                <span className="text-xs uppercase font-bold text-slate-400 block mb-2">
                   Level 2: Department Heads (54 HOD Nodes) &bull; Sample Branches
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {hodList.slice(0, 6).map((h) => (
                     <div key={h.hod_id} className="bg-white border border-slate-200 rounded p-2.5">
-                      <span className="text-[9px] font-bold text-slate-500 block">UID: {h.hod_id}</span>
+                      <span className="text-xs font-bold text-slate-500 block">UID: {h.hod_id}</span>
                       <span className="font-bold text-xs text-slate-900 block truncate">{h.name}</span>
-                      <span className="text-[10px] text-slate-500 block truncate">
+                      <span className="text-xs text-slate-500 block truncate">
                         {h.faculty_count} Faculty Mentors &bull; {h.students_count} Students
                       </span>
                     </div>
@@ -964,14 +952,14 @@ export const InstitutionalHierarchyPage: React.FC = () => {
 
               {/* Level 3: Faculty */}
               <div className="border-l-2 border-dashed border-slate-300 ml-6 pl-6">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block mb-2">
+                <span className="text-xs uppercase font-bold text-slate-400 block mb-2">
                   Level 3: Faculty Mentors (508 Active Mentors)
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                   {facultyList.slice(0, 4).map((f) => (
-                    <div key={f.faculty_id} className="bg-white border border-slate-200 rounded p-2 text-[11px]">
+                    <div key={f.faculty_id} className="bg-white border border-slate-200 rounded p-2 text-xs">
                       <span className="font-bold block truncate">{f.name}</span>
-                      <span className="text-[10px] text-slate-400">Mentoring {f.mentees_count} Students</span>
+                      <span className="text-xs text-slate-400">Mentoring {f.mentees_count} Students</span>
                     </div>
                   ))}
                 </div>
@@ -979,10 +967,10 @@ export const InstitutionalHierarchyPage: React.FC = () => {
 
               {/* Level 4: Students */}
               <div className="border-l-2 border-dashed border-slate-300 ml-12 pl-6">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
+                <span className="text-xs uppercase font-bold text-slate-400 block mb-1">
                   Level 4: Verified Student Cohort (7,133 Students)
                 </span>
-                <p className="text-[11px] text-slate-500 m-0">
+                <p className="text-xs text-slate-500 m-0">
                   Each student linked via bidirectional graph edges to their dedicated Faculty Mentor, Department HOD, and Target Placement Drive.
                 </p>
               </div>
@@ -1011,26 +999,26 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-1.5 flex-wrap mb-1">
                     {(facultyDetail.roles || facultyDetail.faculty.roles || ['TEACHER']).map((r) => (
-                      <span key={r} className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-navy-900 text-white font-mono">
+                      <span key={r} className="px-2 py-0.5 rounded text-xs font-bold tracking-wider uppercase bg-navy-900 text-white font-mono">
                         {r}
                       </span>
                     ))}
                     {facultyDetail.faculty.is_placement_coordinator && (
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-purple-700 text-white font-mono">
+                      <span className="px-2 py-0.5 rounded text-xs font-bold tracking-wider uppercase bg-purple-700 text-white font-mono">
                         TPO COORDINATOR
                       </span>
                     )}
                   </div>
-                  <h3 className="font-serif font-bold text-lg text-slate-900 m-0">
+                  <h3 className=" font-bold text-lg text-slate-900 m-0">
                     {facultyDetail.faculty.name}
                   </h3>
                   <p className="text-xs text-slate-700 font-semibold mt-0.5 m-0">
                     {facultyDetail.teaching?.academic_rank || facultyDetail.faculty.academic_rank || facultyDetail.faculty.designation} &bull; {facultyDetail.faculty.department}
                   </p>
-                  <p className="text-[11px] text-slate-500 mt-0.5 m-0 font-mono">
+                  <p className="text-xs text-slate-500 mt-0.5 m-0 font-mono">
                     UID: {facultyDetail.faculty.faculty_id} &bull; Office: {facultyDetail.teaching?.office_location || facultyDetail.faculty.office_location || 'Main Faculty Block'}
                   </p>
-                  <p className="text-[11px] text-slate-400 mt-0.5 m-0 font-mono">
+                  <p className="text-xs text-slate-400 mt-0.5 m-0 font-mono">
                     HOD: {facultyDetail.faculty.hod_name} ({facultyDetail.faculty.hod_id}) &bull; Dean: {facultyDetail.faculty.hos_name}
                   </p>
                 </div>
@@ -1038,7 +1026,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                   <span className="text-xs font-bold text-slate-900 font-mono block">
                     {facultyDetail.faculty.mentees_count} Mentees
                   </span>
-                  <span className="text-[11px] text-emerald-700 font-bold block">
+                  <span className="text-xs text-emerald-700 font-bold block">
                     {facultyDetail.faculty.completion_rate}% Survey Filled
                   </span>
                 </div>
@@ -1059,13 +1047,13 @@ export const InstitutionalHierarchyPage: React.FC = () => {
 
             {/* Teaching Portfolio & Active Courses */}
             <div className="border border-slate-200 rounded-lg p-4 bg-white">
-              <h4 className="font-serif font-bold text-xs uppercase tracking-wider text-slate-700 mb-2 m-0 flex items-center gap-1.5">
+              <h4 className=" font-bold text-xs uppercase tracking-wider text-slate-700 mb-2 m-0 flex items-center gap-1.5">
                 <BookOpen size={14} className="text-navy-900" />
                 Teaching Portfolio & Academic Delivery
               </h4>
               <div className="space-y-2 text-xs">
                 <div>
-                  <span className="text-slate-500 text-[11px] block">Assigned Instruction Courses:</span>
+                  <span className="text-slate-500 text-xs block">Assigned Instruction Courses:</span>
                   <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                     {(facultyDetail.teaching?.courses || facultyDetail.faculty.courses_taught || ['CS301', 'CS402']).map((c) => (
                       <span key={c} className="bg-navy-50 text-navy-900 border border-navy-200 px-2 py-0.5 rounded font-mono text-xs font-bold">
@@ -1077,10 +1065,10 @@ export const InstitutionalHierarchyPage: React.FC = () => {
 
                 {facultyDetail.teaching?.committees && facultyDetail.teaching.committees.length > 0 && (
                   <div className="pt-2 border-t border-slate-100">
-                    <span className="text-slate-500 text-[11px] block">Institutional Committees:</span>
+                    <span className="text-slate-500 text-xs block">Institutional Committees:</span>
                     <div className="flex items-center gap-1 mt-1 flex-wrap">
                       {facultyDetail.teaching.committees.map((comm) => (
-                        <span key={comm} className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] font-sans">
+                        <span key={comm} className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-xs font-sans">
                           {comm}
                         </span>
                       ))}
@@ -1093,7 +1081,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
             {/* Concurrent Leadership Appointments */}
             {(facultyDetail.appointments?.hod || facultyDetail.appointments?.hos || facultyDetail.appointments?.admin) && (
               <div className="border border-amber-200 bg-amber-50/50 rounded-lg p-4 space-y-2">
-                <h4 className="font-serif font-bold text-xs uppercase tracking-wider text-amber-900 m-0 flex items-center gap-1.5">
+                <h4 className=" font-bold text-xs uppercase tracking-wider text-amber-900 m-0 flex items-center gap-1.5">
                   <Building2 size={14} className="text-amber-800" />
                   Active Concurrent Administrative Appointments
                 </h4>
@@ -1101,7 +1089,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                 {facultyDetail.appointments.hod && (
                   <div className="bg-white p-2.5 rounded border border-amber-200 text-xs">
                     <div className="font-bold text-slate-900">Department Head (HOD) Appointment</div>
-                    <div className="text-slate-600 text-[11px] mt-0.5 font-mono">
+                    <div className="text-slate-600 text-xs mt-0.5 font-mono">
                       Department: {facultyDetail.appointments.hod.department} &bull; Jurisdiction: {facultyDetail.appointments.hod.faculty_count} Faculty, {facultyDetail.appointments.hod.students_count} Students
                     </div>
                   </div>
@@ -1110,7 +1098,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                 {facultyDetail.appointments.hos && (
                   <div className="bg-white p-2.5 rounded border border-amber-200 text-xs">
                     <div className="font-bold text-slate-900">Executive School Dean (HOS) Appointment</div>
-                    <div className="text-slate-600 text-[11px] mt-0.5 font-mono">
+                    <div className="text-slate-600 text-xs mt-0.5 font-mono">
                       School: {facultyDetail.appointments.hos.school} &bull; Jurisdiction: {facultyDetail.appointments.hos.hod_count} Departments, {facultyDetail.appointments.hos.students_count} Candidates
                     </div>
                   </div>
@@ -1119,7 +1107,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                 {facultyDetail.appointments.admin && (
                   <div className="bg-white p-2.5 rounded border border-amber-200 text-xs">
                     <div className="font-bold text-slate-900">Institutional Executive Admin Appointment</div>
-                    <div className="text-slate-600 text-[11px] mt-0.5 font-mono">
+                    <div className="text-slate-600 text-xs mt-0.5 font-mono">
                       Role: {facultyDetail.appointments.admin.role} &bull; Office: {facultyDetail.appointments.admin.office}
                     </div>
                   </div>
@@ -1130,14 +1118,14 @@ export const InstitutionalHierarchyPage: React.FC = () => {
             {/* Department Colleagues */}
             {facultyDetail.colleagues && facultyDetail.colleagues.length > 0 && (
               <div>
-                <h4 className="font-serif font-bold text-xs uppercase tracking-wider text-slate-700 mb-2 m-0">
+                <h4 className=" font-bold text-xs uppercase tracking-wider text-slate-700 mb-2 m-0">
                   Department Peers & Co-Teachers ({facultyDetail.colleagues.length})
                 </h4>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   {facultyDetail.colleagues.slice(0, 4).map((c) => (
                     <div key={c.faculty_id} className="bg-slate-50 border border-slate-200 rounded p-2">
                       <span className="font-semibold text-slate-900 block truncate">{c.name}</span>
-                      <span className="text-[10px] text-slate-500 block truncate">{c.designation}</span>
+                      <span className="text-xs text-slate-500 block truncate">{c.designation}</span>
                     </div>
                   ))}
                 </div>
@@ -1147,17 +1135,17 @@ export const InstitutionalHierarchyPage: React.FC = () => {
             {/* Mentees Table */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-serif font-bold text-sm text-slate-900 m-0">
+                <h4 className=" font-bold text-sm text-slate-900 m-0">
                   Assigned Student Mentees ({facultyDetail.mentees.length})
                 </h4>
-                <span className="text-[10px] text-slate-400">
+                <span className="text-xs text-slate-400">
                   Click any student to open career dossier
                 </span>
               </div>
 
               <div className="border border-slate-200 rounded-lg overflow-hidden">
                 <table className="w-full text-left text-xs text-slate-700">
-                  <thead className="bg-slate-50 text-[10px] uppercase font-bold text-slate-500 border-b border-slate-200">
+                  <thead className="bg-slate-50 text-xs uppercase font-bold text-slate-500 border-b border-slate-200">
                     <tr>
                       <th className="py-2.5 px-3">Roll No</th>
                       <th className="py-2.5 px-3">Candidate</th>
@@ -1174,9 +1162,9 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                         <tr
                           key={stu.student_id}
                           className="hover:bg-slate-50 cursor-pointer transition-colors"
-                          onClick={() => navigate(`/students/${stu.student_id}`)}
+                          onClick={() => navigate(`/tpo/students/${stu.student_id}`)}
                         >
-                          <td className="py-2 px-3 font-mono font-bold text-navy-900 text-[11px]">
+                          <td className="py-2 px-3 font-mono font-bold text-navy-900 text-xs">
                             {stu.student_id}
                           </td>
                           <td className="py-2 px-3 font-medium text-slate-900">
@@ -1192,7 +1180,7 @@ export const InstitutionalHierarchyPage: React.FC = () => {
                               {stu.survey_status}
                             </Badge>
                           </td>
-                          <td className="py-2 px-3 text-[11px] text-slate-500 max-w-xs truncate">
+                          <td className="py-2 px-3 text-xs text-slate-500 max-w-xs truncate">
                             {stu.remarks || (isFilled ? 'Survey submitted' : 'Pending response')}
                           </td>
                         </tr>

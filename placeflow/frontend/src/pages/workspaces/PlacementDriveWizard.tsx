@@ -1,27 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import {
-  Building2,
-  Briefcase,
   CheckCircle2,
-  AlertTriangle,
   Users,
-  Calendar,
-  Layers,
   ArrowRight,
   ArrowLeft,
-  DollarSign,
-  ShieldCheck,
   Sparkles,
   Info,
-  Clock,
-  Laptop,
   Check,
   Send,
-  X,
-  Loader2,
-} from 'lucide-react';
+  Loader2} from 'lucide-react';
 import { api } from '../../api';
-import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
@@ -77,7 +65,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
     'ECE',
     'AI_DS',
   ]);
-  const [minClass12, setMinClass12] = useState(75);
+  const [_minClass12, _setMinClass12] = useState(75);
 
   // Step 3 State: Selection Rounds
   const [rounds, setRounds] = useState([
@@ -373,7 +361,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                       onChange={(e) => setMinCgpa(parseFloat(e.target.value) || 0)}
                       className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface font-mono font-medium tabular-nums text-ink focus:border-brand focus:ring-1 focus:ring-brand"
                     />
-                    <span className="text-[11px] text-ink-muted mt-1 block">
+                    <span className="text-xs text-ink-muted mt-1 block">
                       Scale: 10.0 max
                     </span>
                   </div>
@@ -453,13 +441,13 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 </div>
 
                 <div className="p-3 bg-surface border border-line rounded-lg text-center">
-                  <div className="text-[11px] text-ink-muted uppercase font-medium">
+                  <div className="text-xs text-ink-muted uppercase font-medium">
                     Estimated Qualifying Pool
                   </div>
                   <div className="text-3xl font-semibold tabular-nums text-brand mt-1">
                     {qualifyingEstimates.finalEligible}
                   </div>
-                  <div className="text-[11px] text-success font-medium mt-0.5">
+                  <div className="text-xs text-success font-medium mt-0.5">
                     Ready for automated batch dispatch
                   </div>
                 </div>
@@ -540,12 +528,12 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                   className="p-3 bg-surface border border-line rounded-lg flex items-center justify-between gap-4 text-xs"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-md bg-brand text-white flex items-center justify-center font-semibold text-[11px] tabular-nums">
+                    <div className="w-6 h-6 rounded-md bg-brand text-white flex items-center justify-center font-semibold text-xs tabular-nums">
                       {idx + 1}
                     </div>
                     <div>
                       <span className="font-semibold text-ink block">{round.name}</span>
-                      <span className="text-[11px] text-ink-muted">
+                      <span className="text-xs text-ink-muted">
                         Duration: {round.duration} &bull; Mode: {round.type} &bull;{' '}
                         {'platform' in round ? round.platform : round.venue}
                       </span>
@@ -609,7 +597,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
               <CheckCircle2 size={18} className="text-success shrink-0 mt-0.5" />
               <div>
                 <span className="font-semibold text-success">Superday Conflict Solver: Zero Clashes Detected</span>
-                <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed m-0">
+                <p className="text-xs text-ink-muted mt-0.5 leading-relaxed m-0">
                   No competing Day-1 corporate partner holds a lock on Lab 3 &amp; 4 during this schedule. Student interview slots are automatically synchronized with academic timetables.
                 </p>
               </div>
@@ -631,7 +619,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                   onChange={(e) => setIntakeGoal(parseInt(e.target.value, 10) || 0)}
                   className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink font-mono font-medium tabular-nums"
                 />
-                <span className="text-[11px] text-ink-muted mt-1 block">Expected offers</span>
+                <span className="text-xs text-ink-muted mt-1 block">Expected offers</span>
               </div>
 
               <div>
@@ -655,7 +643,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 <span className="text-xs font-semibold text-ink block">
                   Encourage Gender Diversity &amp; Special Demographics
                 </span>
-                <span className="text-[11px] text-ink-muted">
+                <span className="text-xs text-ink-muted">
                   Highlight candidate profiles from underrepresented engineering disciplines
                 </span>
               </div>
@@ -678,7 +666,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 <span className="text-xs font-semibold text-success block">
                   Pre-Publication Verification Complete
                 </span>
-                <p className="text-[11px] text-ink-muted mt-0.5 leading-relaxed m-0">
+                <p className="text-xs text-ink-muted mt-0.5 leading-relaxed m-0">
                   Drive parameters are completely verified against Institutional Placement Charter v3. Exactly <strong>{qualifyingEstimates.finalEligible} candidates</strong> will receive automated notifications.
                 </p>
               </div>
@@ -686,19 +674,19 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
 
             <div className="bg-canvas p-4 rounded-lg border border-line grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-ink-muted block text-[10px] uppercase font-medium">
+                <span className="text-ink-muted block text-xs uppercase font-medium">
                   Partner
                 </span>
                 <span className="font-semibold text-ink">{customCompanyName}</span>
               </div>
               <div>
-                <span className="text-ink-muted block text-[10px] uppercase font-medium">
+                <span className="text-ink-muted block text-xs uppercase font-medium">
                   Package
                 </span>
                 <span className="font-semibold tabular-nums text-success">₹{ctc} LPA</span>
               </div>
               <div>
-                <span className="text-ink-muted block text-[10px] uppercase font-medium">
+                <span className="text-ink-muted block text-xs uppercase font-medium">
                   Eligible Pool
                 </span>
                 <span className="font-semibold tabular-nums text-brand">
@@ -706,7 +694,7 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 </span>
               </div>
               <div>
-                <span className="text-ink-muted block text-[10px] uppercase font-medium">
+                <span className="text-ink-muted block text-xs uppercase font-medium">
                   Date
                 </span>
                 <span className="font-semibold tabular-nums text-ink">{driveDate}</span>

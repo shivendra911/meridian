@@ -1,14 +1,11 @@
 import React from 'react';
-import { NavLink, Outlet, Link, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, Link } from 'react-router-dom';
 import {
   User,
   Shield,
   Bell,
   Lock,
-  ArrowLeft,
-  Building2,
-  ChevronRight,
-} from 'lucide-react';
+  ArrowLeft} from 'lucide-react';
 import { useAuth } from '../core/auth/useAuth';
 import { Avatar } from '../ui/cards/Avatar';
 
@@ -21,7 +18,6 @@ const ACCOUNT_TABS = [
 
 export const AccountLayout: React.FC = () => {
   const { me, status } = useAuth();
-  const navigate = useNavigate();
 
   if (status === 'loading') {
     return (

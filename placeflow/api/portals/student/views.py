@@ -18,6 +18,7 @@ from api.auth.masking import mask_records
 from operations.applications import check_eligibility, apply_for_job
 from operations.errors import PlaceFlowError
 from operations.consent import record_consent, withdraw_consent, get_student_consents
+from camp_02.notify import notify, get_tpo_person_ids
 
 
 class StudentBaseView(APIView):
@@ -228,6 +229,19 @@ class StudentOfferRespondView(StudentBaseView):
             {"placement_id": offer_id},
             {"$set": {"response_status": new_status, "responded_at": now}},
         )
+
+        # Notify TPO officers about student response
+        stu_doc = db.students.find_one({"student_id": student_id}, {"name": 1})
+        stu_name = (stu_doc or {}).get("name") or student_id
+        for tpid in get_tpo_person_ids(db=db):
+            notify(
+                tpid,
+                "OFFER",
+                f"Placement Offer {new_status}: {stu_name}",
+                f"Candidate {stu_name} ({student_id}) has {new_status.lower()} their placement offer.",
+                link=f"/tpo/students/{student_id}",
+                db=db,
+            )
 
         return Response({"placement_id": offer_id, "status": new_status, "responded_at": now.isoformat()}, status=status.HTTP_200_OK)
 

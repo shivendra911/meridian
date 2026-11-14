@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Search,
-  LayoutDashboard,
   GraduationCap,
   Briefcase,
   Users,
@@ -13,11 +12,8 @@ import {
   Zap,
   User,
   Sparkles,
-  Award,
   Radar,
-  Scale,
-  FileText,
-} from 'lucide-react';
+  FileText} from 'lucide-react';
 import { api } from '../../api';
 
 interface CommandPaletteProps {
@@ -40,7 +36,7 @@ interface CommandItem {
 export const CommandPalette: React.FC<CommandPaletteProps> = ({
   isOpen,
   onClose,
-  onNavigateTab,
+  onNavigateTab: _onNavigateTab,
   onOpenCopilot,
 }) => {
   const navigate = useNavigate();
@@ -54,13 +50,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      Promise.all([api.getStudents(), api.getJobs(), api.getCompanies()])
-        .then(([sRes, jRes, cRes]) => {
-          setStudents(sRes.students || []);
-          setJobs(jRes.jobs || []);
-          setCompanies(cRes.companies || []);
-        })
-        .catch(() => {});
+      api.getStudents()
+        .then((sRes) => setStudents(sRes.students || []))
+        .catch(() => setStudents([]));
+      api.getJobs()
+        .then((jRes) => setJobs(jRes.jobs || []))
+        .catch(() => setJobs([]));
+      api.getCompanies()
+        .then((cRes) => setCompanies(cRes.companies || []))
+        .catch(() => setCompanies([]));
     }
   }, [isOpen]);
 
@@ -121,33 +119,44 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       },
       shortcut: 'P 5',
     },
+    {
+      id: 'sw_admin',
+      category: 'Switch Workspace',
+      label: 'Go to Institutional Admin',
+      description: 'Platform hierarchy, tenant configuration & access control',
+      icon: ShieldCheck,
+      action: () => {
+        navigate('/admin/home');
+      },
+      shortcut: 'P 6',
+    },
 
     // Fast Action Workflows
     {
       id: 'act_drives',
-      category: 'Placement Directorate',
-      label: 'Manage Placement Drives (JNFs)',
+      category: 'Placement Office',
+      label: 'Manage Drives',
       description: 'Create & inspect active recruitment campaigns',
       icon: Briefcase,
-      action: () => navigate('/placement/drives'),
+      action: () => navigate('/tpo/drives'),
       shortcut: 'G D',
     },
     {
       id: 'act_superday',
-      category: 'Placement Directorate',
+      category: 'Placement Office',
       label: 'Superday Interview Clash Solver',
       description: 'Arbitrate conflicting candidate evaluation slots',
       icon: Zap,
-      action: () => navigate('/placement/interviews'),
+      action: () => navigate('/tpo/insights/superday'),
       shortcut: 'G S',
     },
     {
       id: 'act_renege',
-      category: 'Placement Directorate',
+      category: 'Placement Office',
       label: 'Retention & Renege Radar',
       description: 'Post-offer flight risk telemetry & predictive early warning',
       icon: Radar,
-      action: () => navigate('/placement/offers'),
+      action: () => navigate('/tpo/insights/renege'),
       shortcut: 'G R',
     },
     {
@@ -156,7 +165,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       label: 'Candidate Opportunities Feed',
       description: 'Explore matching placement drives & submit applications',
       icon: Sparkles,
-      action: () => navigate('/opportunities'),
+      action: () => navigate('/student/opportunities'),
       shortcut: 'G O',
     },
     {
@@ -165,7 +174,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       label: 'My Application Progression Stepper',
       description: 'Track candidate status from Applied to Selected',
       icon: FileText,
-      action: () => navigate('/me/applications'),
+      action: () => navigate('/student/applications'),
       shortcut: 'G A',
     },
     {
@@ -174,7 +183,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       label: 'DPDP Act 2023 Consent Ledger',
       description: 'Manage verifiable candidate privacy consents',
       icon: ShieldCheck,
-      action: () => navigate('/compliance/consent'),
+      action: () => navigate('/account/privacy'),
       shortcut: 'G C',
     },
     {
@@ -196,7 +205,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       label: `${s.name} (${s.student_id})`,
       description: `${s.department} Engineering • CGPA ${s.cgpa?.toFixed(2)} • ${s.placement_status}`,
       icon: User,
-      action: () => navigate(`/students/${s.student_id}`),
+      action: () => navigate(`/tpo/students/${s.student_id}`),
     })),
     ...jobs.map((j) => ({
       id: `job_${j.job_id}`,
@@ -204,7 +213,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       label: `${j.title} • ${j.company_id}`,
       description: `₹${j.package_lpa} LPA • ${j.tier} • ${j.status} Drive`,
       icon: Briefcase,
-      action: () => navigate(`/placement/drives/${j.job_id}`),
+      action: () => navigate(`/tpo/drives/${j.job_id}`),
     })),
     ...companies.map((c) => ({
       id: `cmp_${c.company_id}`,
@@ -212,7 +221,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       label: c.name,
       description: `${c.industry} • ${c.location} • ID: ${c.company_id}`,
       icon: Building2,
-      action: () => navigate(`/placement/companies/${c.company_id}`),
+      action: () => navigate(`/tpo/companies/${c.company_id}`),
     })),
   ];
 
@@ -282,7 +291,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             placeholder="Search candidate, company, drive, or command... (Esc to exit)"
             className="w-full py-3.5 bg-transparent text-sm text-ink placeholder-ink-muted focus:outline-hidden font-sans"
           />
-          <kbd className="text-[10px] font-mono text-ink-muted bg-surface border border-line px-1.5 py-0.5 rounded shadow-2xs">
+          <kbd className="text-xs font-mono text-ink-muted bg-surface border border-line px-1.5 py-0.5 rounded shadow-2xs">
             ESC
           </kbd>
         </div>
@@ -323,7 +332,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       <div className="text-xs font-semibold truncate flex items-center gap-1.5">
                         <span>{cmd.label}</span>
                         <span
-                          className={`text-[9px] font-mono font-normal uppercase ${
+                          className={`text-xs font-mono font-normal uppercase ${
                             isSelected ? 'text-white/70' : 'text-ink-muted'
                           }`}
                         >
@@ -332,7 +341,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       </div>
                       {cmd.description && (
                         <div
-                          className={`text-[11px] truncate ${
+                          className={`text-xs truncate ${
                             isSelected ? 'text-white/80' : 'text-ink-muted'
                           }`}
                         >
@@ -345,7 +354,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   <div className="flex items-center gap-2 shrink-0">
                     {cmd.shortcut && (
                       <kbd
-                        className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${
+                        className={`text-xs font-mono px-1.5 py-0.5 rounded border ${
                           isSelected
                             ? 'bg-white/20 text-white border-white/30'
                             : 'bg-canvas text-ink-muted border-line'
@@ -363,7 +372,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
         </div>
 
         {/* Footer Navigation Hints */}
-        <div className="px-4 py-2 border-t border-line bg-canvas/80 text-[10px] text-ink-muted flex items-center justify-between font-mono">
+        <div className="px-4 py-2 border-t border-line bg-canvas/80 text-xs text-ink-muted flex items-center justify-between font-mono">
           <div className="flex items-center gap-2">
             <span>&uarr;&darr; navigate</span>
             <span>&bull;</span>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
-import { ShieldCheck, AlertCircle, CheckCircle2, Activity, Database } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Activity, Database } from 'lucide-react';
 
 export const FairnessPage: React.FC = () => {
   const [audit, setAudit] = useState<{
@@ -46,10 +46,10 @@ export const FairnessPage: React.FC = () => {
       {/* Header */}
       <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-subtle flex items-start justify-between">
         <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
+          <div className="text-xs font-bold tracking-widest uppercase text-slate-500 mb-1">
             SECTION 9.3 &bull; AI GOVERNANCE FAIRNESS &amp; SENSITIVE ATTRIBUTE AUDITING
           </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
+          <h1 className="text-xl font-bold  text-slate-900 m-0">
             Demographic Slice Fairness &amp; Proxy Feature Audit
           </h1>
           <p className="text-xs text-slate-600 mt-1 max-w-2xl">
@@ -77,10 +77,10 @@ export const FairnessPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         <div className="bg-white border border-slate-200 rounded p-4 shadow-subtle">
           <div className="text-xs font-semibold text-slate-500 uppercase">Evaluated Cohort</div>
-          <div className="text-2xl font-bold font-serif text-slate-900 mt-1">
+          <div className="text-2xl font-bold  text-slate-900 mt-1">
             {audit.total_cohort_evaluated} candidates
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Across all 7 engineering branches</div>
+          <div className="text-xs text-slate-400 mt-0.5">Across all 7 engineering branches</div>
         </div>
 
         <div className="bg-white border border-slate-200 rounded p-4 shadow-subtle">
@@ -88,7 +88,7 @@ export const FairnessPage: React.FC = () => {
           <div className="text-2xl font-bold font-mono text-emerald-700 mt-1">
             {audit.disparate_impact_ratio}x
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">
+          <div className="text-xs text-slate-400 mt-0.5">
             Four-fifths threshold (min/max ratio &ge; 0.65)
           </div>
         </div>
@@ -98,7 +98,7 @@ export const FairnessPage: React.FC = () => {
           <div className="text-2xl font-bold font-mono text-slate-800 mt-1">
             {(audit.overall_selection_rate * 100).toFixed(1)}%
           </div>
-          <div className="text-[11px] text-slate-400 mt-0.5">High probability (&ge; 70%) threshold</div>
+          <div className="text-xs text-slate-400 mt-0.5">High probability (&ge; 70%) threshold</div>
         </div>
       </div>
 
@@ -111,7 +111,7 @@ export const FairnessPage: React.FC = () => {
               Departmental Slice Parity Report (FR-ML-002)
             </h2>
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">
+          <span className="text-xs text-slate-500 font-mono">
             Calibrated Model Demographic Evaluation
           </span>
         </div>
@@ -148,7 +148,7 @@ export const FairnessPage: React.FC = () => {
 
       {/* Prohibited Attributes Box */}
       <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle space-y-3">
-        <h3 className="text-sm font-bold font-serif text-slate-900 m-0">
+        <h3 className="text-sm font-bold  text-slate-900 m-0">
           Statutory Ban on Sensitive &amp; Proxy Attributes (FR-ML-001)
         </h3>
         <p className="text-xs text-slate-600 m-0 leading-relaxed">

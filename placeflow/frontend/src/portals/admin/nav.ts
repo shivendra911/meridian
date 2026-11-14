@@ -2,7 +2,7 @@
  * PlaceFlow / Meridian — Admin Portal Navigation (Phase 4).
  */
 
-import { LayoutDashboard, Building2, Network, Key, Layers, Shield, Cpu, LucideIcon } from 'lucide-react';
+import { LayoutDashboard, Building2, Network, Key, Layers, Cpu, LucideIcon } from 'lucide-react';
 
 export interface AdminNavItem {
   id: string;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Mail, MessageSquare, Send, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Mail, Send, CheckCircle2 } from 'lucide-react';
 
 export const ContactSupportPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);

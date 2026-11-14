@@ -4,7 +4,6 @@ import { api } from '../api';
 import { Job } from '../../../types';
 import { Briefcase, ArrowRight, Sparkles, Search, Filter, LayoutGrid, List } from 'lucide-react';
 import { PageHeader } from '../../../components/ui/PageHeader';
-import { StatCard } from '../../../components/ui/StatCard';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { Badge } from '../../../components/ui/Badge';
@@ -15,7 +14,7 @@ import { resolveCompanyName } from '../../../utils/formatters';
 import { DriveCard, useDocumentTitle } from '../../../ui';
 
 export const DrivesPage: React.FC = () => {
-  useDocumentTitle('Placement Drives (JNFs)');
+  useDocumentTitle('Drives');
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,10 +38,6 @@ export const DrivesPage: React.FC = () => {
   }, []);
 
   const totalVacancies = jobs.reduce((sum, j) => sum + (j.vacancies || 0), 0);
-  const totalFilled = jobs.reduce((sum, j) => sum + (j.filled || 0), 0);
-  const avgCtc = jobs.length > 0
-    ? (jobs.reduce((sum, j) => sum + (j.package_lpa || 0), 0) / jobs.length).toFixed(1)
-    : '0';
 
   const filteredJobs = jobs.filter((j) => {
     const compName = resolveCompanyName(j.company_id);
@@ -58,9 +53,44 @@ export const DrivesPage: React.FC = () => {
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
-        title="Placement Drives (JNFs)"
-        description="Active campus recruitment drives, eligibility rules, and hiring pipelines."
-        badge={<Badge variant="institutional" size="xs">Live Registry</Badge>}
+        title="Drives"
+        description={
+          <span className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
+            <button
+              type="button"
+              onClick={() => setTierFilter('ALL')}
+              className={`hover:text-ink transition-colors ${tierFilter === 'ALL' ? 'font-medium text-ink' : ''}`}
+            >
+              {jobs.length} total
+            </button>
+            <span>·</span>
+            <button
+              type="button"
+              onClick={() => setTierFilter('Normal')}
+              className={`hover:text-ink transition-colors ${tierFilter === 'Normal' ? 'font-medium text-ink' : ''}`}
+            >
+              {jobs.filter((j) => j.tier === 'Normal').length} Normal
+            </button>
+            <span>·</span>
+            <button
+              type="button"
+              onClick={() => setTierFilter('Dream')}
+              className={`hover:text-ink transition-colors ${tierFilter === 'Dream' ? 'font-medium text-ink' : ''}`}
+            >
+              {jobs.filter((j) => j.tier === 'Dream').length} Dream
+            </button>
+            <span>·</span>
+            <button
+              type="button"
+              onClick={() => setTierFilter('Super Dream')}
+              className={`hover:text-ink transition-colors ${tierFilter === 'Super Dream' ? 'font-medium text-ink' : ''}`}
+            >
+              {jobs.filter((j) => j.tier === 'Super Dream').length} Super Dream
+            </button>
+            <span>·</span>
+            <span>{totalVacancies} vacancies</span>
+          </span>
+        }
         actions={
           <Button
             variant="primary"
@@ -68,37 +98,10 @@ export const DrivesPage: React.FC = () => {
             onClick={() => setIsWizardOpen(true)}
             leftIcon={<Sparkles size={14} />}
           >
-            Create Placement Drive
+            New drive
           </Button>
         }
       />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Active Drives"
-          value={loading ? '—' : jobs.length}
-          hint="Open Job Notifications"
-          icon={Briefcase}
-        />
-        <StatCard
-          label="Total Vacancies"
-          value={loading ? '—' : totalVacancies}
-          hint="Target Institutional Intake"
-          icon={Briefcase}
-        />
-        <StatCard
-          label="Offers Filled"
-          value={loading ? '—' : totalFilled}
-          hint="Candidate Acceptances"
-          icon={Briefcase}
-        />
-        <StatCard
-          label="Average CTC"
-          value={loading ? '—' : `₹${avgCtc} LPA`}
-          hint="Across All Openings"
-          icon={Briefcase}
-        />
-      </div>
 
       {/* Search and Tier Filter Bar */}
       <Card className="p-3">
@@ -168,13 +171,13 @@ export const DrivesPage: React.FC = () => {
       ) : filteredJobs.length === 0 ? (
         <EmptyState
           icon={Briefcase}
-          title={search || tierFilter !== 'ALL' ? 'No drives match your filters' : 'No placement drives registered'}
+          title={search || tierFilter !== 'ALL' ? 'No drives match your filters' : 'No drives yet'}
           description={
             search || tierFilter !== 'ALL'
               ? `No openings matched "${search}" in tier "${tierFilter}".`
               : 'Create a guided recruitment drive to configure eligibility criteria and notify students.'
           }
-          actionLabel={search || tierFilter !== 'ALL' ? undefined : 'Create Placement Drive'}
+          actionLabel={search || tierFilter !== 'ALL' ? undefined : 'New drive'}
           onAction={search || tierFilter !== 'ALL' ? undefined : () => setIsWizardOpen(true)}
         />
       ) : viewMode === 'cards' ? (
@@ -201,7 +204,7 @@ export const DrivesPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10 sticky top-0">
+                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-xs h-10 sticky top-0">
                   <th className="py-2 px-4 font-medium">JNF ID</th>
                   <th className="py-2 px-4 font-medium">Role Title</th>
                   <th className="py-2 px-4 font-medium">Recruiting Partner</th>
@@ -241,7 +244,7 @@ export const DrivesPage: React.FC = () => {
                         {j.tier}
                       </Badge>
                     </td>
-                    <td className="py-2 px-4 text-ink-muted text-[11px] tabular-nums">
+                    <td className="py-2 px-4 text-ink-muted text-xs tabular-nums">
                       CGPA &ge; {j.eligibility?.min_cgpa?.toFixed(2) || '7.00'} • Backlogs &le;{' '}
                       {j.eligibility?.max_backlogs ?? 0}
                     </td>

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { api } from '../api';
 import { Student, Job, Application, Interview, ConsentRecord, VtiScore } from '../../../types';
-import { PageHeader } from '../../../components/ui/PageHeader';
 import { StatCard } from '../../../components/ui/StatCard';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
@@ -12,7 +11,6 @@ import { Skeleton } from '../../../components/ui/Skeleton';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { VtiBadge } from '../../../components/common/VtiBadge';
 import { WhatIfPage } from './WhatIfPage';
-import { ConsentPage } from '../../../pages/ConsentPage';
 import { resolveCompanyName } from '../../../utils/formatters';
 import {
   User,
@@ -23,37 +21,26 @@ import {
   Shield,
   ArrowLeft,
   CheckCircle2,
-  AlertCircle,
   TrendingUp,
   Award,
-  Calendar,
   Sparkles,
   Building2,
   Phone,
   Mail,
-  Network,
-  GitFork,
-  ExternalLink,
   ShieldCheck,
-  AlertTriangle,
-  ChevronRight,
-  BookOpen,
-  Layers,
-  Clock,
-  Compass,
-} from 'lucide-react';
+  ChevronRight} from 'lucide-react';
 import { toast } from 'sonner';
 
 export const StudentDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const studentId = id || 'STU001';
+  const studentId = id;
 
   const [student, setStudent] = useState<Student | null>(null);
   const [topVti, setTopVti] = useState<VtiScore | null>(null);
   const [eligibleJobs, setEligibleJobs] = useState<Job[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
-  const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [_interviews, setInterviews] = useState<Interview[]>([]);
   const [aiPred, setAiPred] = useState<any>(null);
   const [skillRecs, setSkillRecs] = useState<any[]>([]);
   const [consents, setConsents] = useState<ConsentRecord[]>([]);
@@ -98,6 +85,10 @@ export const StudentDetailPage: React.FC = () => {
   useEffect(() => {
     loadData();
   }, [studentId]);
+
+  if (!studentId) {
+    return <Navigate to="/404" replace />;
+  }
 
   if (loading) {
     return (
@@ -166,7 +157,7 @@ export const StudentDetailPage: React.FC = () => {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             {/* Candidate Avatar */}
-            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-navy-900 to-slate-800 text-white flex items-center justify-center font-serif text-2xl font-bold tracking-wider shadow-sm shrink-0">
+            <div className="h-16 w-16 rounded-full bg-gradient-to-br from-navy-900 to-slate-800 text-white flex items-center justify-center  text-2xl font-bold tracking-wider shadow-sm shrink-0">
               {student.name
                 .split(' ')
                 .map((n) => n[0])
@@ -194,7 +185,7 @@ export const StudentDetailPage: React.FC = () => {
                 </Badge>
               </div>
 
-              <h1 className="font-serif font-bold text-2xl text-slate-900 m-0">
+              <h1 className=" font-bold text-2xl text-slate-900 m-0">
                 {student.name}
               </h1>
 
@@ -322,17 +313,17 @@ export const StudentDetailPage: React.FC = () => {
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Department</span>
+                  <span className="text-slate-400 text-xs uppercase font-bold tracking-wider block">Department</span>
                   <span className="font-semibold text-slate-900 text-sm mt-0.5 block">{student.department} Engineering</span>
                 </div>
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">CGPA</span>
+                  <span className="text-slate-400 text-xs uppercase font-bold tracking-wider block">CGPA</span>
                   <span className="font-semibold text-slate-900 text-sm mt-0.5 block font-mono">
                     {student.cgpa != null ? student.cgpa.toFixed(2) : '—'}
                   </span>
                 </div>
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Arrears / Backlogs</span>
+                  <span className="text-slate-400 text-xs uppercase font-bold tracking-wider block">Arrears / Backlogs</span>
                   <span
                     className={`font-semibold text-sm mt-0.5 block font-mono ${
                       (student.backlogs || 0) > 0 ? 'text-red-700' : 'text-emerald-700'
@@ -342,19 +333,19 @@ export const StudentDetailPage: React.FC = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Sanctioned Batch</span>
+                  <span className="text-slate-400 text-xs uppercase font-bold tracking-wider block">Sanctioned Batch</span>
                   <span className="font-semibold text-slate-900 text-sm mt-0.5 block font-mono">
                     {student.batch || '2023-2027'} (Year {student.year})
                   </span>
                 </div>
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Internship Standing</span>
+                  <span className="text-slate-400 text-xs uppercase font-bold tracking-wider block">Internship Standing</span>
                   <span className="font-semibold text-slate-900 text-sm mt-0.5 block">
                     {student.internship_status || 'On Campus'}
                   </span>
                 </div>
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-slate-400 text-[10px] uppercase font-bold tracking-wider block">Attendance Record</span>
+                  <span className="text-slate-400 text-xs uppercase font-bold tracking-wider block">Attendance Record</span>
                   <span className="font-semibold text-slate-900 text-sm mt-0.5 block font-mono">
                     {student.attendance != null ? `${student.attendance}%` : '91.6%'}
                   </span>
@@ -395,19 +386,19 @@ export const StudentDetailPage: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs mb-3">
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Assessment Standing</span>
+                  <span className="text-xs text-slate-400 uppercase font-bold block">Assessment Standing</span>
                   <span className="font-semibold text-slate-900 text-xs mt-1 block">
                     {student.assessment_status || 'Under Screening'}
                   </span>
                 </div>
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Survey Form Compliance</span>
+                  <span className="text-xs text-slate-400 uppercase font-bold block">Survey Form Compliance</span>
                   <span className="font-semibold text-slate-900 text-xs mt-1 block">
                     {student.survey_status || 'Pending Submission'}
                   </span>
                 </div>
                 <div className="p-3 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-[10px] text-slate-400 uppercase font-bold block">Action Required</span>
+                  <span className="text-xs text-slate-400 uppercase font-bold block">Action Required</span>
                   <span className="font-semibold text-amber-800 text-xs mt-1 block">
                     {student.action_required || 'Survey Reminder Call'}
                   </span>
@@ -419,16 +410,16 @@ export const StudentDetailPage: React.FC = () => {
                 <div className="p-3 bg-slate-50 border border-slate-200 rounded text-xs space-y-2">
                   {student.tags && student.tags.length > 0 && (
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[10px] uppercase font-bold text-slate-400">Cohort Tags:</span>
+                      <span className="text-xs uppercase font-bold text-slate-400">Cohort Tags:</span>
                       {student.tags.map((t) => (
-                        <span key={t} className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-white border border-slate-200 text-slate-700">
+                        <span key={t} className="px-2 py-0.5 rounded text-xs font-mono font-semibold bg-white border border-slate-200 text-slate-700">
                           {t}
                         </span>
                       ))}
                     </div>
                   )}
                   {student.remarks && (
-                    <p className="text-slate-600 italic text-[11px] m-0">
+                    <p className="text-slate-600 italic text-xs m-0">
                       "{student.remarks}"
                     </p>
                   )}
@@ -488,10 +479,10 @@ export const StudentDetailPage: React.FC = () => {
                   <span className="font-semibold text-slate-900 block text-sm">
                     {student.mentor_name || unifiedMentor?.name || 'Assigned Mentor'}
                   </span>
-                  <span className="text-[11px] text-slate-500 block">
+                  <span className="text-xs text-slate-500 block">
                     {unifiedMentor?.designation || 'Assistant Professor & Mentor'}
                   </span>
-                  <span className="text-[10px] text-slate-400 font-mono block mt-0.5">
+                  <span className="text-xs text-slate-400 font-mono block mt-0.5">
                     UID: {student.mentor_id || '35135'}
                   </span>
                 </div>
@@ -521,7 +512,7 @@ export const StudentDetailPage: React.FC = () => {
                 <Badge variant="neutral" size="xs">
                   Assigned Faculty Mentor
                 </Badge>
-                <h4 className="font-serif font-bold text-base text-slate-900 mt-2 m-0">
+                <h4 className=" font-bold text-base text-slate-900 mt-2 m-0">
                   {student.mentor_name || unifiedMentor?.name || 'Faculty Mentor'}
                 </h4>
                 <p className="text-xs text-slate-500 mt-0.5 m-0">
@@ -551,7 +542,7 @@ export const StudentDetailPage: React.FC = () => {
                 <Badge variant="warning" size="xs">
                   Department Head (HOD)
                 </Badge>
-                <h4 className="font-serif font-bold text-base text-slate-900 mt-2 m-0">
+                <h4 className=" font-bold text-base text-slate-900 mt-2 m-0">
                   {student.hod_name || student.mentor_hod || 'Department Head'}
                 </h4>
                 <p className="text-xs text-slate-500 mt-0.5 m-0">
@@ -568,7 +559,7 @@ export const StudentDetailPage: React.FC = () => {
                   variant="outline"
                   size="xs"
                   className="w-full"
-                  onClick={() => navigate('/institution/hierarchy')}
+                  onClick={() => navigate('/admin/hierarchy')}
                 >
                   View Department Hierarchy
                 </Button>
@@ -581,7 +572,7 @@ export const StudentDetailPage: React.FC = () => {
                 <Badge variant="institutional" size="xs">
                   Executive School Dean (HOS)
                 </Badge>
-                <h4 className="font-serif font-bold text-base text-slate-900 mt-2 m-0">
+                <h4 className=" font-bold text-base text-slate-900 mt-2 m-0">
                   {student.hos_name || student.mentor_hos || 'School Dean'}
                 </h4>
                 <p className="text-xs text-slate-500 mt-0.5 m-0">
@@ -597,7 +588,7 @@ export const StudentDetailPage: React.FC = () => {
                   variant="outline"
                   size="xs"
                   className="w-full"
-                  onClick={() => navigate('/institution/hierarchy')}
+                  onClick={() => navigate('/admin/hierarchy')}
                 >
                   View School Leadership
                 </Button>
@@ -609,7 +600,7 @@ export const StudentDetailPage: React.FC = () => {
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="font-serif font-bold text-base text-slate-900 m-0">
+                <h3 className=" font-bold text-base text-slate-900 m-0">
                   Directed Relationship Graph Edges
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5 m-0">
@@ -625,22 +616,22 @@ export const StudentDetailPage: React.FC = () => {
               {relationships.map((rel, idx) => (
                 <div key={rel.relation_id || idx} className="py-3 flex items-center justify-between flex-wrap gap-2 text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-navy-900 text-white">
+                    <span className="px-2 py-0.5 rounded text-xs font-mono font-bold bg-navy-900 text-white">
                       {rel.relation_type}
                     </span>
                     <span className="text-slate-400">&rarr;</span>
                     <span className="font-semibold text-slate-900">{rel.to_name}</span>
-                    <span className="text-[11px] text-slate-400 font-mono">({rel.to_id} &bull; {rel.to_type})</span>
+                    <span className="text-xs text-slate-400 font-mono">({rel.to_id} &bull; {rel.to_type})</span>
                   </div>
 
                   <div className="flex items-center gap-3">
                     {rel.metadata && (
-                      <span className="text-[11px] text-slate-500 font-mono">
+                      <span className="text-xs text-slate-500 font-mono">
                         {rel.metadata.eligibility ? `Eligibility: ${rel.metadata.eligibility}` : ''}
                         {rel.metadata.survey_status ? ` &bull; Survey: ${rel.metadata.survey_status}` : ''}
                       </span>
                     )}
-                    <span className="text-[10px] text-slate-400 font-mono">
+                    <span className="text-xs text-slate-400 font-mono">
                       {rel.created_at ? new Date(rel.created_at).toLocaleDateString() : ''}
                     </span>
                   </div>
@@ -691,9 +682,9 @@ export const StudentDetailPage: React.FC = () => {
 
                     {job.skills_required && job.skills_required.length > 0 && (
                       <div className="mt-3 flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[10px] font-mono text-slate-400">Required:</span>
+                        <span className="text-xs font-mono text-slate-400">Required:</span>
                         {job.skills_required.map((sk: string) => (
-                          <span key={sk} className="text-[10px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded font-mono">
+                          <span key={sk} className="text-xs bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded font-mono">
                             {sk}
                           </span>
                         ))}
@@ -733,7 +724,7 @@ export const StudentDetailPage: React.FC = () => {
             <div className="border border-slate-200 rounded-lg overflow-hidden bg-white">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 font-medium uppercase tracking-wider text-[11px]">
+                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 font-medium uppercase tracking-wider text-xs">
                     <th className="px-4 py-3">App ID</th>
                     <th className="px-4 py-3">Drive / Role</th>
                     <th className="px-4 py-3">Package / Tier</th>
@@ -769,7 +760,7 @@ export const StudentDetailPage: React.FC = () => {
                           {app.status}
                         </Badge>
                       </td>
-                      <td className="px-4 py-3.5 text-right font-mono text-slate-400 text-[11px]">
+                      <td className="px-4 py-3.5 text-right font-mono text-slate-400 text-xs">
                         {app.applied_at ? new Date(app.applied_at).toLocaleDateString([], {
                           month: 'short',
                           day: 'numeric',
@@ -789,30 +780,30 @@ export const StudentDetailPage: React.FC = () => {
         <div className="space-y-6">
           {aiPred && (
             <Card className="p-6">
-              <h3 className="text-base font-serif font-bold text-slate-900 mb-4 flex items-center gap-2 m-0">
+              <h3 className="text-base  font-bold text-slate-900 mb-4 flex items-center gap-2 m-0">
                 <Sparkles className="h-5 w-5 text-cardinal" />
                 CAMP AI Predictive Career Telemetry
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="p-4 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block">Placement Probability</span>
-                  <span className="font-serif font-bold text-3xl text-navy-900 mt-1 block">
+                  <span className="text-xs uppercase font-bold text-slate-500 block">Placement Probability</span>
+                  <span className=" font-bold text-3xl text-navy-900 mt-1 block">
                     {Math.round((aiPred.placement_probability || 0.45) * 100)}%
                   </span>
                   <span className="text-xs text-slate-500 mt-1 block">Conformal Prediction Estimate</span>
                 </div>
 
                 <div className="p-4 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block">Expected CTC Package</span>
-                  <span className="font-serif font-bold text-3xl text-emerald-800 mt-1 block font-mono">
+                  <span className="text-xs uppercase font-bold text-slate-500 block">Expected CTC Package</span>
+                  <span className=" font-bold text-3xl text-emerald-800 mt-1 block font-mono">
                     ₹{(aiPred.expected_package_lpa || 4.5).toFixed(1)} LPA
                   </span>
                   <span className="text-xs text-slate-500 mt-1 block">Based on Skill & CGPA Modeling</span>
                 </div>
 
                 <div className="p-4 bg-slate-50 rounded border border-slate-200">
-                  <span className="text-[10px] uppercase font-bold text-slate-500 block">Risk Band</span>
+                  <span className="text-xs uppercase font-bold text-slate-500 block">Risk Band</span>
                   <div className="mt-2">
                     <Badge
                       variant={
@@ -835,7 +826,7 @@ export const StudentDetailPage: React.FC = () => {
 
           {/* Recommended Skills Matrix */}
           <Card className="p-6">
-            <h3 className="text-base font-serif font-bold text-slate-900 mb-2 flex items-center gap-2 m-0">
+            <h3 className="text-base  font-bold text-slate-900 mb-2 flex items-center gap-2 m-0">
               <TrendingUp className="h-5 w-5 text-emerald-700" />
               High-Yield Competency Recommendations
             </h3>
@@ -851,12 +842,12 @@ export const StudentDetailPage: React.FC = () => {
                       + {sk.skill}
                     </span>
                     {sk.demand != null && (
-                      <span className="text-[11px] text-slate-500 mt-1 block">
+                      <span className="text-xs text-slate-500 mt-1 block">
                         Market Demand: {sk.demand}% &bull; Relevance: {sk.combined}%
                       </span>
                     )}
                   </div>
-                  <div className="mt-2 pt-2 border-t border-slate-200 flex items-center justify-between text-[10px]">
+                  <div className="mt-2 pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
                     <span className="text-emerald-700 font-semibold">Tier Booster</span>
                     <span className="text-slate-400 font-mono">CAMP-03 Verified</span>
                   </div>
@@ -874,7 +865,100 @@ export const StudentDetailPage: React.FC = () => {
 
       {/* TAB 7: DPDP CONSENTS */}
       {activeTab === 'consent' && (
-        <ConsentPage initialStudentId={studentId} />
+        <div className="space-y-4">
+          <Card className="p-5">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900">DPDP Act 2023 Consent Ledger</h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Purpose-based candidate disclosures and statutory notice records for {student?.name || (student as any)?.full_name || studentId}.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded text-xs font-medium">
+                <Shield size={13} className="text-emerald-600" />
+                <span>DPDP 2023 Compliant</span>
+              </div>
+            </div>
+
+            {consents.length === 0 ? (
+              <div className="p-6">
+                <EmptyState
+                  icon={Shield}
+                  title="No consent records"
+                  description="No DPDP purpose consent disclosures recorded for this candidate."
+                />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                {consents.map((c: any) => {
+                  const isActive = c.status === 'ACTIVE' || c.status === 'GRANTED' || c.is_granted;
+                  return (
+                    <div
+                      key={c.purpose || c._id}
+                      className="border border-slate-200 rounded p-4 bg-white flex flex-col justify-between"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span
+                            className={`text-xs font-semibold px-2 py-0.5 rounded ${
+                              c.is_mandatory
+                                ? 'bg-red-50 text-red-800 border border-red-200'
+                                : 'bg-blue-50 text-blue-800 border border-blue-200'
+                            }`}
+                          >
+                            {c.is_mandatory ? 'Mandatory for Drives' : 'Optional Consent'}
+                          </span>
+                          <span
+                            className={`text-xs font-medium flex items-center gap-1 ${
+                              isActive ? 'text-emerald-700' : 'text-slate-500'
+                            }`}
+                          >
+                            {isActive ? (
+                              <>
+                                <CheckCircle2 size={13} className="text-emerald-600" />
+                                <span>Active Consent</span>
+                              </>
+                            ) : (
+                              <span>Withdrawn / Pending</span>
+                            )}
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-semibold text-slate-900 mb-1">
+                          {c.purpose_title || c.purpose}
+                        </h4>
+                        <div className="text-xs font-mono text-slate-400 mb-2">Code: {c.purpose}</div>
+                        {c.description && <p className="text-xs text-slate-600 mb-3">{c.description}</p>}
+                        {c.disclosed_fields && c.disclosed_fields.length > 0 && (
+                          <div className="bg-slate-50 border border-slate-200 rounded p-2.5 mb-3">
+                            <div className="text-xs font-medium text-slate-700 mb-1">
+                              Disclosed Attributes:
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                              {c.disclosed_fields.map((f: string) => (
+                                <span
+                                  key={f}
+                                  className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs font-mono text-slate-800"
+                                >
+                                  {f}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-mono">
+                        <span>Notice: {c.notice_version || 'v2026.1-DPDP'}</span>
+                        {c.granted_at && (
+                          <span>Granted: {new Date(c.granted_at).toLocaleDateString()}</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </Card>
+        </div>
       )}
     </div>
   );

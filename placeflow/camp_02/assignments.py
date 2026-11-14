@@ -121,6 +121,25 @@ def assign_role(
 
     db.role_assignments.insert_one(doc)
 
+    # Notify person about role assignment update
+    if resolved_account_id:
+        acc = db.accounts.find_one({"account_id": resolved_account_id}, {"person_id": 1})
+        pid = (acc or {}).get("person_id")
+        if pid:
+            try:
+                from camp_02.notify import notify
+                notify(
+                    pid,
+                    "IAM",
+                    f"Role Assigned: {role.get('role_code')}",
+                    f"Your account was granted the role '{role.get('role_code')}' at scope '{actual_scope_type}'.",
+                    link="/account/profile",
+                    tenant_id=tenant_id,
+                    db=db,
+                )
+            except Exception:
+                pass
+
     publish_event(
         aggregate_type="ROLE",
         aggregate_id=role["role_id"],

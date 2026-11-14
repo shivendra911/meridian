@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ShieldCheck,
-  UserCheck,
   KeyRound,
   Lock,
   ArrowRight,
@@ -10,8 +9,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Mail,
-  Hash,
-} from 'lucide-react';
+  Hash} from 'lucide-react';
 import { client } from '../api/client';
 import { formatApiError } from '../api/errors';
 
@@ -132,7 +130,7 @@ export const ClaimPage: React.FC = () => {
               return (
                 <div key={s.id} className="flex items-center gap-2">
                   <span
-                    className={`inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold transition-colors ${
+                    className={`inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors ${
                       isActive
                         ? 'bg-brand text-white'
                         : isDone
@@ -198,7 +196,7 @@ export const ClaimPage: React.FC = () => {
                     className="w-full pl-9 pr-3 py-2 text-xs border border-line rounded-lg bg-canvas text-ink placeholder-ink-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                   />
                 </div>
-                <p className="mt-1 text-[11px] text-ink-muted">
+                <p className="mt-1 text-xs text-ink-muted">
                   A 6-digit code will be dispatched to your university email.
                 </p>
               </div>
@@ -259,7 +257,7 @@ export const ClaimPage: React.FC = () => {
                     className="w-full pl-9 pr-3 py-2 text-base tracking-widest text-center border border-line rounded-lg bg-canvas text-ink placeholder-ink-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand font-mono font-bold"
                   />
                 </div>
-                <p className="mt-1 text-[11px] text-ink-muted">
+                <p className="mt-1 text-xs text-ink-muted">
                   Code expires in 10 minutes. 5 attempts permitted.
                 </p>
               </div>
@@ -289,7 +287,7 @@ export const ClaimPage: React.FC = () => {
             <form onSubmit={handleVerifyClaim} className="space-y-4">
               <div className="p-3 rounded-lg bg-brand/5 border border-brand/20 flex items-start gap-2.5">
                 <ShieldCheck size={18} className="text-brand shrink-0 mt-0.5" />
-                <div className="text-[11px] text-ink-muted leading-relaxed">
+                <div className="text-xs text-ink-muted leading-relaxed">
                   Verification code confirmed. Choose a password to finalize activating your student account.
                 </div>
               </div>

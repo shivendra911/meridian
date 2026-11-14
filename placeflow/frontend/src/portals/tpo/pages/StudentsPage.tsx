@@ -10,11 +10,8 @@ import {
   Activity,
   ChevronRight,
   Sliders,
-  Shield,
-  FileSpreadsheet,
-} from 'lucide-react';
+  Shield} from 'lucide-react';
 import { AdvancedDataGrid, ColumnDef } from '../../../components/ui/AdvancedDataGrid';
-import { Button } from '../../../components/ui/Button';
 import { toast } from 'sonner';
 import { PersonChip, useDocumentTitle } from '../../../ui';
 
@@ -41,7 +38,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
   };
   const handleOpenConsent = (sid: string) => {
     if (onOpenConsent) onOpenConsent(sid);
-    else navigate('/compliance/consent');
+    else navigate('/tpo/students/' + sid);
   };
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
@@ -153,7 +150,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
       render: (s) => (
         <div>
           <span className="font-semibold text-slate-800 block">{s.mentor_name || 'Unassigned'}</span>
-          <span className="text-[10px] text-slate-400 font-mono">
+          <span className="text-xs text-slate-400 font-mono">
             UID: {s.mentor_id || '-'} &bull; {s.hod_name || s.mentor_hod || '-'}
           </span>
         </div>
@@ -167,7 +164,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
         const isEligible = s.assessment_status === 'Eligible for Assesment';
         return (
           <span
-            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold ${
+            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${
               isEligible
                 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                 : 'bg-slate-100 text-slate-600 border border-slate-200'
@@ -184,7 +181,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
       sortable: true,
       render: (s) => (
         <span
-          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold ${
+          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${
             s.survey_status === 'Filled'
               ? 'bg-blue-50 text-blue-800 border border-blue-200'
               : 'bg-amber-50 text-amber-800 border border-amber-200'
@@ -198,7 +195,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
       key: 'remarks',
       header: 'Mentor Notes',
       render: (s) => (
-        <div className="max-w-xs truncate text-[11px] text-slate-500" title={s.remarks}>
+        <div className="max-w-xs truncate text-xs text-slate-500" title={s.remarks}>
           {s.placement_company ? (
             <span className="font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded mr-1">
               Placed @ {s.placement_company}
@@ -223,7 +220,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
       sortable: true,
       render: (s) => (
         <span
-          className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-semibold ${
+          className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-semibold ${
             s.placement_status === 'Placed'
               ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
               : 'bg-slate-100 text-slate-700 border border-slate-200'
@@ -249,7 +246,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
         >
           <button
             onClick={() => handleOpenWhatIf(s.student_id)}
-            className="px-2 py-1 text-[11px] font-medium text-slate-700 hover:text-cardinal bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex items-center gap-1"
+            className="px-2 py-1 text-xs font-medium text-slate-700 hover:text-cardinal bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex items-center gap-1"
             title="Run What-If Career Simulation"
           >
             <Sliders size={11} />
@@ -257,7 +254,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
           </button>
           <button
             onClick={() => handleOpenConsent(s.student_id)}
-            className="px-2 py-1 text-[11px] font-medium text-slate-700 hover:text-emerald-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex items-center gap-1"
+            className="px-2 py-1 text-xs font-medium text-slate-700 hover:text-emerald-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded flex items-center gap-1"
             title="Manage DPDP Consents"
           >
             <Shield size={11} />
@@ -302,10 +299,10 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
       {/* Page Header */}
       <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
+          <div className="text-xs font-bold tracking-widest uppercase text-slate-500 mb-1">
             OFFICIAL REGISTRAR &bull; CANDIDATE DIRECTORY
           </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
+          <h1 className="text-xl font-bold  text-slate-900 m-0">
             Verified Candidate Registry
           </h1>
           <p className="text-xs text-slate-600 mt-1">
@@ -437,13 +434,13 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
 
                 <div className="grid grid-cols-3 gap-2 py-2.5 border-y border-slate-100 text-center my-3 bg-slate-50/50 rounded">
                   <div>
-                    <div className="text-[10px] text-slate-500 uppercase font-medium">CGPA</div>
+                    <div className="text-xs text-slate-500 uppercase font-medium">CGPA</div>
                     <div className="text-sm font-bold font-mono text-slate-900">
                       {student.cgpa.toFixed(2)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-500 uppercase font-medium">Backlogs</div>
+                    <div className="text-xs text-slate-500 uppercase font-medium">Backlogs</div>
                     <div
                       className={`text-sm font-bold font-mono ${
                         student.backlogs > 0 ? 'text-red-600' : 'text-emerald-700'
@@ -453,7 +450,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
                     </div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-500 uppercase font-medium">Status</div>
+                    <div className="text-xs text-slate-500 uppercase font-medium">Status</div>
                     <div className="text-xs font-semibold text-slate-800">
                       {student.placement_status}
                     </div>
@@ -475,7 +472,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
                         </span>
                       ))}
                       {student.skills.length > 4 && (
-                        <span className="px-1.5 py-0.5 text-[10px] text-slate-400 font-mono">
+                        <span className="px-1.5 py-0.5 text-xs text-slate-400 font-mono">
                           +{student.skills.length - 4}
                         </span>
                       )}

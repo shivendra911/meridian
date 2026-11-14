@@ -66,7 +66,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
               {data.name}
             </h3>
             {data.tier && (
-              <span className="shrink-0 rounded px-1.5 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-700">
+              <span className="shrink-0 rounded px-1.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-700">
                 {data.tier}
               </span>
             )}
@@ -91,7 +91,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
         </div>
 
         {data.last_visit && !masked && (
-          <div className="flex items-center gap-1 text-[11px]">
+          <div className="flex items-center gap-1 text-xs">
             <Calendar size={12} className="text-slate-400 shrink-0" />
             <span>Visited {formatDate(data.last_visit)}</span>
           </div>

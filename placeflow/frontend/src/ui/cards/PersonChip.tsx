@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Avatar } from './Avatar';
 import { ProfileCard, ProfileCardData } from './ProfileCard';
+import { formatRoleLabel } from '../format';
 
 export interface PersonChipProps {
   name: string;
@@ -83,7 +84,7 @@ export const PersonChip: React.FC<PersonChipProps> = ({
         <Avatar src={avatar_url} name={name} size={20} />
         <span className="font-medium truncate max-w-[140px]">{name}</span>
         {role && (
-          <span className="text-[11px] text-ink-muted">· {role}</span>
+          <span className="text-xs text-ink-muted">· {formatRoleLabel(role)}</span>
         )}
       </button>
 

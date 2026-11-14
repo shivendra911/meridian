@@ -119,7 +119,7 @@ export const EligibilityExplainerDrawer: React.FC<EligibilityExplainerDrawerProp
           </div>
           <div>
             <span className="text-ink-muted block mb-0.5 font-medium">Evaluation Timestamp</span>
-            <span className="font-semibold text-ink font-mono text-[11px] tabular-nums">
+            <span className="font-semibold text-ink font-mono text-xs tabular-nums">
               {report.evaluatedAt}
             </span>
           </div>
@@ -131,7 +131,7 @@ export const EligibilityExplainerDrawer: React.FC<EligibilityExplainerDrawerProp
             <h4 className="text-xs font-semibold uppercase tracking-wide text-ink m-0">
               Evaluation Criteria &amp; Rules Breakdown
             </h4>
-            <span className="text-[11px] text-ink-muted tabular-nums">
+            <span className="text-xs text-ink-muted tabular-nums">
               {report.criteria.filter((c) => c.isSatisfied).length} / {report.criteria.length} passed
             </span>
           </div>
@@ -178,7 +178,7 @@ export const EligibilityExplainerDrawer: React.FC<EligibilityExplainerDrawerProp
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-line text-[11px]">
+                <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-line text-xs">
                   <div>
                     <span className="text-ink-muted block">Required:</span>
                     <span className="font-medium text-ink">{criterion.requirement}</span>
@@ -200,7 +200,7 @@ export const EligibilityExplainerDrawer: React.FC<EligibilityExplainerDrawerProp
                 </div>
 
                 {criterion.notes && (
-                  <p className="text-[11px] text-ink-muted mt-1.5 italic bg-canvas p-1.5 rounded m-0">
+                  <p className="text-xs text-ink-muted mt-1.5 italic bg-canvas p-1.5 rounded m-0">
                     {criterion.notes}
                   </p>
                 )}
@@ -215,7 +215,7 @@ export const EligibilityExplainerDrawer: React.FC<EligibilityExplainerDrawerProp
             <ShieldCheck size={14} className="text-brand" />
             <span>Policy Engine Governance</span>
           </div>
-          <p className="text-ink-muted text-[11px] leading-relaxed m-0">
+          <p className="text-ink-muted text-xs leading-relaxed m-0">
             Evaluated under <strong>{report.policyVersion}</strong>. Results are calculated directly against registrar academic records.
           </p>
         </div>

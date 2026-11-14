@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "oxlint && node scripts/check-boundaries.mjs",
+    "lint": "oxlint --deny-warnings && node scripts/check-boundaries.mjs",
     "preview": "vite preview",
     "test": "vitest run"
   },
@@ -18,7 +18,8 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.5",
-    "sonner": "^2.0.8"
+    "sonner": "^2.0.8",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.4",
@@ -30,6 +31,7 @@
     "autoprefixer": "^10.6.2",
     "jsdom": "^31.0.0",
     "oxlint": "^1.89.0",
+    "playwright": "^1.65.0",
     "postcss": "^8.5.32",
     "tailwindcss": "^4.3.4",
     "typescript": "~7.0.2",

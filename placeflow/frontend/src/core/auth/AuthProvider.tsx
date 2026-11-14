@@ -7,9 +7,8 @@
  * - Provides coarse permission checks: can(perm), canAny(perms), hasPortal(portal)
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { client } from '../api/client';
-import { ApiError } from '../api/errors';
 
 export interface AuthAssignment {
   role_code: string;
@@ -74,15 +73,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const refreshMe = useCallback(async () => {
     try {
       await client.fetchCsrf();
-      const res = await client.get<{ me: AuthMe }>('/auth/me/', { skipAuthRedirect: true });
-      if (res && res.me) {
-        setMe(res.me);
+      const res = await client.get<any>('/auth/me/', { skipAuthRedirect: true });
+      const meData = res?.me || (res?.account_id ? res : null);
+      if (meData) {
+        setMe(meData);
         setStatus('authed');
       } else {
         setMe(null);
         setStatus('anon');
       }
-    } catch (err: any) {
+    } catch {
       setMe(null);
       setStatus('anon');
     }

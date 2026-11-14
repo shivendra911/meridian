@@ -59,10 +59,10 @@ export const ReportsPage: React.FC = () => {
       {/* Header */}
       <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
+          <div className="text-xs font-bold tracking-widest uppercase text-slate-500 mb-1">
             EXECUTIVE REGISTRAR &bull; 15 AGGREGATION PIPELINES
           </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
+          <h1 className="text-xl font-bold  text-slate-900 m-0">
             Institutional Placement Reports &amp; Aggregations
           </h1>
           <p className="text-xs text-slate-600 mt-1 max-w-2xl">
@@ -122,7 +122,7 @@ export const ReportsPage: React.FC = () => {
             >
               <FileSpreadsheet size={13} />
               <span>{r.title}</span>
-              <span className="font-mono text-[10px] opacity-75">({r.rows_count})</span>
+              <span className="font-mono text-xs opacity-75">({r.rows_count})</span>
             </button>
           ))}
         </div>
@@ -138,7 +138,7 @@ export const ReportsPage: React.FC = () => {
                 {currentReport.title} ({currentReport.rows_count} records)
               </h2>
             </div>
-            <span className="text-[11px] text-slate-500 font-mono">
+            <span className="text-xs text-slate-500 font-mono">
               Live Pipeline Execution Result
             </span>
           </div>

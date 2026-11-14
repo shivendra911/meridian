@@ -103,7 +103,7 @@ export const AcceptInvitePage: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="p-3 rounded-lg bg-brand/5 border border-brand/20 flex items-start gap-2.5">
                 <ShieldCheck size={18} className="text-brand shrink-0 mt-0.5" />
-                <div className="text-[11px] text-ink-muted leading-relaxed">
+                <div className="text-xs text-ink-muted leading-relaxed">
                   <span className="font-semibold text-ink">Official Institution Record:</span> Once you set your password, your academic profile and permissions will be automatically linked.
                 </div>
               </div>

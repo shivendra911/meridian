@@ -19,7 +19,7 @@ export const EntityCard: React.FC<EntityCardProps> = ({
   className = '',
   onClick,
   clickable = Boolean(onClick),
-  loading = false,
+  loading: _loading = false,
   error = null,
   onRetry,
   empty = false,

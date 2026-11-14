@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Users, BookOpen, Mail, Phone, Award } from 'lucide-react';
+import { Users, BookOpen, Award } from 'lucide-react';
 import { PageHeader, StatCard, Card, Badge, PersonChip, useDocumentTitle } from '../../../ui';
 
 interface FacultyMember {
@@ -70,7 +70,7 @@ export const HodFacultyPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-[11px] h-10">
+              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-xs h-10">
                 <th className="py-2.5 px-4 font-semibold">Faculty ID</th>
                 <th className="py-2.5 px-4 font-semibold">Faculty Name</th>
                 <th className="py-2.5 px-4 font-semibold">Designation</th>
@@ -105,7 +105,7 @@ export const HodFacultyPage: React.FC = () => {
                   <td className="py-2 px-4">
                     <div className="flex flex-wrap gap-1">
                       {f.coursesAssigned.map((c, idx) => (
-                        <span key={idx} className="px-1.5 py-0.5 rounded bg-canvas border border-line text-[10px] font-mono">
+                        <span key={idx} className="px-1.5 py-0.5 rounded bg-canvas border border-line text-xs font-mono">
                           {c}
                         </span>
                       ))}

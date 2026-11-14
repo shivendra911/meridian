@@ -24,7 +24,6 @@ export const StatCard: React.FC<StatCardProps> = ({
   subValue,
   change,
   changeType = 'neutral',
-  icon: Icon,
   explainTooltip,
   actionSlot,
   onClick,
@@ -95,12 +94,6 @@ export const StatCard: React.FC<StatCardProps> = ({
             </div>
           )}
         </div>
-
-        {Icon && (
-          <div className="w-8 h-8 rounded-md bg-canvas border border-line flex items-center justify-center shrink-0 text-ink-muted">
-            <Icon size={16} />
-          </div>
-        )}
       </div>
 
       {actionSlot && <div className="mt-3 pt-2.5 border-t border-line">{actionSlot}</div>}

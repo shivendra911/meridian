@@ -10,21 +10,13 @@ import { useNavigate } from 'react-router-dom';
 import {
   FileText,
   Calendar,
-  Award,
-  Clock,
-  Building2,
-  Check,
-  X,
-  ExternalLink,
-  Sparkles,
-} from 'lucide-react';
+  Award} from 'lucide-react';
 import { toast } from 'sonner';
 import {
   studentApi,
   StudentApplication,
   StudentInterview,
-  StudentOffer,
-} from '../api';
+  StudentOffer} from '../api';
 import {
   PageHeader,
   StatCard,
@@ -35,8 +27,7 @@ import {
   ApplicationCard,
   InterviewCard,
   OfferCard,
-  useDocumentTitle,
-} from '../../../ui';
+  useDocumentTitle} from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
 
 export const StudentApplicationsPage: React.FC = () => {
@@ -49,7 +40,7 @@ export const StudentApplicationsPage: React.FC = () => {
   const [offers, setOffers] = useState<StudentOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [respondingOfferId, setRespondingOfferId] = useState<string | null>(null);
+  const [_respondingOfferId, setRespondingOfferId] = useState<string | null>(null);
 
   const loadPipeline = async () => {
     setLoading(true);

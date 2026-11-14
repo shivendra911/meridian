@@ -10,9 +10,8 @@ import {
   TaskCard,
   Avatar,
   PersonChip,
-  StatCard,
-} from '../ui/cards';
-import { Calendar, AlertCircle } from 'lucide-react';
+  StatCard} from '../ui/cards';
+import { AlertCircle } from 'lucide-react';
 
 type CardState = 'default' | 'loading' | 'empty' | 'error' | 'masked';
 

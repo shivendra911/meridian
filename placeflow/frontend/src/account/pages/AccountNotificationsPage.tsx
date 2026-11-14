@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {
   Bell,
   Mail,
-  Smartphone,
   CheckCircle2,
   AlertCircle,
   Save,
   CheckCheck,
   ExternalLink,
-  Clock,
-} from 'lucide-react';
+  Clock} from 'lucide-react';
 import { client } from '../../core/api/client';
 import { useAuth } from '../../core/auth/useAuth';
 import { formatRelative } from '../../ui/format';
@@ -149,7 +147,7 @@ export const AccountNotificationsPage: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-xs font-bold text-ink block">Email Notifications</span>
-                  <span className="text-[11px] text-ink-muted leading-relaxed block mt-0.5">
+                  <span className="text-xs text-ink-muted leading-relaxed block mt-0.5">
                     Critical recruitment announcements, shortlisted interview slots, and official offer letters sent to your institutional inbox.
                   </span>
                 </div>
@@ -169,7 +167,7 @@ export const AccountNotificationsPage: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-xs font-bold text-ink block">In-App Notifications</span>
-                  <span className="text-[11px] text-ink-muted leading-relaxed block mt-0.5">
+                  <span className="text-xs text-ink-muted leading-relaxed block mt-0.5">
                     Real-time alerts in the top bar navigation bell, actionable tasks, and advisor feedback notifications.
                   </span>
                 </div>
@@ -211,7 +209,7 @@ export const AccountNotificationsPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold text-ink">Notifications History</h2>
             {unreadCount > 0 && (
-              <span className="rounded-full bg-brand px-2 py-0.5 text-[10px] font-bold text-white">
+              <span className="rounded-full bg-brand px-2 py-0.5 text-xs font-bold text-white">
                 {unreadCount} unread
               </span>
             )}
@@ -239,7 +237,7 @@ export const AccountNotificationsPage: React.FC = () => {
           <div className="text-center py-8">
             <Bell size={28} className="text-slate-300 mx-auto mb-2" />
             <p className="text-xs font-medium text-ink">Inbox is clean</p>
-            <p className="text-[11px] text-ink-muted mt-0.5">You have no notification events to display.</p>
+            <p className="text-xs text-ink-muted mt-0.5">You have no notification events to display.</p>
           </div>
         ) : (
           <div className="space-y-2.5">
@@ -269,7 +267,7 @@ export const AccountNotificationsPage: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] text-ink-muted flex items-center gap-1">
+                      <span className="text-xs text-ink-muted flex items-center gap-1">
                         <Clock size={11} />
                         {formatRelative(item.created_at)}
                       </span>

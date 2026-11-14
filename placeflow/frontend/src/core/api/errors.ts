@@ -7,12 +7,19 @@ export class ApiError extends Error {
   code: string;
   details?: any;
 
-  constructor(status: number, code: string, message?: string, details?: any) {
-    super(message || code);
+  constructor(statusOrCode: number | string, code?: string, message?: string, details?: any) {
+    if (typeof statusOrCode === 'string') {
+      super(code || statusOrCode);
+      this.status = 500;
+      this.code = statusOrCode;
+      this.details = details || message;
+    } else {
+      super(message || code || 'ApiError');
+      this.status = statusOrCode;
+      this.code = code || 'Unknown';
+      this.details = details;
+    }
     this.name = 'ApiError';
-    this.status = status;
-    this.code = code;
-    this.details = details;
     Object.setPrototypeOf(this, ApiError.prototype);
   }
 }
@@ -35,6 +42,8 @@ export function formatApiError(error: unknown): string {
         return 'The requested resource was not found.';
       case 'RateLimitExceeded':
         return 'Too many attempts. Please wait a few moments before trying again.';
+      case 'BadResponse':
+        return 'The server returned an invalid or malformed data structure.';
       case 'ValidationError':
         return error.message || 'Please check your inputs and try again.';
       default:
@@ -46,4 +55,3 @@ export function formatApiError(error: unknown): string {
   }
   return 'An unexpected error occurred.';
 }
-

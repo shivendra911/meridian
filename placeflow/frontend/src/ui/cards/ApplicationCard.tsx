@@ -33,7 +33,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
   loading = false,
   empty = !data && !loading,
   error = null,
-  masked = false,
+  masked: _masked = false,
   onClick,
   onRetry,
   className = '',
@@ -107,7 +107,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
             return (
               <div key={s} className="relative z-10 flex flex-col items-center">
                 <div
-                  className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold border-2 transition-colors ${
+                  className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold border-2 transition-colors ${
                     isRejected && isCurrent
                       ? 'border-rose-600 bg-rose-600 text-white'
                       : isDone
@@ -125,7 +125,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                     idx + 1
                   )}
                 </div>
-                <span className="mt-1 text-[11px] font-medium text-ink-muted">{s}</span>
+                <span className="mt-1 text-xs font-medium text-ink-muted">{s}</span>
               </div>
             );
           })}

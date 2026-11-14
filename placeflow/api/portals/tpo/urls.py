@@ -18,6 +18,7 @@ from api import (
 urlpatterns = [
     path("overview/", views_overview.OverviewTelemetryView.as_view(), name="tpo_overview"),
     path("jobs/", views_recruitment.JobListView.as_view(), name="tpo_jobs"),
+    path("jobs/<str:job_id>/", views_recruitment.JobDetailView.as_view(), name="tpo_job_detail"),
     path("jobs/<str:job_id>/candidates/", views_recruitment.JobCandidatesView.as_view(), name="tpo_job_candidates"),
     path("companies/", views_recruitment.CompanyListView.as_view(), name="tpo_companies"),
     path("applications/", views_recruitment.ApplicationListView.as_view(), name="tpo_applications"),

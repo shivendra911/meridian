@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { api } from '../api';
 import { AgentRun } from '../types';
-import { History, Activity, ShieldCheck, Terminal, Bot } from 'lucide-react';
+import { History, Activity, Bot } from 'lucide-react';
 
 interface AgentRunsPageProps {
-  onOpenCopilot: () => void;
+  onOpenCopilot?: () => void;
 }
 
-export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) => {
+export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot: propOnOpenCopilot }) => {
+  const context = useOutletContext<{ onOpenCopilot?: () => void }>();
+  const onOpenCopilot = propOnOpenCopilot || context?.onOpenCopilot;
   const [runs, setRuns] = useState<AgentRun[]>([]);
   const [totalRuns, setTotalRuns] = useState(0);
   const [totalTools, setTotalTools] = useState(0);
@@ -39,10 +42,10 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) =
       {/* Header */}
       <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
+          <div className="text-xs font-bold tracking-widest uppercase text-slate-500 mb-1">
             SECTION 10 &bull; AUTONOMOUS AGENT TRACE TELEMETRY
           </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
+          <h1 className="text-xl font-bold  text-slate-900 m-0">
             Agent Execution Audit Ledger
           </h1>
           <p className="text-xs text-slate-600 mt-1 max-w-2xl">
@@ -63,23 +66,23 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) =
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white border border-slate-200 rounded p-4 shadow-subtle">
           <div className="text-xs font-semibold text-slate-500 uppercase">Total Agent Invocations</div>
-          <div className="text-2xl font-bold font-serif text-slate-900 mt-1">{totalRuns}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Recorded in agent_runs</div>
+          <div className="text-2xl font-bold  text-slate-900 mt-1">{totalRuns}</div>
+          <div className="text-xs text-slate-400 mt-0.5">Recorded in agent_runs</div>
         </div>
         <div className="bg-white border border-slate-200 rounded p-4 shadow-subtle">
           <div className="text-xs font-semibold text-slate-500 uppercase">MCP Tools Executed</div>
-          <div className="text-2xl font-bold font-serif text-slate-900 mt-1">{totalTools}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Scoped through typed tools</div>
+          <div className="text-2xl font-bold  text-slate-900 mt-1">{totalTools}</div>
+          <div className="text-xs text-slate-400 mt-0.5">Scoped through typed tools</div>
         </div>
         <div className="bg-white border border-slate-200 rounded p-4 shadow-subtle">
           <div className="text-xs font-semibold text-slate-500 uppercase">Governed Autonomy</div>
-          <div className="text-2xl font-bold font-serif text-slate-900 mt-1">L0 &ndash; L2</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Human approval required for L1/L2</div>
+          <div className="text-2xl font-bold  text-slate-900 mt-1">L0 &ndash; L2</div>
+          <div className="text-xs text-slate-400 mt-0.5">Human approval required for L1/L2</div>
         </div>
         <div className="bg-white border border-slate-200 rounded p-4 shadow-subtle">
           <div className="text-xs font-semibold text-slate-500 uppercase">Security Quarantine</div>
-          <div className="text-2xl font-bold font-serif text-emerald-700 mt-1">0 Violations</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Prompt injection defense active</div>
+          <div className="text-2xl font-bold  text-emerald-700 mt-1">0 Violations</div>
+          <div className="text-xs text-slate-400 mt-0.5">Prompt injection defense active</div>
         </div>
       </div>
 
@@ -92,7 +95,7 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) =
               Execution Trace Records ({runs.length})
             </h2>
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">
+          <span className="text-xs text-slate-500 font-mono">
             Immutable Audit Trail
           </span>
         </div>
@@ -127,7 +130,7 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) =
                     </td>
                     <td className="py-2.5 px-4">
                       <span
-                        className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold border ${
+                        className={`px-1.5 py-0.5 rounded text-xs font-mono font-semibold border ${
                           r.autonomy_level === 'L0'
                             ? 'bg-blue-50 text-blue-800 border-blue-200'
                             : r.autonomy_level === 'L1'
@@ -143,7 +146,7 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) =
                         "{r.goal}"
                       </div>
                       {r.plan && r.plan.length > 0 && (
-                        <div className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">
+                        <div className="text-xs text-slate-400 font-mono mt-0.5 truncate">
                           Plan: {r.plan.join(' • ')}
                         </div>
                       )}
@@ -154,14 +157,14 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot }) =
                           {r.tool_calls.map((tc, tidx) => (
                             <span
                               key={tidx}
-                              className="px-1.5 py-0.5 rounded font-mono text-[10px] bg-slate-100 text-slate-800 border border-slate-200"
+                              className="px-1.5 py-0.5 rounded font-mono text-xs bg-slate-100 text-slate-800 border border-slate-200"
                             >
                               {tc.tool}()
                             </span>
                           ))}
                         </div>
                       ) : (
-                        <span className="text-slate-400 text-[11px]">Direct Synthesis</span>
+                        <span className="text-slate-400 text-xs">Direct Synthesis</span>
                       )}
                     </td>
                     <td className="py-2.5 px-4 font-mono text-slate-500">

@@ -104,7 +104,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
       >
         <Bell size={18} />
         {unreadCount > 0 && (
-          <span className="absolute top-1.5 right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-bold text-white shadow-xs">
+          <span className="absolute top-1.5 right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-600 px-1 text-xs font-bold text-white shadow-xs">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
@@ -117,7 +117,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
             <div className="flex items-center gap-2">
               <span className="text-xs font-semibold text-ink">Notifications</span>
               {unreadCount > 0 && (
-                <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-semibold text-brand">
+                <span className="rounded-full bg-brand/10 px-2 py-0.5 text-xs font-semibold text-brand">
                   {unreadCount} unread
                 </span>
               )}
@@ -126,7 +126,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               <button
                 type="button"
                 onClick={handleMarkAllRead}
-                className="flex items-center gap-1 text-[11px] font-medium text-brand hover:underline"
+                className="flex items-center gap-1 text-xs font-medium text-brand hover:underline"
               >
                 <Check size={12} />
                 <span>Mark all read</span>
@@ -140,7 +140,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
               <div className="p-8 text-center text-ink-muted">
                 <Bell size={24} className="mx-auto text-slate-300 mb-2" />
                 <p className="text-xs font-medium m-0">No new notifications</p>
-                <p className="text-[11px] text-slate-400 mt-0.5 m-0">
+                <p className="text-xs text-slate-400 mt-0.5 m-0">
                   You're all caught up on placement activities.
                 </p>
               </div>
@@ -157,7 +157,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
                     <p className={`text-xs ${!n.read_at ? 'font-semibold text-ink' : 'font-medium text-slate-700'} m-0 truncate`}>
                       {n.title}
                     </p>
-                    <span className="text-[10px] text-ink-muted shrink-0">
+                    <span className="text-xs text-ink-muted shrink-0">
                       {formatRelative(n.created_at)}
                     </span>
                   </div>
@@ -165,7 +165,7 @@ export const NotificationsBell: React.FC<{ className?: string }> = ({ className 
                     {n.body}
                   </p>
                   {n.link && (
-                    <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-brand">
+                    <div className="mt-1 flex items-center gap-1 text-xs font-medium text-brand">
                       <span>View details</span>
                       <ExternalLink size={10} />
                     </div>

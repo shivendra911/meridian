@@ -1,21 +1,67 @@
 /**
- * PlaceFlow / Meridian — Admin Portal API Layer (Phase 6).
+ * PlaceFlow / Meridian — Admin Portal API Layer.
+ * Validates network responses at the edge with Zod schemas.
+ * Throws ApiError('BadResponse') on validation failure.
  */
 
 import { client } from '../../core/api/client';
+import { parseEdge, z } from '../../core/api/parseEdge';
 
 export const adminApi = {
-  getSummary: () => client.get<any>('/admin/summary/'),
-  getHierarchyTree: () => client.get<any>('/admin/hierarchy/'),
-  getTenants: () => client.get<any>('/admin/tenants/'),
-  getInstitutions: () => client.get<any>('/admin/institutions/'),
-  getCampuses: () => client.get<any>('/admin/campuses/'),
-  getIdentities: () => client.get<any>('/admin/iam/identities/'),
-  getAccounts: () => client.get<any>('/admin/iam/accounts/'),
-  getRoles: () => client.get<any>('/admin/iam/roles/'),
-  getAssignments: () => client.get<any>('/admin/iam/assignments/'),
-  getCourses: () => client.get<any>('/admin/academic/courses/'),
-  getAiTraces: () => client.get<any>('/admin/ai/traces/'),
+  getSummary: async (): Promise<Record<string, any>> => {
+    const raw = await client.get<unknown>('/admin/summary/');
+    return parseEdge(z.record(z.string(), z.any()), raw);
+  },
+
+  getHierarchyTree: async (): Promise<Record<string, any>> => {
+    const raw = await client.get<unknown>('/admin/hierarchy/');
+    return parseEdge(z.record(z.string(), z.any()), raw);
+  },
+
+  getTenants: async (): Promise<any[]> => {
+    const raw = await client.get<unknown>('/admin/tenants/');
+    return parseEdge(z.array(z.any()), raw);
+  },
+
+  getInstitutions: async (): Promise<any[]> => {
+    const raw = await client.get<unknown>('/admin/institutions/');
+    return parseEdge(z.array(z.any()), raw);
+  },
+
+  getCampuses: async (): Promise<any[]> => {
+    const raw = await client.get<unknown>('/admin/campuses/');
+    return parseEdge(z.array(z.any()), raw);
+  },
+
+  getIdentities: async (): Promise<any[]> => {
+    const raw = await client.get<unknown>('/admin/iam/identities/');
+    return parseEdge(z.array(z.any()), raw);
+  },
+
+  getAccounts: async (): Promise<any[]> => {
+    const raw = await client.get<unknown>('/admin/iam/accounts/');
+    return parseEdge(z.array(z.any()), raw);
+  },
+
+  getRoles: async (): Promise<any[]> => {
+    const raw = await client.get<unknown>('/admin/iam/roles/');
+    return parseEdge(z.array(z.any()), raw);
+  },
+
+  getAssignments: async (): Promise<any[]> => {
+    const raw = await client.get<unknown>('/admin/iam/assignments/');
+    return parseEdge(z.array(z.any()), raw);
+  },
+
+  getCourses: async (): Promise<any[]> => {
+    const raw = await client.get<unknown>('/admin/academic/courses/');
+    return parseEdge(z.array(z.any()), raw);
+  },
+
+  getAiTraces: async (): Promise<any[]> => {
+    const raw = await client.get<unknown>('/admin/ai/traces/');
+    return parseEdge(z.array(z.any()), raw);
+  },
 };
 
 export const api = adminApi;

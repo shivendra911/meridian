@@ -4,16 +4,46 @@ Django settings for placeflow_core project.
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load local environment configuration from .env if present
+load_dotenv(BASE_DIR / '.env')
+
 # Security & Environment Configuration
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-placeflow-enterprise-key-2026')
+DEFAULT_SECRET_KEY = 'django-insecure-placeflow-enterprise-key-2026'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', DEFAULT_SECRET_KEY)
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
+# Safe default: default DJANGO_DEBUG to False (enable only in .env for development)
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = [h.strip() for h in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,*').split(',') if h.strip()]
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in os.environ.get(
+        'DJANGO_ALLOWED_HOSTS',
+        'localhost,127.0.0.1' if not DEBUG else 'localhost,127.0.0.1,*'
+    ).split(',')
+    if h.strip()
+]
+
+# Startup safety validation (PLATFORM_SPEC / RBAC_SPEC)
+if not DEBUG:
+    if not SECRET_KEY or SECRET_KEY == DEFAULT_SECRET_KEY:
+        raise ImproperlyConfigured("DJANGO_SECRET_KEY cannot be empty or the insecure default value in production.")
+    if '*' in ALLOWED_HOSTS:
+        raise ImproperlyConfigured("DJANGO_ALLOWED_HOSTS cannot contain wildcard '*' when DEBUG is False.")
+
+# Production Email Configuration (env-driven)
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@meridian.edu')
 
 # Application definition
 INSTALLED_APPS = [

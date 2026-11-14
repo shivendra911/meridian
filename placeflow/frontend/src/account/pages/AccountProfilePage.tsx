@@ -10,11 +10,10 @@ import {
   Globe,
   Clock,
   Phone,
-  Sparkles,
-  Info,
-} from 'lucide-react';
+  Info} from 'lucide-react';
 import { client } from '../../core/api/client';
 import { useAuth } from '../../core/auth/useAuth';
+import { formatRoleLabel } from '../../core/auth/roleLabels';
 import { ProfileHeader } from '../../ui/cards/ProfileHeader';
 import { formatApiError } from '../../core/api/errors';
 
@@ -134,7 +133,7 @@ export const AccountProfilePage: React.FC = () => {
         department={official.department || profile?.department}
         batch={official.batch ? String(official.batch) : null}
         reg_no={official.reg_no}
-        role={primaryAff?.type || me?.assignments?.[0]?.role_code || 'Member'}
+        role={formatRoleLabel(primaryAff?.type || me?.assignments?.[0]?.role_code)}
         is_verified={isVerified}
         completenessPercent={completeness.score}
         nextMissingItem={completeness.next_missing}
@@ -168,7 +167,7 @@ export const AccountProfilePage: React.FC = () => {
             <div>
               <h2 className="text-sm font-bold text-ink flex items-center gap-2">
                 Official Institutional Record
-                <span className="text-[10px] font-semibold uppercase tracking-wider bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-semibold uppercase tracking-wider bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full">
                   Verified by institution
                 </span>
               </h2>
@@ -181,28 +180,28 @@ export const AccountProfilePage: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="p-3.5 rounded-xl border border-line bg-canvas">
-            <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+            <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
               Legal Name on File
             </span>
             <span className="text-xs font-bold text-ink">{profile?.display_name || '—'}</span>
           </div>
 
           <div className="p-3.5 rounded-xl border border-line bg-canvas">
-            <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+            <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
               Registration / Roll Number
             </span>
             <span className="text-xs font-bold text-ink font-mono">{official.reg_no || '—'}</span>
           </div>
 
           <div className="p-3.5 rounded-xl border border-line bg-canvas">
-            <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+            <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
               Department & Program
             </span>
             <span className="text-xs font-bold text-ink">{official.department || '—'}</span>
           </div>
 
           <div className="p-3.5 rounded-xl border border-line bg-canvas">
-            <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+            <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
               Graduation Batch
             </span>
             <span className="text-xs font-bold text-ink">{official.batch || '—'}</span>
@@ -210,7 +209,7 @@ export const AccountProfilePage: React.FC = () => {
 
           {official.cgpa && (
             <div className="p-3.5 rounded-xl border border-line bg-canvas">
-              <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+              <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
                 Authoritative CGPA
               </span>
               <span className="text-xs font-bold text-ink font-mono">{official.cgpa} / 10.0</span>
@@ -218,7 +217,7 @@ export const AccountProfilePage: React.FC = () => {
           )}
 
           <div className="p-3.5 rounded-xl border border-line bg-canvas">
-            <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+            <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
               Institutional Email
             </span>
             <span className="text-xs font-bold text-ink truncate block" title={profile?.primary_email}>
@@ -275,7 +274,7 @@ export const AccountProfilePage: React.FC = () => {
 
           <div className="flex-1">
             <h4 className="text-xs font-bold text-ink">Profile Photo</h4>
-            <p className="text-[11px] text-ink-muted">
+            <p className="text-xs text-ink-muted">
               PNG, JPG, or WEBP up to 2 MB. Square format recommended.
             </p>
           </div>
@@ -313,7 +312,7 @@ export const AccountProfilePage: React.FC = () => {
                 placeholder="e.g. Diya"
                 className="w-full px-3 py-2 text-xs border border-line rounded-lg bg-canvas text-ink placeholder-ink-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
               />
-              <span className="text-[10px] text-ink-muted mt-1 block">
+              <span className="text-xs text-ink-muted mt-1 block">
                 How you prefer to be addressed across chat and mentorship.
               </span>
             </div>
@@ -349,7 +348,7 @@ export const AccountProfilePage: React.FC = () => {
               maxLength={120}
               className="w-full px-3 py-2 text-xs border border-line rounded-lg bg-canvas text-ink placeholder-ink-muted focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
             />
-            <div className="flex justify-between items-center text-[10px] text-ink-muted mt-1">
+            <div className="flex justify-between items-center text-xs text-ink-muted mt-1">
               <span>Displayed under your name on profile cards and search results.</span>
               <span>{headline.length} / 120</span>
             </div>

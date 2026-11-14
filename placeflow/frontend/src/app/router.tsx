@@ -5,11 +5,11 @@
  * - Public: /, /login, /forgot-password, /reset-password, /accept-invite, /claim, /privacy, /terms, /contact, /forbidden, /404
  * - Authenticated Account Area: /account/*, /onboarding
  * - Authenticated Portals: /student/*, /tpo/*, /faculty/*, /hod/*, /management/*, /admin/*
- * - Legacy migration redirects for backwards compatibility.
+ * - Lazy code-splitting across portal route trees and heavy modules.
  */
 
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 
 // Core Auth & Guards
 import { RequireAuth, RequirePortal } from '../core/auth/guards';
@@ -22,137 +22,163 @@ import { OnboardingPage } from '../core/auth/OnboardingPage';
 
 // Public & Static Pages
 import { PortalRedirect } from './PortalRedirect';
-import { HomeGate } from '../public/HomeGate';
 import { ForbiddenPage } from './ForbiddenPage';
 import { NotFoundPage } from './NotFoundPage';
-import { DevCardsPage } from '../pages/DevCardsPage';
-import { PrivacyPolicyPage } from '../public/PrivacyPolicyPage';
-import { TermsOfServicePage } from '../public/TermsOfServicePage';
-import { ContactSupportPage } from '../public/ContactSupportPage';
+import { RouteErrorElement } from './ErrorBoundary';
 
-// Account Area (Cross-Portal)
-import { AccountRoutes } from '../account/routes';
+// Lazy-loaded Public & Heavy Views
+const HomeGate = lazy(() => import('../public/HomeGate').then((m) => ({ default: m.HomeGate })));
+const PrivacyPolicyPage = lazy(() => import('../public/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })));
+const TermsOfServicePage = lazy(() => import('../public/TermsOfServicePage').then((m) => ({ default: m.TermsOfServicePage })));
+const ContactSupportPage = lazy(() => import('../public/ContactSupportPage').then((m) => ({ default: m.ContactSupportPage })));
+const DevCardsPage = lazy(() => import('../pages/DevCardsPage').then((m) => ({ default: m.DevCardsPage })));
 
-// Portal Root Trees
-import { StudentRoutes } from '../portals/student/routes';
-import { TpoRoutes } from '../portals/tpo/routes';
-import { FacultyRoutes } from '../portals/faculty/routes';
-import { HodRoutes } from '../portals/hod/routes';
-import { ManagementRoutes } from '../portals/management/routes';
-import { AdminRoutes } from '../portals/admin/routes';
+// Lazy-loaded Cross-Portal Account Area
+const AccountRoutes = lazy(() => import('../account/routes').then((m) => ({ default: m.AccountRoutes })));
+
+// Lazy-loaded Portal Root Trees
+const StudentRoutes = lazy(() => import('../portals/student/routes').then((m) => ({ default: m.StudentRoutes })));
+const TpoRoutes = lazy(() => import('../portals/tpo/routes').then((m) => ({ default: m.TpoRoutes })));
+const FacultyRoutes = lazy(() => import('../portals/faculty/routes').then((m) => ({ default: m.FacultyRoutes })));
+const HodRoutes = lazy(() => import('../portals/hod/routes').then((m) => ({ default: m.HodRoutes })));
+const ManagementRoutes = lazy(() => import('../portals/management/routes').then((m) => ({ default: m.ManagementRoutes })));
+const AdminRoutes = lazy(() => import('../portals/admin/routes').then((m) => ({ default: m.AdminRoutes })));
+
+const WildcardRedirect: React.FC<{ to: string }> = ({ to }) => {
+  const params = useParams();
+  const rest = params['*'];
+  return <Navigate to={rest ? `${to}/${rest}` : to} replace />;
+};
+
+const FallbackLoader = () => (
+  <div className="flex items-center justify-center min-h-[40vh] p-8 text-xs text-ink-muted">
+    <div className="flex items-center gap-2">
+      <span className="w-2 h-2 rounded-full bg-accent animate-ping" />
+      <span>Loading workspace...</span>
+    </div>
+  </div>
+);
 
 export const AppRouter: React.FC = () => {
   return (
-    <Routes>
-      {/* 1. Public Authentication & Lifecycle Routes */}
-      <Route path="/" element={<HomeGate />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-      <Route path="/reset-password" element={<ResetPasswordPage />} />
-      <Route path="/accept-invite" element={<AcceptInvitePage />} />
-      <Route path="/claim" element={<ClaimPage />} />
-      <Route path="/privacy" element={<PrivacyPolicyPage />} />
-      <Route path="/terms" element={<TermsOfServicePage />} />
-      <Route path="/contact" element={<ContactSupportPage />} />
-      <Route path="/forbidden" element={<ForbiddenPage />} />
+    <Suspense fallback={<FallbackLoader />}>
+      <Routes>
+        {/* 1. Public Authentication & Lifecycle Routes */}
+        <Route path="/" element={<HomeGate />} errorElement={<RouteErrorElement />} />
+        <Route path="/login" element={<LoginPage />} errorElement={<RouteErrorElement />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} errorElement={<RouteErrorElement />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} errorElement={<RouteErrorElement />} />
+        <Route path="/accept-invite" element={<AcceptInvitePage />} errorElement={<RouteErrorElement />} />
+        <Route path="/claim" element={<ClaimPage />} errorElement={<RouteErrorElement />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} errorElement={<RouteErrorElement />} />
+        <Route path="/terms" element={<TermsOfServicePage />} errorElement={<RouteErrorElement />} />
+        <Route path="/contact" element={<ContactSupportPage />} errorElement={<RouteErrorElement />} />
+        <Route path="/forbidden" element={<ForbiddenPage />} errorElement={<RouteErrorElement />} />
 
-      {/* Dev-only Card System Review Gallery (PLATFORM_SPEC) */}
-      {import.meta.env.DEV && (
-        <Route path="/dev/cards" element={<DevCardsPage />} />
-      )}
+        {/* Dev-only Card System Review Gallery (PLATFORM_SPEC) */}
+        {import.meta.env.DEV && (
+          <Route path="/dev/cards" element={<DevCardsPage />} errorElement={<RouteErrorElement />} />
+        )}
 
-      {/* 2. Authenticated Routes */}
-      <Route element={<RequireAuth />}>
-        {/* First-login Onboarding Stepper */}
-        <Route path="/onboarding" element={<OnboardingPage />} />
+        {/* 2. Authenticated Routes */}
+        <Route element={<RequireAuth />} errorElement={<RouteErrorElement />}>
+          {/* First-login Onboarding Stepper */}
+          <Route path="/onboarding" element={<OnboardingPage />} errorElement={<RouteErrorElement />} />
 
-        {/* Shared Cross-Portal Account Area */}
-        <Route path="/account/*" element={<AccountRoutes />} />
+          {/* Shared Cross-Portal Account Area */}
+          <Route path="/account/*" element={<AccountRoutes />} errorElement={<RouteErrorElement />} />
 
-        {/* Student Workspace */}
-        <Route
-          path="/student/*"
-          element={
-            <RequirePortal portal="student">
-              <StudentRoutes />
-            </RequirePortal>
-          }
-        />
+          {/* Student Workspace */}
+          <Route
+            path="/student/*"
+            errorElement={<RouteErrorElement />}
+            element={
+              <RequirePortal portal="student">
+                <StudentRoutes />
+              </RequirePortal>
+            }
+          />
 
-        {/* TPO Operations */}
-        <Route
-          path="/tpo/*"
-          element={
-            <RequirePortal portal="tpo">
-              <TpoRoutes />
-            </RequirePortal>
-          }
-        />
+          {/* TPO Operations */}
+          <Route
+            path="/tpo/*"
+            errorElement={<RouteErrorElement />}
+            element={
+              <RequirePortal portal="tpo">
+                <TpoRoutes />
+              </RequirePortal>
+            }
+          />
 
-        {/* Faculty Mentorship */}
-        <Route
-          path="/faculty/*"
-          element={
-            <RequirePortal portal="faculty">
-              <FacultyRoutes />
-            </RequirePortal>
-          }
-        />
+          {/* Faculty Mentorship */}
+          <Route
+            path="/faculty/*"
+            errorElement={<RouteErrorElement />}
+            element={
+              <RequirePortal portal="faculty">
+                <FacultyRoutes />
+              </RequirePortal>
+            }
+          />
 
-        {/* Department Head (HOD) */}
-        <Route
-          path="/hod/*"
-          element={
-            <RequirePortal portal="hod">
-              <HodRoutes />
-            </RequirePortal>
-          }
-        />
+          {/* Department Head (HOD) */}
+          <Route
+            path="/hod/*"
+            errorElement={<RouteErrorElement />}
+            element={
+              <RequirePortal portal="hod">
+                <HodRoutes />
+              </RequirePortal>
+            }
+          />
 
-        {/* Executive Management / NIRF */}
-        <Route
-          path="/management/*"
-          element={
-            <RequirePortal portal="management">
-              <ManagementRoutes />
-            </RequirePortal>
-          }
-        />
+          {/* Executive Management / NIRF */}
+          <Route
+            path="/management/*"
+            errorElement={<RouteErrorElement />}
+            element={
+              <RequirePortal portal="management">
+                <ManagementRoutes />
+              </RequirePortal>
+            }
+          />
 
-        {/* Institutional Admin */}
-        <Route
-          path="/admin/*"
-          element={
-            <RequirePortal portal="admin">
-              <AdminRoutes />
-            </RequirePortal>
-          }
-        />
+          {/* Institutional Admin */}
+          <Route
+            path="/admin/*"
+            errorElement={<RouteErrorElement />}
+            element={
+              <RequirePortal portal="admin">
+                <AdminRoutes />
+              </RequirePortal>
+            }
+          />
 
-        {/* 3. Migration Redirections (Legacy paths -> Role-Partitioned Portals) */}
-        <Route path="/home" element={<PortalRedirect />} />
-        <Route path="/placement/drives/*" element={<Navigate to="/tpo/drives" replace />} />
-        <Route path="/companies/*" element={<Navigate to="/tpo/companies" replace />} />
-        <Route path="/applications" element={<Navigate to="/tpo/applications" replace />} />
-        <Route path="/interviews" element={<Navigate to="/tpo/interviews" replace />} />
-        <Route path="/offers" element={<Navigate to="/tpo/offers" replace />} />
-        <Route path="/students/*" element={<Navigate to="/tpo/students" replace />} />
-        <Route path="/insights/*" element={<Navigate to="/tpo/insights/renege" replace />} />
-        <Route path="/opportunities" element={<Navigate to="/student/opportunities" replace />} />
-        <Route path="/me/applications" element={<Navigate to="/student/applications" replace />} />
-        <Route path="/me/profile" element={<Navigate to="/student/profile" replace />} />
-        <Route path="/me/academics" element={<Navigate to="/student/academics" replace />} />
-        <Route path="/teaching/courses" element={<Navigate to="/faculty/courses" replace />} />
-        <Route path="/advising" element={<Navigate to="/faculty/mentees" replace />} />
-        <Route path="/department/*" element={<Navigate to="/hod/home" replace />} />
-        <Route path="/outcomes/*" element={<Navigate to="/management/home" replace />} />
-        <Route path="/compliance/*" element={<Navigate to="/management/home" replace />} />
-        <Route path="/institution/hierarchy" element={<Navigate to="/admin/hierarchy" replace />} />
+          {/* 3. Migration Redirections (Legacy paths -> Role-Partitioned Portals) */}
+          <Route path="/home" element={<PortalRedirect />} />
+          <Route path="/placement/drives/*" element={<WildcardRedirect to="/tpo/drives" />} />
+          <Route path="/companies/*" element={<WildcardRedirect to="/tpo/companies" />} />
+          <Route path="/applications" element={<Navigate to="/tpo/applications" replace />} />
+          <Route path="/interviews" element={<Navigate to="/tpo/interviews" replace />} />
+          <Route path="/offers" element={<Navigate to="/tpo/offers" replace />} />
+          <Route path="/students/*" element={<WildcardRedirect to="/tpo/students" />} />
+          <Route path="/insights/*" element={<WildcardRedirect to="/tpo/insights" />} />
+          <Route path="/opportunities" element={<Navigate to="/student/opportunities" replace />} />
+          <Route path="/me/applications" element={<Navigate to="/student/applications" replace />} />
+          <Route path="/me/profile" element={<Navigate to="/student/profile" replace />} />
+          <Route path="/me/academics" element={<Navigate to="/student/academics" replace />} />
+          <Route path="/teaching/courses" element={<Navigate to="/faculty/courses" replace />} />
+          <Route path="/advising" element={<Navigate to="/faculty/mentees" replace />} />
+          <Route path="/department/*" element={<Navigate to="/hod/home" replace />} />
+          <Route path="/outcomes/*" element={<Navigate to="/management/home" replace />} />
+          <Route path="/compliance/*" element={<Navigate to="/management/home" replace />} />
+          <Route path="/institution/hierarchy" element={<Navigate to="/admin/hierarchy" replace />} />
 
-        {/* 4. Not Found Fallback */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Route>
-    </Routes>
+          {/* 4. Not Found Fallback */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 };
 

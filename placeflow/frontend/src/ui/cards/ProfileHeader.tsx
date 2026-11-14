@@ -2,6 +2,7 @@ import React from 'react';
 import { ShieldCheck, Edit3 } from 'lucide-react';
 import { Avatar } from './Avatar';
 import { Shimmer } from './CardSkeleton';
+import { formatRoleLabel } from '../format';
 
 export interface ProfileHeaderProps {
   name: string;
@@ -89,7 +90,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
             <div className="mt-2.5 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium bg-slate-100 text-slate-800">
-                {role}
+                {formatRoleLabel(role)}
               </span>
 
               {is_verified && (

@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
 import {
-  Shield,
-  UserCheck,
-  Building2,
-  Calendar,
   CheckCircle2,
-  AlertTriangle,
   Lock,
-  Unlock,
-  Sparkles,
   ArrowRight,
   ArrowLeft,
   Check,
-  ShieldAlert,
-  Info,
-} from 'lucide-react';
+  Info} from 'lucide-react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -35,7 +26,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
   // Form State
   const [selectedPerson, setSelectedPerson] = useState('Dr. Suresh Raman (FAC004)');
   const [selectedRole, setSelectedRole] = useState('PLACEMENT_COORDINATOR');
-  const [selectedScopeType, setSelectedScopeType] = useState('DEPARTMENT');
+  const [_selectedScopeType, _setSelectedScopeType] = useState('DEPARTMENT');
   const [selectedDepartment, setSelectedDepartment] = useState('Computer Science & Engineering');
   const [selectedCampus, setSelectedCampus] = useState('Campus North');
   const [validFrom, setValidFrom] = useState('2026-07-01');
@@ -209,7 +200,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
                           {r.category}
                         </Badge>
                       </div>
-                      <p className="text-[11px] text-slate-600 mt-1">{r.desc}</p>
+                      <p className="text-xs text-slate-600 mt-1">{r.desc}</p>
                     </div>
                   );
                 })}
@@ -291,7 +282,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
                 <span className="text-xs font-semibold text-slate-800 block">
                   Permit Temporary Delegation
                 </span>
-                <span className="text-[11px] text-slate-500">
+                <span className="text-xs text-slate-500">
                   Allow this member to delegate duties during sanctioned academic leaves
                 </span>
               </div>
@@ -310,13 +301,13 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
           <div className="space-y-4">
             <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 grid grid-cols-2 gap-3 text-xs">
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-slate-400 block text-xs uppercase font-semibold">
                   Assigned Member
                 </span>
                 <span className="font-bold text-slate-900">{selectedPerson}</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-slate-400 block text-xs uppercase font-semibold">
                   Designated Role
                 </span>
                 <span className="font-bold text-cardinal">
@@ -324,7 +315,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-slate-400 block text-xs uppercase font-semibold">
                   Scope Ceiling
                 </span>
                 <span className="font-semibold text-slate-800">
@@ -332,7 +323,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-slate-400 block text-xs uppercase font-semibold">
                   Active Horizon
                 </span>
                 <span className="font-mono text-slate-700">
@@ -352,7 +343,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
                     <CheckCircle2 size={14} className="text-emerald-700" />
                     Permitted Operational Actions
                   </div>
-                  <ul className="list-disc pl-5 text-[11px] text-emerald-900 space-y-1">
+                  <ul className="list-disc pl-5 text-xs text-emerald-900 space-y-1">
                     {effectivePermissions.allowed.map((perm, idx) => (
                       <li key={idx}>{perm}</li>
                     ))}
@@ -364,7 +355,7 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
                     <Lock size={14} className="text-red-700" />
                     Enforced Boundary Ceilings (Prohibited)
                   </div>
-                  <ul className="list-disc pl-5 text-[11px] text-red-900 space-y-1">
+                  <ul className="list-disc pl-5 text-xs text-red-900 space-y-1">
                     {effectivePermissions.denied.map((perm, idx) => (
                       <li key={idx}>{perm}</li>
                     ))}

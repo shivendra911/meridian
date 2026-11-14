@@ -5,9 +5,9 @@
  */
 
 import React, { useState } from 'react';
-import { BookOpen, Users, CheckCircle2, Clock, FileText, ArrowRight, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { toast } from 'sonner';
-import { PageHeader, StatCard, Card, Badge, Button, Tabs } from '../../../ui';
+import { PageHeader, Card, Badge, Button} from '../../../ui';
 
 interface CourseOffering {
   code: string;
@@ -73,15 +73,15 @@ export const FacultyCoursesPage: React.FC = () => {
 
             <div className="grid grid-cols-3 gap-2 py-3 border-y border-line my-3 text-xs">
               <div>
-                <span className="text-[10px] text-ink-muted uppercase block">Enrolled</span>
+                <span className="text-xs text-ink-muted uppercase block">Enrolled</span>
                 <span className="font-semibold text-ink font-mono">{course.enrolled}</span>
               </div>
               <div>
-                <span className="text-[10px] text-ink-muted uppercase block">Avg Attend.</span>
+                <span className="text-xs text-ink-muted uppercase block">Avg Attend.</span>
                 <span className="font-semibold text-success font-mono">{course.attendanceAvg}%</span>
               </div>
               <div>
-                <span className="text-[10px] text-ink-muted uppercase block">Progress</span>
+                <span className="text-xs text-ink-muted uppercase block">Progress</span>
                 <span className="font-semibold text-brand font-mono">{course.syllabusProgress}%</span>
               </div>
             </div>
@@ -102,7 +102,7 @@ export const FacultyCoursesPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-[11px] h-10">
+              <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-xs h-10">
                 <th className="py-2.5 px-4 font-semibold">Roll Number</th>
                 <th className="py-2.5 px-4 font-semibold">Student Name</th>
                 <th className="py-2.5 px-4 font-semibold">Attendance</th>

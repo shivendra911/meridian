@@ -333,6 +333,22 @@ class AccountPasswordChangeView(APIView):
             db=db,
         )
 
+        # 4. Notify person of security event
+        if user.person_id:
+            try:
+                from camp_02.notify import notify
+                notify(
+                    user.person_id,
+                    "SECURITY",
+                    "Password Changed",
+                    "Your account password was successfully updated. All other active sessions have been terminated.",
+                    link="/account/sessions",
+                    tenant_id=getattr(user, "tenant_id", "t_default"),
+                    db=db,
+                )
+            except Exception:
+                pass
+
         return Response(
             {"success": True, "message": "Password successfully changed. Other sessions revoked."},
             status=status.HTTP_200_OK,

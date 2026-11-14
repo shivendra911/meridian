@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Shield, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Shield} from 'lucide-react';
 
 export const PrivacyPolicyPage: React.FC = () => {
   return (

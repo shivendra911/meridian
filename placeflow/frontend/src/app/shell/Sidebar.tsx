@@ -9,6 +9,7 @@ import {
 import { useAuth } from '../../core/auth/useAuth';
 import { PortalNavItem, PORTAL_METAS } from './types';
 import { WorkspaceSwitcher } from './WorkspaceSwitcher';
+import { Logo } from '../../ui/Logo';
 
 export interface SidebarProps {
   portal: string;
@@ -55,19 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* 56px Header: Aligned with TopBar */}
       <div className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 px-4">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-white font-bold text-sm tracking-tight shadow-xs">
-            M
-          </div>
-          {!isCollapsed && (
-            <div className="min-w-0">
-              <span className="block font-semibold text-[15px] leading-tight text-white tracking-tight truncate">
-                Meridian
-              </span>
-              <span className="block text-xs leading-tight text-slate-400 truncate mt-0.5">
-                {portalMeta.shortName}
-              </span>
-            </div>
-          )}
+          <Logo size="md" showText={!isCollapsed} subtitle={portalMeta.shortName} />
         </div>
 
         {/* Mobile close button */}
@@ -110,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <>
                   <span className="ml-2.5 flex-1 truncate">{item.label}</span>
                   {item.badge && (
-                    <span className="ml-auto inline-flex items-center rounded-full bg-white/15 px-1.5 py-0.2 text-[10px] font-semibold text-white">
+                    <span className="ml-auto inline-flex items-center rounded-full bg-white/15 px-1.5 py-0.2 text-xs font-semibold text-white">
                       {item.badge}
                     </span>
                   )}

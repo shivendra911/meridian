@@ -3,7 +3,7 @@
  */
 
 import React, { useState } from 'react';
-import { CheckSquare, Check, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader, Card, Badge, Button, EmptyState } from '../../../ui';
 

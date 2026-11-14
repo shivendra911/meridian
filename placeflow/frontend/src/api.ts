@@ -27,7 +27,7 @@ import {
   InstitutionalSummary,
 } from './types';
 
-const API_BASE = 'http://127.0.0.1:8000/api';
+import { client } from './core/api/client';
 
 let currentTenantId: string = localStorage.getItem('placeflow_tenant_id') || '3f0708bc-4852-4900-a0b2-5e27865a36fe';
 
@@ -43,25 +43,13 @@ export function getApiTenantHeader(): string {
 }
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const url = `${API_BASE}${endpoint}`;
-  const headers = {
-    'Content-Type': 'application/json',
-    ...(currentTenantId ? { 'X-Tenant-ID': currentTenantId } : {}),
-    ...(options.headers || {}),
-  };
-
-  const response = await fetch(url, { ...options, headers });
-  if (!response.ok) {
-    let errorMsg = `HTTP Error ${response.status}`;
-    try {
-      const errData = await response.json();
-      errorMsg = errData.message || errData.error || errorMsg;
-    } catch {
-      // non-json response
-    }
-    throw new Error(errorMsg);
-  }
-  return response.json();
+  const method = ((options.method || 'GET').toUpperCase()) as any;
+  const body = options.body ? (typeof options.body === 'string' ? JSON.parse(options.body) : options.body) : undefined;
+  return client.request<T>(endpoint, {
+    method,
+    body,
+    headers: options.headers as any,
+  });
 }
 
 export const api = {
@@ -255,7 +243,7 @@ export const api = {
       agents: Record<string, Agent>;
       tool_catalog: Array<{ name: string; description: string; scope: string }>;
     }>('/agents/'),
-  sendAgentChat: (agentId: string, prompt: string, studentId: string = 'STU001') =>
+  sendAgentChat: (agentId: string, prompt: string, studentId?: string) =>
     request<{
       run_id: string;
       agent_id: string;
@@ -268,7 +256,7 @@ export const api = {
       disclaimer: string;
     }>('/agents/chat/', {
       method: 'POST',
-      body: JSON.stringify({ agent_id: agentId, prompt, student_id: studentId }),
+      body: JSON.stringify({ agent_id: agentId, prompt, ...(studentId ? { student_id: studentId } : {}) }),
     }),
   getAgentRuns: () =>
     request<{

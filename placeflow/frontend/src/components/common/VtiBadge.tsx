@@ -42,7 +42,7 @@ export const VtiBadge: React.FC<VtiBadgeProps> = ({ vti }) => {
     >
       <Icon size={13} className="shrink-0" />
       <span>{vti.badge}</span>
-      <span className="font-mono text-[11px] opacity-75">({displayScore})</span>
+      <span className="font-mono text-xs opacity-75">({displayScore})</span>
     </div>
   );
 };

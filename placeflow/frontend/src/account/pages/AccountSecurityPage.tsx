@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Shield,
   Key,
   Laptop,
-  Smartphone,
-  Globe,
   Trash2,
   AlertCircle,
   CheckCircle2,
   Lock,
   ArrowRight,
   LogOut,
-  Clock,
-} from 'lucide-react';
+  Clock} from 'lucide-react';
 import { client } from '../../core/api/client';
+import { accountApi } from '../api';
 import { formatRelative, formatDateTime } from '../../ui/format';
 import { formatApiError } from '../../core/api/errors';
 
@@ -45,8 +42,8 @@ export const AccountSecurityPage: React.FC = () => {
 
   const loadSessions = async () => {
     try {
-      const res = await client.get<{ sessions: SessionItem[] }>('/account/sessions/');
-      setSessions(res.sessions || []);
+      const data = await accountApi.getSessions();
+      setSessions(data || []);
     } catch (err) {
       setSessError(formatApiError(err));
     } finally {
@@ -316,13 +313,13 @@ export const AccountSecurityPage: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-ink">{browser}</span>
                         {isCurrent && (
-                          <span className="inline-flex items-center gap-1 rounded bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[10px] font-semibold">
+                          <span className="inline-flex items-center gap-1 rounded bg-emerald-100 text-emerald-800 px-2 py-0.5 text-xs font-semibold">
                             This device
                           </span>
                         )}
                       </div>
 
-                      <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-ink-muted">
+                      <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-ink-muted">
                         {sess.ip && <span className="font-mono">{sess.ip}</span>}
                         {sess.last_active_at && (
                           <span className="flex items-center gap-1">

@@ -4,9 +4,6 @@ import {
   Users,
   Key,
   ShieldCheck,
-  UserCheck,
-  Lock,
-  Unlock,
   AlertTriangle,
   Clock,
   Zap,
@@ -15,10 +12,10 @@ import {
   XCircle,
   Plus,
   RefreshCw,
-  Search,
-} from 'lucide-react';
+  Search} from 'lucide-react';
 import { api } from '../api';
 import { toast } from 'sonner';
+import { EmptyState } from '../ui';
 import { useTenant } from '../context/TenantContext';
 import { RoleAssignmentWizard } from '../components/iam/RoleAssignmentWizard';
 
@@ -134,7 +131,7 @@ export const IdentityAccessPage: React.FC = () => {
             <ShieldCheck size={14} />
             <span>CAMP-02 Institutional Security &amp; Access Governance</span>
           </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
+          <h1 className="text-xl font-bold  text-slate-900 m-0">
             Identity, Membership &amp; Authorization Command Center
           </h1>
           <p className="text-xs text-slate-600 mt-1 max-w-2xl">
@@ -170,29 +167,29 @@ export const IdentityAccessPage: React.FC = () => {
       {/* KPI Metric Strips */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <div className="bg-white border border-slate-200 p-3 rounded">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase">Person Identities</div>
+          <div className="text-xs font-semibold text-slate-400 uppercase">Person Identities</div>
           <div className="text-xl font-bold text-slate-900 mt-0.5">{identities.length}</div>
-          <div className="text-[10px] text-emerald-600 font-mono mt-1">Deduplicated</div>
+          <div className="text-xs text-emerald-600 font-mono mt-1">Deduplicated</div>
         </div>
         <div className="bg-white border border-slate-200 p-3 rounded">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase">Catalogued Roles</div>
+          <div className="text-xs font-semibold text-slate-400 uppercase">Catalogued Roles</div>
           <div className="text-xl font-bold text-slate-900 mt-0.5">{roles.length}</div>
-          <div className="text-[10px] text-slate-500 font-mono mt-1">Scope Ceilings Applied</div>
+          <div className="text-xs text-slate-500 font-mono mt-1">Scope Ceilings Applied</div>
         </div>
         <div className="bg-white border border-slate-200 p-3 rounded">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase">Atomic Capabilities</div>
+          <div className="text-xs font-semibold text-slate-400 uppercase">Atomic Capabilities</div>
           <div className="text-xl font-bold text-slate-900 mt-0.5">{permissions.length}</div>
-          <div className="text-[10px] text-slate-500 font-mono mt-1">60+ Enterprise Perms</div>
+          <div className="text-xs text-slate-500 font-mono mt-1">60+ Enterprise Perms</div>
         </div>
         <div className="bg-white border border-slate-200 p-3 rounded">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase">Active Delegations</div>
+          <div className="text-xs font-semibold text-slate-400 uppercase">Active Delegations</div>
           <div className="text-xl font-bold text-slate-900 mt-0.5">{delegations.length}</div>
-          <div className="text-[10px] text-amber-600 font-mono mt-1">Anti-Cascade (Hop 1)</div>
+          <div className="text-xs text-amber-600 font-mono mt-1">Anti-Cascade (Hop 1)</div>
         </div>
         <div className="bg-white border border-slate-200 p-3 rounded">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase">Decision Latency</div>
+          <div className="text-xs font-semibold text-slate-400 uppercase">Decision Latency</div>
           <div className="text-xl font-bold text-emerald-600 mt-0.5">&lt; 3.2ms</div>
-          <div className="text-[10px] text-slate-500 font-mono mt-1">13-Step Deterministic</div>
+          <div className="text-xs text-slate-500 font-mono mt-1">13-Step Deterministic</div>
         </div>
       </div>
 
@@ -307,19 +304,19 @@ export const IdentityAccessPage: React.FC = () => {
                   <td className="py-2.5 px-4 font-mono text-slate-700">{id.primary_email}</td>
                   <td className="py-2.5 px-4">
                     {id.national_identifiers && id.national_identifiers.length > 0 ? (
-                      <span className="inline-flex items-center gap-1 font-mono text-[10px] bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                      <span className="inline-flex items-center gap-1 font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
                         {id.national_identifiers[0].scheme}: {id.national_identifiers[0].identifier_value}
                       </span>
                     ) : (
-                      <span className="text-slate-400 text-[11px]">-</span>
+                      <span className="text-slate-400 text-xs">-</span>
                     )}
                   </td>
                   <td className="py-2.5 px-4">
-                    <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="inline-block px-1.5 py-0.5 rounded text-xs font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
                       {id.status}
                     </span>
                   </td>
-                  <td className="py-2.5 px-4 text-slate-500 font-mono text-[11px]">
+                  <td className="py-2.5 px-4 text-slate-500 font-mono text-xs">
                     {new Date(id.created_at).toLocaleDateString()}
                   </td>
                 </tr>
@@ -338,30 +335,30 @@ export const IdentityAccessPage: React.FC = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-slate-900 text-sm">{r.role_name}</span>
-                    <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                    <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
                       v{r.current_version}
                     </span>
                   </div>
-                  <div className="text-[11px] font-mono text-slate-500 mt-0.5">{r.role_code}</div>
+                  <div className="text-xs font-mono text-slate-500 mt-0.5">{r.role_code}</div>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200 uppercase tracking-wide">
+                <span className="text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200 uppercase tracking-wide">
                   Max Scope: {r.active_version?.max_allowed_scope || 'ORGANIZATIONAL_UNIT'}
                 </span>
               </div>
               <p className="text-xs text-slate-600 mt-2">{r.description}</p>
 
               <div className="mt-3 pt-3 border-t border-slate-100">
-                <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
                   Granted Capabilities ({r.active_version?.permissions?.length || 0})
                 </div>
                 <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto">
                   {r.active_version?.permissions?.slice(0, 10).map((perm: string) => (
-                    <span key={perm} className="text-[10px] font-mono bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700">
+                    <span key={perm} className="text-xs font-mono bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded text-slate-700">
                       {perm}
                     </span>
                   ))}
                   {(r.active_version?.permissions?.length || 0) > 10 && (
-                    <span className="text-[10px] font-mono text-slate-400 self-center">
+                    <span className="text-xs font-mono text-slate-400 self-center">
                       +{r.active_version.permissions.length - 10} more
                     </span>
                   )}
@@ -392,19 +389,19 @@ export const IdentityAccessPage: React.FC = () => {
             <tbody className="divide-y divide-slate-100">
               {assignments.map((a) => (
                 <tr key={a.assignment_id} className="hover:bg-slate-50/80">
-                  <td className="py-2.5 px-4 font-mono text-[11px] text-slate-600">{a.assignment_id.slice(0, 8)}...</td>
+                  <td className="py-2.5 px-4 font-mono text-xs text-slate-600">{a.assignment_id.slice(0, 8)}...</td>
                   <td className="py-2.5 px-4 font-semibold text-slate-900">{a.role_code || a.role_id}</td>
                   <td className="py-2.5 px-4">
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-50 text-purple-800 border border-purple-200 uppercase">
+                    <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-purple-50 text-purple-800 border border-purple-200 uppercase">
                       {a.scope_type}
                     </span>
                   </td>
-                  <td className="py-2.5 px-4 font-mono text-[11px] text-slate-700">{a.scope_id}</td>
-                  <td className="py-2.5 px-4 text-slate-500 font-mono text-[11px]">
+                  <td className="py-2.5 px-4 font-mono text-xs text-slate-700">{a.scope_id}</td>
+                  <td className="py-2.5 px-4 text-slate-500 font-mono text-xs">
                     {a.valid_to ? new Date(a.valid_to).toLocaleDateString() : 'PERMANENT'}
                   </td>
                   <td className="py-2.5 px-4">
-                    <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="inline-block px-1.5 py-0.5 rounded text-xs font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
                       {a.status}
                     </span>
                   </td>
@@ -425,9 +422,10 @@ export const IdentityAccessPage: React.FC = () => {
             </h2>
           </div>
           {delegations.length === 0 ? (
-            <div className="p-8 text-center text-slate-400 text-xs border border-dashed border-slate-200 rounded">
-              No active role delegations or elevated break-glass sessions currently recorded.
-            </div>
+            <EmptyState
+              title="No active delegations"
+              description="No active role delegations or elevated break-glass sessions currently recorded."
+            />
           ) : (
             <div className="space-y-3">
               {delegations.map((d) => (
@@ -436,11 +434,11 @@ export const IdentityAccessPage: React.FC = () => {
                     <div className="text-xs font-semibold text-slate-900">
                       Delegated Role: {d.role_id} ({d.scope_type})
                     </div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">
+                    <div className="text-xs text-slate-500 mt-0.5">
                       Reason: {d.reason} &bull; Valid to: {new Date(d.valid_to).toLocaleString()}
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded">
+                  <span className="text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 rounded">
                     {d.status}
                   </span>
                 </div>
@@ -534,7 +532,7 @@ export const IdentityAccessPage: React.FC = () => {
                 </div>
                 <div className="text-xs mt-1.5">{simResult.message}</div>
                 {simResult.matched_role_id && (
-                  <div className="text-[10px] font-mono text-slate-600 mt-2">
+                  <div className="text-xs font-mono text-slate-600 mt-2">
                     Matched Authoritative Role: {simResult.matched_role_id}
                   </div>
                 )}
@@ -556,7 +554,7 @@ export const IdentityAccessPage: React.FC = () => {
             <form onSubmit={handleCreateIdentity} className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">First Name</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">First Name</label>
                   <input
                     type="text"
                     required
@@ -566,7 +564,7 @@ export const IdentityAccessPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-medium text-slate-700 mb-1">Last Name</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Last Name</label>
                   <input
                     type="text"
                     required
@@ -578,7 +576,7 @@ export const IdentityAccessPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">Primary Email</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Primary Email</label>
                 <input
                   type="email"
                   required
@@ -589,7 +587,7 @@ export const IdentityAccessPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-700 mb-1">APAAR Identifier (Optional)</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">APAAR Identifier (Optional)</label>
                 <input
                   type="text"
                   placeholder="12-digit APAAR"

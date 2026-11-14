@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
 import { RenegeCandidate } from '../../../types';
-import { Radar, AlertTriangle, ShieldCheck, Activity } from 'lucide-react';
+import { Radar, Activity } from 'lucide-react';
 
 export const RenegeRadarPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -45,10 +45,10 @@ export const RenegeRadarPage: React.FC = () => {
       {/* Header */}
       <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
+          <div className="text-xs font-bold tracking-widest uppercase text-slate-500 mb-1">
             ENTERPRISE MOAT &bull; RETENTION &amp; RENEGE EARLY WARNING RADAR
           </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
+          <h1 className="text-xl font-bold  text-slate-900 m-0">
             Post-Offer Retention Radar
           </h1>
           <p className="text-xs text-slate-600 mt-1 max-w-2xl">
@@ -66,23 +66,23 @@ export const RenegeRadarPage: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white border border-slate-200 rounded p-4 shadow-subtle">
           <div className="text-xs font-semibold text-slate-500 uppercase">Total Placed Monitored</div>
-          <div className="text-2xl font-bold font-serif text-slate-900 mt-1">{stats.total}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Active accepted offers</div>
+          <div className="text-2xl font-bold  text-slate-900 mt-1">{stats.total}</div>
+          <div className="text-xs text-slate-400 mt-0.5">Active accepted offers</div>
         </div>
         <div className="bg-white border border-red-300 rounded p-4 shadow-subtle border-t-3 border-t-red-600">
           <div className="text-xs font-semibold text-red-800 uppercase">Critical Flight Risk</div>
-          <div className="text-2xl font-bold font-serif text-red-700 mt-1">{stats.critical}</div>
-          <div className="text-[11px] text-red-600 mt-0.5">Immediate TPO call required</div>
+          <div className="text-2xl font-bold  text-red-700 mt-1">{stats.critical}</div>
+          <div className="text-xs text-red-600 mt-0.5">Immediate TPO call required</div>
         </div>
         <div className="bg-white border border-amber-300 rounded p-4 shadow-subtle border-t-3 border-t-amber-600">
           <div className="text-xs font-semibold text-amber-800 uppercase">Moderate Flight Risk</div>
-          <div className="text-2xl font-bold font-serif text-amber-700 mt-1">{stats.moderate}</div>
-          <div className="text-[11px] text-amber-600 mt-0.5">Salary ratio &lt; 0.85</div>
+          <div className="text-2xl font-bold  text-amber-700 mt-1">{stats.moderate}</div>
+          <div className="text-xs text-amber-600 mt-0.5">Salary ratio &lt; 0.85</div>
         </div>
         <div className="bg-white border border-slate-200 rounded p-4 shadow-subtle">
           <div className="text-xs font-semibold text-slate-500 uppercase">Cohort Avg Flight Risk</div>
           <div className="text-2xl font-bold font-mono text-slate-800 mt-1">{stats.avg_prob}%</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Telemetry mean likelihood</div>
+          <div className="text-xs text-slate-400 mt-0.5">Telemetry mean likelihood</div>
         </div>
       </div>
 
@@ -92,7 +92,7 @@ export const RenegeRadarPage: React.FC = () => {
           <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wide m-0">
             Placed Candidate Flight Telemetry Table
           </h2>
-          <span className="text-[11px] text-slate-500 font-mono">
+          <span className="text-xs text-slate-500 font-mono">
             Sorted by flight risk descending
           </span>
         </div>
@@ -147,7 +147,7 @@ export const RenegeRadarPage: React.FC = () => {
                   </td>
                   <td className="py-2.5 px-4">
                     <span
-                      className={`px-2 py-0.5 rounded font-mono font-bold text-[11px] ${
+                      className={`px-2 py-0.5 rounded font-mono font-bold text-xs ${
                         c.risk_level === 'CRITICAL'
                           ? 'bg-red-50 text-red-800 border border-red-200'
                           : c.risk_level === 'MODERATE'

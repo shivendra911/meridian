@@ -11,6 +11,7 @@ from operations.ids import insert_with_id
 from operations.errors import friendly
 from operations.cascading import atomic_placement_with_cascading
 from api.auth.permissions import perm, any_of
+from camp_02.notify import notify, get_person_id_for_student
 
 
 class CompanyListView(APIView):
@@ -44,9 +45,39 @@ class JobListView(APIView):
         db = get_db()
         try:
             jid = jobs.add_job(db, request.data)
+            # Notify eligible student cohort about newly published drive
+            title = request.data.get("title", "New Placement Drive")
+            pkg = request.data.get("package_lpa", "")
+            depts = (request.data.get("eligibility") or {}).get("departments") or []
+            query = {}
+            if depts:
+                query["department"] = {"$in": depts}
+            for stu in db.students.find(query, {"student_id": 1, "person_id": 1}).limit(50):
+                spid = stu.get("person_id") or get_person_id_for_student(stu.get("student_id"), db=db)
+                if spid:
+                    notify(
+                        spid,
+                        "DRIVE",
+                        f"New Drive: {title}",
+                        f"A new placement drive '{title}' (Rs {pkg} LPA) is now open for applications.",
+                        link="/student/opportunities",
+                        db=db,
+                    )
             return Response({"status": "SUCCESS", "job_id": jid}, status=status.HTTP_201_CREATED)
         except Exception as exc:
             return Response({"status": "ERROR", "message": friendly(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class JobDetailView(APIView):
+    """Retrieves full details of a single placement drive / JNF."""
+    permission_classes = [perm("placement.drive.manage")]
+
+    def get(self, request, job_id):
+        db = get_db()
+        job = db.jobs.find_one({"job_id": job_id}, {"_id": 0})
+        if not job:
+            return Response({"error": f"Job opening '{job_id}' not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response(job, status=status.HTTP_200_OK)
 
 
 class JobCandidatesView(APIView):
@@ -96,6 +127,20 @@ class ApplicationStatusView(APIView):
             return Response({"error": "status is required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             applications.update_status(db, application_id, new_status, note)
+            app_doc = db.applications.find_one({"application_id": application_id})
+            if app_doc:
+                sid = app_doc.get("student_id")
+                job_doc = db.jobs.find_one({"job_id": app_doc.get("job_id")}) or {}
+                pid = get_person_id_for_student(sid, db=db)
+                if pid:
+                    notify(
+                        pid,
+                        "APPLICATION",
+                        f"Application Status Updated: {new_status}",
+                        f"Your application for {job_doc.get('title', 'Role')} has moved to '{new_status}'.",
+                        link="/student/applications",
+                        db=db,
+                    )
             return Response({"status": "SUCCESS", "application_id": application_id, "new_status": new_status})
         except Exception as exc:
             return Response({"status": "ERROR", "message": friendly(exc)}, status=status.HTTP_400_BAD_REQUEST)
@@ -123,6 +168,19 @@ class InterviewListView(APIView):
                 mode=d["mode"],
                 venue=d.get("venue")
             )
+            app_doc = db.applications.find_one({"application_id": d["application_id"]})
+            if app_doc:
+                sid = app_doc.get("student_id")
+                pid = get_person_id_for_student(sid, db=db)
+                if pid:
+                    notify(
+                        pid,
+                        "INTERVIEW",
+                        f"Interview Scheduled: {d.get('round', 'Round')}",
+                        f"An interview ({d.get('mode', 'Online')}) has been scheduled for {d.get('scheduled_start')}.",
+                        link="/student/interviews",
+                        db=db,
+                    )
             return Response({"status": "SUCCESS", "interview_id": iid}, status=status.HTTP_201_CREATED)
         except Exception as exc:
             return Response({"status": "ERROR", "message": friendly(exc)}, status=status.HTTP_400_BAD_REQUEST)
@@ -145,6 +203,17 @@ class PlacementListView(APIView):
             return Response({"error": "student_id and job_id are required"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             plc_id, cascaded_id = atomic_placement_with_cascading(db, sid, jid)
+            job_doc = db.jobs.find_one({"job_id": jid}) or {}
+            pid = get_person_id_for_student(sid, db=db)
+            if pid:
+                notify(
+                    pid,
+                    "OFFER",
+                    "Placement Offer Extended",
+                    f"Congratulations! You received a placement offer for {job_doc.get('title', 'Role')} ({job_doc.get('package_lpa', '')} LPA).",
+                    link="/student/offers",
+                    db=db,
+                )
             return Response({
                 "status": "SUCCESS",
                 "placement_id": plc_id,

@@ -36,6 +36,7 @@ from camp_02.accounts import (
 from camp_02.assignments import assign_role
 from camp_02.identities import create_person_identity
 from camp_02.mailer import send_lifecycle_email
+from camp_02.notify import notify, get_person_id_for_student
 from camp_02.sessions import revoke_all_account_sessions
 from camp_02.tokens import (
     create_invite_token,
@@ -570,6 +571,19 @@ class AdminClaimsResolveView(APIView):
             },
         )
 
+        # Notify student about claim resolution
+        sid = claim.get("student_id")
+        spid = get_person_id_for_student(sid, db=db) if sid else None
+        if spid:
+            notify(
+                spid,
+                "CLAIM",
+                f"Profile Claim {target_status}",
+                f"Your account claim request for registration number {claim.get('registration_no')} has been {target_status.lower()}.",
+                link="/account/profile",
+                db=db,
+            )
+
         audit_log(
             event_type=f"CLAIM_{target_status}",
             principal=request.user,
@@ -734,7 +748,7 @@ class AdminAccountResendInviteView(APIView):
         )
 
         invite_link = f"/accept-invite?token={raw_token}"
-        send_lifecycle_email(
+        sent = send_lifecycle_email(
             to_email=acc["email"],
             subject="Meridian Account Invitation",
             body=(
@@ -745,8 +759,27 @@ class AdminAccountResendInviteView(APIView):
             link=invite_link,
         )
 
+        if not sent:
+            db.accounts.update_one(
+                {"account_id": account_id},
+                {"$set": {"last_email_delivery_failed": True, "updated_at": datetime.now(timezone.utc)}}
+            )
+            return Response(
+                {
+                    "message": "Email delivery failed; invitation link generated but not sent.",
+                    "email_sent": False,
+                    "action_required": "RESEND_INVITE",
+                    "invite_link": invite_link,
+                },
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        db.accounts.update_one(
+            {"account_id": account_id},
+            {"$set": {"last_email_delivery_failed": False, "updated_at": datetime.now(timezone.utc)}}
+        )
         return Response(
-            {"message": "Invitation resent successfully."},
+            {"message": "Invitation resent successfully.", "email_sent": True},
             status=status.HTTP_200_OK,
         )
 

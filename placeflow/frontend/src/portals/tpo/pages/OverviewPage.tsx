@@ -9,23 +9,16 @@ import {
   Award,
   Building2,
   Briefcase,
-  TrendingUp,
-  ShieldCheck,
   Zap,
-  Radar,
-  ArrowRight,
-  Sparkles,
-  CheckCircle2,
-  Activity,
-  AlertCircle,
-} from 'lucide-react';
+  Radar} from 'lucide-react';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { StatCard } from '../../../components/ui/StatCard';
 import { Card } from '../../../components/ui/Card';
 import { Badge } from '../../../components/ui/Badge';
 import { Button } from '../../../components/ui/Button';
 import { Skeleton } from '../../../components/ui/Skeleton';
-import { TaskCard, useDocumentTitle } from '../../../ui';
+import { TaskCard, useDocumentTitle, ErrorState } from '../../../ui';
+import { formatApiError } from '../../../core/api/errors';
 
 interface OverviewPageProps {
   onNavigateTab?: (tab: string) => void;
@@ -49,7 +42,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.message);
+        setError(formatApiError(err));
         setLoading(false);
       });
   }, [activeTenant]);
@@ -77,13 +70,24 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
 
   if (error || !data) {
     return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-xs text-ink flex items-start gap-3">
-        <AlertCircle size={18} className="text-danger shrink-0 mt-0.5" />
-        <div>
-          <div className="font-semibold text-danger">Unable to Load Telemetry Stream</div>
-          <div className="text-ink-muted mt-1">{error || 'Unknown error occurred'}</div>
-        </div>
-      </div>
+      <ErrorState
+        title="Failed to Load Placement Overview"
+        message={error || 'Unable to load overview data.'}
+        onRetry={() => {
+          setLoading(true);
+          setError(null);
+          api
+            .getOverview()
+            .then((res) => {
+              setData(res);
+              setLoading(false);
+            })
+            .catch((err) => {
+              setError(formatApiError(err));
+              setLoading(false);
+            });
+        }}
+      />
     );
   }
 
@@ -279,20 +283,20 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
                   <span>Superday Clash Solver</span>
                   <Zap size={14} className="text-brand" />
                 </div>
-                <div className="text-[11px] text-ink-muted mt-1">
+                <div className="text-xs text-ink-muted mt-1">
                   Constraint-based interview schedule arbitrator
                 </div>
               </button>
 
               <button
-                onClick={() => { if (onNavigateTab) onNavigateTab('renege'); else navigate('/tpo/tpo/insights/renege'); }}
+                onClick={() => { if (onNavigateTab) onNavigateTab('renege'); else navigate('/tpo/insights/renege'); }}
                 className="p-3 rounded-lg border border-line bg-surface hover:bg-canvas text-left transition-colors duration-150 cursor-pointer"
               >
                 <div className="flex items-center justify-between text-xs font-semibold text-ink">
                   <span>Retention Radar</span>
                   <Radar size={14} className="text-brand" />
                 </div>
-                <div className="text-[11px] text-ink-muted mt-1">
+                <div className="text-xs text-ink-muted mt-1">
                   Post-offer renege telemetry &amp; early warnings
                 </div>
               </button>
@@ -313,7 +317,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
                   <span className="font-semibold text-ink">MoE AISHE Verification</span>
                   <Badge variant="success" size="xs">Verified</Badge>
                 </div>
-                <p className="text-[11px] text-ink-muted m-0">
+                <p className="text-xs text-ink-muted m-0">
                   Primary campus registry locked &amp; attested.
                 </p>
               </div>
@@ -323,7 +327,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
                   <span className="font-semibold text-ink">Superday Lab Integrity</span>
                   <Badge variant="success" size="xs">Zero Clashes</Badge>
                 </div>
-                <p className="text-[11px] text-ink-muted m-0">
+                <p className="text-xs text-ink-muted m-0">
                   Terminal scheduling constraint engine running live.
                 </p>
               </div>
@@ -333,7 +337,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
                   <span className="font-semibold text-ink">DPDP Act 2023 Consent</span>
                   <Badge variant="success" size="xs">98.2% Active</Badge>
                 </div>
-                <p className="text-[11px] text-ink-muted m-0">
+                <p className="text-xs text-ink-muted m-0">
                   Authoritative student data consent recorded.
                 </p>
               </div>
@@ -354,11 +358,11 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
                   >
                     <div className="space-y-0.5 min-w-0">
                       <div className="font-medium text-ink truncate">{act.message}</div>
-                      <span className="text-[10px] text-ink-muted font-mono uppercase">
+                      <span className="text-xs text-ink-muted font-mono uppercase">
                         {act.event_type}
                       </span>
                     </div>
-                    <span className="text-[10px] text-ink-muted font-mono tabular-nums shrink-0">
+                    <span className="text-xs text-ink-muted font-mono tabular-nums shrink-0">
                       {act.at ? new Date(act.at).toLocaleTimeString() : 'Now'}
                     </span>
                   </div>

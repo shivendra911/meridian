@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  CheckCircle2,
   ShieldCheck,
   Camera,
   UploadCloud,
@@ -11,12 +10,12 @@ import {
   ArrowLeft,
   Sparkles,
   ExternalLink,
-  AlertCircle,
-} from 'lucide-react';
+  AlertCircle} from 'lucide-react';
 import { useAuth } from './useAuth';
 import { client } from '../api/client';
 import { Avatar } from '../../ui/cards/Avatar';
 import { formatApiError } from '../api/errors';
+import { toast } from 'sonner';
 
 type OnboardingStep = 1 | 2 | 3 | 4;
 
@@ -224,19 +223,19 @@ export const OnboardingPage: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-3 rounded-xl border border-line bg-canvas">
-                  <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+                  <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
                     Full Name (As on Record)
                   </span>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-ink">{displayName}</span>
-                    <span className="inline-flex items-center gap-1 rounded bg-teal-50 px-1.5 py-0.5 text-[10px] font-medium text-teal-700 border border-teal-200">
+                    <span className="inline-flex items-center gap-1 rounded bg-teal-50 px-1.5 py-0.5 text-xs font-medium text-teal-700 border border-teal-200">
                       Verified
                     </span>
                   </div>
                 </div>
 
                 <div className="p-3 rounded-xl border border-line bg-canvas">
-                  <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+                  <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
                     Registration No / Roll No
                   </span>
                   <span className="text-xs font-bold text-ink font-mono">
@@ -245,7 +244,7 @@ export const OnboardingPage: React.FC = () => {
                 </div>
 
                 <div className="p-3 rounded-xl border border-line bg-canvas">
-                  <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+                  <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
                     Academic Department
                   </span>
                   <span className="text-xs font-bold text-ink">
@@ -254,7 +253,7 @@ export const OnboardingPage: React.FC = () => {
                 </div>
 
                 <div className="p-3 rounded-xl border border-line bg-canvas">
-                  <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+                  <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
                     Batch / Graduation Year
                   </span>
                   <span className="text-xs font-bold text-ink">
@@ -264,7 +263,7 @@ export const OnboardingPage: React.FC = () => {
 
                 {official.cgpa && (
                   <div className="p-3 rounded-xl border border-line bg-canvas">
-                    <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+                    <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
                       Official CGPA
                     </span>
                     <span className="text-xs font-bold text-ink font-mono">
@@ -274,7 +273,7 @@ export const OnboardingPage: React.FC = () => {
                 )}
 
                 <div className="p-3 rounded-xl border border-line bg-canvas">
-                  <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block mb-1">
+                  <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-1">
                     Institutional Email
                   </span>
                   <span className="text-xs font-bold text-ink">
@@ -287,7 +286,7 @@ export const OnboardingPage: React.FC = () => {
                 <span>Noticed an inaccuracy in your official academic records?</span>
                 <button
                   type="button"
-                  onClick={() => alert('Official record corrections can be requested in Account > Privacy & Data Rights.')}
+                  onClick={() => toast.info('Official record corrections can be requested in Account > Privacy & Data Rights.')}
                   className="font-semibold text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
                 >
                   <span>Request correction</span>
@@ -340,7 +339,7 @@ export const OnboardingPage: React.FC = () => {
                       onChange={handleAvatarSelect}
                     />
                   </label>
-                  <p className="mt-2 text-[11px] text-ink-muted">
+                  <p className="mt-2 text-xs text-ink-muted">
                     Supports PNG, JPG, or WEBP up to 2 MB. Square aspect ratio recommended.
                   </p>
                 </div>
@@ -402,7 +401,7 @@ export const OnboardingPage: React.FC = () => {
                     <span className="text-xs font-bold text-ink block">
                       Placement Coordination & Eligibility Processing
                     </span>
-                    <span className="text-[11px] text-ink-muted leading-relaxed block mt-0.5">
+                    <span className="text-xs text-ink-muted leading-relaxed block mt-0.5">
                       Permits the Training & Placement Cell to verify criteria, compute academic eligibility cutoffs, and schedule recruitment rounds.
                     </span>
                   </div>
@@ -419,7 +418,7 @@ export const OnboardingPage: React.FC = () => {
                     <span className="text-xs font-bold text-ink block">
                       Corporate Recruiter Visibility
                     </span>
-                    <span className="text-[11px] text-ink-muted leading-relaxed block mt-0.5">
+                    <span className="text-xs text-ink-muted leading-relaxed block mt-0.5">
                       Allows authorized partner companies with active placement drives to review your submitted dossiers, resumes, and interview schedules.
                     </span>
                   </div>
@@ -465,7 +464,7 @@ export const OnboardingPage: React.FC = () => {
                 <div className="flex items-center justify-between p-3.5 rounded-xl border border-line bg-canvas">
                   <div>
                     <span className="text-xs font-bold text-ink block">Email Notifications</span>
-                    <span className="text-[11px] text-ink-muted block mt-0.5">
+                    <span className="text-xs text-ink-muted block mt-0.5">
                       Receive critical drive invitations, shortlist announcements, and offer letters.
                     </span>
                   </div>
@@ -480,7 +479,7 @@ export const OnboardingPage: React.FC = () => {
                 <div className="flex items-center justify-between p-3.5 rounded-xl border border-line bg-canvas">
                   <div>
                     <span className="text-xs font-bold text-ink block">In-App Notifications</span>
-                    <span className="text-[11px] text-ink-muted block mt-0.5">
+                    <span className="text-xs text-ink-muted block mt-0.5">
                       Real-time alerts in the top bar bell icon for interviews, tasks, and advisor notes.
                     </span>
                   </div>

@@ -3,13 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import {
   User,
   Settings,
-  Repeat,
   Keyboard,
   LogOut,
   ChevronDown,
-  Building2,
-} from 'lucide-react';
+  Building2} from 'lucide-react';
 import { useAuth } from '../../core/auth/useAuth';
+import { formatRoleLabel } from '../../core/auth/roleLabels';
 import { Avatar } from '../../ui/cards/Avatar';
 
 export interface UserMenuProps {
@@ -37,7 +36,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenShortcuts, className =
 
   const displayName = me?.profile?.display_name || me?.display_name || 'Member';
   const email = me?.profile?.email || me?.subject?.id || 'Active Account';
-  const roleLabel = me?.profile?.affiliation_label || me?.assignments?.[0]?.role_code || 'Member';
+  const roleLabel = me?.profile?.affiliation_label ? formatRoleLabel(me.profile.affiliation_label) : formatRoleLabel(me?.assignments?.[0]?.role_code);
   const institutionName = me?.profile?.institution_name || 'Meridian Campus';
   const avatarUrl = me?.profile?.avatar_url || null;
 
@@ -77,10 +76,10 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenShortcuts, className =
                 {email}
               </p>
               <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
-                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium bg-slate-200 text-slate-800">
+                <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium bg-slate-200 text-slate-800">
                   {roleLabel}
                 </span>
-                <span className="inline-flex items-center gap-1 text-[11px] text-ink-muted truncate max-w-[120px]">
+                <span className="inline-flex items-center gap-1 text-xs text-ink-muted truncate max-w-[120px]">
                   <Building2 size={10} className="shrink-0" />
                   <span className="truncate">{institutionName}</span>
                 </span>
@@ -127,7 +126,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenShortcuts, className =
                   <Keyboard size={15} className="text-slate-500 shrink-0" />
                   <span>Keyboard shortcuts</span>
                 </div>
-                <kbd className="rounded border border-line bg-slate-50 px-1.5 py-0.5 text-[10px] font-mono text-ink-muted">
+                <kbd className="rounded border border-line bg-slate-50 px-1.5 py-0.5 text-xs font-mono text-ink-muted">
                   ?
                 </kbd>
               </button>

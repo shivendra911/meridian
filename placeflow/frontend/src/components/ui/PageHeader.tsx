@@ -2,7 +2,7 @@ import React from 'react';
 
 export interface PageHeaderProps {
   title: string;
-  description?: string;
+  description?: React.ReactNode;
   actions?: React.ReactNode;
   badge?: React.ReactNode;
 }
@@ -23,9 +23,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           {badge}
         </div>
         {description && (
-          <p className="mt-1 text-sm text-ink-muted leading-relaxed m-0">
+          <div className="mt-1 text-sm text-ink-muted leading-relaxed m-0">
             {description}
-          </p>
+          </div>
         )}
       </div>
       {actions && (

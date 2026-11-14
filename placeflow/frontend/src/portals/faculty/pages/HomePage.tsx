@@ -4,19 +4,13 @@
  * Surfaces "What needs me now" command center, academic verification queue, and scheduled lectures.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Users,
   BookOpen,
   CheckSquare,
-  AlertTriangle,
-  Clock,
-  ArrowRight,
-  Sparkles,
-  Calendar,
-  CheckCircle2,
-} from 'lucide-react';
+  AlertTriangle} from 'lucide-react';
 import { useAuth } from '../../../core/auth/useAuth';
 import { PageHeader, StatCard, Card, Badge, Button, TaskCard, PersonChip, useDocumentTitle } from '../../../ui';
 
@@ -120,7 +114,7 @@ export const FacultyHomePage: React.FC = () => {
             <div className="p-3.5 rounded-xl border border-line bg-canvas flex items-center justify-between">
               <div className="space-y-0.5">
                 <div className="text-xs font-bold text-ink">CS301: Distributed Operating Systems</div>
-                <div className="text-[11px] text-ink-muted">Room LH-204 &bull; CSE Section B</div>
+                <div className="text-xs text-ink-muted">Room LH-204 &bull; CSE Section B</div>
               </div>
               <Badge variant="institutional" size="xs">10:00 - 11:30 AM</Badge>
             </div>
@@ -128,7 +122,7 @@ export const FacultyHomePage: React.FC = () => {
             <div className="p-3.5 rounded-xl border border-line bg-canvas flex items-center justify-between">
               <div className="space-y-0.5">
                 <div className="text-xs font-bold text-ink">CS405: Cloud &amp; Distributed Systems Lab</div>
-                <div className="text-[11px] text-ink-muted">Computing Lab 3 &bull; CSE Section A</div>
+                <div className="text-xs text-ink-muted">Computing Lab 3 &bull; CSE Section A</div>
               </div>
               <Badge variant="neutral" size="xs">02:00 - 04:00 PM</Badge>
             </div>
@@ -154,7 +148,7 @@ export const FacultyHomePage: React.FC = () => {
                   }}
                   onClick={() => navigate('/faculty/mentees')}
                 />
-                <div className="text-[11px] text-red-700 pl-1">Attendance: 68.2% &bull; CGPA: 6.40 (1 Backlog)</div>
+                <div className="text-xs text-red-700 pl-1">Attendance: 68.2% &bull; CGPA: 6.40 (1 Backlog)</div>
               </div>
               <Button variant="outline" size="sm" onClick={() => navigate('/faculty/mentees')}>
                 Counsel
@@ -178,7 +172,7 @@ export const FacultyHomePage: React.FC = () => {
                   }}
                   onClick={() => navigate('/faculty/mentees')}
                 />
-                <div className="text-[11px] text-amber-800 pl-1">Placement Standing: Unregistered for Super Dream</div>
+                <div className="text-xs text-amber-800 pl-1">Placement Standing: Unregistered for Super Dream</div>
               </div>
               <Button variant="outline" size="sm" onClick={() => navigate('/faculty/mentees')}>
                 Inspect

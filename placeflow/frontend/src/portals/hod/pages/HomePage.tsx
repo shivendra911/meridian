@@ -13,11 +13,7 @@ import {
   BookOpen,
   CheckSquare,
   AlertTriangle,
-  TrendingUp,
-  Building2,
-  ArrowRight,
-  ShieldCheck,
-} from 'lucide-react';
+  ArrowRight} from 'lucide-react';
 import { useAuth } from '../../../core/auth/useAuth';
 import { PageHeader, StatCard, Card, Badge, Button, TaskCard, useDocumentTitle } from '../../../ui';
 

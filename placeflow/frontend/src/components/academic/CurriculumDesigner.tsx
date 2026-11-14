@@ -1,21 +1,13 @@
 import React, { useState } from 'react';
 import {
-  BookOpen,
   GraduationCap,
   Layers,
   Sparkles,
   CheckCircle2,
   AlertTriangle,
-  ArrowRight,
   GitBranch,
-  Clock,
   Plus,
-  Trash2,
-  FileCheck2,
-  Info,
-  Calendar,
-  Share2,
-} from 'lucide-react';
+  FileCheck2} from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -49,7 +41,7 @@ export const CurriculumDesigner: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Curriculum terms model
-  const [terms, setTerms] = useState<TermStructure[]>([
+  const [terms, _setTerms] = useState<TermStructure[]>([
     {
       id: 1,
       name: 'Semester 1',
@@ -150,10 +142,10 @@ export const CurriculumDesigner: React.FC = () => {
       {/* Top Banner */}
       <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded-lg p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 font-mono mb-1">
+          <div className="text-xs font-bold tracking-widest uppercase text-slate-500 font-mono mb-1">
             CAMP-03 &bull; AUTONOMOUS CURRICULUM ARCHITECT
           </div>
-          <h2 className="text-xl font-bold font-serif text-slate-900 m-0 flex items-center gap-2">
+          <h2 className="text-xl font-bold  text-slate-900 m-0 flex items-center gap-2">
             <Layers size={20} className="text-cardinal" />
             Curriculum Designer &amp; Progression Simulator
           </h2>
@@ -189,7 +181,7 @@ export const CurriculumDesigner: React.FC = () => {
         <div className="lg:col-span-3 space-y-3">
           <Card className="p-4 space-y-3">
             <div>
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">
                 Program Offering &amp; Version
               </span>
               <select
@@ -204,7 +196,7 @@ export const CurriculumDesigner: React.FC = () => {
             </div>
 
             <div className="pt-2 border-t border-slate-100">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">
                 Terms &amp; Semesters
               </span>
               <div className="space-y-1">
@@ -223,7 +215,7 @@ export const CurriculumDesigner: React.FC = () => {
                     >
                       <span className="font-semibold">{t.name}</span>
                       <span
-                        className={`text-[11px] font-mono ${
+                        className={`text-xs font-mono ${
                           isSelected ? 'text-white/90' : 'text-slate-500'
                         }`}
                       >
@@ -243,7 +235,7 @@ export const CurriculumDesigner: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base font-bold font-serif text-slate-900">
+                  <h3 className="text-base font-bold  text-slate-900">
                     {activeTerm.name} Course Basket
                   </h3>
                   <Badge variant="info" size="xs">
@@ -257,14 +249,14 @@ export const CurriculumDesigner: React.FC = () => {
 
               <div className="text-right">
                 <div className="text-xs text-slate-500">Term Credits</div>
-                <div className="text-xl font-bold font-serif text-cardinal">
+                <div className="text-xl font-bold  text-cardinal">
                   {termTotalCredits.toFixed(1)} Cr
                 </div>
               </div>
             </div>
 
             <div className="space-y-2.5">
-              {activeTerm.courses.map((course, idx) => (
+              {activeTerm.courses.map((course, _idx) => (
                 <div
                   key={course.code}
                   className="p-3 bg-white border border-slate-200 rounded-lg hover:border-slate-300 transition-all text-xs"
@@ -275,7 +267,7 @@ export const CurriculumDesigner: React.FC = () => {
                         <span className="font-mono font-bold text-cardinal">{course.code}</span>
                         <span className="font-semibold text-slate-900">{course.title}</span>
                       </div>
-                      <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-500">
+                      <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
                         <span className="font-mono bg-slate-100 px-1.5 py-0.2 rounded">
                           L-T-P-S: {course.l}-{course.t}-{course.p}-{course.s}
                         </span>
@@ -320,7 +312,7 @@ export const CurriculumDesigner: React.FC = () => {
               >
                 Add Course to {activeTerm.name}
               </Button>
-              <span className="text-[11px] text-slate-400">
+              <span className="text-xs text-slate-400">
                 Minimum autonomous credit requirement: 160.0 Credits
               </span>
             </div>
@@ -338,11 +330,11 @@ export const CurriculumDesigner: React.FC = () => {
             </div>
 
             <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-center">
-              <div className="text-[11px] text-slate-500 font-medium">Program Total Credits</div>
-              <div className="text-3xl font-serif font-bold text-slate-900 mt-0.5">
+              <div className="text-xs text-slate-500 font-medium">Program Total Credits</div>
+              <div className="text-3xl  font-bold text-slate-900 mt-0.5">
                 {totalProgramCredits.toFixed(1)}
               </div>
-              <div className="text-[11px] text-slate-500">Target: 160.0 Credits (UGC NCrF)</div>
+              <div className="text-xs text-slate-500">Target: 160.0 Credits (UGC NCrF)</div>
               <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mt-2">
                 <div
                   className="bg-cardinal h-full rounded-full transition-all"
@@ -402,7 +394,7 @@ export const CurriculumDesigner: React.FC = () => {
                 <span className="text-xs font-bold text-emerald-950 block">
                   Curriculum Structure Validated &amp; Ready
                 </span>
-                <p className="text-[11px] text-emerald-800 mt-0.5">
+                <p className="text-xs text-emerald-800 mt-0.5">
                   Degree credit requirements conform to UGC autonomous criteria. {simulationResult.cohortImpacted}.
                 </p>
               </div>
@@ -415,7 +407,7 @@ export const CurriculumDesigner: React.FC = () => {
               <div className="space-y-2 text-xs">
                 <div className="p-3 bg-red-50/50 border border-red-200 rounded-lg">
                   <span className="font-bold text-red-900 block">Courses Removed:</span>
-                  <ul className="list-disc pl-4 mt-1 text-[11px] text-red-800 space-y-0.5">
+                  <ul className="list-disc pl-4 mt-1 text-xs text-red-800 space-y-0.5">
                     {simulationResult.removedCourses.map((c: string, idx: number) => (
                       <li key={idx}>{c}</li>
                     ))}
@@ -424,7 +416,7 @@ export const CurriculumDesigner: React.FC = () => {
 
                 <div className="p-3 bg-blue-50/50 border border-blue-200 rounded-lg">
                   <span className="font-bold text-blue-900 block">New Mandatory Offerings:</span>
-                  <ul className="list-disc pl-4 mt-1 text-[11px] text-blue-800 space-y-0.5">
+                  <ul className="list-disc pl-4 mt-1 text-xs text-blue-800 space-y-0.5">
                     {simulationResult.newMandatoryCourses.map((c: string, idx: number) => (
                       <li key={idx}>{c}</li>
                     ))}
@@ -442,10 +434,10 @@ export const CurriculumDesigner: React.FC = () => {
                   <AlertTriangle size={14} className="text-amber-700" />
                   Lateral Entry Advisory
                 </div>
-                <p className="text-amber-800 text-[11px] leading-relaxed">
+                <p className="text-amber-800 text-xs leading-relaxed">
                   {simulationResult.potentialCreditShortfalls[0]}
                 </p>
-                <p className="text-amber-900 font-medium text-[11px] pt-1">
+                <p className="text-amber-900 font-medium text-xs pt-1">
                   <strong>Recommendation:</strong> {simulationResult.transitionAdvice}
                 </p>
               </div>

@@ -76,7 +76,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({
 
       {isOpen && (
         <div className="absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-line bg-surface p-1.5 shadow-xl ring-1 ring-black/5 animate-in fade-in zoom-in-95 duration-100">
-          <div className="px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-ink-muted">
+          <div className="px-2 py-1 text-xs font-semibold uppercase tracking-wider text-ink-muted">
             Available Workspaces
           </div>
           <div className="space-y-0.5 mt-1">
@@ -101,7 +101,7 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({
                     <Icon size={16} className={isCurrent ? 'text-brand' : 'text-slate-500'} />
                     <div className="min-w-0">
                       <p className="truncate font-medium m-0">{meta.name}</p>
-                      <p className="text-[10px] text-ink-muted truncate m-0">{meta.shortName}</p>
+                      <p className="text-xs text-ink-muted truncate m-0">{meta.shortName}</p>
                     </div>
                   </div>
                   {isCurrent && <Check size={14} className="text-brand shrink-0" />}

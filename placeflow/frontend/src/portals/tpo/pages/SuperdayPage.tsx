@@ -54,10 +54,10 @@ export const SuperdayPage: React.FC = () => {
       {/* Header */}
       <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="text-[10px] font-bold tracking-widest uppercase text-slate-500 mb-1">
+          <div className="text-xs font-bold tracking-widest uppercase text-slate-500 mb-1">
             ENTERPRISE MOAT &bull; CONSTRAINT-SATISFACTION AUTO-SLOTTER
           </div>
-          <h1 className="text-xl font-bold font-serif text-slate-900 m-0">
+          <h1 className="text-xl font-bold  text-slate-900 m-0">
             Superday Multi-Track Conflict Arbitrator
           </h1>
           <p className="text-xs text-slate-600 mt-1 max-w-2xl">
@@ -116,7 +116,7 @@ export const SuperdayPage: React.FC = () => {
                 ? `${conflicts.length} Concurrent Interview Collision(s) Detected`
                 : 'Master Superday Schedule is Optimal'}
             </div>
-            <div className="text-[11px] opacity-85">
+            <div className="text-xs opacity-85">
               {conflicts.length > 0
                 ? 'Candidate double-booking or room contention requires algorithmic slot arbitration.'
                 : 'Zero panel or venue collisions across active recruitment tracks.'}
@@ -138,7 +138,7 @@ export const SuperdayPage: React.FC = () => {
       {/* Conflicts Breakdown if present */}
       {conflicts.length > 0 && (
         <div className="bg-white border border-slate-200 rounded p-5 shadow-subtle space-y-3">
-          <h2 className="text-sm font-bold font-serif text-slate-900 m-0">
+          <h2 className="text-sm font-bold  text-slate-900 m-0">
             Active Schedule Conflicts Matrix
           </h2>
           <div className="divide-y divide-slate-100">
@@ -146,7 +146,7 @@ export const SuperdayPage: React.FC = () => {
               <div key={i} className="py-2.5 flex items-start justify-between text-xs">
                 <div>
                   <span
-                    className={`font-mono text-[10px] font-bold px-1.5 py-0.2 rounded mr-2 ${
+                    className={`font-mono text-xs font-bold px-1.5 py-0.2 rounded mr-2 ${
                       c.type === 'CANDIDATE_CLASH'
                         ? 'bg-red-100 text-red-800'
                         : 'bg-amber-100 text-amber-800'
@@ -155,11 +155,11 @@ export const SuperdayPage: React.FC = () => {
                     {c.type}
                   </span>
                   <span className="font-semibold text-slate-800">{c.description}</span>
-                  <div className="text-[11px] text-slate-500 font-mono mt-0.5">
+                  <div className="text-xs text-slate-500 font-mono mt-0.5">
                     Interview A: {c.interview_a} &bull; Interview B: {c.interview_b}
                   </div>
                 </div>
-                <span className="text-[10px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded font-mono">
+                <span className="text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded font-mono">
                   {c.severity}
                 </span>
               </div>
@@ -177,7 +177,7 @@ export const SuperdayPage: React.FC = () => {
               Master Superday Interview Loop Ledger ({interviews.length})
             </h2>
           </div>
-          <span className="text-[11px] text-slate-500 font-mono">
+          <span className="text-xs text-slate-500 font-mono">
             Sorted chronologically by start time
           </span>
         </div>

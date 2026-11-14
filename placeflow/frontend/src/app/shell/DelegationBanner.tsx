@@ -34,7 +34,7 @@ export const DelegationBanner: React.FC = () => {
           // Re-trigger reload to default identity context
           window.location.reload();
         }}
-        className="inline-flex shrink-0 items-center gap-1 rounded bg-black/15 px-2 py-0.5 text-[11px] font-bold text-slate-900 hover:bg-black/25 focus:outline-none transition-colors"
+        className="inline-flex shrink-0 items-center gap-1 rounded bg-black/15 px-2 py-0.5 text-xs font-bold text-slate-900 hover:bg-black/25 focus:outline-none transition-colors"
       >
         <span>End</span>
         <X size={12} />

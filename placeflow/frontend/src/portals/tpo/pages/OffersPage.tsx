@@ -14,15 +14,11 @@ import { resolveCompanyName } from '../../../utils/formatters';
 import { useNavigate } from 'react-router-dom';
 import {
   Award,
-  TrendingUp,
   AlertTriangle,
   RefreshCw,
   Search,
   Filter,
-  DollarSign,
-  Building2,
-  Calendar,
-} from 'lucide-react';
+  Building2} from 'lucide-react';
 
 export const OffersPage: React.FC = () => {
   const navigate = useNavigate();
@@ -187,7 +183,7 @@ export const OffersPage: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-line bg-canvas text-ink-muted font-medium uppercase tracking-wider text-[11px]">
+                    <tr className="border-b border-line bg-canvas text-ink-muted font-medium uppercase tracking-wider text-xs">
                       <th className="px-4 py-3">Offer Ref</th>
                       <th className="px-4 py-3">Candidate</th>
                       <th className="px-4 py-3">Employer / Partner</th>
@@ -204,7 +200,7 @@ export const OffersPage: React.FC = () => {
                         </td>
                         <td className="px-4 py-3.5 font-medium text-ink">
                           <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded-full bg-line text-ink flex items-center justify-center font-mono text-[10px]">
+                            <div className="h-6 w-6 rounded-full bg-line text-ink flex items-center justify-center font-mono text-xs">
                               {p.student_id?.slice(-2)}
                             </div>
                             <button onClick={() => navigate('/tpo/students/' + p.student_id)} className="font-mono text-xs font-semibold text-brand hover:underline cursor-pointer">{p.student_id}</button>
@@ -233,7 +229,7 @@ export const OffersPage: React.FC = () => {
                             {p.tier}
                           </Badge>
                         </td>
-                        <td className="px-4 py-3.5 text-right font-mono text-ink-muted text-[11px]">
+                        <td className="px-4 py-3.5 text-right font-mono text-ink-muted text-xs">
                           {p.placement_date ? new Date(p.placement_date).toLocaleDateString([], {
                             year: 'numeric',
                             month: 'short',

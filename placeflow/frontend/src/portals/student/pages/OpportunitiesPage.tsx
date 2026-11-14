@@ -7,27 +7,18 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Compass,
-  Search,
-  Filter,
-  Building2,
-  CheckCircle2,
-  AlertCircle,
-  ArrowRight,
-  Sparkles,
-  Check,
-} from 'lucide-react';
+  Search} from 'lucide-react';
 import { toast } from 'sonner';
 import { studentApi, StudentOpportunity } from '../api';
-import { PageHeader, StatCard, Badge, Button, Skeleton, EmptyState, DriveCard, useDocumentTitle } from '../../../ui';
+import { PageHeader, Skeleton, EmptyState, DriveCard, useDocumentTitle } from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
 
 export const StudentOpportunitiesPage: React.FC = () => {
-  useDocumentTitle('Campus Opportunities');
+  useDocumentTitle('Opportunities');
   const [opportunities, setOpportunities] = useState<StudentOpportunity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
+  const [_applyingJobId, setApplyingJobId] = useState<string | null>(null);
 
   // Filters
   const [activeTab, setActiveTab] = useState<'eligible' | 'all'>('eligible');
@@ -110,32 +101,29 @@ export const StudentOpportunitiesPage: React.FC = () => {
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
-        title="Campus Recruitment Drives"
-        description="Explore active recruitment notices, review eligibility criteria, and submit applications."
-        badge={<Badge variant="institutional" size="xs">Authoritative Feed</Badge>}
+        title="Opportunities"
+        description={
+          <span className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
+            <button
+              type="button"
+              onClick={() => setActiveTab('all')}
+              className={`hover:text-ink transition-colors ${activeTab === 'all' ? 'font-medium text-ink' : ''}`}
+            >
+              {opportunities.length} open
+            </button>
+            <span>·</span>
+            <button
+              type="button"
+              onClick={() => setActiveTab('eligible')}
+              className={`hover:text-ink transition-colors ${activeTab === 'eligible' ? 'font-medium text-ink' : ''}`}
+            >
+              {eligibleJobs.length} eligible
+            </button>
+            <span>·</span>
+            <span>{appliedJobs.length} applied</span>
+          </span>
+        }
       />
-
-      {/* KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard
-          label="Open Drives"
-          value={opportunities.length}
-          hint="Active campus notices"
-          icon={Compass}
-        />
-        <StatCard
-          label="Eligible for Me"
-          value={eligibleJobs.length}
-          hint="Criteria satisfied"
-          icon={CheckCircle2}
-        />
-        <StatCard
-          label="Submitted Applications"
-          value={appliedJobs.length}
-          hint="In recruitment pipeline"
-          icon={Sparkles}
-        />
-      </div>
 
       {/* Filter and Tab Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface p-3 border border-line rounded-xl">

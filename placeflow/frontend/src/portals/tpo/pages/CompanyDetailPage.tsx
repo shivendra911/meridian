@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { Company, Job } from '../../../types';
-import { Building2, Briefcase, Mail, MapPin, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Building2, Briefcase, ArrowLeft, ArrowRight } from 'lucide-react';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
@@ -50,7 +50,7 @@ export const CompanyDetailPage: React.FC = () => {
         title="Corporate partner not found"
         description={`No registered corporate partner found with ID "${id}".`}
         actionLabel="Back to Partners"
-        onAction={() => navigate('/tpo/tpo/companies')}
+        onAction={() => navigate('/tpo/companies')}
       />
     );
   }
@@ -59,7 +59,7 @@ export const CompanyDetailPage: React.FC = () => {
     <div className="space-y-6 font-sans">
       <div className="flex items-center gap-2">
         <button
-          onClick={() => navigate('/tpo/tpo/companies')}
+          onClick={() => navigate('/tpo/companies')}
           className="text-xs text-ink-muted hover:text-ink flex items-center gap-1 cursor-pointer font-medium"
         >
           <ArrowLeft size={13} />
@@ -95,15 +95,15 @@ export const CompanyDetailPage: React.FC = () => {
 
       <div className="rounded-lg border border-line bg-surface p-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
         <div>
-          <span className="text-ink-muted block text-[11px]">Primary Sector</span>
+          <span className="text-ink-muted block text-xs">Primary Sector</span>
           <span className="text-sm font-semibold text-ink">{company.industry}</span>
         </div>
         <div>
-          <span className="text-ink-muted block text-[11px]">Operating Location</span>
+          <span className="text-ink-muted block text-xs">Operating Location</span>
           <span className="text-sm font-semibold text-ink">{company.location}</span>
         </div>
         <div>
-          <span className="text-ink-muted block text-[11px]">Active Placement Drives</span>
+          <span className="text-ink-muted block text-xs">Active Placement Drives</span>
           <span className="text-sm font-semibold tabular-nums text-brand">{drives.length} Openings</span>
         </div>
       </div>
@@ -148,7 +148,7 @@ export const CompanyDetailPage: React.FC = () => {
           <div className="rounded-lg border border-line bg-surface overflow-hidden">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10">
+                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-xs h-10">
                   <th className="py-2 px-4 font-medium">JNF ID</th>
                   <th className="py-2 px-4 font-medium">Position</th>
                   <th className="py-2 px-4 font-medium">Package</th>

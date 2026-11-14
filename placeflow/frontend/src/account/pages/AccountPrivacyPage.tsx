@@ -6,10 +6,7 @@ import {
   AlertCircle,
   CheckCircle2,
   FileText,
-  Send,
-  HelpCircle,
-  ExternalLink,
-} from 'lucide-react';
+  Send} from 'lucide-react';
 import { client } from '../../core/api/client';
 import { useAuth } from '../../core/auth/useAuth';
 import { formatApiError } from '../../core/api/errors';
@@ -48,7 +45,7 @@ export const AccountPrivacyPage: React.FC = () => {
     RECRUITER_VISIBILITY: true,
     ALUMNI_COMMUNITY: false,
   });
-  const [loadingConsents, setLoadingConsents] = useState(true);
+  const [_loadingConsents, setLoadingConsents] = useState(true);
   const [savingPurpose, setSavingPurpose] = useState<string | null>(null);
   const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -136,7 +133,7 @@ export const AccountPrivacyPage: React.FC = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } catch (err) {
+    } catch {
       setErrorMsg('Failed exporting personal dossier.');
     }
   };
@@ -198,7 +195,7 @@ export const AccountPrivacyPage: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-ink">{item.label}</span>
                     <span
-                      className={`px-1.5 py-0.2 rounded text-[10px] font-semibold ${
+                      className={`px-1.5 py-0.2 rounded text-xs font-semibold ${
                         isChecked
                           ? 'bg-emerald-100 text-emerald-800'
                           : 'bg-slate-200 text-slate-700'
@@ -207,7 +204,7 @@ export const AccountPrivacyPage: React.FC = () => {
                       {isChecked ? 'Active' : 'Withdrawn'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-ink-muted leading-relaxed">
+                  <p className="text-xs text-ink-muted leading-relaxed">
                     {item.desc}
                   </p>
                 </div>
@@ -253,7 +250,7 @@ export const AccountPrivacyPage: React.FC = () => {
                 <Download size={15} className="text-brand" />
                 Data Portability (Export Dossier)
               </h3>
-              <p className="text-[11px] text-ink-muted leading-relaxed">
+              <p className="text-xs text-ink-muted leading-relaxed">
                 Download a machine-readable JSON archive of all personal data, affiliations, role assignments, and profile extensions.
               </p>
             </div>
@@ -274,7 +271,7 @@ export const AccountPrivacyPage: React.FC = () => {
                 <FileText size={15} className="text-brand" />
                 Request Official Record Correction
               </h3>
-              <p className="text-[11px] text-ink-muted leading-relaxed">
+              <p className="text-xs text-ink-muted leading-relaxed">
                 If official institutional data (Name, CGPA, Registration Number, Department) contains an error, file a verified correction request.
               </p>
             </div>
@@ -304,7 +301,7 @@ export const AccountPrivacyPage: React.FC = () => {
               <div className="text-center py-6 space-y-2">
                 <CheckCircle2 size={32} className="text-emerald-600 mx-auto" />
                 <p className="text-xs font-semibold text-ink">Ticket Submitted</p>
-                <p className="text-[11px] text-ink-muted">The administration office has received your request.</p>
+                <p className="text-xs text-ink-muted">The administration office has received your request.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmitCorrection} className="mt-5 space-y-4">

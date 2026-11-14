@@ -1,27 +1,17 @@
 import React, { useState } from 'react';
 import {
-  Building2,
   Landmark,
   MapPin,
   CheckCircle2,
-  AlertTriangle,
   Layers,
   ArrowRight,
   ArrowLeft,
   ShieldCheck,
   Zap,
-  Globe,
-  Plus,
-  Trash2,
-  GitFork,
-  Check,
-  FileCheck2,
-  ExternalLink,
-} from 'lucide-react';
+  GitFork} from 'lucide-react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { Card } from '../ui/Card';
 
 interface HierarchyNode {
   id: string;
@@ -52,7 +42,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
   ]);
 
   // Step 3: Schools & Departments visual hierarchy
-  const [schools, setSchools] = useState<HierarchyNode[]>([
+  const [schools, _setSchools] = useState<HierarchyNode[]>([
     {
       id: 'sch_eng',
       name: 'School of Computing & Engineering',
@@ -94,7 +84,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
   // Step 6: Initial Settings
   const [dpdpEnabled, setDpdpEnabled] = useState(true);
   const [apaarAutoVerify, setApaarAutoVerify] = useState(true);
-  const [gradingScale, setGradingScale] = useState('UGC_10_POINT');
+  const [_gradingScale, _setGradingScale] = useState('UGC_10_POINT');
 
   // Step 7: Readiness check
   const [isActivating, setIsActivating] = useState(false);
@@ -136,7 +126,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
               {step === 1 && 'Institutional Identity & AISHE'}
               {step === 2 && 'Campuses & Geographic Locations'}
               {step === 3 && 'Schools, Faculties & Departments'}
-              {step === 4 && 'Administrative Offices & Directorates'}
+              {step === 4 && 'Administrative & Operations Offices'}
               {step === 5 && 'Affiliations & Regulatory Bridges'}
               {step === 6 && 'Governance Settings & DPDP Act'}
               {step === 7 && 'Readiness Audit & Activation'}
@@ -212,7 +202,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                   type="url"
                   value={websiteUrl}
                   onChange={(e) => setWebsiteUrl(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white font-mono text-[11px]"
+                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white font-mono text-xs"
                 />
               </div>
             </div>
@@ -263,7 +253,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                     </div>
                     <div>
                       <span className="font-bold text-slate-900 block">{c.name}</span>
-                      <span className="text-[11px] text-slate-500">
+                      <span className="text-xs text-slate-500">
                         {c.city}, {c.state}
                       </span>
                     </div>
@@ -302,7 +292,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                     <div className="flex items-center gap-2">
                       <Layers size={15} className="text-cardinal" />
                       <span className="font-bold text-xs text-slate-900">{school.name}</span>
-                      <span className="text-[10px] font-mono bg-slate-200 px-1.5 py-0.2 rounded font-semibold text-slate-700">
+                      <span className="text-xs font-mono bg-slate-200 px-1.5 py-0.2 rounded font-semibold text-slate-700">
                         {school.code}
                       </span>
                     </div>
@@ -321,7 +311,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                           <GitFork size={13} className="text-slate-400 rotate-90" />
                           <span className="font-medium text-slate-800">{dept.name}</span>
                         </div>
-                        <span className="font-mono text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-semibold">
+                        <span className="font-mono text-xs bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-semibold">
                           {dept.code}
                         </span>
                       </div>
@@ -337,7 +327,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
         {step === 4 && (
           <div className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
-              Institutional Administrative Offices &amp; Directorates
+              Institutional Administrative &amp; Operations Offices
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {adminOffices.map((office, idx) => (
@@ -348,11 +338,11 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-900">{office.name}</span>
                     <Badge variant="info" size="xs">
-                      Directorate
+                      Administrative Office
                     </Badge>
                   </div>
-                  <div className="text-[11px] text-slate-600">Head: {office.head}</div>
-                  <div className="text-[11px] text-slate-400 font-mono">Scope: {office.scope}</div>
+                  <div className="text-xs text-slate-600">Head: {office.head}</div>
+                  <div className="text-xs text-slate-400 font-mono">Scope: {office.scope}</div>
                 </div>
               ))}
             </div>
@@ -375,7 +365,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                     <ShieldCheck size={16} className="text-emerald-600 shrink-0" />
                     <div>
                       <span className="font-bold text-slate-900 block">{aff.partner}</span>
-                      <span className="text-[11px] text-slate-500 font-mono">{aff.role}</span>
+                      <span className="text-xs text-slate-500 font-mono">{aff.role}</span>
                     </div>
                   </div>
                   <Badge variant="success" size="xs">
@@ -399,7 +389,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                 <span className="text-xs font-bold text-slate-900 block">
                   DPDP Act 2023 Consent Enforcement
                 </span>
-                <span className="text-[11px] text-slate-500">
+                <span className="text-xs text-slate-500">
                   Cryptographically hash candidate Aadhaar/PAN and mask recruiter PII previews
                 </span>
               </div>
@@ -416,7 +406,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                 <span className="text-xs font-bold text-slate-900 block">
                   DigiLocker APAAR Automated Identity Verification
                 </span>
-                <span className="text-[11px] text-slate-500">
+                <span className="text-xs text-slate-500">
                   Pre-verify government identity tokens on student matriculation
                 </span>
               </div>
@@ -439,7 +429,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                 <span className="text-xs font-bold text-emerald-950 block">
                   Autonomous Pre-Activation Audit Passed (100% Score)
                 </span>
-                <p className="text-[11px] text-emerald-800 mt-0.5">
+                <p className="text-xs text-emerald-800 mt-0.5">
                   All 10 structural conditions satisfied: Primary campus verified, DAG cycle checks clear, regulatory credentials attested, DPDP privacy policy active.
                 </p>
               </div>
@@ -447,19 +437,19 @@ export const InstitutionalOnboardingBuilder: React.FC<{
 
             <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-slate-400 block text-xs uppercase font-semibold">
                   Institution
                 </span>
                 <span className="font-bold text-slate-900">{legalName}</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-slate-400 block text-xs uppercase font-semibold">
                   AISHE Code
                 </span>
                 <span className="font-mono font-bold text-cardinal">{aisheCode}</span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-slate-400 block text-xs uppercase font-semibold">
                   Campuses
                 </span>
                 <span className="font-mono font-bold text-slate-800">
@@ -467,7 +457,7 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                 </span>
               </div>
               <div>
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                <span className="text-slate-400 block text-xs uppercase font-semibold">
                   Schools / Units
                 </span>
                 <span className="font-mono font-bold text-slate-800">

@@ -93,7 +93,7 @@ export const InterviewCard: React.FC<InterviewCardProps> = ({
         </div>
 
         {data.interviewer_name && !masked && (
-          <div className="flex items-center gap-2 text-[11px]">
+          <div className="flex items-center gap-2 text-xs">
             <Clock size={13} className="text-slate-400 shrink-0" />
             <span>Interviewer: {data.interviewer_name}</span>
           </div>

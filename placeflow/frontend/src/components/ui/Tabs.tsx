@@ -54,7 +54,7 @@ export const Tabs: React.FC<TabsProps> = ({
               <span>{tab.label}</span>
               {tab.count !== undefined && (
                 <span
-                  className={`text-[10px] font-mono tabular-nums px-1.5 py-0.5 rounded ${
+                  className={`text-xs font-mono tabular-nums px-1.5 py-0.5 rounded ${
                     isActive ? 'bg-canvas text-ink font-semibold' : 'bg-line/50 text-ink-muted'
                   }`}
                 >
@@ -90,7 +90,7 @@ export const Tabs: React.FC<TabsProps> = ({
             <span>{tab.label}</span>
             {tab.count !== undefined && (
               <span
-                className={`text-[10px] font-mono tabular-nums px-1.5 py-0.5 rounded ${
+                className={`text-xs font-mono tabular-nums px-1.5 py-0.5 rounded ${
                   isActive ? 'bg-brand/10 text-brand font-semibold' : 'bg-canvas text-ink-muted'
                 }`}
               >
@@ -99,7 +99,7 @@ export const Tabs: React.FC<TabsProps> = ({
             )}
             {tab.badge && (
               <span
-                className={`text-[9px] font-mono uppercase px-1.5 py-0.5 rounded border ${
+                className={`text-xs font-mono uppercase px-1.5 py-0.5 rounded border ${
                   tab.badgeColor || 'bg-amber-50 text-amber-700 border-amber-200'
                 }`}
               >

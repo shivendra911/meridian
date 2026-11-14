@@ -5,6 +5,8 @@ import { TopBar } from './TopBar';
 import { DelegationBanner } from './DelegationBanner';
 import { PortalNavItem } from './types';
 import { CommandPalette } from '../../components/navigation/CommandPalette';
+import { CampusCopilotDrawer } from '../../components/ai/CampusCopilotDrawer';
+import { ErrorBoundary } from '../ErrorBoundary';
 import { X, Keyboard } from 'lucide-react';
 
 export interface AppShellProps {
@@ -18,14 +20,18 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
-  // Global key bindings: Ctrl+K / Cmd+K and ?
+  // Global key bindings: Ctrl+K / Cmd+K, Ctrl+/ and ?
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
         setIsPaletteOpen((prev) => !prev);
+      } else if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+        e.preventDefault();
+        setIsCopilotOpen((prev) => !prev);
       } else if (
         e.key === '?' &&
         !['input', 'textarea', 'select'].includes((e.target as HTMLElement)?.tagName?.toLowerCase())
@@ -58,12 +64,15 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
           onOpenMobileSidebar={() => setIsMobileOpen(true)}
           onOpenCommandPalette={() => setIsPaletteOpen(true)}
           onOpenShortcuts={() => setIsShortcutsOpen(true)}
+          onOpenCopilot={() => setIsCopilotOpen(true)}
         />
 
         <DelegationBanner />
 
         <main className="flex-1 w-full max-w-[1280px] mx-auto p-4 sm:p-6 lg:p-8">
-          {children || <Outlet />}
+          <ErrorBoundary>
+            {children || <Outlet context={{ onOpenCopilot: () => setIsCopilotOpen(true) }} />}
+          </ErrorBoundary>
         </main>
       </div>
 
@@ -77,10 +86,17 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
         }}
         onOpenCopilot={() => {
           setIsPaletteOpen(false);
+          setIsCopilotOpen(true);
         }}
       />
 
-      {/* 4. Keyboard Shortcuts Dialog */}
+      {/* 4. Campus AI Copilot Console Drawer */}
+      <CampusCopilotDrawer
+        isOpen={isCopilotOpen}
+        onClose={() => setIsCopilotOpen(false)}
+      />
+
+      {/* 5. Keyboard Shortcuts Dialog */}
       {isShortcutsOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-md rounded-xl bg-surface p-5 shadow-2xl border border-line animate-in zoom-in-95">
@@ -103,6 +119,12 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
                 <span className="text-ink">Global Search & Command Palette</span>
                 <kbd className="rounded border border-line bg-slate-100 px-2 py-0.5 font-mono text-ink">
                   Ctrl + K
+                </kbd>
+              </div>
+              <div className="flex items-center justify-between py-1">
+                <span className="text-ink">Campus AI Copilot Console</span>
+                <kbd className="rounded border border-line bg-slate-100 px-2 py-0.5 font-mono text-ink">
+                  Ctrl + /
                 </kbd>
               </div>
               <div className="flex items-center justify-between py-1">

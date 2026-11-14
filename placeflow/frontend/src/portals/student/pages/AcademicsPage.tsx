@@ -11,10 +11,7 @@ import {
   BookOpen,
   CheckCircle2,
   AlertTriangle,
-  Award,
-  Layers,
-  FileCheck,
-} from 'lucide-react';
+  Award} from 'lucide-react';
 import { studentApi, StudentAcademics } from '../api';
 import { PageHeader, StatCard, Card, Badge, Skeleton, EmptyState } from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
@@ -61,7 +58,6 @@ export const StudentAcademicsPage: React.FC = () => {
   }
 
   const courses = academics?.courses || [];
-  const records = academics?.academic_records || [];
 
   return (
     <div className="space-y-6 font-sans">
@@ -110,7 +106,7 @@ export const StudentAcademicsPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-[11px] h-10">
+                <tr className="border-b border-line bg-canvas text-ink-muted uppercase tracking-wider text-xs h-10">
                   <th className="py-2.5 px-4 font-semibold">Course Code</th>
                   <th className="py-2.5 px-4 font-semibold">Title</th>
                   <th className="py-2.5 px-4 font-semibold">Credits</th>
@@ -148,7 +144,7 @@ export const StudentAcademicsPage: React.FC = () => {
           <div className="w-full bg-line rounded-full h-2 overflow-hidden">
             <div className="bg-brand h-full rounded-full" style={{ width: '80%' }} />
           </div>
-          <p className="text-[11px] text-ink-muted pt-1">
+          <p className="text-xs text-ink-muted pt-1">
             Compliant with UGC / AICTE curriculum structure. On track for standard 4-year degree completion.
           </p>
         </div>

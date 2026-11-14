@@ -5,27 +5,17 @@ import { Application } from '../../../types';
 import {
   FileText,
   HelpCircle,
-  CheckCircle2,
-  Clock,
   Search,
-  Filter,
-  ArrowRight,
-  User,
-  Building2,
-  ChevronRight,
-} from 'lucide-react';
+  Filter} from 'lucide-react';
 import { PageHeader } from '../../../components/ui/PageHeader';
-import { StatCard } from '../../../components/ui/StatCard';
 import { Card } from '../../../components/ui/Card';
-import { Badge } from '../../../components/ui/Badge';
 import { Skeleton } from '../../../components/ui/Skeleton';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import {
   EligibilityExplainerDrawer,
-  EligibilityReport,
-} from '../../../components/recruitment/EligibilityExplainerDrawer';
+  EligibilityReport} from '../../../components/recruitment/EligibilityExplainerDrawer';
 import { toast } from 'sonner';
-import { normalizeApplication, resolveCompanyName } from '../../../utils/formatters';
+import { normalizeApplication} from '../../../utils/formatters';
 
 export const ApplicationsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -131,37 +121,43 @@ export const ApplicationsPage: React.FC = () => {
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
-        title="Application Stage Tracking Ledger"
-        description="Comprehensive candidate application ledger, stage progression controls, and deterministic eligibility verification."
-        badge={<Badge variant="institutional" size="xs">Live Registry</Badge>}
+        title="Applications"
+        description={
+          <span className="flex flex-wrap items-center gap-2 text-sm text-ink-muted">
+            <button
+              type="button"
+              onClick={() => setStatusFilter('ALL')}
+              className={`hover:text-ink transition-colors ${statusFilter === 'ALL' ? 'font-medium text-ink' : ''}`}
+            >
+              {applications.length} total
+            </button>
+            <span>·</span>
+            <button
+              type="button"
+              onClick={() => setStatusFilter('Shortlisted')}
+              className={`hover:text-ink transition-colors ${statusFilter === 'Shortlisted' ? 'font-medium text-ink' : ''}`}
+            >
+              {shortlistedCount} shortlisted
+            </button>
+            <span>·</span>
+            <button
+              type="button"
+              onClick={() => setStatusFilter('Interviewing')}
+              className={`hover:text-ink transition-colors ${statusFilter === 'Interviewing' ? 'font-medium text-ink' : ''}`}
+            >
+              {interviewingCount} interviewing
+            </button>
+            <span>·</span>
+            <button
+              type="button"
+              onClick={() => setStatusFilter('Selected')}
+              className={`hover:text-ink transition-colors ${statusFilter === 'Selected' ? 'font-medium text-ink' : ''}`}
+            >
+              {selectedCount} selected
+            </button>
+          </span>
+        }
       />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Total Applications"
-          value={loading ? '—' : applications.length}
-          hint="Across All Active Drives"
-          icon={FileText}
-        />
-        <StatCard
-          label="Shortlisted Candidates"
-          value={loading ? '—' : shortlistedCount}
-          hint="Cleared Screening"
-          icon={CheckCircle2}
-        />
-        <StatCard
-          label="Under Evaluation"
-          value={loading ? '—' : interviewingCount}
-          hint="In Technical / HR Rounds"
-          icon={Clock}
-        />
-        <StatCard
-          label="Final Selections"
-          value={loading ? '—' : selectedCount}
-          hint="Offers Extended"
-          icon={CheckCircle2}
-        />
-      </div>
 
       {/* Search and Stage Filter Bar */}
       <Card className="p-3">
@@ -214,7 +210,7 @@ export const ApplicationsPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-[11px] h-10 sticky top-0">
+                <tr className="border-b border-line bg-canvas/60 text-ink-muted uppercase tracking-wider text-xs h-10 sticky top-0">
                   <th className="py-2.5 px-4 font-medium">Application Ref</th>
                   <th className="py-2.5 px-4 font-medium">Candidate</th>
                   <th className="py-2.5 px-4 font-medium">Drive / Opportunity</th>
@@ -241,7 +237,7 @@ export const ApplicationsPage: React.FC = () => {
                         <div className="font-semibold text-ink group-hover:text-brand transition-colors">
                           {norm.studentName}
                         </div>
-                        <div className="text-[11px] text-ink-muted font-mono">
+                        <div className="text-xs text-ink-muted font-mono">
                           {norm.studentId} &bull; {norm.department}
                         </div>
                       </button>
@@ -256,13 +252,13 @@ export const ApplicationsPage: React.FC = () => {
                         <div className="font-medium group-hover:text-brand transition-colors">
                           {norm.jobTitle}
                         </div>
-                        <div className="text-[11px] text-ink-muted">
+                        <div className="text-xs text-ink-muted">
                           {norm.companyName}
                         </div>
                       </button>
                     </td>
 
-                    <td className="py-2.5 px-4 text-ink-muted font-mono tabular-nums text-[11px]">
+                    <td className="py-2.5 px-4 text-ink-muted font-mono tabular-nums text-xs">
                       {norm.appliedDate}
                     </td>
 
@@ -296,7 +292,7 @@ export const ApplicationsPage: React.FC = () => {
                     <td className="py-2.5 px-4 text-right">
                       <button
                         onClick={() => handleOpenExplainability(app)}
-                        className="text-[11px] font-medium text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
+                        className="text-xs font-medium text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
                       >
                         <HelpCircle size={13} />
                         <span>Explain Match</span>
