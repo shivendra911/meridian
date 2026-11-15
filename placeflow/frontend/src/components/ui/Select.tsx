@@ -185,7 +185,8 @@ export const Select: React.FC<SelectProps> = ({
           aria-activedescendant={
             highlightedIndex >= 0 ? `${selectId}-opt-${highlightedIndex}` : undefined
           }
-          className="absolute left-0 top-full mt-1.5 w-full min-w-[200px] max-h-60 overflow-y-auto scrollbar-none rounded-xl border border-line/80 macos-frosted-popover shadow-macos-menu p-1 z-50 macos-menu-pop focus:outline-hidden"
+          style={{ transformOrigin: 'top left' }}
+          className="absolute left-0 top-full mt-1.5 w-full min-w-[200px] max-h-60 overflow-y-auto scrollbar-none rounded-xl border border-line/80 bg-surface/98 macos-frosted-popover shadow-macos-menu p-1 z-50 macos-menu-pop focus:outline-hidden"
         >
           {options.map((option, idx) => {
             const isSelected = option.value === value;
@@ -211,28 +212,28 @@ export const Select: React.FC<SelectProps> = ({
                   option.disabled
                     ? 'opacity-40 cursor-not-allowed text-ink-muted'
                     : isSelected
-                    ? 'bg-brand/10 text-brand font-semibold'
+                    ? 'bg-brand text-white font-semibold'
                     : isHighlighted
-                    ? 'bg-slate-100/80 text-ink'
-                    : 'text-ink hover:bg-slate-100/60'
+                    ? 'bg-slate-100 text-ink'
+                    : 'text-ink hover:bg-slate-100/70'
                 }`}
               >
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   {option.icon && (
-                    <span className="shrink-0 flex items-center text-ink-muted">
+                    <span className={`shrink-0 flex items-center ${isSelected ? 'text-white/80' : 'text-ink-muted'}`}>
                       {option.icon}
                     </span>
                   )}
                   <span className="truncate">{option.label}</span>
                   {option.hint && (
-                    <span className="text-[11px] text-ink-muted font-normal truncate">
+                    <span className={`text-[11px] font-normal truncate ${isSelected ? 'text-white/70' : 'text-ink-muted'}`}>
                       ({option.hint})
                     </span>
                   )}
                 </div>
 
                 {isSelected && (
-                  <Check size={14} className="text-brand shrink-0" />
+                  <Check size={14} className="text-white shrink-0" />
                 )}
               </li>
             );

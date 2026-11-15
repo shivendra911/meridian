@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
 import { RenegeCandidate } from '../../../types';
-import { Radar, Activity } from 'lucide-react';
+import { Radar } from 'lucide-react';
+import { MacOsLoadingScreen } from '../../../components/ui/MacOsLoadingScreen';
 
 export const RenegeRadarPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -33,10 +34,11 @@ export const RenegeRadarPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-12 text-slate-500 text-sm">
-        <Activity className="animate-spin mr-2" size={18} />
-        Computing Post-Offer Flight Risk Telemetry...
-      </div>
+      <MacOsLoadingScreen
+        message="Computing Post-Offer Flight Risk Telemetry..."
+        description="Scanning engagement velocity, multi-offer overlaps, and attendance telemetry"
+        fullScreen={false}
+      />
     );
   }
 

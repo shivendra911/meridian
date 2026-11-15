@@ -5,6 +5,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AdminLayout } from './layout';
+import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 
 const AdminHomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.AdminHomePage })));
 const InstitutionalArchitecturePage = lazy(() => import('../../pages/InstitutionalArchitecturePage').then((m) => ({ default: m.InstitutionalArchitecturePage })));
@@ -15,7 +16,15 @@ const AgentRunsPage = lazy(() => import('../../pages/AgentRunsPage').then((m) =>
 
 export const AdminRoutes: React.FC = () => {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-ink-muted">Loading admin workspace...</div>}>
+    <Suspense
+      fallback={
+        <MacOsLoadingScreen
+          message="Loading admin workspace..."
+          description="Verifying institutional controls and governance logs"
+          fullScreen={false}
+        />
+      }
+    >
       <Routes>
         <Route element={<AdminLayout />}>
           <Route index element={<Navigate to="home" replace />} />

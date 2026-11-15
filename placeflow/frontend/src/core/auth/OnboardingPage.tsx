@@ -16,6 +16,7 @@ import { client } from '../api/client';
 import { Avatar } from '../../ui/cards/Avatar';
 import { formatApiError } from '../api/errors';
 import { toast } from 'sonner';
+import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 
 type OnboardingStep = 1 | 2 | 3 | 4;
 
@@ -150,12 +151,10 @@ export const OnboardingPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-canvas flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs text-ink-muted">Loading onboarding experience...</span>
-        </div>
-      </div>
+      <MacOsLoadingScreen
+        message="Loading onboarding experience..."
+        description="Synchronizing institutional identity & verified records"
+      />
     );
   }
 

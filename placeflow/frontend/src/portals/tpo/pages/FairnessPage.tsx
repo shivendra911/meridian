@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
-import { AlertCircle, CheckCircle2, Activity, Database } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Database } from 'lucide-react';
+import { MacOsLoadingScreen } from '../../../components/ui/MacOsLoadingScreen';
 
 export const FairnessPage: React.FC = () => {
   const [audit, setAudit] = useState<{
@@ -32,10 +33,11 @@ export const FairnessPage: React.FC = () => {
 
   if (loading || !audit) {
     return (
-      <div className="flex items-center justify-center p-12 text-slate-500 text-sm">
-        <Activity className="animate-spin mr-2" size={18} />
-        Executing Section 9.3 Fairness &amp; Disparate Impact Audit...
-      </div>
+      <MacOsLoadingScreen
+        message="Executing Section 9.3 Fairness & Disparate Impact Audit..."
+        description="Auditing statistical parity and adverse impact ratios across demographic segments"
+        fullScreen={false}
+      />
     );
   }
 

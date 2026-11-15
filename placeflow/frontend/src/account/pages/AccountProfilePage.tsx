@@ -126,9 +126,9 @@ export const AccountProfilePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-44 rounded-xl bg-slate-200" />
-        <div className="h-64 rounded-xl bg-slate-200" />
+      <div className="space-y-6">
+        <div className="h-44 rounded-xl border border-line bg-surface p-6 shadow-xs skeleton-shimmer animate-pulse" />
+        <div className="h-64 rounded-xl border border-line bg-surface p-6 shadow-xs skeleton-shimmer animate-pulse" />
       </div>
     );
   }

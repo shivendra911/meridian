@@ -7,6 +7,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { StudentLayout } from './layout';
+import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 
 // Lazy-loaded student pages
 const StudentHomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.StudentHomePage })));
@@ -17,7 +18,15 @@ const StudentProfilePage = lazy(() => import('./pages/ProfilePage').then((m) => 
 
 export const StudentRoutes: React.FC = () => {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-ink-muted">Loading student portal...</div>}>
+    <Suspense
+      fallback={
+        <MacOsLoadingScreen
+          message="Loading student workspace..."
+          description="Preparing dashboard, verified records, and active drives"
+          fullScreen={false}
+        />
+      }
+    >
       <Routes>
         <Route element={<StudentLayout />}>
           <Route index element={<Navigate to="home" replace />} />

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api';
-import { BarChart3, Download, Activity, FileSpreadsheet, RefreshCw, AlertCircle } from 'lucide-react';
+import { BarChart3, Download, FileSpreadsheet, RefreshCw, AlertCircle } from 'lucide-react';
+import { MacOsLoadingScreen } from '../../../components/ui/MacOsLoadingScreen';
 
 export const ReportsPage: React.FC = () => {
   const [reports, setReports] = useState<
@@ -46,11 +47,11 @@ export const ReportsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center p-16 text-slate-500 text-sm gap-3">
-        <Activity className="animate-spin text-cardinal" size={24} />
-        <span className="font-medium text-slate-700">Aggregating Institutional Datasets via MongoDB Pipelines...</span>
-        <span className="text-xs text-slate-400 font-mono">Running $facet, $setWindowFields, and $bucket stages</span>
-      </div>
+      <MacOsLoadingScreen
+        message="Aggregating Institutional Datasets via MongoDB Pipelines..."
+        description="Running $facet, $setWindowFields, and $bucket stages across placement records"
+        fullScreen={false}
+      />
     );
   }
 

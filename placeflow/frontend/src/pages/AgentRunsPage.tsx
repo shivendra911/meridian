@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { api } from '../api';
 import { AgentRun } from '../types';
-import { History, Activity, Bot } from 'lucide-react';
+import { History, Bot } from 'lucide-react';
+import { MacOsLoadingScreen } from '../components/ui/MacOsLoadingScreen';
 
 interface AgentRunsPageProps {
   onOpenCopilot?: () => void;
@@ -30,10 +31,11 @@ export const AgentRunsPage: React.FC<AgentRunsPageProps> = ({ onOpenCopilot: pro
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-12 text-slate-500 text-sm">
-        <Activity className="animate-spin mr-2" size={18} />
-        Loading Agent Execution Trace Telemetry...
-      </div>
+      <MacOsLoadingScreen
+        message="Loading Agent Execution Trace Telemetry..."
+        description="Auditing runtime traces, tool call vectors, and agent sandboxes"
+        fullScreen={false}
+      />
     );
   }
 

@@ -26,6 +26,8 @@ import { ForbiddenPage } from './ForbiddenPage';
 import { NotFoundPage } from './NotFoundPage';
 import { RouteErrorElement } from './ErrorBoundary';
 
+import { MacOsLoadingScreen } from '../components/ui/MacOsLoadingScreen';
+
 // Lazy-loaded Public & Heavy Views
 const HomeGate = lazy(() => import('../public/HomeGate').then((m) => ({ default: m.HomeGate })));
 const PrivacyPolicyPage = lazy(() => import('../public/PrivacyPolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })));
@@ -51,12 +53,11 @@ const WildcardRedirect: React.FC<{ to: string }> = ({ to }) => {
 };
 
 const FallbackLoader = () => (
-  <div className="flex items-center justify-center min-h-[40vh] p-8 text-xs text-ink-muted">
-    <div className="flex items-center gap-2">
-      <span className="w-2 h-2 rounded-full bg-accent animate-ping" />
-      <span>Loading workspace...</span>
-    </div>
-  </div>
+  <MacOsLoadingScreen
+    message="Loading workspace..."
+    description="Initializing verified institutional modules"
+    fullScreen={true}
+  />
 );
 
 export const AppRouter: React.FC = () => {

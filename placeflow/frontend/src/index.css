@@ -80,6 +80,7 @@
   --dur-instant: 60ms;
   --dur-micro: 100ms;
   --dur-snappy: 160ms;
+  --dur-page: 240ms;
   --dur-sheet: 180ms;
   --dur-drawer: 220ms;
 
@@ -105,17 +106,87 @@
 @keyframes macosElevationDissolve {
   0% {
     opacity: 0;
-    transform: translateY(4px) scale(0.998);
+    transform: translateY(8px) scale(0.994);
+    filter: blur(1.5px);
   }
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+    filter: blur(0);
   }
 }
 
+.macos-elevation-dissolve,
 .page-content-fade {
-  animation: macosElevationDissolve var(--dur-snappy) var(--ease-apple-spring);
-  will-change: opacity, transform;
+  animation: macosElevationDissolve var(--dur-page) var(--ease-apple-spring);
+  will-change: opacity, transform, filter;
+}
+
+/* macOS Frosted Menu Shadows */
+.shadow-macos-menu {
+  box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.08);
+}
+
+/* Native Select Polished macOS Styling Fallback */
+select:not([multiple]) {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748B' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 0.875rem;
+  padding-right: 2rem;
+  border-radius: 0.5rem;
+}
+
+/* macOS Cupertino Radial Spinner (12 Petal Clockwise Sweep) */
+@keyframes macosCupertinoSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.macos-cupertino-spin {
+  animation: macosCupertinoSpin 1s steps(12, end) infinite;
+  will-change: transform;
+}
+
+/* macOS System Indeterminate Progress Bar */
+@keyframes macosProgressIndeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(60%);
+  }
+  100% {
+    transform: translateX(240%);
+  }
+}
+
+.macos-progress-indeterminate {
+  animation: macosProgressIndeterminate 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+/* Ambient Pulse Glow for Brand Badges */
+@keyframes macosPulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 2px 8px rgba(11, 27, 61, 0.22));
+  }
+  50% {
+    transform: scale(1.03);
+    filter: drop-shadow(0 4px 16px rgba(11, 27, 61, 0.36));
+  }
+}
+
+.macos-pulse-glow {
+  animation: macosPulseGlow 2.4s ease-in-out infinite;
+  will-change: transform, filter;
 }
 
 /* macOS Context Menu & Popover entry */

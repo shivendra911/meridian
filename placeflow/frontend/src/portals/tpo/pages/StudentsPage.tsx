@@ -7,12 +7,12 @@ import {
   Search,
   LayoutGrid,
   Table,
-  Activity,
   ChevronRight,
   Sliders,
   Shield} from 'lucide-react';
 import { AdvancedDataGrid, ColumnDef } from '../../../components/ui/AdvancedDataGrid';
 import { toast } from 'sonner';
+import { MacOsLoadingScreen } from '../../../components/ui/MacOsLoadingScreen';
 import { PersonChip, useDocumentTitle } from '../../../ui';
 
 interface StudentsPageProps {
@@ -368,10 +368,11 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
 
       {/* Content Rendering */}
       {loading ? (
-        <div className="flex items-center justify-center p-12 text-slate-500 text-sm">
-          <Activity className="animate-spin mr-2" size={18} />
-          Loading Verified Registry Records...
-        </div>
+        <MacOsLoadingScreen
+          message="Loading Verified Registry Records..."
+          description="Fetching institutional dossiers and placement eligibility flags"
+          fullScreen={false}
+        />
       ) : students.length === 0 ? (
         <div className="bg-white border border-line rounded p-12 text-center text-slate-500 text-xs">
           No candidates match the specified discipline or search filters.

@@ -9,15 +9,17 @@ import { Navigate } from 'react-router-dom';
 import { Briefcase } from 'lucide-react';
 import { useAuth } from '../core/auth/useAuth';
 import { Button } from '../ui';
+import { MacOsLoadingScreen } from '../components/ui/MacOsLoadingScreen';
 
 export const PortalRedirect: React.FC = () => {
   const { me, status, logout } = useAuth();
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-canvas font-sans">
-        <div className="w-8 h-8 rounded-full border-2 border-brand border-t-transparent animate-spin" />
-      </div>
+      <MacOsLoadingScreen
+        message="Directing to workspace..."
+        description="Verifying session and workspace permissions"
+      />
     );
   }
 

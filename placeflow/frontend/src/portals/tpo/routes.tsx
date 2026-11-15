@@ -7,6 +7,7 @@
 import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { TpoLayout } from './layout';
+import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 
 // Lazy-loaded TPO Pages
 const OverviewPage = lazy(() => import('./pages/OverviewPage').then((m) => ({ default: m.OverviewPage })));
@@ -38,7 +39,15 @@ const WhatIfRouteWrapper: React.FC = () => {
 
 export const TpoRoutes: React.FC = () => {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-xs text-ink-muted">Loading placement operations...</div>}>
+    <Suspense
+      fallback={
+        <MacOsLoadingScreen
+          message="Loading placement operations..."
+          description="Initializing enterprise recruitment pipeline and telemetry"
+          fullScreen={false}
+        />
+      }
+    >
       <Routes>
         <Route element={<TpoLayout />}>
           <Route index element={<Navigate to="home" replace />} />

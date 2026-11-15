@@ -3,6 +3,7 @@ import { api } from '../api';
 import { toast } from 'sonner';
 import { WhatIfResult } from '../../../types';
 import { Sliders, Activity, AlertCircle, ArrowLeft, CheckCircle2, TrendingUp } from 'lucide-react';
+import { MacOsLoadingScreen } from '../../../components/ui/MacOsLoadingScreen';
 
 interface WhatIfPageProps {
   studentId: string;
@@ -57,10 +58,11 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-12 text-slate-500 text-sm">
-        <Activity className="animate-spin mr-2" size={18} />
-        Initializing ML-23 What-If Career Simulation Engine...
-      </div>
+      <MacOsLoadingScreen
+        message="Initializing ML-23 What-If Career Simulation Engine..."
+        description="Calibrating market-calibrated counterfactual candidate interventions"
+        fullScreen={false}
+      />
     );
   }
 

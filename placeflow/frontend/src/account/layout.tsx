@@ -5,11 +5,15 @@ import {
   Shield,
   Bell,
   Lock,
-  ArrowLeft} from 'lucide-react';
+  ArrowLeft,
+  LayoutDashboard,
+} from 'lucide-react';
 import { useAuth } from '../core/auth/useAuth';
 import { Avatar } from '../ui/cards/Avatar';
+import { MacOsLoadingScreen } from '../components/ui/MacOsLoadingScreen';
 
 const ACCOUNT_TABS = [
+  { path: '/account/home', label: 'Overview', icon: LayoutDashboard },
   { path: '/account/profile', label: 'Profile', icon: User },
   { path: '/account/security', label: 'Security & Sessions', icon: Shield },
   { path: '/account/notifications', label: 'Notifications', icon: Bell },
@@ -26,9 +30,10 @@ export const AccountLayout: React.FC = () => {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen bg-canvas flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin" />
-      </div>
+      <MacOsLoadingScreen
+        message="Loading Account & Settings..."
+        description="Decrypting profile and security preferences"
+      />
     );
   }
 
@@ -75,7 +80,7 @@ export const AccountLayout: React.FC = () => {
       </header>
 
       {/* Main Container */}
-      <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1 flex flex-col">
+      <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1 flex flex-col macos-elevation-dissolve">
         {/* Navigation Tabs */}
         <div className="mb-8 overflow-x-auto scrollbar-none">
           <nav className="inline-flex p-1 bg-slate-200/50 rounded-xl border border-line/70 shadow-inner gap-1 min-w-max" aria-label="Account Settings Tabs">
@@ -85,7 +90,7 @@ export const AccountLayout: React.FC = () => {
                 <NavLink
                   key={tab.path}
                   to={tab.path}
-                  end={tab.path === '/account/profile'}
+                  end
                   className={({ isActive }) =>
                     `macos-press-sm flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 ${
                       isActive

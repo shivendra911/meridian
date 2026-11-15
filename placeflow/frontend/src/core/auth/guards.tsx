@@ -8,6 +8,7 @@ import React from 'react';
 import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from './useAuth';
 import { ForbiddenPage } from '../../app/ForbiddenPage';
+import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 
 interface GuardProps {
   children?: React.ReactNode;
@@ -23,12 +24,10 @@ export const RequireAuth: React.FC<GuardProps> = ({ children }) => {
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-canvas font-sans">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 border-brand border-t-transparent animate-spin" />
-          <span className="text-xs text-ink-muted">Authenticating workspace...</span>
-        </div>
-      </div>
+      <MacOsLoadingScreen
+        message="Authenticating session..."
+        description="Verifying security credentials and access permissions"
+      />
     );
   }
 
@@ -49,9 +48,10 @@ export const RequirePortal: React.FC<GuardProps & { portal: string }> = ({ porta
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-canvas font-sans">
-        <div className="w-8 h-8 rounded-full border-2 border-brand border-t-transparent animate-spin" />
-      </div>
+      <MacOsLoadingScreen
+        message={`Connecting to ${portal} workspace...`}
+        description="Loading scoped role permissions"
+      />
     );
   }
 
