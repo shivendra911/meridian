@@ -10,6 +10,15 @@ import {
 import { client } from '../../core/api/client';
 import { useAuth } from '../../core/auth/useAuth';
 import { formatApiError } from '../../core/api/errors';
+import { Select } from '../../components/ui/Select';
+
+const CORRECTION_FIELD_OPTIONS = [
+  { value: 'cgpa', label: 'Official CGPA / Grades' },
+  { value: 'name', label: 'Legal Name Spelling' },
+  { value: 'reg_no', label: 'Registration / Roll Number' },
+  { value: 'dept', label: 'Academic Department / Branch' },
+  { value: 'other', label: 'Other Official Record' },
+];
 
 interface ConsentRecord {
   purpose: string;
@@ -213,7 +222,7 @@ export const AccountPrivacyPage: React.FC = () => {
                   type="button"
                   disabled={isUpdating}
                   onClick={() => handleToggleConsent(item.key, isChecked)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
+                  className={`macos-press-sm px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer shrink-0 ${
                     isChecked
                       ? 'border border-red-200 text-red-700 bg-red-50 hover:bg-red-100'
                       : 'border border-line bg-surface text-ink hover:bg-slate-100'
@@ -258,7 +267,7 @@ export const AccountPrivacyPage: React.FC = () => {
             <button
               type="button"
               onClick={handleDownloadPersonalDossier}
-              className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg border border-line bg-surface text-xs font-semibold text-ink hover:bg-slate-100 transition-colors cursor-pointer shadow-xs"
+              className="macos-press-sm inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg border border-line bg-surface text-xs font-semibold text-ink hover:bg-slate-100 transition-colors cursor-pointer shadow-xs"
             >
               <Download size={14} className="text-brand" />
               <span>Download my data (JSON)</span>
@@ -279,7 +288,7 @@ export const AccountPrivacyPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowCorrectionModal(true)}
-              className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg bg-brand hover:bg-brand-hover text-xs font-semibold text-white transition-colors cursor-pointer shadow-xs"
+              className="macos-press-sm inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg bg-brand hover:bg-brand-hover text-xs font-semibold text-white transition-colors cursor-pointer shadow-xs"
             >
               <FileText size={14} />
               <span>Request official correction</span>
@@ -290,8 +299,8 @@ export const AccountPrivacyPage: React.FC = () => {
 
       {/* Official Correction Modal */}
       {showCorrectionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150">
-          <div className="w-full max-w-md rounded-2xl border border-line bg-surface p-6 shadow-2xl ring-1 ring-black/10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4 animate-in fade-in duration-150">
+          <div className="macos-sheet-enter shadow-macos-window w-full max-w-md rounded-2xl border border-line bg-surface p-6 ring-1 ring-black/10">
             <h3 className="text-base font-bold text-ink">Request Official Record Correction</h3>
             <p className="mt-1 text-xs text-ink-muted">
               Submitted to your institution's registrar and administration office.
@@ -309,17 +318,12 @@ export const AccountPrivacyPage: React.FC = () => {
                   <label className="block text-xs font-semibold text-ink mb-1.5">
                     Field to Correct
                   </label>
-                  <select
+                  <Select
                     value={correctionField}
-                    onChange={(e) => setCorrectionField(e.target.value)}
-                    className="w-full px-3 py-2 text-xs border border-line rounded-lg bg-canvas text-ink focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                  >
-                    <option value="cgpa">Official CGPA / Grades</option>
-                    <option value="name">Legal Name Spelling</option>
-                    <option value="reg_no">Registration / Roll Number</option>
-                    <option value="dept">Academic Department / Branch</option>
-                    <option value="other">Other Official Record</option>
-                  </select>
+                    onChange={setCorrectionField}
+                    options={CORRECTION_FIELD_OPTIONS}
+                    aria-label="Field to Correct"
+                  />
                 </div>
 
                 <div>
@@ -340,13 +344,13 @@ export const AccountPrivacyPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowCorrectionModal(false)}
-                    className="px-3 py-2 text-xs font-semibold text-ink-muted hover:text-ink transition-colors cursor-pointer"
+                    className="macos-press-sm px-3 py-2 text-xs font-semibold text-ink-muted hover:text-ink transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
+                    className="macos-press inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
                   >
                     <Send size={13} />
                     <span>Submit request</span>

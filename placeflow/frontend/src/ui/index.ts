@@ -13,6 +13,8 @@ export * from '../components/ui/Skeleton';
 export * from '../components/ui/SlideOverDrawer';
 export * from '../components/ui/StatCard';
 export * from '../components/ui/Tabs';
+export * from '../components/ui/Select';
+export * from '../components/ui/Switch';
 export * from './ErrorState';
 export * from './format';
 export * from './cards';

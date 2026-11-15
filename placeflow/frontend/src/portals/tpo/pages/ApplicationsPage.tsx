@@ -25,7 +25,16 @@ import {
   CompanyMark,
   formatDate,
   useDocumentTitle,
+  Select,
 } from '../../../ui';
+
+const STAGE_OPTIONS = [
+  { value: 'Applied', label: 'Applied' },
+  { value: 'Shortlisted', label: 'Shortlisted' },
+  { value: 'Interviewing', label: 'Interview' },
+  { value: 'Selected', label: 'Offer' },
+  { value: 'Rejected', label: 'Rejected' },
+];
 
 export const ApplicationsPage: React.FC = () => {
   useDocumentTitle('Applications');
@@ -291,19 +300,16 @@ export const ApplicationsPage: React.FC = () => {
                           />
 
                           {/* Menu action to move stage */}
-                          <select
-                            value={app.status}
-                            disabled={updatingAppId === app.application_id}
-                            onChange={(e) => handleStatusChange(app.application_id, e.target.value)}
-                            className="text-[11px] font-medium py-1 px-1.5 rounded border border-line bg-canvas text-ink hover:bg-surface cursor-pointer focus:outline-none focus:ring-1 focus:ring-brand"
-                            title="Move stage"
-                          >
-                            <option value="Applied">Applied</option>
-                            <option value="Shortlisted">Shortlisted</option>
-                            <option value="Interviewing">Interview</option>
-                            <option value="Selected">Offer</option>
-                            <option value="Rejected">Rejected</option>
-                          </select>
+                          <div className="w-28">
+                            <Select
+                              value={app.status}
+                              disabled={updatingAppId === app.application_id}
+                              onChange={(val) => handleStatusChange(app.application_id, val)}
+                              options={STAGE_OPTIONS}
+                              size="sm"
+                              aria-label="Move stage"
+                            />
+                          </div>
                         </div>
 
                         <div className="flex items-center gap-2 pt-1 border-t border-line/60">
@@ -388,18 +394,16 @@ export const ApplicationsPage: React.FC = () => {
                       </td>
 
                       <td className="py-2.5 px-4">
-                        <select
-                          value={app.status}
-                          disabled={updatingAppId === app.application_id}
-                          onChange={(e) => handleStatusChange(app.application_id, e.target.value)}
-                          className="text-xs font-medium py-1 px-2 rounded border border-line cursor-pointer bg-canvas text-ink hover:bg-surface focus:outline-none focus:ring-1 focus:ring-brand"
-                        >
-                          <option value="Applied">Applied</option>
-                          <option value="Shortlisted">Shortlisted</option>
-                          <option value="Interviewing">Interviewing</option>
-                          <option value="Selected">Selected (Offer)</option>
-                          <option value="Rejected">Rejected</option>
-                        </select>
+                        <div className="w-32">
+                          <Select
+                            value={app.status}
+                            disabled={updatingAppId === app.application_id}
+                            onChange={(val) => handleStatusChange(app.application_id, val)}
+                            options={STAGE_OPTIONS}
+                            size="sm"
+                            aria-label="Change status"
+                          />
+                        </div>
                       </td>
 
                       <td className="py-2.5 px-4 text-right">

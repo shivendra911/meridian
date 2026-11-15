@@ -12,6 +12,7 @@ import { client } from '../../core/api/client';
 import { useAuth } from '../../core/auth/useAuth';
 import { formatRelative } from '../../ui/format';
 import { formatApiError } from '../../core/api/errors';
+import { Switch } from '../../components/ui/Switch';
 
 interface NotificationItem {
   notification_id: string;
@@ -152,11 +153,11 @@ export const AccountNotificationsPage: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <input
-                type="checkbox"
+              <Switch
                 checked={emailNotifs}
-                onChange={(e) => setEmailNotifs(e.target.checked)}
-                className="w-4 h-4 rounded border-line text-brand focus:ring-brand cursor-pointer ml-4"
+                onChange={setEmailNotifs}
+                aria-label="Email Notifications"
+                className="ml-4"
               />
             </div>
 
@@ -172,11 +173,11 @@ export const AccountNotificationsPage: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <input
-                type="checkbox"
+              <Switch
                 checked={inAppNotifs}
-                onChange={(e) => setInAppNotifs(e.target.checked)}
-                className="w-4 h-4 rounded border-line text-brand focus:ring-brand cursor-pointer ml-4"
+                onChange={setInAppNotifs}
+                aria-label="In-App Notifications"
+                className="ml-4"
               />
             </div>
           </div>
@@ -185,7 +186,7 @@ export const AccountNotificationsPage: React.FC = () => {
             <button
               type="submit"
               disabled={savingPrefs}
-              className="inline-flex items-center gap-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold px-4 py-2 shadow-xs transition-colors cursor-pointer disabled:opacity-60"
+              className="macos-press inline-flex items-center gap-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold px-4 py-2 shadow-xs transition-colors cursor-pointer disabled:opacity-60"
             >
               {savingPrefs ? (
                 <>
@@ -220,7 +221,7 @@ export const AccountNotificationsPage: React.FC = () => {
               type="button"
               disabled={markingAll}
               onClick={handleMarkAllAsRead}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-canvas hover:bg-slate-100 text-xs font-semibold text-ink transition-colors cursor-pointer"
+              className="macos-press-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-canvas hover:bg-slate-100 text-xs font-semibold text-ink transition-colors cursor-pointer"
             >
               <CheckCheck size={14} className="text-brand" />
               <span>{markingAll ? 'Updating...' : 'Mark all as read'}</span>

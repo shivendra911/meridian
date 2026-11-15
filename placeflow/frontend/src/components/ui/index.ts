@@ -9,3 +9,5 @@ export * from './AdvancedDataGrid';
 export * from './PageHeader';
 export * from './Skeleton';
 export * from './EmptyState';
+export * from './Select';
+export * from './Switch';

@@ -10,7 +10,14 @@ import {
   Search} from 'lucide-react';
 import { toast } from 'sonner';
 import { studentApi, StudentOpportunity } from '../api';
-import { PageHeader, Skeleton, EmptyState, DriveCard, useDocumentTitle } from '../../../ui';
+import { PageHeader, Skeleton, EmptyState, DriveCard, useDocumentTitle, Select } from '../../../ui';
+
+const TIER_OPTIONS = [
+  { value: 'ALL', label: 'All Tiers' },
+  { value: 'Super Dream', label: 'Super Dream (>10 LPA)' },
+  { value: 'Dream', label: 'Dream (6-10 LPA)' },
+  { value: 'Regular', label: 'Regular (<6 LPA)' },
+];
 import { ErrorState } from '../../../ui/ErrorState';
 
 export const StudentOpportunitiesPage: React.FC = () => {
@@ -164,16 +171,15 @@ export const StudentOpportunitiesPage: React.FC = () => {
           </div>
 
           {/* Tier filter */}
-          <select
-            value={tierFilter}
-            onChange={(e) => setTierFilter(e.target.value)}
-            className="px-2.5 py-1.5 text-xs bg-canvas border border-line rounded-lg text-ink focus:outline-none focus:border-brand cursor-pointer"
-          >
-            <option value="ALL">All Tiers</option>
-            <option value="Super Dream">Super Dream (&gt;10 LPA)</option>
-            <option value="Dream">Dream (6-10 LPA)</option>
-            <option value="Regular">Regular (&lt;6 LPA)</option>
-          </select>
+          <div className="w-44">
+            <Select
+              value={tierFilter}
+              onChange={setTierFilter}
+              options={TIER_OPTIONS}
+              size="sm"
+              aria-label="Tier Filter"
+            />
+          </div>
         </div>
       </div>
 

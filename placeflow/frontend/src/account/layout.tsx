@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink, Outlet, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
 import {
   User,
   Shield,
@@ -18,6 +18,11 @@ const ACCOUNT_TABS = [
 
 export const AccountLayout: React.FC = () => {
   const { me, status } = useAuth();
+  const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [location.pathname]);
 
   if (status === 'loading') {
     return (
@@ -35,11 +40,11 @@ export const AccountLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-canvas text-ink font-sans flex flex-col">
       {/* Top Bar */}
-      <header className="sticky top-0 z-30 h-14 border-b border-line bg-surface/90 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between">
+      <header className="sticky top-0 z-30 h-14 border-b border-line/70 bg-surface/85 macos-frosted px-4 sm:px-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link
             to={workspaceUrl}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-muted hover:text-brand transition-colors p-1 rounded-md"
+            className="macos-press-sm inline-flex items-center gap-1.5 text-xs font-semibold text-ink-muted hover:text-brand transition-colors p-1.5 rounded-lg hover:bg-slate-100"
             title="Return to workspace"
           >
             <ArrowLeft size={16} />
@@ -49,7 +54,7 @@ export const AccountLayout: React.FC = () => {
           <span className="text-slate-300">/</span>
 
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-brand text-white font-bold text-xs">
+            <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-brand text-white font-bold text-xs shadow-xs">
               M
             </span>
             <span className="text-xs font-bold text-ink">Account & Settings</span>
@@ -59,7 +64,7 @@ export const AccountLayout: React.FC = () => {
         <div className="flex items-center gap-3">
           <Link
             to="/account/profile"
-            className="flex items-center gap-2 rounded-full p-1 hover:bg-slate-100 transition-colors"
+            className="macos-press-sm flex items-center gap-2 rounded-full p-1 hover:bg-slate-100 transition-colors"
           >
             <Avatar src={avatarUrl} name={displayName} size={32} />
             <span className="text-xs font-medium text-ink hidden md:inline truncate max-w-[140px]">
@@ -72,8 +77,8 @@ export const AccountLayout: React.FC = () => {
       {/* Main Container */}
       <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1 flex flex-col">
         {/* Navigation Tabs */}
-        <div className="border-b border-line mb-8 overflow-x-auto scrollbar-none">
-          <nav className="flex space-x-6 min-w-max" aria-label="Account Settings Tabs">
+        <div className="mb-8 overflow-x-auto scrollbar-none">
+          <nav className="inline-flex p-1 bg-slate-200/50 rounded-xl border border-line/70 shadow-inner gap-1 min-w-max" aria-label="Account Settings Tabs">
             {ACCOUNT_TABS.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -82,14 +87,14 @@ export const AccountLayout: React.FC = () => {
                   to={tab.path}
                   end={tab.path === '/account/profile'}
                   className={({ isActive }) =>
-                    `flex items-center gap-2 pb-3 text-xs font-semibold transition-colors border-b-2 ${
+                    `macos-press-sm flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 ${
                       isActive
-                        ? 'border-brand text-brand'
-                        : 'border-transparent text-ink-muted hover:text-ink hover:border-slate-300'
+                        ? 'bg-surface text-ink shadow-xs ring-1 ring-black/5 font-semibold'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface/50'
                     }`
                   }
                 >
-                  <Icon size={16} />
+                  <Icon size={14} className="shrink-0" />
                   <span>{tab.label}</span>
                 </NavLink>
               );
@@ -97,8 +102,8 @@ export const AccountLayout: React.FC = () => {
           </nav>
         </div>
 
-        {/* Tab Content */}
-        <div className="flex-1">
+        {/* Tab Content with Fluid Transition */}
+        <div key={location.pathname} className="flex-1 macos-elevation-dissolve">
           <Outlet />
         </div>
       </div>

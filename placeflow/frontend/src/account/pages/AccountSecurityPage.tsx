@@ -223,7 +223,7 @@ export const AccountSecurityPage: React.FC = () => {
             <button
               type="submit"
               disabled={savingPassword}
-              className="inline-flex items-center gap-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold px-4 py-2 shadow-xs transition-colors cursor-pointer disabled:opacity-60"
+              className="macos-press inline-flex items-center gap-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold px-4 py-2 shadow-xs transition-colors cursor-pointer disabled:opacity-60"
             >
               {savingPassword ? (
                 <>
@@ -261,7 +261,7 @@ export const AccountSecurityPage: React.FC = () => {
               type="button"
               disabled={revokingAll}
               onClick={handleRevokeAllOtherSessions}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 text-xs font-semibold transition-colors cursor-pointer self-start sm:self-auto disabled:opacity-60"
+              className="macos-press-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 text-xs font-semibold transition-colors cursor-pointer self-start sm:self-auto disabled:opacity-60"
             >
               <LogOut size={13} />
               <span>{revokingAll ? 'Revoking...' : 'Revoke all other sessions'}</span>
@@ -302,7 +302,7 @@ export const AccountSecurityPage: React.FC = () => {
                   className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${
                     isCurrent
                       ? 'border-brand/30 bg-brand/5'
-                      : 'border-line bg-canvas hover:bg-slate-50'
+                      : 'border-line bg-canvas hover:bg-slate-50 card-interactive macos-press-card'
                   }`}
                 >
                   <div className="flex items-start gap-3.5">
@@ -337,7 +337,7 @@ export const AccountSecurityPage: React.FC = () => {
                       type="button"
                       disabled={revokingId === sess.session_id}
                       onClick={() => handleRevokeSession(sess.session_id)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-ink-muted hover:text-red-700 hover:border-red-200 hover:bg-red-50 text-xs font-medium transition-colors cursor-pointer self-start sm:self-auto disabled:opacity-60"
+                      className="macos-press-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-ink-muted hover:text-red-700 hover:border-red-200 hover:bg-red-50 text-xs font-medium transition-colors cursor-pointer self-start sm:self-auto disabled:opacity-60"
                       title="Terminate this session"
                     >
                       <Trash2 size={13} />

@@ -9,7 +9,15 @@ import { Modal } from '../../../components/ui/Modal';
 import { toast } from 'sonner';
 import { Skeleton } from '../../../components/ui/Skeleton';
 import { EmptyState } from '../../../components/ui/EmptyState';
-import { CompanyCard, useDocumentTitle } from '../../../ui';
+import { CompanyCard, useDocumentTitle, Select } from '../../../ui';
+
+const INDUSTRY_OPTIONS = [
+  { value: 'Technology & Software', label: 'Technology & Software' },
+  { value: 'Financial Services & Fintech', label: 'Financial Services & Fintech' },
+  { value: 'Management Consulting', label: 'Management Consulting' },
+  { value: 'E-Commerce & Retail', label: 'E-Commerce & Retail' },
+  { value: 'Manufacturing & Core Engineering', label: 'Manufacturing & Core Engineering' },
+];
 
 export const CompaniesPage: React.FC = () => {
   useDocumentTitle('Corporate Partners');
@@ -213,17 +221,13 @@ export const CompaniesPage: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-ink mb-1">Industry Sector</label>
-              <select
+              <Select
                 value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
-                className="w-full px-2 py-1.5 text-xs bg-canvas border border-line rounded focus:bg-surface focus:outline-hidden cursor-pointer"
-              >
-                <option value="Technology & Software">Technology & Software</option>
-                <option value="Financial Services & Fintech">Financial Services & Fintech</option>
-                <option value="Management Consulting">Management Consulting</option>
-                <option value="E-Commerce & Retail">E-Commerce & Retail</option>
-                <option value="Manufacturing & Core Engineering">Manufacturing & Core Engineering</option>
-              </select>
+                onChange={setIndustry}
+                options={INDUSTRY_OPTIONS}
+                size="sm"
+                aria-label="Industry Sector"
+              />
             </div>
 
             <div>

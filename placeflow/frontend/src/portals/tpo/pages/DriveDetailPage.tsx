@@ -21,7 +21,15 @@ import {
   EligibilityExplainerDrawer,
   EligibilityReport} from '../../../components/recruitment/EligibilityExplainerDrawer';
 import { resolveCompanyName } from '../../../utils/formatters';
-import { PersonChip, formatDate } from '../../../ui';
+import { PersonChip, formatDate, Select } from '../../../ui';
+
+const STAGE_OPTIONS = [
+  { value: 'Applied', label: 'Applied' },
+  { value: 'Shortlisted', label: 'Shortlisted' },
+  { value: 'Interviewing', label: 'Interviewing' },
+  { value: 'Selected', label: 'Selected (Offer)' },
+  { value: 'Rejected', label: 'Rejected' },
+];
 
 export const DriveDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -329,22 +337,20 @@ export const DriveDetailPage: React.FC = () => {
                       {app.application_date || app.applied_at ? formatDate(app.application_date || app.applied_at) : 'Active'}
                     </td>
                     <td className="py-2 px-4">
-                      <select
-                        value={app.status}
-                        onChange={(e) => handleStatusChange(app.application_id, e.target.value)}
-                        className="text-xs font-medium py-0.5 px-2 rounded border border-line cursor-pointer bg-canvas text-ink"
-                      >
-                        <option value="Applied">Applied</option>
-                        <option value="Shortlisted">Shortlisted</option>
-                        <option value="Interviewing">Interviewing</option>
-                        <option value="Selected">Selected (Offer)</option>
-                        <option value="Rejected">Rejected</option>
-                      </select>
+                      <div className="w-32">
+                        <Select
+                          value={app.status}
+                          onChange={(val) => handleStatusChange(app.application_id, val)}
+                          options={STAGE_OPTIONS}
+                          size="sm"
+                          aria-label="Update status"
+                        />
+                      </div>
                     </td>
                     <td className="py-2 px-4 text-right">
                       <button
                         onClick={() => handleOpenEligibilityExplainer(app)}
-                        className="text-xs font-medium text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
+                        className="macos-press-sm text-xs font-medium text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
                       >
                         <HelpCircle size={13} />
                         <span>Explain Match</span>

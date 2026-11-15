@@ -16,6 +16,20 @@ import { useAuth } from '../../core/auth/useAuth';
 import { formatRoleLabel } from '../../core/auth/roleLabels';
 import { ProfileHeader } from '../../ui/cards/ProfileHeader';
 import { formatApiError } from '../../core/api/errors';
+import { Select } from '../../components/ui/Select';
+
+const LOCALE_OPTIONS = [
+  { value: 'en-IN', label: 'English (India) - en-IN' },
+  { value: 'en-US', label: 'English (United States) - en-US' },
+  { value: 'en-GB', label: 'English (United Kingdom) - en-GB' },
+];
+
+const TIMEZONE_OPTIONS = [
+  { value: 'Asia/Kolkata', label: 'Asia/Kolkata (IST +5:30)' },
+  { value: 'UTC', label: 'UTC (Coordinated Universal Time)' },
+  { value: 'America/New_York', label: 'America/New York (EST/EDT)' },
+  { value: 'Europe/London', label: 'Europe/London (GMT/BST)' },
+];
 
 export const AccountProfilePage: React.FC = () => {
   const { me, refreshMe } = useAuth();
@@ -236,7 +250,7 @@ export const AccountProfilePage: React.FC = () => {
             onClick={() => {
               window.location.href = '/account/privacy';
             }}
-            className="text-xs font-semibold text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
+            className="macos-press-sm text-xs font-semibold text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
           >
             <span>Request correction</span>
             <ExternalLink size={12} />
@@ -291,7 +305,7 @@ export const AccountProfilePage: React.FC = () => {
               type="button"
               disabled={uploadingAvatar}
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-xs font-semibold text-ink hover:bg-slate-100 transition-colors cursor-pointer shadow-xs"
+              className="macos-press-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-surface text-xs font-semibold text-ink hover:bg-slate-100 transition-colors cursor-pointer shadow-xs"
             >
               <UploadCloud size={14} className="text-brand" />
               <span>{uploadingAvatar ? 'Uploading...' : 'Upload photo'}</span>
@@ -359,41 +373,26 @@ export const AccountProfilePage: React.FC = () => {
               <label className="block text-xs font-semibold text-ink mb-1.5">
                 Language & Locale
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-muted">
-                  <Globe size={14} />
-                </div>
-                <select
-                  value={locale}
-                  onChange={(e) => setLocale(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-line rounded-lg bg-canvas text-ink focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                >
-                  <option value="en-IN">English (India) - en-IN</option>
-                  <option value="en-US">English (United States) - en-US</option>
-                  <option value="en-GB">English (United Kingdom) - en-GB</option>
-                </select>
-              </div>
+              <Select
+                value={locale}
+                onChange={setLocale}
+                options={LOCALE_OPTIONS}
+                icon={<Globe size={14} />}
+                aria-label="Language and Locale"
+              />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-ink mb-1.5">
                 Timezone
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-muted">
-                  <Clock size={14} />
-                </div>
-                <select
-                  value={timezone}
-                  onChange={(e) => setTimezone(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-line rounded-lg bg-canvas text-ink focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                >
-                  <option value="Asia/Kolkata">Asia/Kolkata (IST +5:30)</option>
-                  <option value="UTC">UTC (Coordinated Universal Time)</option>
-                  <option value="America/New_York">America/New York (EST/EDT)</option>
-                  <option value="Europe/London">Europe/London (GMT/BST)</option>
-                </select>
-              </div>
+              <Select
+                value={timezone}
+                onChange={setTimezone}
+                options={TIMEZONE_OPTIONS}
+                icon={<Clock size={14} />}
+                aria-label="Timezone"
+              />
             </div>
           </div>
 
@@ -401,7 +400,7 @@ export const AccountProfilePage: React.FC = () => {
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold px-4 py-2 shadow-xs transition-colors cursor-pointer disabled:opacity-60"
+              className="macos-press inline-flex items-center gap-2 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold px-4 py-2 shadow-xs transition-colors cursor-pointer disabled:opacity-60"
             >
               {saving ? (
                 <>
