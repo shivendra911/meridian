@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 
 export type ButtonVariant =
   | 'primary'
+  | 'now'
   | 'cardinal'
   | 'secondary'
   | 'outline'
@@ -15,6 +16,7 @@ export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  pill?: boolean;
   isLoading?: boolean;
   loading?: boolean;
   loadingText?: string;
@@ -27,6 +29,7 @@ export const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
   size = 'md',
+  pill = false,
   isLoading = false,
   loading = false,
   loadingText,
@@ -37,14 +40,15 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
-  const baseStyles =
-    'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 select-none cursor-pointer border focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none macos-press';
+  const baseStyles = `inline-flex items-center justify-center font-medium ${
+    pill ? 'rounded-full' : 'rounded-lg'
+  } transition-all duration-150 select-none cursor-pointer border focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none macos-press`;
 
   const sizeStyles: Record<ButtonSize, string> = {
-    xs: 'text-xs px-2 py-1 gap-1.5 font-medium',
-    sm: 'text-xs px-2.5 py-1.5 gap-1.5 font-medium',
-    md: 'text-xs px-3.5 py-2 gap-2 font-medium',
-    lg: 'text-sm px-4 py-2.5 gap-2.5 font-medium',
+    xs: pill ? 'text-xs px-3 py-1 gap-1.5 font-medium' : 'text-xs px-2 py-1 gap-1.5 font-medium',
+    sm: pill ? 'text-xs px-4 py-2 gap-1.5 font-semibold min-h-[36px]' : 'text-xs px-2.5 py-1.5 gap-1.5 font-medium',
+    md: pill ? 'text-xs px-5 py-2.5 gap-2 font-semibold min-h-[40px]' : 'text-xs px-3.5 py-2 gap-2 font-medium',
+    lg: pill ? 'text-sm px-6 py-3 gap-2.5 font-bold min-h-[48px]' : 'text-sm px-4 py-2.5 gap-2.5 font-medium',
   };
 
   const isButtonLoading = isLoading || loading;
@@ -53,6 +57,8 @@ export const Button: React.FC<ButtonProps> = ({
     // Primary is Navy brand color, clean flat appearance
     primary:
       'bg-brand hover:bg-brand-hover active:bg-[#071228] text-white border-brand focus:ring-brand/30 shadow-none',
+    now:
+      'bg-now hover:bg-[#E09419] active:bg-[#C98212] text-now-ink border-now focus:ring-now/30 font-bold shadow-xs',
     cardinal:
       'bg-accent hover:bg-[#701010] active:bg-[#5C0D0D] text-white border-accent focus:ring-accent/30 shadow-none',
     secondary:

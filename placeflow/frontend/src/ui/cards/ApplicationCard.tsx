@@ -1,9 +1,10 @@
 import React from 'react';
-import { Check, Clock, X } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { EntityCard } from './EntityCard';
 import { CompanyMark } from './CompanyMark';
 import { ApplicationCardSkeleton } from './CardSkeleton';
 import { formatDate } from '../format';
+import { Spine, SpineStage } from '../Spine';
 
 export interface ApplicationCardData {
   application_id: string;
@@ -62,6 +63,19 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
     ? 1
     : 0;
 
+  const spineStages: SpineStage[] = STAGES.map((s, idx) => ({
+    id: s.toLowerCase(),
+    label: s,
+    status:
+      idx < currentStageIndex
+        ? 'completed'
+        : idx === currentStageIndex
+        ? isRejected
+          ? 'skipped'
+          : 'current'
+        : 'upcoming',
+  }));
+
   return (
     <EntityCard clickable={Boolean(onClick)} onClick={onClick} className={className}>
       {/* Header: Role and Company */}
@@ -89,42 +103,9 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
         </span>
       </div>
 
-      {/* StageStepper Visual */}
+      {/* Universal Spine Stage Tracker */}
       <div className="mt-4 px-1">
-        <div className="relative flex items-center justify-between">
-          {/* Connector bar behind steps */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 w-full bg-slate-200 -z-0" />
-
-          {STAGES.map((s, idx) => {
-            const isDone = idx < currentStageIndex;
-            const isCurrent = idx === currentStageIndex;
-
-            return (
-              <div key={s} className="relative z-10 flex flex-col items-center">
-                <div
-                  className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold border-2 transition-colors ${
-                    isRejected && isCurrent
-                      ? 'border-rose-600 bg-rose-600 text-white'
-                      : isDone
-                      ? 'border-brand bg-brand text-white'
-                      : isCurrent
-                      ? 'border-brand bg-white text-brand ring-2 ring-brand-50'
-                      : 'border-slate-300 bg-white text-slate-400'
-                  }`}
-                >
-                  {isRejected && isCurrent ? (
-                    <X size={10} />
-                  ) : isDone ? (
-                    <Check size={10} />
-                  ) : (
-                    idx + 1
-                  )}
-                </div>
-                <span className="mt-1 text-xs font-medium text-ink-muted">{s}</span>
-              </div>
-            );
-          })}
-        </div>
+        <Spine stages={spineStages} size="sm" />
       </div>
 
       {/* Last update footer */}
