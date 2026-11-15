@@ -13,7 +13,7 @@ import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 const OverviewPage = lazy(() => import('./pages/OverviewPage').then((m) => ({ default: m.OverviewPage })));
 const SeasonPage = lazy(() => import('./pages/SeasonPage').then((m) => ({ default: m.SeasonPage })));
 const DrivesPage = lazy(() => import('./pages/DrivesPage').then((m) => ({ default: m.DrivesPage })));
-const DriveDetailPage = lazy(() => import('./pages/DriveDetailPage').then((m) => ({ default: m.DriveDetailPage })));
+const DriveRoomPage = lazy(() => import('./pages/DriveRoomPage').then((m) => ({ default: m.DriveRoomPage })));
 const CompaniesPage = lazy(() => import('./pages/CompaniesPage').then((m) => ({ default: m.CompaniesPage })));
 const CompanyDetailPage = lazy(() => import('./pages/CompanyDetailPage').then((m) => ({ default: m.CompanyDetailPage })));
 const ApplicationsPage = lazy(() => import('./pages/ApplicationsPage').then((m) => ({ default: m.ApplicationsPage })));
@@ -55,7 +55,7 @@ export const TpoRoutes: React.FC = () => {
           <Route path="home" element={<OverviewPage />} />
           <Route path="season" element={<SeasonPage />} />
           <Route path="drives" element={<DrivesPage />} />
-          <Route path="drives/:id" element={<DriveDetailPage />} />
+          <Route path="drives/:id" element={<DriveRoomPage />} />
           <Route path="companies" element={<CompaniesPage />} />
           <Route path="companies/:id" element={<CompanyDetailPage />} />
           <Route path="applications" element={<ApplicationsPage />} />
