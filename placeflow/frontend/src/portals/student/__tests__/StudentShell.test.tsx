@@ -2,11 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { StudentShell } from '../StudentShell';
-import { AuthContext, AuthContextValue } from '../../../core/auth/AuthProvider';
+import { AuthContext, AuthContextType } from '../../../core/auth/AuthProvider';
 
-function createMockAuth(): AuthContextValue {
+function createMockAuth(): AuthContextType {
   return {
-    status: 'authenticated',
+    status: 'authed',
     me: {
       account_id: 'acc_1',
       person_id: 'p_1',
@@ -14,10 +14,12 @@ function createMockAuth(): AuthContextValue {
       tenant_id: 'ten_default',
       institution_id: 'inst_1',
       subject: { type: 'student', id: 'STU001' },
-      assignments: [{ role_code: 'STUDENT_MEMBER', scope_type: 'SELF' }],
+      assignments: [{ role_code: 'STUDENT_MEMBER', scope_type: 'SELF', scope_id: 'inst_1' }],
       permissions: ['placement.application.create', 'student.profile.update_self'],
       portals: ['student'],
       default_portal: 'student',
+      delegation: null,
+      break_glass: null,
       profile: {
         display_name: 'Aarav Sharma',
         affiliation_label: 'Student',
@@ -27,8 +29,11 @@ function createMockAuth(): AuthContextValue {
     login: vi.fn(),
     logout: vi.fn(),
     can: () => true,
-    hasRole: () => true,
-    switchContext: vi.fn(),
+    canAny: () => true,
+    canAll: () => true,
+    hasPortal: () => true,
+    switchPortal: vi.fn(),
+    refreshMe: vi.fn(),
     sessionExpired: false,
     dismissSessionExpired: vi.fn(),
   };

@@ -1,25 +1,9 @@
-/**
- * PlaceFlow / Meridian — Student Portal Home (Phase 6).
- *
- * Implements "What needs me now" candidate command center:
- * - Actionable TaskCards (verification, interviews, deadlines)
- * - Authoritative KPIs with StatCard
- * - InterviewCard for scheduled rounds
- * - DriveCards for recommended campus drives
- * - Completely eliminates ad-hoc markup.
- */
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Compass,
-  FileText,
-  Clock,
-  CheckCircle2,
+  ArrowRight,
   Sparkles,
-  ShieldCheck,
-  CheckSquare,
-  Award,
 } from 'lucide-react';
 import {
   studentApi,
@@ -31,24 +15,24 @@ import {
   StudentOffer,
 } from '../api';
 import {
-  PageHeader,
-  StatCard,
-  Card,
   Skeleton,
   Button,
-  DriveCard,
-  InterviewCard,
-  TaskCard,
+  Avatar,
+  Spine,
+  SpineStage,
+  useDocumentTitle,
   CompanyMark,
-  formatDate,
-  formatDateTime,
-  formatRelative,
-  useDocumentTitle} from '../../../ui';
+} from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
 import { AuthContext } from '../../../core/auth/AuthProvider';
+import { HeroInterview } from '../components/HeroInterview';
+import { HeroOffer } from '../components/HeroOffer';
+import { HeroPreparing } from '../components/HeroPreparing';
+import { HeroEligible } from '../components/HeroEligible';
+import { StateBlock } from '../../../ui/StateBlock';
 
 export const StudentHomePage: React.FC = () => {
-  useDocumentTitle('Student Workspace');
+  useDocumentTitle('Candidate Journey');
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const canConsent = auth ? (auth.can('consent.grant.record') || auth.can('consent.withdraw.process')) : true;
@@ -58,11 +42,11 @@ export const StudentHomePage: React.FC = () => {
   const [interviews, setInterviews] = useState<StudentInterview[]>([]);
   const [applications, setApplications] = useState<StudentApplication[]>([]);
   const [offers, setOffers] = useState<StudentOffer[]>([]);
-  const [consents, setConsents] = useState<StudentConsent[]>([]);
+  const [_consents, setConsents] = useState<StudentConsent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const loadDashboard = async () => {
+  const loadJourney = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -89,421 +73,334 @@ export const StudentHomePage: React.FC = () => {
   };
 
   useEffect(() => {
-    loadDashboard();
+    loadJourney();
   }, []);
 
   if (loading) {
     return (
-      <div className="space-y-6 font-sans">
-        <Skeleton className="h-8 w-64" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Skeleton className="h-24 rounded-xl" />
-          <Skeleton className="h-24 rounded-xl" />
-          <Skeleton className="h-24 rounded-xl" />
-          <Skeleton className="h-24 rounded-xl" />
+      <div className="space-y-6 font-sans max-w-4xl mx-auto">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-10 w-10 rounded-full" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
-          <Skeleton className="h-28 rounded-xl" />
+        <Skeleton className="h-16 w-full rounded-xl" />
+        <Skeleton className="h-56 w-full rounded-[24px]" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Skeleton className="h-20 rounded-xl" />
+          <Skeleton className="h-20 rounded-xl" />
         </div>
-        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-48 rounded-xl" />
       </div>
     );
   }
 
   if (error) {
-    return <ErrorState error={error} onRetry={loadDashboard} />;
+    return <ErrorState error={error} onRetry={loadJourney} />;
   }
 
   const eligibleJobs = opportunities.filter((j) => j.eligible);
-  const nextInterview = interviews.find((i) => i.status !== 'Completed' && i.status !== 'Cancelled');
-  const offeredCount = applications.filter((a) => a.status === 'Offered' || a.status === 'Accepted').length;
-
-  // Derive actionable tasks directly from student's live records
-  const pendingOffer = offers.find((o) => !o.response_status || o.response_status === null);
-  const pendingConsent = consents.find((c) => c.status === 'PENDING');
-  const needsProfileUpdate = !profile?.skills || profile.skills.length === 0;
   const unappliedEligible = eligibleJobs.filter((j) => !j.has_applied);
+  const nextInterview = interviews.find((i) => i.status !== 'Completed' && i.status !== 'Cancelled');
+  const pendingOffer = offers.find((o) => !o.response_status || o.response_status === null);
+  const acceptedOffer = offers.find((o) => o.response_status === 'Accepted');
+  const needsProfileUpdate = !profile?.skills || profile.skills.length === 0;
 
-  const actionableTasks: Array<{
-    task_id: string;
-    title: string;
-    due?: string | Date | null;
-    priority: 'HIGH' | 'MEDIUM' | 'LOW';
-    icon: any;
-    action_label: string;
-    action: () => void;
-  }> = [];
-
-  if (pendingOffer) {
-    actionableTasks.push({
-      task_id: `offer_${pendingOffer.placement_id}`,
-      title: `Respond to placement offer from ${pendingOffer.role || 'Corporate Partner'} (${pendingOffer.package_lpa} LPA)`,
-      due: null,
-      priority: 'HIGH',
-      icon: Award,
-      action_label: 'Review Offer',
-      action: () => navigate('/student/applications'),
-    });
+  // Determine Overall Journey Stage for the Spine
+  let currentStageId: 'eligible' | 'applied' | 'interview' | 'offer' | 'joined' = 'eligible';
+  if (acceptedOffer) {
+    currentStageId = 'joined';
+  } else if (pendingOffer || offers.length > 0) {
+    currentStageId = 'offer';
+  } else if (nextInterview || interviews.length > 0) {
+    currentStageId = 'interview';
+  } else if (applications.length > 0) {
+    currentStageId = 'applied';
   }
 
-  if (nextInterview) {
-    actionableTasks.push({
-      task_id: `interview_${nextInterview.interview_id}`,
-      title: `Prepare for Round ${nextInterview.round}: ${nextInterview.company_name ? `${nextInterview.company_name} (${nextInterview.role || 'Interview'})` : nextInterview.role || 'Interview Round'}`,
-      due: nextInterview.scheduled_start,
-      priority: 'HIGH',
-      icon: Clock,
-      action_label: 'View Slot Details',
-      action: () => {
-        const el = document.getElementById('upcoming-interview-slot');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      },
-    });
-  }
+  const STAGE_KEYS = ['eligible', 'applied', 'interview', 'offer', 'joined'] as const;
+  const currentStageIdx = STAGE_KEYS.indexOf(currentStageId);
 
-  if (unappliedEligible.length > 0) {
-    actionableTasks.push({
-      task_id: `eligible_${unappliedEligible[0].job_id}`,
-      title: `Apply to ${unappliedEligible[0].company_name} — ${unappliedEligible[0].title}`,
-      due: unappliedEligible[0].deadline || null,
-      priority: unappliedEligible[0].tier === 'SUPER_DREAM' || unappliedEligible[0].tier === 'DREAM' ? 'HIGH' : 'MEDIUM',
-      icon: Compass,
-      action_label: 'Inspect Drive',
-      action: () => navigate('/student/opportunities'),
-    });
-  }
+  const mainJourneyStages: SpineStage[] = [
+    { id: 'eligible', label: 'Eligible', status: currentStageIdx > 0 ? 'completed' : currentStageIdx === 0 ? 'current' : 'upcoming' },
+    { id: 'applied', label: 'Applied', status: currentStageIdx > 1 ? 'completed' : currentStageIdx === 1 ? 'current' : 'upcoming' },
+    { id: 'interview', label: 'Interview', status: currentStageIdx > 2 ? 'completed' : currentStageIdx === 2 ? 'current' : 'upcoming' },
+    { id: 'offer', label: 'Offer', status: currentStageIdx > 3 ? 'completed' : currentStageIdx === 3 ? 'current' : 'upcoming' },
+    { id: 'joined', label: 'Joined', status: currentStageIdx === 4 ? 'current' : 'upcoming' },
+  ];
 
-  if (needsProfileUpdate) {
-    actionableTasks.push({
-      task_id: 'task_profile_skills',
-      title: 'Complete candidate dossier: add verified technical skills & projects',
-      due: null,
-      priority: 'MEDIUM',
-      icon: ShieldCheck,
-      action_label: 'Update Skills',
-      action: () => navigate('/student/profile'),
-    });
-  }
-
-  if (pendingConsent) {
-    actionableTasks.push({
-      task_id: `consent_${pendingConsent.purpose}`,
-      title: `Review pending data privacy disclosure consent (${pendingConsent.purpose_title || pendingConsent.purpose})`,
-      due: null,
-      priority: 'LOW',
-      icon: FileText,
-      action_label: 'Review Consents',
-      action: () => navigate('/student/profile'),
-    });
-  }
-
-  if (actionableTasks.length === 0) {
-    actionableTasks.push({
-      task_id: 'task_all_clear',
-      title: 'All recruitment actions up to date. Explore active campus drives.',
-      due: null,
-      priority: 'LOW',
-      icon: CheckCircle2,
-      action_label: 'Browse Catalog',
-      action: () => navigate('/student/opportunities'),
-    });
-  }
+  const displayName = profile?.name || auth?.me?.display_name || 'Candidate';
+  const firstName = displayName.split(' ')[0];
 
   return (
-    <div className="space-y-8 font-sans">
-      <PageHeader
-        title={`Welcome back, ${profile?.name || 'Candidate'}`}
-        description="Your personal campus-to-career hub. Track job notifications, eligibility, and interviews."
-        actions={
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => navigate('/student/opportunities')}
-            leftIcon={<Compass size={14} />}
-          >
-            Explore Opportunities
-          </Button>
-        }
-      />
-
-      {/* 0. Lead with "Next Step" Focal Card */}
-      <div className="rounded-xl border border-brand/20 bg-linear-to-r from-surface to-brand/5 p-5 shadow-xs card-interactive macos-press-card">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            {nextInterview ? (
-              <div className="h-10 w-10 rounded-lg bg-brand/10 text-brand flex items-center justify-center shrink-0">
-                <Clock className="h-5 w-5" />
-              </div>
-            ) : unappliedEligible[0] ? (
-              <CompanyMark name={unappliedEligible[0].company_name} size="md" />
-            ) : (
-              <div className="h-10 w-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-                <CheckCircle2 className="h-5 w-5" />
-              </div>
-            )}
-
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-brand">
-                  Next Step
-                </span>
-                {nextInterview && nextInterview.scheduled_start && (
-                  <span className="rounded-full bg-brand/10 text-brand px-2 py-0.5 text-[11px] font-semibold">
-                    {formatRelative(nextInterview.scheduled_start)}
-                  </span>
-                )}
-              </div>
-
-              {nextInterview ? (
-                <>
-                  <h3 className="text-base font-bold text-ink mt-0.5 m-0">
-                    {nextInterview.company_name} · Round {nextInterview.round} ({nextInterview.role || 'Interview'})
-                  </h3>
-                  <p className="text-xs text-ink-muted mt-1 m-0">
-                    {formatDateTime(nextInterview.scheduled_start)}
-                    {nextInterview.venue_or_link ? ` · ${nextInterview.venue_or_link}` : ` · ${nextInterview.mode}`}
-                  </p>
-                </>
-              ) : unappliedEligible[0] ? (
-                <>
-                  <h3 className="text-base font-bold text-ink mt-0.5 m-0">
-                    Apply to {unappliedEligible[0].company_name} — {unappliedEligible[0].title}
-                  </h3>
-                  <p className="text-xs text-ink-muted mt-1 m-0">
-                    ₹{unappliedEligible[0].package_lpa} LPA · {unappliedEligible[0].tier}
-                    {unappliedEligible[0].deadline ? ` · Closes ${formatDate(unappliedEligible[0].deadline)}` : ''}
-                  </p>
-                </>
-              ) : (
-                <>
-                  <h3 className="text-base font-bold text-ink mt-0.5 m-0">
-                    All caught up! Profile & applications in good standing.
-                  </h3>
-                  <p className="text-xs text-ink-muted mt-1 m-0">
-                    Check back regularly for new campus drive postings.
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-
-          <div className="shrink-0">
-            {nextInterview ? (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => {
-                  const el = document.getElementById('upcoming-interview-slot');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  else navigate('/student/applications');
-                }}
-              >
-                View slot details
-              </Button>
-            ) : unappliedEligible[0] ? (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => navigate('/student/opportunities')}
-              >
-                Apply now
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate('/student/opportunities')}
-              >
-                Explore drives
-              </Button>
-            )}
-          </div>
+    <div className="space-y-6 font-sans max-w-4xl mx-auto pb-6">
+      {/* 1. Header Greeting Row: "Good morning, Aarav" + Avatar */}
+      <div className="flex items-center justify-between pt-1">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-ink tracking-tight m-0 font-display">
+            Good morning, {firstName}
+          </h1>
+          <p className="text-xs sm:text-sm text-ink-muted mt-0.5 m-0">
+            {currentStageId === 'joined'
+              ? 'Congratulations on your campus placement offer!'
+              : currentStageId === 'offer'
+              ? 'You have an official placement offer awaiting response.'
+              : currentStageId === 'interview'
+              ? 'Your upcoming interview round is scheduled.'
+              : currentStageId === 'applied'
+              ? 'Recruitment shortlists are currently under evaluation.'
+              : 'Explore active campus recruitment drives.'}
+          </p>
         </div>
+
+        <Avatar
+          name={displayName}
+          src={(profile as any)?.avatar_url || auth?.me?.profile?.avatar_url}
+          size={40}
+          className="shadow-xs cursor-pointer hover:ring-2 hover:ring-brand/30 transition-all"
+          onClick={() => navigate('/student/profile')}
+        />
       </div>
 
-      {/* 1. "What Needs Me Now" Actionable Task Cards — Focal First Card */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <CheckSquare size={16} className="text-brand" />
-          <h2 className="text-sm font-bold text-ink uppercase tracking-wider">
-            What Needs Me Now
+      {/* 2. The Universal Journey Spine device (Eligible - Applied - Interview - Offer - Joined) */}
+      <div className="rounded-2xl border border-line bg-surface p-4 sm:p-5 shadow-xs">
+        <div className="mb-3 flex items-center justify-between text-xs">
+          <span className="font-bold text-ink uppercase tracking-wider text-[11px]">
+            Placement Season 2026 Journey
+          </span>
+          <span className="font-semibold text-brand">
+            Stage {currentStageIdx + 1} of 5
+          </span>
+        </div>
+        <Spine stages={mainJourneyStages} size="md" />
+      </div>
+
+      {/* 3. State-Aware Hero Block */}
+      {nextInterview ? (
+        <HeroInterview
+          interview={nextInterview}
+          onJoin={
+            nextInterview.venue_or_link?.startsWith('http')
+              ? () => window.open(nextInterview.venue_or_link, '_blank')
+              : undefined
+          }
+        />
+      ) : pendingOffer ? (
+        <HeroOffer
+          offer={pendingOffer}
+          onAccept={() => navigate('/student/applications')}
+          onDecline={() => navigate('/student/applications')}
+        />
+      ) : needsProfileUpdate ? (
+        <HeroPreparing
+          profile={profile}
+          onCompleteProfile={() => navigate('/student/profile')}
+        />
+      ) : unappliedEligible.length > 0 ? (
+        <HeroEligible
+          topOpportunity={unappliedEligible[0]}
+          eligibleCount={eligibleJobs.length}
+          onExplore={() => navigate('/student/opportunities')}
+          onApply={() => navigate('/student/opportunities')}
+        />
+      ) : (
+        <StateBlock variant="paper" className="space-y-3">
+          <div className="flex items-center gap-2 text-success font-semibold text-xs">
+            <Sparkles size={15} /> All recruitment milestones up to date
+          </div>
+          <h2 className="text-xl font-bold text-ink m-0 font-display">
+            You are fully prepared for upcoming campus drives
           </h2>
-        </div>
-
-        {actionableTasks.length > 0 && (
-          <div className="space-y-3">
-            {/* Focal item: First TaskCard spans full width */}
-            <TaskCard
-              data={actionableTasks[0]}
-              onAction={actionableTasks[0].action}
-              className="w-full shadow-xs"
-            />
-            {actionableTasks.length > 1 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {actionableTasks.slice(1, 3).map((task) => (
-                  <TaskCard
-                    key={task.task_id}
-                    data={task}
-                    onAction={task.action}
-                  />
-                ))}
-              </div>
-            )}
+          <p className="text-xs text-ink-muted m-0">
+            Keep revising foundational concepts and check back regularly as corporate recruiters publish schedules.
+          </p>
+          <div className="pt-2">
+            <Button
+              variant="outline"
+              pill
+              size="sm"
+              onClick={() => navigate('/student/opportunities')}
+            >
+              Browse Active Drives
+            </Button>
           </div>
-        )}
-      </div>
-
-      {/* 2. KPI Metrics Bar */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          label="Placement Standing"
-          value={profile?.placement_status || 'Eligible'}
-          hint={`Tier: ${profile?.tier_entitlement || 'All Tiers'}`}
-          icon={CheckCircle2}
-        />
-        <StatCard
-          label="Eligible Drives"
-          value={eligibleJobs.length}
-          hint={`${opportunities.length} total active drives`}
-          icon={Compass}
-        />
-        <StatCard
-          label="Active Applications"
-          value={applications.length}
-          hint={`${offeredCount} offers received`}
-          icon={FileText}
-        />
-        <StatCard
-          label="Upcoming Interviews"
-          value={interviews.length}
-          hint={nextInterview ? 'Next round scheduled' : 'None scheduled'}
-          icon={Clock}
-        />
-      </div>
-
-      {/* 3. Upcoming Interview Slot Card */}
-      {nextInterview && (
-        <div id="upcoming-interview-slot" className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Clock size={16} className="text-brand" />
-            <h3 className="text-sm font-bold text-ink">Upcoming Scheduled Interview</h3>
-          </div>
-          <div className="max-w-xl">
-            <InterviewCard
-              data={{
-                interview_id: nextInterview.interview_id,
-                role: nextInterview.role || '',
-                company_name: nextInterview.company_name || '',
-                round_name: `Round ${nextInterview.round}`,
-                scheduled_start: nextInterview.scheduled_start,
-                scheduled_end: nextInterview.scheduled_end,
-                mode: nextInterview.mode,
-                venue_or_link: nextInterview.venue_or_link,
-                interviewer_name: nextInterview.interviewer,
-              }}
-              onJoin={
-                nextInterview.venue_or_link?.startsWith('http')
-                  ? () => window.open(nextInterview.venue_or_link, '_blank')
-                  : undefined
-              }
-            />
-          </div>
-        </div>
+        </StateBlock>
       )}
 
-      {/* 4. Recruitment Pipeline Progress Stepper */}
-      <Card>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-ink">Recruitment Journey Pipeline</h3>
-            <span className="text-xs text-ink-muted">
-              {applications.length} active process{applications.length === 1 ? '' : 'es'}
-            </span>
+      {/* 4. Compact Contextual Quick Jump Chips */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={() => navigate('/student/opportunities')}
+          className="flex items-center justify-between p-3.5 rounded-xl border border-line bg-surface hover:bg-canvas text-left transition-colors group cursor-pointer"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-xs">
+              ⚡
+            </div>
+            <div>
+              <p className="text-xs font-bold text-ink m-0 group-hover:text-brand">
+                {opportunities.filter((o) => o.deadline).length} drives close this week
+              </p>
+              <p className="text-[11px] text-ink-muted m-0">
+                Review deadlines & submit applications
+              </p>
+            </div>
           </div>
+          <ArrowRight size={15} className="text-ink-muted group-hover:text-brand group-hover:translate-x-0.5 transition-all" />
+        </button>
 
-          <div className="flex items-center justify-between text-xs font-medium">
-            <span className={applications.length > 0 ? 'text-brand font-bold' : 'text-ink-muted'}>
-              1. Applied ({applications.length})
-            </span>
-            <span className="text-slate-300">&rarr;</span>
-            <span className={applications.some((a) => a.status === 'Shortlisted') ? 'text-brand font-bold' : 'text-ink-muted'}>
-              2. Shortlisted ({applications.filter((a) => a.status === 'Shortlisted').length})
-            </span>
-            <span className="text-slate-300">&rarr;</span>
-            <span className={interviews.length > 0 ? 'text-brand font-bold' : 'text-ink-muted'}>
-              3. Interviews ({interviews.length})
-            </span>
-            <span className="text-slate-300">&rarr;</span>
-            <span className={offeredCount > 0 ? 'text-emerald-600 font-bold' : 'text-ink-muted'}>
-              4. Offered ({offeredCount})
-            </span>
+        <button
+          type="button"
+          onClick={() => navigate('/student/opportunities')}
+          className="flex items-center justify-between p-3.5 rounded-xl border border-line bg-surface hover:bg-canvas text-left transition-colors group cursor-pointer"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
+              ✓
+            </div>
+            <div>
+              <p className="text-xs font-bold text-ink m-0 group-hover:text-brand">
+                You qualify for {eligibleJobs.length} drives
+              </p>
+              <p className="text-[11px] text-ink-muted m-0">
+                Matched to your CGPA and branch
+              </p>
+            </div>
           </div>
-          <div className="w-full bg-line rounded-full h-2 overflow-hidden">
-            <div
-              className="bg-brand h-full rounded-full transition-all duration-300"
-              style={{
-                width: `${
-                  offeredCount > 0 ? 100 : interviews.length > 0 ? 75 : applications.length > 0 ? 35 : 10
-                }%`,
-              }}
-            />
-          </div>
+          <ArrowRight size={15} className="text-ink-muted group-hover:text-brand group-hover:translate-x-0.5 transition-all" />
+        </button>
+      </div>
+
+      {/* 5. "Your applications" Section with Spine per application */}
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-ink uppercase tracking-wider m-0">
+            Your Applications ({applications.length})
+          </h2>
+          {applications.length > 0 && (
+            <button
+              type="button"
+              onClick={() => navigate('/student/opportunities')}
+              className="text-xs font-semibold text-brand hover:underline"
+            >
+              Explore more drives
+            </button>
+          )}
         </div>
-      </Card>
 
-      {/* 5. Recommended Drives Built with DriveCard */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-sm font-semibold text-ink flex items-center gap-1.5">
-              <Sparkles size={14} className="text-brand" />
-              Recommended Campus Opportunities
-            </h3>
-            <p className="text-xs text-ink-muted">
-              Live recruitment drives matching your academic criteria and discipline.
+        {applications.length === 0 ? (
+          <div className="p-8 border border-line bg-surface rounded-2xl text-center">
+            <Compass className="w-8 h-8 text-ink-muted mx-auto mb-2 opacity-50" />
+            <h3 className="text-sm font-bold text-ink m-0">No active applications yet</h3>
+            <p className="text-xs text-ink-muted mt-1 max-w-xs mx-auto">
+              Explore open campus opportunities and apply before deadlines close.
             </p>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="shrink-0 whitespace-nowrap flex items-center gap-1"
-            rightIcon={<Compass size={13} />}
-            onClick={() => navigate('/student/opportunities')}
-          >
-            View All ({opportunities.length})
-          </Button>
-        </div>
-
-        {opportunities.length === 0 ? (
-          <div className="p-8 border border-line bg-surface rounded-xl text-center text-xs text-ink-muted">
-            No campus placement drives are currently open. Check back soon.
+            <div className="mt-4">
+              <Button
+                variant="now"
+                pill
+                size="sm"
+                onClick={() => navigate('/student/opportunities')}
+              >
+                Explore Opportunities
+              </Button>
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {opportunities.slice(0, 4).map((job) => (
-              <DriveCard
-                key={job.job_id}
-                data={{
-                  drive_id: job.job_id,
-                  job_id: job.job_id,
-                  company_name: job.company_name,
-                  role: job.title,
-                  tier: job.tier,
-                  package_lpa: job.package_lpa,
-                  deadline: job.deadline,
-                  eligible: job.eligible,
-                  ineligibility_reason: !job.eligible && job.reasons?.length ? job.reasons[0] : null,
-                  applied: job.has_applied,
-                }}
-                onClick={() => navigate('/student/opportunities')}
-                onApply={() => navigate('/student/opportunities')}
-              />
-            ))}
+          <div className="space-y-3">
+            {applications.map((app) => {
+              const appStages: SpineStage[] = [
+                {
+                  id: 'applied',
+                  label: 'Applied',
+                  status:
+                    app.status === 'Applied'
+                      ? 'current'
+                      : 'completed',
+                },
+                {
+                  id: 'shortlisted',
+                  label: 'Shortlisted',
+                  status:
+                    app.status === 'Shortlisted'
+                      ? 'current'
+                      : app.status === 'Interview' || app.status === 'Offered' || app.status === 'Accepted'
+                      ? 'completed'
+                      : 'upcoming',
+                },
+                {
+                  id: 'interview',
+                  label: 'Interview',
+                  status:
+                    app.status === 'Interview'
+                      ? 'current'
+                      : app.status === 'Offered' || app.status === 'Accepted'
+                      ? 'completed'
+                      : 'upcoming',
+                },
+                {
+                  id: 'offer',
+                  label: 'Offer',
+                  status:
+                    app.status === 'Offered' || app.status === 'Accepted'
+                      ? 'current'
+                      : 'upcoming',
+                },
+              ];
+
+              return (
+                <div
+                  key={app.application_id}
+                  onClick={() => navigate('/student/opportunities')}
+                  className="p-4 sm:p-5 rounded-2xl border border-line bg-surface shadow-xs hover:border-brand/40 transition-all cursor-pointer group"
+                >
+                  <div className="flex items-start justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <CompanyMark name={app.company_name} size="md" />
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-bold text-ink m-0 group-hover:text-brand truncate">
+                          {app.company_name} · {app.job_title}
+                        </h3>
+                        <p className="text-xs text-ink-muted m-0">
+                          {app.status === 'Shortlisted'
+                            ? 'Shortlist published by the placement office, 2 h ago'
+                            : app.status === 'Interview'
+                            ? 'Interview round scheduled by coordinator'
+                            : app.status === 'Offered'
+                            ? 'Congratulations! Placement offer extended'
+                            : 'Application received and under review'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`text-xs font-bold px-2.5 py-0.5 rounded-full shrink-0 ${
+                        app.status === 'Offered' || app.status === 'Accepted'
+                          ? 'bg-teal-50 text-teal-800 border border-teal-200'
+                          : app.status === 'Interview'
+                          ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                          : app.status === 'Shortlisted'
+                          ? 'bg-blue-50 text-blue-800 border border-blue-200'
+                          : 'bg-canvas text-ink-muted border border-line'
+                      }`}
+                    >
+                      {app.status}
+                    </span>
+                  </div>
+
+                  {/* Stage Spine */}
+                  <div className="pt-2 px-1 border-t border-line/40">
+                    <Spine stages={appStages} size="sm" />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
     </div>
   );
 };
+
+export const StudentJourneyPage = StudentHomePage;
+export default StudentHomePage;
