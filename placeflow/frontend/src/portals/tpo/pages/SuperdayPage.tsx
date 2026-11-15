@@ -3,6 +3,7 @@ import { api } from '../api';
 import { toast } from 'sonner';
 import { SuperdayConflict, Interview } from '../../../types';
 import { Zap, AlertTriangle, CheckCircle, Activity, Calendar } from 'lucide-react';
+import { InsightsNav } from '../components/InsightsNav';
 
 export const SuperdayPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,7 @@ export const SuperdayPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <InsightsNav />
       {/* Header */}
       <div className="bg-white border-l-4 border-l-cardinal border border-slate-200 rounded p-5 shadow-subtle flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>

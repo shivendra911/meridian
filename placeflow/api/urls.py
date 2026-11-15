@@ -152,6 +152,7 @@ urlpatterns = [
 
     # Post-Offer Retention & Renege Radar
     path("renege-radar/", views_renege.RenegeRadarView.as_view(), name="api_renege_radar"),
+    path("renege-radar/resolve/", views_renege.RenegeResolveView.as_view(), name="api_renege_radar_resolve"),
 
     # Autonomous Copilot Multi-Agent Hub
     path("agents/", views_agents.AgentCatalogView.as_view(), name="api_agents_catalog"),

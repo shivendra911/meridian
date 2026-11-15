@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ShieldCheck,
   ShieldAlert,
@@ -15,7 +16,10 @@ import {
   Sparkles,
   TrendingUp,
   CheckCircle2,
-  AlertCircle} from 'lucide-react';
+  AlertCircle,
+  Sliders,
+  ArrowRight,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import {
   studentApi,
@@ -46,6 +50,7 @@ const CONSENT_PURPOSES = [
 ];
 
 export const StudentProfilePage: React.FC = () => {
+  const navigate = useNavigate();
   const { can } = useAuth();
   const canConsent = can('consent.grant.record') || can('consent.withdraw.process');
   const [profile, setProfile] = useState<StudentProfile | null>(null);
@@ -105,6 +110,21 @@ export const StudentProfilePage: React.FC = () => {
 
   const handleRemoveSkill = (skillToRemove: string) => {
     setSkills(skills.filter((s) => s !== skillToRemove));
+  };
+
+  const handleAddRecommendedSkill = async (rec: string) => {
+    if (skills.includes(rec)) return;
+    const updatedSkills = [...skills, rec];
+    setSkills(updatedSkills);
+    try {
+      const updated = await studentApi.updateProfile({ skills: updatedSkills });
+      setProfile(updated);
+      toast.success(`Added "${rec}" to verified portfolio!`);
+      const updatedReadiness = await studentApi.getReadinessInsights().catch(() => null);
+      if (updatedReadiness) setReadiness(updatedReadiness);
+    } catch (err: any) {
+      toast.error(err?.message || `Failed to add "${rec}"`);
+    }
   };
 
   const handleSaveSkills = async () => {
@@ -346,12 +366,8 @@ export const StudentProfilePage: React.FC = () => {
                         key={rec}
                         type="button"
                         disabled={alreadyHas}
-                        onClick={() => {
-                          if (!alreadyHas) {
-                            setSkills([...skills, rec]);
-                            toast.info(`Added "${rec}" to portfolio. Remember to click "Save Portfolio".`);
-                          }
-                        }}
+                        onClick={() => handleAddRecommendedSkill(rec)}
+                        title={alreadyHas ? 'Already in your portfolio' : `Click to add ${rec} to portfolio & re-evaluate`}
                         className={`macos-press-sm inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border transition-colors ${
                           alreadyHas
                             ? 'bg-canvas border-line text-ink-muted opacity-60 cursor-default'
@@ -367,6 +383,29 @@ export const StudentProfilePage: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {/* Quick Action: Counterfactual What-If Simulator */}
+            <div className="pt-3 border-t border-line flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-amber-500/5 -mx-4 -mb-4 p-4 rounded-b-xl">
+              <div className="flex items-center gap-2">
+                <Sliders size={16} className="text-amber-600 shrink-0" />
+                <div className="text-xs">
+                  <span className="font-semibold text-ink">Simulate Career Interventions (ML-05)</span>
+                  <p className="text-ink-muted m-0 text-[11px]">
+                    Test how bumping your CGPA, clearing backlogs, or adding key skills affects placement odds and CTC.
+                  </p>
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/student/what-if')}
+                rightIcon={<ArrowRight size={13} />}
+                className="shrink-0 font-medium"
+              >
+                Launch Simulator
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="text-xs text-ink-muted p-2">

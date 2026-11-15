@@ -4,6 +4,11 @@ import {
   Compass,
   ArrowRight,
   Sparkles,
+  TrendingUp,
+  Sliders,
+  ShieldAlert,
+  CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 import {
   studentApi,
@@ -13,10 +18,12 @@ import {
   StudentApplication,
   StudentConsent,
   StudentOffer,
+  PlacementReadiness,
 } from '../api';
 import {
   Skeleton,
   Button,
+  Badge,
   Avatar,
   Spine,
   SpineStage,
@@ -44,6 +51,7 @@ export const StudentHomePage: React.FC = () => {
   const [applications, setApplications] = useState<StudentApplication[]>([]);
   const [offers, setOffers] = useState<StudentOffer[]>([]);
   const [_consents, setConsents] = useState<StudentConsent[]>([]);
+  const [readiness, setReadiness] = useState<PlacementReadiness | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -52,13 +60,14 @@ export const StudentHomePage: React.FC = () => {
     setError(null);
     try {
       const conPromise = canConsent ? studentApi.getConsents().catch(() => []) : Promise.resolve([]);
-      const [profData, oppData, intData, appData, conData, offData] = await Promise.all([
+      const [profData, oppData, intData, appData, conData, offData, readyData] = await Promise.all([
         studentApi.getMe(),
         studentApi.getOpportunities(),
         studentApi.getInterviews(),
         studentApi.getApplications(),
         conPromise,
         studentApi.getOffers().catch(() => []),
+        studentApi.getReadinessInsights().catch(() => null),
       ]);
       setProfile(profData);
       setOpportunities(oppData || []);
@@ -66,6 +75,7 @@ export const StudentHomePage: React.FC = () => {
       setApplications(appData || []);
       setConsents(conData || []);
       setOffers(offData || []);
+      setReadiness(readyData);
     } catch (err: any) {
       setError(err);
     } finally {
@@ -275,6 +285,141 @@ export const StudentHomePage: React.FC = () => {
           <ArrowRight size={15} className="text-ink-muted group-hover:text-brand group-hover:translate-x-0.5 transition-all" />
         </button>
       </div>
+
+      {/* 4.5. Placement Predictive Intelligence & What-If Gateway (ML-01 & ML-05) */}
+      {readiness?.opted_out ? (
+        <div className="p-4 rounded-2xl border border-line bg-surface text-ink-muted flex items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2">
+            <ShieldAlert size={16} className="text-amber-600 shrink-0" />
+            <span>Automated ML profiling is opted out. Standard academic cutoffs apply.</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/student/profile')}
+            className="text-xs font-semibold text-brand hover:underline shrink-0"
+          >
+            Privacy Settings
+          </button>
+        </div>
+      ) : readiness ? (
+        <div className="p-5 rounded-2xl border border-line bg-surface shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-line/60 pb-3">
+            <div className="flex items-center gap-2">
+              <div className="h-7 w-7 rounded-lg bg-brand/10 text-brand flex items-center justify-center font-bold">
+                <TrendingUp size={15} />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-ink m-0">
+                  Career Readiness &amp; Indicative Package
+                </h3>
+                <p className="text-[11px] text-ink-muted m-0">
+                  ML-01 statistical model • 80% conformal package band
+                </p>
+              </div>
+            </div>
+
+            <Button
+              variant="now"
+              pill
+              size="sm"
+              onClick={() => navigate('/student/what-if')}
+              leftIcon={<Sliders size={13} />}
+              rightIcon={<ArrowRight size={13} />}
+            >
+              What-If Simulator
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="p-3 rounded-xl bg-canvas border border-line">
+              <span className="text-[11px] font-bold text-ink-muted uppercase tracking-wider block mb-1">
+                Placement Likelihood
+              </span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-black text-brand font-display">
+                  {readiness.placement_probability ?? 0}%
+                </span>
+                <Badge
+                  variant={
+                    readiness.readiness_band === 'READY'
+                      ? 'success'
+                      : readiness.readiness_band === 'MODERATE'
+                      ? 'warning'
+                      : 'neutral'
+                  }
+                  size="xs"
+                >
+                  {readiness.readiness_band?.replace('_', ' ') || 'CALCULATING'}
+                </Badge>
+              </div>
+              <div className="w-full bg-line rounded-full h-1.5 mt-2 overflow-hidden">
+                <div
+                  className="bg-brand h-1.5 rounded-full transition-all duration-500"
+                  style={{ width: `${Math.min(100, Math.max(0, readiness.placement_probability ?? 0))}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-canvas border border-line">
+              <span className="text-[11px] font-bold text-ink-muted uppercase tracking-wider block mb-1">
+                Indicative Package
+              </span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl font-black text-ink font-display">
+                  ₹{readiness.expected_package_lpa ?? '--'}
+                </span>
+                <span className="text-xs text-ink-muted font-medium">LPA</span>
+              </div>
+              <p className="text-[11px] text-ink-muted mt-2 m-0">
+                80% conformal prediction interval
+              </p>
+            </div>
+
+            <div className="p-3 rounded-xl bg-canvas border border-line">
+              <span className="text-[11px] font-bold text-ink-muted uppercase tracking-wider block mb-1">
+                Qualified Drives
+              </span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl font-black text-emerald-700 font-display">
+                  {eligibleJobs.length}
+                </span>
+                <span className="text-xs text-ink-muted font-medium">of {opportunities.length} active</span>
+              </div>
+              <p className="text-[11px] text-ink-muted mt-2 m-0">
+                100% deterministic rule verification
+              </p>
+            </div>
+          </div>
+
+          {readiness.drivers && readiness.drivers.length > 0 && (
+            <div className="pt-1">
+              <span className="text-[11px] font-bold text-ink-muted uppercase tracking-wider block mb-2">
+                Key Career Readiness Drivers
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {readiness.drivers.slice(0, 4).map((drv, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2.5 rounded-lg bg-canvas border border-line text-xs flex items-start gap-2"
+                  >
+                    {drv.impact === 'POSITIVE' ? (
+                      <CheckCircle2 size={13} className="text-emerald-600 shrink-0 mt-0.5" />
+                    ) : drv.impact === 'NEGATIVE' ? (
+                      <AlertCircle size={13} className="text-amber-600 shrink-0 mt-0.5" />
+                    ) : (
+                      <Sparkles size={13} className="text-brand shrink-0 mt-0.5" />
+                    )}
+                    <div className="min-w-0">
+                      <span className="font-semibold text-ink">{drv.feature}: </span>
+                      <span className="text-ink-muted">{drv.explanation || drv.detail}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : null}
 
       {/* 5. "Your applications" Section with Spine per application */}
       <div className="space-y-3 pt-2">

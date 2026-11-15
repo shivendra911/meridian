@@ -326,6 +326,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
   const [activeMode, setActiveMode] = useState<CopilotMode>('rag');
   const [queryInput, setQueryInput] = useState('');
+  const [lastSubmittedQuery, setLastSubmittedQuery] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [ragResult, setRagResult] = useState<RagResult | null>(null);
   const [agentResult, setAgentResult] = useState<AgentResult | null>(null);
@@ -440,7 +441,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
     }
 
     return () => {
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow = originalOverflow || 'visible';
       document.documentElement.style.overflow = originalHtmlOverflow;
       document.body.style.paddingRight = originalPaddingRight;
     };
@@ -488,6 +489,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
     const q = overridePrompt || queryInput;
     if (!q.trim()) return;
 
+    setLastSubmittedQuery(q);
     setLoading(true);
     setError(null);
     setRagResult(null);
@@ -584,10 +586,14 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[70] overflow-hidden">
+    <div
+      className="fixed inset-0 z-[70] overflow-hidden overscroll-none"
+      onWheel={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+    >
       {/* 1. Backdrop Scrim Overlay (dims & blurs page behind Copilot, prevents mis-clicks, click outside to close) */}
       <div
-        className="fixed inset-0 bg-slate-950/45 backdrop-blur-xs transition-opacity duration-200 cursor-pointer"
+        className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm transition-opacity duration-200 cursor-pointer"
         onClick={onClose}
         aria-hidden="true"
         title="Close copilot"
@@ -595,11 +601,12 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
       {/* 2. Elevated Copilot Drawer Surface (Peek Panel) */}
       <aside
-        className="fixed inset-y-0 right-0 z-[70] w-full max-w-xl md:max-w-2xl bg-canvas border-l border-line shadow-2xl flex flex-col font-sans transition-all duration-300 ease-out select-text"
+        className="fixed inset-y-0 right-0 z-[75] w-full max-w-xl md:max-w-2xl bg-surface border-l border-line shadow-2xl flex flex-col font-sans transition-all duration-300 ease-out select-text overscroll-contain"
         aria-labelledby="copilot-drawer-title"
         role="dialog"
         aria-modal="true"
         onWheel={(e) => e.stopPropagation()}
+        onTouchMove={(e) => e.stopPropagation()}
       >
       {/* 1. Masthead: Unified Institutional Hero Banner with Ambient Glow */}
       <div className={`relative overflow-hidden p-5 text-white bg-gradient-to-r ${theme.gradient} border-b border-line/30`}>
@@ -884,8 +891,25 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
           </div>
         )}
 
-        {/* 5. Role-Specific Profile Snapshot Card */}
-      <div className="p-4 border-b border-line bg-canvas">
+        {/* 5. Role-Specific Profile Dossier & Diagnostic Tools */}
+        <details className="group rounded-2xl border border-line bg-surface shadow-xs overflow-hidden transition-all">
+          <summary className="flex items-center justify-between p-3.5 bg-canvas/70 hover:bg-canvas cursor-pointer select-none text-xs font-bold text-ink">
+            <div className="flex items-center gap-2">
+              <PersonaIcon size={15} className={theme.accentText} />
+              <span>{persona.name} Profile Dossier &amp; Interactive Tools</span>
+            </div>
+            <div className="flex items-center gap-2 text-ink-muted">
+              <span className="text-[10px] font-semibold text-ink-muted">
+                {activeLens === 'student'
+                  ? 'CGPA, Backlogs, ATS'
+                  : activeLens === 'tpo'
+                  ? 'Drives, Superday, Shortlist'
+                  : 'Vitals & Actions'}
+              </span>
+              <ChevronDown size={14} className="transition-transform duration-200 group-open:rotate-180" />
+            </div>
+          </summary>
+          <div className="p-4 border-t border-line space-y-4 bg-canvas/30">
         {activeLens === 'student' && (
           <div className="rounded-2xl border border-line bg-surface p-4 shadow-xs">
             <div className="flex items-center justify-between mb-3">
@@ -1187,11 +1211,57 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
           </div>
         )}
       </div>
+    </details>
 
         {/* Tab A: Role Policy RAG Reasoning */}
         {activeMode === 'rag' && (
           <div className="space-y-4">
-            {/* Answer Display Card with Grounded Data Provenance */}
+            {/* Welcome State when no query active */}
+            {!ragResult && !lastSubmittedQuery && (
+              <div className="rounded-2xl border border-line bg-surface p-5 text-center space-y-2 shadow-xs">
+                <div className="w-10 h-10 rounded-2xl bg-brand/10 text-brand mx-auto flex items-center justify-center">
+                  <Sparkles size={20} className="text-now" />
+                </div>
+                <h3 className="text-base font-bold text-ink font-display m-0">
+                  How can I assist your {activeLens} journey today?
+                </h3>
+                <p className="text-xs text-ink-muted max-w-md mx-auto m-0 leading-relaxed">
+                  {persona.tagline} Grounded in real-time academic records, multi-tier placement bylaws, and statutory guidelines.
+                </p>
+              </div>
+            )}
+
+            {/* User Submitted Question Bubble */}
+            {lastSubmittedQuery && (
+              <div className="flex justify-end pt-1">
+                <div className="bg-ink text-white rounded-2xl rounded-tr-xs p-3.5 max-w-[85%] text-xs sm:text-sm shadow-xs space-y-1">
+                  <div className="text-[10px] text-white/70 font-bold uppercase tracking-wider flex items-center gap-1">
+                    <span>You</span>
+                    <span>•</span>
+                    <span>{displayName}</span>
+                  </div>
+                  <p className="m-0 leading-relaxed font-medium">{lastSubmittedQuery}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Loading / Reasoning State */}
+            {loading && (
+              <div className="flex items-start gap-3 p-4 rounded-2xl bg-surface border border-line shadow-xs animate-pulse">
+                <div className="h-8 w-8 rounded-xl bg-brand/10 text-brand flex items-center justify-center shrink-0">
+                  <PersonaIcon size={16} />
+                </div>
+                <div className="space-y-1.5 flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-ink">Reasoning over institutional policy &amp; context...</span>
+                    <span className="text-[10px] font-mono text-ink-muted">DPDP Filter Active</span>
+                  </div>
+                  <div className="h-2 w-3/4 bg-line rounded-full" />
+                  <div className="h-2 w-1/2 bg-line rounded-full" />
+                </div>
+              </div>
+            )}
+
             {/* Answer Display Card with Grounded Data Provenance */}
             {ragResult && (
               <div className="rounded-2xl border border-line bg-surface p-5 shadow-xs space-y-4">

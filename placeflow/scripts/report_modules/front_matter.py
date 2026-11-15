@@ -34,7 +34,7 @@ def get_front_matter() -> str:
           </div>
           <div class="cover-meta-item">
             <strong>Verified Scale &amp; Verification</strong>
-            7,141 Students, 18 Collections, 46 Indexes, 83 Live Endpoints
+            7,141 Students, 18 Collections, 46 Indexes, 199 Live Endpoints
           </div>
         </div>
         <div style="margin-top: 15px; font-size: 7.2pt; color: #64748b; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px;">

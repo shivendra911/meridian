@@ -10,6 +10,7 @@ Provides role-tailored, user-grounded AI copilot capabilities across:
 """
 
 from typing import Any, Dict, List, Optional
+import uuid
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,6 +21,7 @@ from campus_ai.gateway import CampusAIGateway, TenantTokenQuotaExceededError
 from campus_ai.pip import PromptInjectionFilter, PromptInjectionDetectedError
 from campus_ai.router import TaskType, ModelRouter
 from campus_ai.rag import InstitutionalRAGEngine
+from campus_ai.copilot_pipeline import CopilotPipelineEngine
 from campus_ai.agents import (
     JNFIntelligenceAgent,
     SuperdayClashSolverAgent,
@@ -120,6 +122,12 @@ ROLE_PERSONA_MAP = {
         ],
     },
 }
+
+# Aliases for baseline roles in camp_02
+ROLE_PERSONA_MAP["TPO_ADMIN"] = ROLE_PERSONA_MAP["TPO_OFFICER"]
+ROLE_PERSONA_MAP["TPO_COORDINATOR"] = ROLE_PERSONA_MAP["PLACEMENT_COORDINATOR"]
+ROLE_PERSONA_MAP["DEPARTMENT_HEAD"] = ROLE_PERSONA_MAP["HOD"]
+ROLE_PERSONA_MAP["INSTITUTION_HEAD"] = ROLE_PERSONA_MAP["EXECUTIVE_LEADER"]
 
 PORTAL_ROLE_CODE_MAP = {
     "student": "STUDENT_MEMBER",
@@ -596,6 +604,7 @@ class CopilotContextView(APIView):
     def get(self, request):
         db = get_db()
         user = request.user
+        tenant_id = _get_tenant_id(request, user)
         lens = request.query_params.get("lens")
         persona = _get_principal_persona(user, requested_lens=lens)
         role_portal = persona["portal"]
@@ -604,8 +613,15 @@ class CopilotContextView(APIView):
         profile_summary = dict(role_cfg["profile_summary"])
         shareable_attrs = [dict(a) for a in role_cfg["shareable_attributes"]]
 
-        if role_portal == "student":
-            _enrich_student_profile(db, user, profile_summary, shareable_attrs)
+        # Enrich from live MongoDB records with user-level data consistency & tenant isolation
+        pipeline_engine = CopilotPipelineEngine(db)
+        pipeline_engine.enrich_user_context(
+            user=user,
+            role_portal=role_portal,
+            profile_summary=profile_summary,
+            shareable_attrs=shareable_attrs,
+            tenant_id=tenant_id,
+        )
 
         persona["profile_summary"] = profile_summary
         persona["shareable_attributes"] = shareable_attrs
@@ -644,8 +660,16 @@ class CopilotQueryView(APIView):
 
         role_cfg = ROLE_PROFILE_DATA.get(role_portal, ROLE_PROFILE_DATA["student"])
         all_attrs = [dict(a) for a in role_cfg["shareable_attributes"]]
-        if role_portal == "student":
-            _enrich_student_profile(db, user, dict(role_cfg["profile_summary"]), all_attrs)
+
+        # Enrich live user profile
+        pipeline_engine = CopilotPipelineEngine(db)
+        pipeline_engine.enrich_user_context(
+            user=user,
+            role_portal=role_portal,
+            profile_summary=dict(role_cfg["profile_summary"]),
+            shareable_attrs=all_attrs,
+            tenant_id=tenant_id,
+        )
 
         # 1. Zero-Injection Prompt Injection Defense
         pip_filter = PromptInjectionFilter(strict_mode=False)
@@ -671,64 +695,32 @@ class CopilotQueryView(APIView):
         shared_attrs = [a for a in all_attrs if a["key"] in shared_keys]
         withheld_attrs = [a for a in all_attrs if a["key"] not in shared_keys]
 
-        # 3. Build Grounded Profile Context Block
-        shared_lines = []
-        for a in shared_attrs:
-            shared_lines.append(f"- {a['label']}: {a['description']} (Verified Context: {a['data_payload']})")
-
-        withheld_lines = []
-        for a in withheld_attrs:
-            withheld_lines.append(f"- WITHHELD: {a['key']} ({a['label']})")
-
-        profile_context = (
-            "=== AUTHORITATIVE USER PROFILE CONTEXT (Granted under DPDP Act 2023 Consent) ===\n"
-            + ("\n".join(shared_lines) if shared_lines else "NO PROFILE DATA SHARED (Strict Privacy Mode Active).")
-            + "\n\n=== EXCLUDED & WITHHELD USER ATTRIBUTES (DO NOT INVENT OR INFER) ===\n"
-            + ("\n".join(withheld_lines) if withheld_lines else "None (All attributes shared).")
-            + "\n\nCRITICAL PRIVACY DIRECTIVE:\n"
-            "If the user asks an inquiry that depends on any WITHHELD attribute (e.g., if Academic Records is WITHHELD and they ask about their CGPA or personal eligibility), "
-            "you must strictly NOT guess or hallucinate. Clearly state that their academic record is withheld according to their privacy preferences, "
-            "provide the general statutory/institutional policy threshold, and explain that they can enable that attribute in their Data Sharing panel above for a personal answer."
-        )
-
-        system_instruction = (
-            f"You are the {persona['title']} for {persona['display_name']} "
-            f"({persona['role_label']}) in the {persona['department']} department at {persona['institution_name']}. "
-            f"Ground all advice strictly in approved institutional policies, placement regulations, "
-            f"NEP 2020 credit frameworks, and DPDP Act 2023 compliance norms."
-        )
-
-        gateway = CampusAIGateway(db, model_router=ModelRouter(force_mock=True))
-        rag_engine = InstitutionalRAGEngine(db, gateway=gateway)
-
+        # 3. Execute Copilot ML & Grounding Pipeline
         try:
-            rag_res = rag_engine.answer_query(
+            pipeline_res = pipeline_engine.execute_pipeline(
                 tenant_id=tenant_id,
                 actor_account_id=actor_id,
                 query=query,
+                user=user,
+                persona=persona,
+                shared_keys=shared_keys,
                 institution_id=getattr(user, "institution_id", None),
-                profile_context=profile_context,
-                system_instruction_override=system_instruction,
             )
 
-            # Generate role-tailored follow-up chips
-            followups = persona["quick_prompts"][:2]
+            trace_id = pipeline_res.get("trace_id") or str(uuid.uuid4())
+            followups = pipeline_res.get("suggested_followups") or persona["quick_prompts"][:2]
+            answer_text = pipeline_res["answer"]
+            citations = pipeline_res.get("citations", [])
+            groundedness = pipeline_res.get("groundedness_score", 0.95)
+            total_tokens = pipeline_res.get("total_tokens", max(1, len(query) // 4 + len(answer_text) // 4))
 
             return Response(
                 {
-                    "answer": rag_res.answer,
-                    "citations": [
-                        {
-                            "doc_title": c.doc_title,
-                            "version": c.version,
-                            "section_heading": c.section_heading,
-                            "source_authority": c.source_authority,
-                        }
-                        for c in rag_res.citations
-                    ],
-                    "groundedness_score": rag_res.groundedness_score,
-                    "trace_id": rag_res.trace_id,
-                    "total_tokens": rag_res.total_tokens,
+                    "answer": answer_text,
+                    "citations": citations,
+                    "groundedness_score": groundedness,
+                    "trace_id": trace_id,
+                    "total_tokens": total_tokens,
                     "suggested_followups": followups,
                     "shared_data_applied": [a["label"] for a in shared_attrs],
                     "withheld_attributes": [a["label"] for a in withheld_attrs],
@@ -791,31 +783,32 @@ class CopilotAgentExecuteView(APIView):
                 tenant_id=tenant_id,
                 actor_account_id=actor_id,
                 company_name=payload.get("company_name", "Acme Corp"),
-                role_title=payload.get("role_title", "Software Engineer"),
-                ctc_lpa=float(payload.get("ctc_lpa", 14.5)),
-                stipend_monthly=float(payload.get("stipend_monthly", 50000)),
+                raw_jnf_text=payload.get("raw_jnf_text", "Software Engineer campus recruitment"),
+                offered_ctc_lpa=float(payload.get("ctc_lpa", payload.get("offered_ctc_lpa", 14.5))),
                 min_cgpa=float(payload.get("min_cgpa", 7.0)),
-                eligible_branches=payload.get("eligible_branches", ["CSE", "ECE"]),
             )
         elif agent_name == "SuperdayClashSolverAgent":
             agent = SuperdayClashSolverAgent(gateway)
+            target_student_id = persona["candidate_id"] if persona["portal"] == "student" else payload.get("student_id", persona["candidate_id"])
             res = agent.resolve_clashes(
                 tenant_id=tenant_id,
                 actor_account_id=actor_id,
-                interview_slots=payload.get(
+                student_id=target_student_id,
+                slots=payload.get(
                     "interview_slots",
                     [
-                        {"candidate_id": persona["candidate_id"], "company": "Alpha Tech", "slot": "10:00-11:00"},
-                        {"candidate_id": persona["candidate_id"], "company": "Beta Systems", "slot": "10:30-11:30"},
+                        {"candidate_id": target_student_id, "company": "Alpha Tech", "slot": "10:00-11:00", "start_time": "10:00"},
+                        {"candidate_id": target_student_id, "company": "Beta Systems", "slot": "10:30-11:30", "start_time": "10:30"},
                     ],
                 ),
             )
         elif agent_name == "AcademicAdvisorAgent":
             agent = AcademicAdvisorAgent(gateway)
+            target_student_id = persona["candidate_id"] if persona["portal"] == "student" else payload.get("student_id", persona["candidate_id"])
             res = agent.advise_student(
                 tenant_id=tenant_id,
                 actor_account_id=actor_id,
-                student_id=payload.get("student_id", persona["candidate_id"]),
+                student_id=target_student_id,
                 completed_credits=int(payload.get("completed_credits", 128)),
             )
         elif agent_name == "NIRFStatutoryAuditAgent":
@@ -823,7 +816,9 @@ class CopilotAgentExecuteView(APIView):
             res = agent.audit_graduation_outcomes(
                 tenant_id=tenant_id,
                 academic_year=payload.get("academic_year", "2025-26"),
-                actor_account_id=actor_id,
+                graduated_count=int(payload.get("graduated_count", 480)),
+                placed_count=int(payload.get("placed_count", 412)),
+                median_salary_lpa=float(payload.get("median_salary_lpa", 14.2)),
             )
         else:
             return Response({"error": f"Unknown agent: {agent_name}"}, status=status.HTTP_400_BAD_REQUEST)

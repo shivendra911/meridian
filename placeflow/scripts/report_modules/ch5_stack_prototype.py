@@ -27,12 +27,12 @@ def get_chapter_5() -> str:
         <tr>
           <td><strong>Build Tooling &amp; Styling</strong></td>
           <td>Vite 8.3.5, Tailwind CSS 4</td>
-          <td>Sub-second HMR development server, optimized production rollup bundles (1.11s compile), and utility-first styling.</td>
+          <td>Sub-second HMR development server, optimized production rollup bundles (1.40s compile), and utility-first styling.</td>
         </tr>
         <tr>
           <td><strong>Backend Web Service</strong></td>
-          <td>Python 3.10+, Django 5.1</td>
-          <td>RESTful micro-service routing, middleware security layers, CORS governance, and transaction orchestration.</td>
+          <td>Python 3.10+, Django 5.2 REST</td>
+          <td>RESTful micro-service routing, middleware security layers, CORS governance, default-deny RBAC, and transaction orchestration.</td>
         </tr>
         <tr>
           <td><strong>Database Engine</strong></td>
@@ -47,12 +47,12 @@ def get_chapter_5() -> str:
         <tr>
           <td><strong>Machine Learning &amp; Math</strong></td>
           <td>Scikit-Learn 1.5, NumPy 2.1</td>
-          <td>In-process predictive placement scoring (VTI), skill gap analysis, and demographic fairness audits.</td>
+          <td>In-process predictive placement scoring (VTI), What-If counterfactual simulator, skill gap analysis, and demographic fairness audits.</td>
         </tr>
         <tr>
           <td><strong>Testing Frameworks</strong></td>
           <td>Vitest, Pytest, Node.js</td>
-          <td>Frontend unit tests (28/28), backend transaction tests (203/203), and architectural boundary checker (0 violations).</td>
+          <td>Frontend unit tests (18 files, 79/79 passed), backend ML/Copilot/RAG tests (29/29 passed), and architectural boundary checker (0 violations, 0 warnings).</td>
         </tr>
         <tr>
           <td><strong>Vector Assets &amp; Graphics</strong></td>
@@ -338,4 +338,31 @@ def get_chapter_5() -> str:
         <tr><td><code>POST</code></td><td><code>/api/admin/database/sweep/</code></td><td>Admin</td><td>None</td><td><code>200 OK</code></td><td>Executes maintenance sweep closing expired jobs and pruning TTL tokens.</td></tr>
       </tbody>
     </table>
+
+    <h2>5.5 Campus Copilot &amp; Machine Learning Touchpoints</h2>
+    <p>
+      Meridian natively integrates artificial intelligence and supervised machine learning directly into the user experience:
+    </p>
+
+    <div class="grid-2">
+      <div class="stat-card">
+        <h4>Candidate What-If Career Simulator (/student/what-if)</h4>
+        <p>Interactive counterfactual simulator allowing candidates to adjust target CGPA milestones, add industry certifications (AWS, CKA), and simulate live changes in expected compensation intervals and unlocked corporate drives.</p>
+      </div>
+      <div class="stat-card">
+        <h4>TPO Model Governance Registry (/tpo/models)</h4>
+        <p>Centralized model lifecycle cockpit displaying version manifests, 5-fold cross-validation accuracy metrics, inference latency distributions, feature importance weights, and scheduled retraining triggers.</p>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 8px;">
+      <div class="stat-card">
+        <h4>Campus Copilot Drawer (CampusCopilotDrawer.tsx)</h4>
+        <p>Unified conversational slide-over drawer grounded in live database state, providing role-scoped candidate triage, DPDP Act 2023 consent checks, and sandboxed tool invocations.</p>
+      </div>
+      <div class="stat-card">
+        <h4>TPO Insights Navigation Strip (InsightsNav.tsx)</h4>
+        <p>Sub-navigation strip connecting directorate analytics spaces: Overview, Recruitment Season Timeline, Renege Risk Radar, Demographic Fairness Audit, Superday Clash Solver, Model Registry, and Reports.</p>
+      </div>
+    </div>
 """

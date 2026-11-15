@@ -13,7 +13,10 @@ import {
   User,
   Sparkles,
   Radar,
-  FileText} from 'lucide-react';
+  FileText,
+  Cpu,
+  Sliders,
+} from 'lucide-react';
 import { api } from '../../api';
 
 interface CommandPaletteProps {
@@ -158,6 +161,24 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       icon: Radar,
       action: () => navigate('/tpo/insights/renege'),
       shortcut: 'G R',
+    },
+    {
+      id: 'act_model_registry',
+      category: 'Placement Office',
+      label: 'ML Governance & Model Registry',
+      description: 'Model manifests, cross-validation metrics & live retraining',
+      icon: Cpu,
+      action: () => navigate('/tpo/insights/models'),
+      shortcut: 'G M',
+    },
+    {
+      id: 'act_whatif',
+      category: 'Student Portal',
+      label: 'What-If Career Simulator',
+      description: 'Simulate counterfactual CGPA, backlog, and skill interventions',
+      icon: Sliders,
+      action: () => navigate('/student/what-if'),
+      shortcut: 'G W',
     },
     {
       id: 'act_opps',

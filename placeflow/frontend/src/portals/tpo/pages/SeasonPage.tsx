@@ -87,7 +87,7 @@ export const SeasonPage: React.FC = () => {
               variant="outline"
               pill
               size="sm"
-              onClick={() => navigate('/tpo/interviews')}
+              onClick={() => navigate('/tpo/insights/superday')}
               leftIcon={<AlertCircle size={14} className="text-danger" />}
             >
               Resolve 2 Clashes

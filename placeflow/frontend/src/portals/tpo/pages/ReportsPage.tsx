@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { api } from '../api';
 import { BarChart3, Download, FileSpreadsheet, RefreshCw, AlertCircle } from 'lucide-react';
 import { MacOsLoadingScreen } from '../../../components/ui/MacOsLoadingScreen';
+import { InsightsNav } from '../components/InsightsNav';
 
 export const ReportsPage: React.FC = () => {
   const [reports, setReports] = useState<
@@ -57,6 +58,7 @@ export const ReportsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      <InsightsNav />
       {/* Header */}
       <div className="bg-white border-l-4 border-l-navy-900 border border-slate-200 rounded p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>

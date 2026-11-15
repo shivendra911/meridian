@@ -28,6 +28,7 @@ const FairnessPage = lazy(() => import('./pages/FairnessPage').then((m) => ({ de
 const ReportsPage = lazy(() => import('./pages/ReportsPage').then((m) => ({ default: m.ReportsPage })));
 const SuperdayPage = lazy(() => import('./pages/SuperdayPage').then((m) => ({ default: m.SuperdayPage })));
 const WhatIfPage = lazy(() => import('./pages/WhatIfPage').then((m) => ({ default: m.WhatIfPage })));
+const ModelRegistryPage = lazy(() => import('./pages/ModelRegistryPage').then((m) => ({ default: m.ModelRegistryPage })));
 
 const WhatIfRouteWrapper: React.FC = () => {
   const { studentId } = useParams<{ studentId: string }>();
@@ -67,6 +68,8 @@ export const TpoRoutes: React.FC = () => {
           <Route path="insights/fairness" element={<FairnessPage />} />
           <Route path="insights/reports" element={<ReportsPage />} />
           <Route path="insights/superday" element={<SuperdayPage />} />
+          <Route path="insights/models" element={<ModelRegistryPage />} />
+          <Route path="models" element={<Navigate to="/tpo/insights/models" replace />} />
           <Route path="insights/whatif/:studentId" element={<WhatIfRouteWrapper />} />
           <Route path="insights/whatif" element={<Navigate to="/tpo/students" replace />} />
           <Route path="*" element={<Navigate to="home" replace />} />

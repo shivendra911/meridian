@@ -111,7 +111,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = () => {
               variant="now"
               pill
               size="md"
-              onClick={() => navigate('/tpo/interviews')}
+              onClick={() => navigate('/tpo/insights/superday')}
               leftIcon={<AlertTriangle size={15} />}
             >
               Resolve Clash
@@ -161,7 +161,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = () => {
               variant="destructive"
               size="xs"
               pill
-              onClick={() => navigate('/tpo/interviews')}
+              onClick={() => navigate('/tpo/insights/superday')}
               rightIcon={<ArrowRight size={13} />}
             >
               Resolve in Superday
@@ -185,7 +185,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = () => {
           <p className="text-xs text-ink-muted m-0">
             Response deadline in 48 hours. At-risk score: High probability of overlapping offer.
           </p>
-          <div className="pt-1">
+          <div className="pt-1 flex items-center gap-2">
             <Button
               variant="outline"
               size="xs"
@@ -194,6 +194,15 @@ export const OverviewPage: React.FC<OverviewPageProps> = () => {
               rightIcon={<ArrowRight size={13} />}
             >
               Inspect Offers
+            </Button>
+            <Button
+              variant="ghost"
+              size="xs"
+              pill
+              onClick={() => navigate('/tpo/insights/renege')}
+              className="text-amber-800 hover:text-amber-950 font-semibold text-[11px]"
+            >
+              Renege Radar &rarr;
             </Button>
           </div>
         </div>

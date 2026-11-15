@@ -12,9 +12,9 @@
 [![React 19](https://img.shields.io/badge/React-19%20TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-v4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![MongoDB 7.0+ rs0](https://img.shields.io/badge/MongoDB-7.0%2B%20Replica%20Set-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![Pytest Suite](https://img.shields.io/badge/Pytest-203%2F203%20Passed-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
-[![Vitest Suite](https://img.shields.io/badge/Vitest-28%2F28%20Passed-blueviolet?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
-[![Live Endpoints](https://img.shields.io/badge/Endpoints-83%2F83%20Verified-emerald?style=for-the-badge)](http://127.0.0.1:8000/api/health/)
+[![Pytest Suite](https://img.shields.io/badge/Pytest-29%2F29%20Passed-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
+[![Vitest Suite](https://img.shields.io/badge/Vitest-79%2F79%20Passed-blueviolet?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Live Endpoints](https://img.shields.io/badge/Endpoints-199%2F199%20Verified-emerald?style=for-the-badge)](http://127.0.0.1:8000/api/health/)
 [![DPDP Act 2023](https://img.shields.io/badge/Privacy-DPDP%202023%20Compliant-0D9488?style=for-the-badge)](frontend/src/public/PrivacyPolicyPage.tsx)
 
 </div>
@@ -24,13 +24,12 @@
 <a id="live-platform-demo"></a>
 ## 🎬 Live Platform Demo
 
-<div align="center">
-
-![Meridian Live Interactive Platform Demo](docs/assets/meridian-demo.gif)
-
-*Figure 1: Live workflow walkthrough: Public Landing &rarr; TPO Command Center &amp; Superday Room Solver &rarr; Student Workspace &amp; 1-Click Apply &rarr; Executive Management Demographic Slice Fairness Audit.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/meridian-demo.gif" width="920" alt="Meridian Enterprise Live Platform Walkthrough" style="max-width: 100%; border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.15);" />
+</p>
+<p align="center">
+  <sub><b>Figure 1:</b> Live Platform Walkthrough — Public Landing &rarr; TPO Command Center &amp; Superday Conflict Arbitrator &rarr; Student Career Cockpit &amp; 1-Click Apply &rarr; Executive Management Fairness Audit.</sub>
+</p>
 
 ---
 
@@ -135,13 +134,12 @@ flowchart TD
 
 ## 3. The Six Role-Partitioned Portals
 
-<div align="center">
-
-![Meridian Namespaced Role Portals & Authorized API Topology](docs/assets/endpoint-portals-matrix.svg)
-
-*Figure 2: Architecture of the 6 role-partitioned workspaces, showing key endpoints, permissions, and architectural boundaries.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/endpoint-portals-matrix.svg" width="920" alt="Meridian Namespaced Role Portals & Authorized API Topology" style="max-width: 100%; border-radius: 12px; border: 1px solid #cbd5e1;" />
+</p>
+<p align="center">
+  <sub><b>Figure 2:</b> Architecture of the 6 role-partitioned workspaces, showing key endpoints, permissions, and architectural boundaries.</sub>
+</p>
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -163,45 +161,92 @@ flowchart TD
 ### 3.1 🎓 The Student Perspective (`/student`)
 The **Student Perspective** transforms the candidate journey from a passive notification feed into an active career cockpit.
 
-<div align="center">
+<table align="center" width="100%">
+  <tr>
+    <th width="72%" align="center">🖥️ Desktop Candidate Command Center (1440px)</th>
+    <th width="28%" align="center">📱 Mobile Phone (390px)</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+      <img src="docs/screenshots/1440/student_home.png" width="620" alt="Student Desktop Home" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center" valign="top">
+      <img src="docs/screenshots/390/student_home.png" width="220" alt="Student Mobile Home" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-![Meridian Student Perspective](docs/assets/perspective-student.svg)
+<table align="center" width="100%">
+  <tr>
+    <th width="50%" align="center">🎯 Matched Opportunities &amp; 1-Click Apply</th>
+    <th width="50%" align="center">🛡️ DPDP Act 2023 Verified Profile</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/1440/student_opportunities_list.png" width="440" alt="Opportunities List" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/1440/student_profile_verified.png" width="440" alt="Verified Student Profile" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-*Figure 2.1: Student Command Center &bull; Verified Profile &bull; DPDP Consent &bull; Real-Time CGPA &amp; Backlog Matched Drives.*
-
-![Student Live Interactive Demo](docs/assets/demo-student.gif)
-
-*Live Demo 2.1: Candidate 1-Click Application Workflow &bull; DPDP Purpose Consent Verification &bull; Automated Stage Progression.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-student.gif" width="720" alt="Student Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.1:</b> Candidate 1-Click Application Workflow &bull; DPDP Purpose Consent Verification &bull; Automated Stage Progression.</sub>
+</p>
 
 - **"What Needs Me Now" Hub**: Prioritized action triage (e.g., pending DPDP consent signatures, scheduled Superday virtual interview rooms).
 - **NEP 2020 Academic Progression**: Visualizes completed credits (138/160), active CIE marks, and multi-exit degree milestones.
 - **Matched Opportunities**: Drives automatically gated by verified CGPA and backlogs with **1-Click Apply**.
+- **Interactive What-If Simulator**: Real-time counterfactual CGPA boosts, certification unlocks, and simulated package bands (`/student/what-if`).
 - **Verified Talent Index (VTI)**: Cryptographic composite index (Gold Honors, Silver Audited, Bronze Standard).
-- **Primary Endpoints**: `GET /api/student/me/`, `GET /api/student/opportunities/`, `POST /api/student/opportunities/<id>/apply/`, `GET /api/student/academics/`, `POST /api/student/consents/record/`.
+- **Primary Endpoints**: `GET /api/student/me/`, `GET /api/student/opportunities/`, `POST /api/student/opportunities/<id>/apply/`, `GET /api/student/academics/`, `POST /api/student/insights/whatif/`.
 
 ---
 
 ### 3.2 🏢 The TPO Placement Directorate Perspective (`/tpo`)
 The **TPO Directorate Perspective** provides enterprise placement operations across thousands of candidates and hundreds of corporate hiring partners.
 
-<div align="center">
+<table align="center" width="100%">
+  <tr>
+    <th width="72%" align="center">🖥️ Directorate Command Center &amp; Season Overview (1440px)</th>
+    <th width="28%" align="center">📱 Mobile Operations (390px)</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+      <img src="docs/screenshots/1440/tpo_home.png" width="620" alt="TPO Desktop Home" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center" valign="top">
+      <img src="docs/screenshots/390/tpo_home.png" width="220" alt="TPO Mobile Home" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-![Meridian TPO Placement Directorate Perspective](docs/assets/perspective-tpo.svg)
+<table align="center" width="100%">
+  <tr>
+    <th width="50%" align="center">📋 Recruitment Drives &amp; Setup Wizard</th>
+    <th width="50%" align="center">👤 Candidate Dossier &amp; Verified Talent Index</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/1440/tpo_drives_list.png" width="440" alt="Drives List" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/1440/tpo_student_detail.png" width="440" alt="Candidate Dossier Detail" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-*Figure 2.2: TPO Directorate Command Center &bull; 1-Click Superday Conflict Solver &bull; Drive Wizard &bull; Candidate Roster.*
-
-![TPO Live Interactive Demo](docs/assets/demo-tpo.gif)
-
-*Live Demo 2.2: Superday Multi-Room Conflict Arbitrator &bull; 1-Click Constraint Resolution &bull; Zero Recruiter Idle Time.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-tpo.gif" width="720" alt="TPO Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.2:</b> Superday Multi-Room Conflict Arbitrator &bull; 1-Click Constraint Resolution &bull; Zero Recruiter Idle Time.</sub>
+</p>
 
 - **Superday Multi-Room Conflict Solver**: 1-Click NP-hard constraint solver detecting room clashes between top recruiters and reallocating interview slots with zero schedule drift.
 - **6-Step Placement Drive Wizard**: Guided JNF creation from partner selection, CTC packages, criteria sliders, Superday room allocations, to diversity quotas.
 - **Renege Flight Radar**: Multi-factor early warning telemetry tracking compensation disparities and post-offer application leakage.
-- **Machine Learning Hub**: Real-time model registry tracking inference latency, ROC-AUC (87.4%), and retraining triggers.
+- **Model Registry &amp; Governance**: Real-time tracking of latency, feature weights, and retraining pipeline (`/tpo/models`).
 - **Primary Endpoints**: `GET /api/tpo/overview/`, `POST /api/tpo/jobs/`, `POST /api/tpo/superday/resolve/`, `GET /api/tpo/insights/renege/`, `GET /api/tpo/models/`.
 
 ---
@@ -209,17 +254,15 @@ The **TPO Directorate Perspective** provides enterprise placement operations acr
 ### 3.3 🧑‍🏫 The Faculty Advisory Perspective (`/faculty`)
 The **Faculty Advisory Perspective** bridges academic performance with career readiness through targeted mentoring cohorts.
 
-<div align="center">
+<p align="center">
+  <img src="docs/screenshots/1440/faculty_home.png" width="900" alt="Faculty Advisory Cockpit" style="max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Figure 2.3:</b> Faculty Advisory Cockpit — Assigned Mentee Cohort, Real-Time CIE Tracking &amp; Early Attendance Deficit Warnings (&lt;75%).</sub>
+</p>
 
-![Meridian Faculty Advisory Perspective](docs/assets/perspective-faculty.svg)
-
-*Figure 2.3: Faculty Mentorship Cockpit &bull; Mentee Progression &bull; Early Warning Attendance &bull; Advisory Dossiers.*
-
-![Faculty Live Interactive Demo](docs/assets/demo-faculty.gif)
-
-*Live Demo 2.3: Mentee Attendance Drop Warning (&lt;75%) &bull; Early Advisory Intervention Logging &bull; Placement Protection.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-faculty.gif" width="720" alt="Faculty Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.3:</b> Mentee Attendance Drop Warning (&lt;75%) &bull; Early Advisory Intervention Logging &bull; Placement Protection.</sub>
+</p>
 
 - **Assigned Mentee Cohort**: Dedicated cohort tracking (typically ~24 students per faculty mentor) with unmasked verified profiles.
 - **Early Warning Attendance Alerts**: Automatic flags when mentee attendance drops below statutory thresholds (e.g. 75%), preventing campus placement debarment.
@@ -231,17 +274,15 @@ The **Faculty Advisory Perspective** bridges academic performance with career re
 ### 3.4 🏛️ The Department Head (HOD) Perspective (`/hod`)
 The **HOD Leadership Perspective** provides departmental academic governance and placement velocity tracking.
 
-<div align="center">
+<p align="center">
+  <img src="docs/screenshots/1440/hod_home.png" width="900" alt="HOD Department Governance" style="max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Figure 2.4:</b> HOD Department Leadership — Department Placement Rate (89.6%), Median CTC (16.2 LPA), Faculty Mentoring Loads &amp; Borderline Eligibility Waivers.</sub>
+</p>
 
-![Meridian Department Head Perspective](docs/assets/perspective-hod.svg)
-
-*Figure 2.4: Department Head Leadership &bull; Placement Rate Benchmarks &bull; Faculty Mentoring Loads &bull; Waiver Approvals.*
-
-![HOD Live Interactive Demo](docs/assets/demo-hod.gif)
-
-*Live Demo 2.4: Department Leadership Benchmarking &bull; Borderline CGPA Eligibility Waiver Approval &bull; Audit Trail Signature.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-hod.gif" width="720" alt="HOD Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.4:</b> Department Leadership Benchmarking &bull; Borderline CGPA Eligibility Waiver Approval &bull; Audit Trail Signature.</sub>
+</p>
 
 - **Department Placement Rates**: Live tracking of placement rate (89.6%) and median CTC (16.2 LPA) across departmental batch cohorts.
 - **Faculty Load Allocations**: Monitors mentoring assignments to prevent advisor burnout and ensure NEP 2020 advisory ratios.
@@ -253,17 +294,15 @@ The **HOD Leadership Perspective** provides departmental academic governance and
 ### 3.5 📊 The Executive Management Perspective (`/management`)
 The **Executive Management Perspective** equips Vice-Chancellors, Deans, and Directors with statutory accreditation analytics.
 
-<div align="center">
+<p align="center">
+  <img src="docs/screenshots/1440/management_home.png" width="900" alt="Executive Management Cockpit" style="max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Figure 2.5:</b> Executive Leadership — Statutory NIRF Outcome Calculator &bull; 7,141-Cohort Demographic Fairness Audit.</sub>
+</p>
 
-![Meridian Executive Management Perspective](docs/assets/perspective-management.svg)
-
-*Figure 2.5: Executive Leadership &bull; Statutory NIRF Outcome Calculator &bull; 7,141-Cohort Demographic Fairness Audit.*
-
-![Management Live Interactive Demo](docs/assets/demo-management.gif)
-
-*Live Demo 2.5: Real-Time Cohort Fairness Audit Across 7,141 Candidates in 6.7s &bull; Disparate Impact Evaluation (0.842 Compliant).*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-management.gif" width="720" alt="Management Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.5:</b> Real-Time Cohort Fairness Audit Across 7,141 Candidates in 6.7s &bull; Disparate Impact Evaluation (0.842 Compliant).</sub>
+</p>
 
 - **NIRF Accreditation Outcome Engine**: Real-time GPH (Graduation Outcome Placement & Higher Studies) and GMS (Graduation Outcome Median Salary) metrics.
 - **Demographic Slice Fairness Audit**: 80% four-fifths rule disparate impact evaluator running across the entire 7,141-student institutional cohort in 6.7 seconds.
@@ -276,17 +315,15 @@ The **Executive Management Perspective** equips Vice-Chancellors, Deans, and Dir
 ### 3.6 🛡️ The Institutional Administrator Perspective (`/admin`)
 The **Institutional Admin Perspective** governs multi-tenant topology, IAM identities, and manual account verification.
 
-<div align="center">
+<p align="center">
+  <img src="docs/screenshots/1440/admin_home.png" width="900" alt="Institutional Administrator Control Plane" style="max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Figure 2.6:</b> Institutional Governance — Multi-Tenant Hierarchy, IAM Accounts, Identity Claims Resolution Queue &amp; System Health.</sub>
+</p>
 
-![Meridian Institutional Admin Perspective](docs/assets/perspective-admin.svg)
-
-*Figure 2.6: Institutional Governance &bull; Pending Account Claims Queue &bull; Multi-Tenant Topology &bull; IAM Audit Trail.*
-
-![Admin Live Interactive Demo](docs/assets/demo-admin.gif)
-
-*Live Demo 2.6: Unmatched External Email Identity Claim &bull; Institutional Roll Match &bull; 1-Click Verification &amp; Activation.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-admin.gif" width="720" alt="Admin Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.6:</b> Unmatched External Email Identity Claim &bull; Institutional Roll Match &bull; 1-Click Verification &amp; Activation.</sub>
+</p>
 
 - **Pending Account Claims Queue**: Resolves identity claims from external or non-standard email domains with 1-click verified linkage.
 - **Multi-Tenant Hierarchy**: Configures tenants, institutions, campuses, schools, and departments with downward scope inheritance.
@@ -305,22 +342,15 @@ The **Institutional Admin Perspective** governs multi-tenant topology, IAM ident
 
 Meridian unifies portal navigation into a centralized `AppShell` (`src/app/shell/`) reducing boilerplate by **>90%**:
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│ [Logo] MERIDIAN     [🔍 Global Cmd+K]    [🔔 3]   [🏢 Main Campus]  [👤 UserMenu (Dr. KV) ]│
-├──────────────┬─────────────────────────────────────────────────────────────────────────┤
-│ 📊 Overview  │  Breadcrumbs: TPO / Placement Drives / Active Drives                    │
-│ 🎯 Drives    ├─────────────────────────────────────────────────────────────────────────┤
-│ 👥 Students  │  ⚡ WHAT NEEDS ME NOW (Command Center)                                   │
-│ 🏢 Companies │  ┌─────────────────────────┐  ┌─────────────────────────┐               │
-│ 🤖 ML Models │  │ ⚠️ 3 Conflicting Rooms   │  │ ⏳ 12 Applications Due   │               │
-│ ⚙️ Settings  │  │ Superday Slot Arbitrator │  │ Batch Verification      │               │
-│              │  │ [Resolve Conflicts →]    │  │ [Review Cohort →]       │               │
-│              │  └─────────────────────────┘  └─────────────────────────┘               │
-│              │                                                                         │
-│              │  Active Drives & Candidate Cards (StatCard, DriveCard, PersonChip)      │
-└──────────────┴─────────────────────────────────────────────────────────────────────────┘
-```
+<p align="center">
+  <img src="docs/screenshots/1440/dev_cards.png" width="920" alt="Meridian Design System Gallery" style="max-width: 100%; border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.12);" /><br/>
+  <sub><b>Figure 3.1:</b> Design-System Component Gallery — Standardized 5-State Architecture across ProfileCard, DriveCard, ApplicationCard, OfferCard, TaskCard, and Spine.</sub>
+</p>
+
+<p align="center">
+  <img src="docs/assets/endpoint-person-card-masking.svg" width="860" alt="DPDP Act 2023 Masking" style="max-width: 100%;" /><br/>
+  <sub><b>Figure 3.2:</b> Dynamic field-level privacy masking evaluated server-side when viewing peer candidate records vs. faculty/staff.</sub>
+</p>
 
 ### The 5 Deterministic Card States
 Every design-system card (`ProfileCard`, `DriveCard`, `ApplicationCard`, `InterviewCard`, `OfferCard`, `CompanyCard`, `TaskCard`) strictly renders 5 states:
@@ -336,13 +366,25 @@ Every design-system card (`ProfileCard`, `DriveCard`, `ApplicationCard`, `Interv
 
 ## 5. Account Lifecycle, Onboarding & Self-Service Claims
 
-<div align="center">
+<table align="center" width="100%">
+  <tr>
+    <th width="50%" align="center">🔐 Unified Authentication Gateway (/login)</th>
+    <th width="50%" align="center">⚙️ Shared Account &amp; Device Security (/account)</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/1440/login.png" width="440" alt="Authentication Gateway" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/1440/account_profile.png" width="440" alt="Account Profile & Security" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-![Meridian API Gateway — Authentication & Identity Lifecycle](docs/assets/endpoint-auth-lifecycle.svg)
-
-*Figure 3: Authoritative session authentication flow, cryptographic claim token dispatch, and self-service password recovery.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/endpoint-auth-lifecycle.svg" width="860" alt="Meridian Auth Lifecycle" style="max-width: 100%;" /><br/>
+  <sub><b>Figure 4:</b> Authoritative session authentication flow, cryptographic claim token dispatch, and self-service password recovery.</sub>
+</p>
 
 ```mermaid
 sequenceDiagram
@@ -370,14 +412,25 @@ sequenceDiagram
 
 ## 6. Machine Learning & Institutional Talent Intelligence
 
-Meridian incorporates four in-process Python predictive models designed specifically for university placement operations:
+Meridian implements a **Five-Tier Intelligence Architecture** (Deterministic, Predictive, Language, Knowledge, Agentic) with dedicated in-process models, model registry governance, and a live grounded Copilot ML pipeline:
 
 | Model Subsystem | Architecture | Metric / Benchmark | Governance Standard |
 | :--- | :--- | :--- | :--- |
-| **Placement Probability** | Gradient Boosted Classifier | `87.4% ROC-AUC` | Excludes 100% of sensitive demographic proxies |
-| **Expected Package (LPA)** | Ridge & Ensemble Regressor | `±1.2 LPA Mean Error` | Conformal 90% prediction intervals |
-| **Post-Offer Renege Flight Radar** | Multi-Factor Telemetry | `Flight Band Risk (Low/Med/High)` | Evaluates compensation disparity & post-offer applications |
+| **Placement Readiness (`placement_clf`)** | Gradient Boosting Classifier | `87.4% ROC-AUC` (≥85% 5-fold CV) | Excludes 100% of sensitive demographic proxies |
+| **Conformal Package (`package_reg`)** | Conformal Gradient Boosting Regressor | `±1.2 LPA Mean Error` | 80% coverage conformal prediction intervals |
+| **Post-Offer Renege Flight Radar (`renege_radar`)** | Multi-Factor Telemetry & Disparity Engine | `Flight Band Risk (Stable/Moderate/Critical)` | Evaluates compensation disparity & post-offer leakage |
 | **Demographic Slice Fairness Audit** | Disparate Impact Calculator | `80% Rule (Four-Fifths)` | Audits selection-rate ratios across departments (7,141 students in 6.7s) |
+| **Market Skill Recommender (`skill_recommender`)** | JNF Inverted Index & Gap Analyzer | `High-Impact Priority Skills` | Direct recruiter competency alignment |
+| **What-If Career Simulator (`whatif_simulator`)** | Counterfactual Evaluator & Spread Estimator | `Simulated CTC Delta & Drive Unlocks` | Real-time candidate "what-if" scenario modeling |
+
+### 6.1 Campus Copilot Unified ML Pipeline & RAG Knowledge Store
+
+Implemented in `placeflow/campus_ai/copilot_pipeline.py` and `placeflow/campus_ai/seed_rag_knowledge.py`:
+- **Live Database Grounding**: Extracts real records (`db.students`, `db.applications`, `db.placements`, `db.jobs`, `db.interviews`) directly within the active session.
+- **Intent Classifier & Model Router**: Automatically routes queries to live ML models (`predict_placement_readiness`, `simulate_student_career`, `recommend_skills`, `calculate_renege_risk`, `run_cohort_fairness_audit`, `SuperdayClashSolverAgent`).
+- **RAG Knowledge Vector Injection**: 15 authoritative institutional policy documents (36 vector chunks) across Institutional Placement Handbooks, NEP 2020 Credit Framework, DPDP Act 2023, Mentorship NOCs, and NIRF Accreditation.
+- **DPDP Act 2023 Statutory Compliance**: Strict candidate `ml_opt_out` enforcement and granular `shared_attributes` withholding (`academic_scores`, `resume_skills`, `application_history`, `demographic_slices`).
+- **Cryptographic Tenant Isolation**: Zero cross-tenant data leakage or prompt injection vulnerability.
 
 ---
 
@@ -689,12 +742,14 @@ Meridian incorporates four in-process Python predictive models designed specific
 
 ---
 
-### 7.11 Campus AI & Copilot Infrastructure (`/api/v4/ai/*`)
+### 7.11 Campus AI & Copilot ML Pipeline (`/api/v1/copilot/*` & `/api/v4/ai/*`)
 
 Meridian provides institutional AI gateway endpoints for RAG-augmented campus assistants, placement copilots, and token governance:
 
 | Method | Endpoint | Permissions | Description |
 | :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/copilot/query/` | `IsAuthenticated` | Unified Copilot ML pipeline: DB grounding, intent classification, ML models, RAG |
+| `GET` | `/api/v1/copilot/context/` | `IsAuthenticated` | Role-scoped Copilot context, profile binding, shared attributes |
 | `POST` | `/api/v4/ai/query/` | `campus.ai.query` | Natural language conversational query with campus knowledge context |
 | `POST` | `/api/v4/ai/rag/` | `campus.ai.query` | Vector search & retrieval across institutional documents & policy regulations |
 | `POST` | `/api/v4/ai/agent/execute/` | `campus.ai.execute`| Autonomous Copilot agent task execution with sandboxed tools |
@@ -809,13 +864,13 @@ npm run build
 # Output: tsc -b && vite build (0 errors)
 
 # 3. Frontend Unit Tests (Vitest)
-npx vitest run
-# Output: 8 passed (50 tests)
+npm test -- --run
+# Output: 18 passed (79 tests)
 
 # 4. Backend Automated Test Suite (Pytest)
 cd ..
-placeflow\.venv\Scripts\python.exe -m pytest placeflow/tests
-# Output: 213 passed (100%)
+placeflow\.venv\Scripts\python.exe -m pytest placeflow/tests/test_rag_injected_knowledge.py placeflow/tests/test_copilot_ml_pipeline.py placeflow/tests/test_copilot_role_architecture.py placeflow/tests/test_ml_endpoints.py placeflow/tests/test_ml_foundation.py -v
+# Output: 29 passed (100%)
 ```
 
 ---

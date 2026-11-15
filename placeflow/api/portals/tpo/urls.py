@@ -35,9 +35,12 @@ urlpatterns = [
     path("superday/conflicts/", tpo(views_superday.SuperdayConflictsView).as_view(), name="tpo_superday_conflicts"),
     path("superday/resolve/", tpo(views_superday.SuperdayResolveView).as_view(), name="tpo_superday_resolve"),
     path("insights/renege/", tpo(views_renege.RenegeRadarView).as_view(), name="tpo_insights_renege"),
+    path("insights/renege/resolve/", tpo(views_renege.RenegeResolveView).as_view(), name="tpo_insights_renege_resolve"),
     path("insights/fairness/", tpo(views_fairness.FairnessAuditView).as_view(), name="tpo_insights_fairness"),
     path("insights/reports/", tpo(views_reports.ReportsSummaryView).as_view(), name="tpo_insights_reports"),
     path("insights/whatif/", tpo(views_whatif.WhatIfSimulateView).as_view(), name="tpo_insights_whatif"),
+    path("insights/models/", tpo(views_ml.ModelRegistryListView).as_view(), name="tpo_insights_models"),
+    path("insights/models/retrain/", tpo(views_ml.ModelRetrainView).as_view(), name="tpo_insights_models_retrain"),
     path("models/", tpo(views_ml.ModelRegistryListView).as_view(), name="tpo_models_list"),
     path("models/retrain/", tpo(views_ml.ModelRetrainView).as_view(), name="tpo_models_retrain"),
 ]

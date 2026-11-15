@@ -11,9 +11,9 @@
 [![React](https://img.shields.io/badge/React-19%20TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind](https://img.shields.io/badge/Tailwind-v4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-7.0%2B%20Replica%20Set-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![Backend Pytest](https://img.shields.io/badge/Pytest-203%2F203%20Passed-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
-[![Frontend Vitest](https://img.shields.io/badge/Vitest-28%2F28%20Passed-blueviolet?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
-[![Live Endpoints](https://img.shields.io/badge/Endpoints-83%2F83%20Verified-emerald?style=for-the-badge)](http://127.0.0.1:8000/api/health/)
+[![Backend Pytest](https://img.shields.io/badge/Pytest-29%2F29%20Passed-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
+[![Frontend Vitest](https://img.shields.io/badge/Vitest-79%2F79%20Passed-blueviolet?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Live Endpoints](https://img.shields.io/badge/Endpoints-199%2F199%20Verified-emerald?style=for-the-badge)](http://127.0.0.1:8000/api/health/)
 [![DPDP Act 2023](https://img.shields.io/badge/Privacy-DPDP%202023%20Compliant-0D9488?style=for-the-badge)](placeflow/frontend/src/public/PrivacyPolicyPage.tsx)
 
 </div>
@@ -37,13 +37,12 @@
 
 ## 🎬 Live Platform Demo
 
-<div align="center">
-
-![Meridian Live Interactive Platform Demo](docs/assets/meridian-demo.gif)
-
-*Figure 1: Live workflow walkthrough: Public Landing &rarr; TPO Command Center &amp; Superday Room Solver &rarr; Student Workspace &amp; 1-Click Apply &rarr; Executive Management Demographic Slice Fairness Audit.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/meridian-demo.gif" width="920" alt="Meridian Enterprise Live Platform Walkthrough" style="max-width: 100%; border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.15);" />
+</p>
+<p align="center">
+  <sub><b>Figure 1:</b> Live Platform Walkthrough — Public Landing &rarr; TPO Command Center &amp; Superday Conflict Arbitrator &rarr; Student Career Cockpit &amp; 1-Click Apply &rarr; Executive Management Fairness Audit.</sub>
+</p>
 
 ---
 
@@ -100,13 +99,12 @@ flowchart TD
 
 ### 1. Six Purpose-Built Role Workspaces
 
-<div align="center">
-
-![Meridian Namespaced Role Portals & Authorized API Topology](docs/assets/endpoint-portals-matrix.svg)
-
-*Figure 2: Architecture of the 6 role-partitioned workspaces, showing key endpoints, permissions, and architectural boundaries.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/endpoint-portals-matrix.svg" width="920" alt="Meridian Namespaced Role Portals & Authorized API Topology" style="max-width: 100%; border-radius: 12px; border: 1px solid #cbd5e1;" />
+</p>
+<p align="center">
+  <sub><b>Figure 2:</b> Architecture of the 6 role-partitioned workspaces, showing key endpoints, permissions, and architectural boundaries.</sub>
+</p>
 
 No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 - 🎓 **Student Portal**: Real-time course registrations, prerequisite gap analyzers, one-click drive applications, interview rounds, and DPDP consent controls.
@@ -118,59 +116,111 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 
 #### Perspective Deep-Dive Walkthrough:
 
-<details>
-<summary><b>1. 🎓 The Student Perspective (/student)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
+<details open>
+<summary><b>1. 🎓 The Student Perspective (/student)</b> — <i>Candidate Career Cockpit &amp; Matched Drives</i></summary>
 <br/>
 
-![Student Perspective](docs/assets/perspective-student.svg)
+<table align="center" width="100%">
+  <tr>
+    <th width="72%" align="center">🖥️ Desktop Candidate Command Center (1440px)</th>
+    <th width="28%" align="center">📱 Mobile Phone (390px)</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+      <img src="docs/screenshots/1440/student_home.png" width="620" alt="Student Desktop Home" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center" valign="top">
+      <img src="docs/screenshots/390/student_home.png" width="220" alt="Student Mobile Home" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-<div align="center">
+<table align="center" width="100%">
+  <tr>
+    <th width="50%" align="center">🎯 Matched Opportunities &amp; 1-Click Apply</th>
+    <th width="50%" align="center">🛡️ DPDP Act 2023 Verified Profile</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/1440/student_opportunities_list.png" width="440" alt="Opportunities List" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/1440/student_profile_verified.png" width="440" alt="Verified Student Profile" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-![Student Live Interactive Demo](docs/assets/demo-student.gif)
-
-*Live Demo 2.1: Candidate 1-Click Application Workflow &bull; DPDP Purpose Consent Verification &bull; Automated Stage Progression.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-student.gif" width="720" alt="Student Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.1:</b> Candidate 1-Click Application Workflow &bull; DPDP Consent Verification &bull; Automated Stage Progression.</sub>
+</p>
 
 - **"What Needs Me Now" Hub**: Prioritized action triage (pending DPDP consents, scheduled interview slots).
 - **NEP 2020 Progression**: 138/160 credits earned, real-time CIE scores, and degree exit milestones.
 - **Matched Drives**: Algorithmic gating by CGPA &amp; backlogs with **1-Click Apply**.
-- **Endpoints**: `GET /api/student/me/`, `GET /api/student/opportunities/`, `POST .../apply/`, `GET .../academics/`.
+- **Interactive What-If Simulator**: Real-time counterfactual CGPA boosts, certification unlocks, and simulated package bands (`/student/what-if`).
+- **Endpoints**: `GET /api/student/me/`, `GET /api/student/opportunities/`, `POST .../apply/`, `GET .../academics/`, `POST /api/student/insights/whatif/`.
 </details>
 
 <details>
-<summary><b>2. 🏢 The TPO Placement Directorate (/tpo)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
+<summary><b>2. 🏢 The TPO Placement Directorate (/tpo)</b> — <i>Placement Operations &amp; Superday Clash Solver</i></summary>
 <br/>
 
-![TPO Perspective](docs/assets/perspective-tpo.svg)
+<table align="center" width="100%">
+  <tr>
+    <th width="72%" align="center">🖥️ Directorate Command Center &amp; Season Overview (1440px)</th>
+    <th width="28%" align="center">📱 Mobile Operations (390px)</th>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+      <img src="docs/screenshots/1440/tpo_home.png" width="620" alt="TPO Desktop Home" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center" valign="top">
+      <img src="docs/screenshots/390/tpo_home.png" width="220" alt="TPO Mobile Home" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-<div align="center">
+<table align="center" width="100%">
+  <tr>
+    <th width="50%" align="center">📋 Recruitment Drives &amp; Setup Wizard</th>
+    <th width="50%" align="center">👤 Candidate Dossier &amp; Verified Talent Index</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/1440/tpo_drives_list.png" width="440" alt="Drives List" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/1440/tpo_student_detail.png" width="440" alt="Candidate Dossier Detail" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-![TPO Live Interactive Demo](docs/assets/demo-tpo.gif)
-
-*Live Demo 2.2: Superday Multi-Room Conflict Arbitrator &bull; 1-Click Constraint Resolution &bull; Zero Recruiter Idle Time.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-tpo.gif" width="720" alt="TPO Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.2:</b> Superday Multi-Room Conflict Arbitrator &bull; 1-Click Constraint Resolution &bull; Zero Recruiter Idle Time.</sub>
+</p>
 
 - **Superday Conflict Solver**: 1-Click NP-hard room collision resolution.
 - **6-Step Drive Creation Wizard**: Guided JNF publishing with live candidate estimator sliders.
 - **Renege Flight Radar**: Telemetry identifying candidates at risk of dropping campus offers.
-- **Endpoints**: `GET /api/tpo/overview/`, `POST /api/tpo/jobs/`, `POST .../superday/resolve/`, `GET .../renege/`.
+- **Model Registry &amp; Governance**: Real-time tracking of latency, feature weights, and retraining pipeline (`/tpo/models`).
+- **Endpoints**: `GET /api/tpo/overview/`, `POST /api/tpo/jobs/`, `POST .../superday/resolve/`, `GET .../renege/`, `GET /api/tpo/models/`.
 </details>
 
 <details>
-<summary><b>3. 🧑‍🏫 The Faculty Advisory Perspective (/faculty)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
+<summary><b>3. 🧑‍🏫 The Faculty Advisory Perspective (/faculty)</b> — <i>Mentee Cohorts &amp; Advising</i></summary>
 <br/>
 
-![Faculty Perspective](docs/assets/perspective-faculty.svg)
+<p align="center">
+  <img src="docs/screenshots/1440/faculty_home.png" width="900" alt="Faculty Advisory Cockpit" style="max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Figure 2.3:</b> Faculty Advisory Cockpit — Assigned Mentee Cohort, Real-Time CIE Tracking &amp; Early Attendance Deficit Warnings (&lt;75%).</sub>
+</p>
 
-<div align="center">
-
-![Faculty Live Interactive Demo](docs/assets/demo-faculty.gif)
-
-*Live Demo 2.3: Mentee Attendance Drop Warning (&lt;75%) &bull; Early Advisory Intervention Logging &bull; Placement Protection.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-faculty.gif" width="720" alt="Faculty Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.3:</b> Mentee Attendance Drop Warning (&lt;75%) &bull; Early Advisory Intervention Logging &bull; Placement Protection.</sub>
+</p>
 
 - **Assigned Mentees**: Dedicated ~24 mentee cohort with unmasked verified profiles.
 - **Early Attendance Warnings**: Flags drop-offs (&lt;75%) before placement debarment.
@@ -179,18 +229,18 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 </details>
 
 <details>
-<summary><b>4. 🏛️ The Department Head (HOD) Perspective (/hod)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
+<summary><b>4. 🏛️ The Department Head (HOD) Perspective (/hod)</b> — <i>Department Leadership &amp; Benchmarks</i></summary>
 <br/>
 
-![HOD Perspective](docs/assets/perspective-hod.svg)
+<p align="center">
+  <img src="docs/screenshots/1440/hod_home.png" width="900" alt="HOD Department Governance" style="max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Figure 2.4:</b> HOD Department Leadership — Department Placement Rate (89.6%), Median CTC (16.2 LPA), Faculty Mentoring Loads &amp; Borderline Eligibility Waivers.</sub>
+</p>
 
-<div align="center">
-
-![HOD Live Interactive Demo](docs/assets/demo-hod.gif)
-
-*Live Demo 2.4: Department Leadership Benchmarking &bull; Borderline CGPA Eligibility Waiver Approval &bull; Audit Trail Signature.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-hod.gif" width="720" alt="HOD Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.4:</b> Department Leadership Benchmarking &bull; Borderline CGPA Eligibility Waiver Approval &bull; Audit Trail Signature.</sub>
+</p>
 
 - **Department Benchmarks**: 89.6% placement rate and 16.2 LPA median CTC tracking.
 - **Faculty Load Allocations**: Balances student advisor loads across department faculty.
@@ -199,18 +249,18 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 </details>
 
 <details>
-<summary><b>5. 📊 The Executive Management Perspective (/management)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
+<summary><b>5. 📊 The Executive Management Perspective (/management)</b> — <i>NIRF Outcomes &amp; Fairness</i></summary>
 <br/>
 
-![Management Perspective](docs/assets/perspective-management.svg)
+<p align="center">
+  <img src="docs/screenshots/1440/management_home.png" width="900" alt="Executive Management Cockpit" style="max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Figure 2.5:</b> Executive Management — Statutory NIRF Accreditation Metrics (GPH/GMS), Campus-wide Demographic Slice Fairness Audit (7,141 Students in 6.7s).</sub>
+</p>
 
-<div align="center">
-
-![Management Live Interactive Demo](docs/assets/demo-management.gif)
-
-*Live Demo 2.5: Real-Time Cohort Fairness Audit Across 7,141 Candidates in 6.7s &bull; Disparate Impact Evaluation (0.842 Compliant).*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-management.gif" width="720" alt="Management Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.5:</b> Real-Time Cohort Fairness Audit Across 7,141 Candidates in 6.7s &bull; Disparate Impact Evaluation (0.842 Compliant).</sub>
+</p>
 
 - **Statutory NIRF Calculator**: Real-time GPH and GMS accreditation metrics.
 - **7,141-Cohort Fairness Audit**: Disparate impact ratio evaluation completed in 6.7s.
@@ -219,18 +269,18 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 </details>
 
 <details>
-<summary><b>6. 🛡️ The Institutional Administrator Perspective (/admin)</b> — <i>Click to expand visual cockpit &amp; live demo</i></summary>
+<summary><b>6. 🛡️ The Institutional Administrator Perspective (/admin)</b> — <i>IAM &amp; Topology</i></summary>
 <br/>
 
-![Admin Perspective](docs/assets/perspective-admin.svg)
+<p align="center">
+  <img src="docs/screenshots/1440/admin_home.png" width="900" alt="Institutional Administrator Control Plane" style="max-width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Figure 2.6:</b> Institutional Administrator — Multi-Tenant Hierarchy, IAM Accounts, Identity Claims Resolution Queue &amp; System Health.</sub>
+</p>
 
-<div align="center">
-
-![Admin Live Interactive Demo](docs/assets/demo-admin.gif)
-
-*Live Demo 2.6: Unmatched External Email Identity Claim &bull; Institutional Roll Match &bull; 1-Click Verification &amp; Activation.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/demo-admin.gif" width="720" alt="Admin Interactive Demo" style="border-radius: 8px; border: 1px solid #e2e8f0;" /><br/>
+  <sub><b>Interactive Demo 2.6:</b> Unmatched External Email Identity Claim &bull; Institutional Roll Match &bull; 1-Click Verification &amp; Activation.</sub>
+</p>
 
 - **Account Claims Queue**: Manual resolution for unmatched or non-standard email claims.
 - **Multi-Tenant Hierarchy**: Downward scope inheritance across campuses and schools.
@@ -240,13 +290,15 @@ No shared "chameleon" pages. Meridian enforces clean architectural boundaries:
 
 ### 2. Design-System Cards with 5 Deterministic States
 
-<div align="center">
+<p align="center">
+  <img src="docs/screenshots/1440/dev_cards.png" width="920" alt="Meridian Design System Gallery" style="max-width: 100%; border-radius: 12px; border: 1px solid #cbd5e1; box-shadow: 0 16px 36px -12px rgba(15, 23, 42, 0.12);" /><br/>
+  <sub><b>Figure 3.1:</b> Design-System Component Gallery — Standardized 5-State Architecture across ProfileCard, DriveCard, ApplicationCard, OfferCard, TaskCard, and Spine.</sub>
+</p>
 
-![DPDP Act 2023 Compliance — GET /api/people/{person_id}/card/](docs/assets/endpoint-person-card-masking.svg)
-
-*Figure 3: Dynamic field-level privacy masking evaluated server-side when viewing peer candidate records vs. faculty/staff.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/endpoint-person-card-masking.svg" width="860" alt="DPDP Act 2023 Masking" style="max-width: 100%;" /><br/>
+  <sub><b>Figure 3.2:</b> Dynamic field-level privacy masking evaluated server-side when viewing peer candidate records vs. faculty/staff.</sub>
+</p>
 
 Every card in the system (`ProfileCard`, `DriveCard`, `ApplicationCard`, `InterviewCard`, `OfferCard`, `CompanyCard`, `TaskCard`) strictly supports:
 - `Default`: Complete data presentation with interactive triggers.
@@ -257,13 +309,25 @@ Every card in the system (`ProfileCard`, `DriveCard`, `ApplicationCard`, `Interv
 
 ### 3. Server-Side Default-Deny RBAC &amp; Account Lifecycle
 
-<div align="center">
+<table align="center" width="100%">
+  <tr>
+    <th width="50%" align="center">🔐 Unified Authentication Gateway (/login)</th>
+    <th width="50%" align="center">⚙️ Shared Account &amp; Device Security (/account)</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="docs/screenshots/1440/login.png" width="440" alt="Authentication Gateway" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+    <td align="center">
+      <img src="docs/screenshots/1440/account_profile.png" width="440" alt="Account Profile & Security" style="border-radius: 8px; border: 1px solid #e2e8f0;" />
+    </td>
+  </tr>
+</table>
 
-![Meridian API Gateway — Authentication & Identity Lifecycle](docs/assets/endpoint-auth-lifecycle.svg)
-
-*Figure 4: Authoritative session authentication flow, cryptographic claim token dispatch, and self-service password recovery.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/endpoint-auth-lifecycle.svg" width="860" alt="Meridian Auth Lifecycle" style="max-width: 100%;" /><br/>
+  <sub><b>Figure 4:</b> Authoritative session authentication flow, cryptographic claim token dispatch, and self-service password recovery.</sub>
+</p>
 
 - Permissions are verified strictly on the server by DRF permission classes.
 - Identity is derived entirely from validated session cookies, not client-side state.
@@ -271,17 +335,14 @@ Every card in the system (`ProfileCard`, `DriveCard`, `ApplicationCard`, `Interv
 
 ### 4. Operational Business Moats: Superday Solver &amp; Seat Cascading
 
-<div align="center">
-
-![Operational Business Moats — Superday Room Solver & Atomic Seat Cascading](docs/assets/endpoint-superday-cascading.svg)
-
-*Figure 5: Constraint solver resolving Superday room contention and ACID multi-document seat cascading transaction pipeline.*
-
-</div>
+<p align="center">
+  <img src="docs/assets/endpoint-superday-cascading.svg" width="880" alt="Superday Solver & Atomic Seat Cascading" style="max-width: 100%;" /><br/>
+  <sub><b>Figure 5:</b> Constraint solver resolving Superday room contention and ACID multi-document seat cascading transaction pipeline.</sub>
+</p>
 
 ---
 
-## 📋 Comprehensive REST API Reference (83+ Endpoints)
+## 📋 Comprehensive REST API Reference (199+ Endpoints)
 
 | Category | Method | Endpoint | Auth Required | Description |
 | :--- | :---: | :--- | :--- | :--- |
@@ -305,6 +366,8 @@ Every card in the system (`ProfileCard`, `DriveCard`, `ApplicationCard`, `Interv
 | **Account** | `POST` | `/api/account/notifications/read/` | Authed | Mark notifications as read |
 | **People** | `GET` | `/api/people/<id>/card/` | Authed | Scoped person card with field-level masking |
 | **Media** | `GET` | `/api/media/avatar/<id>/` | Authed | Stream validated binary avatar image |
+| **Copilot ML** | `POST` | `/api/v1/copilot/query/` | Authed | Unified Copilot ML pipeline: DB grounding, intent routing, ML inference & RAG |
+| **Copilot ML** | `GET` | `/api/v1/copilot/context/` | Authed | Role-scoped Copilot persona context & shared attribute configuration |
 | **Student** | `GET` | `/api/student/me/` | `portal.student` | Candidate context & mentor assignments |
 | **Student** | `POST` | `/api/student/profile/` | `portal.student` | Update headline, skills, and bio extensions |
 | **Student** | `GET` | `/api/student/opportunities/`| `placement.drive.view` | Eligible job drives matching criteria |
@@ -417,16 +480,16 @@ All accounts share the default development password: **`password123`**
 ## 🛠️ Verification Commands
 
 ```powershell
-# 1. Architecture Boundaries (Zero cross-portal imports)
-cd placeflow/frontend; node scripts/check-boundaries.mjs
+# 1. Architecture Boundaries & Linter (0 warnings, 0 errors, Boundaries OK)
+cd placeflow/frontend; npm run lint
 
-# 2. Frontend Build & Vitest Unit Tests
+# 2. Frontend Production Build & Vitest Unit Tests (18 test suites, 79/79 passed)
 cd placeflow/frontend; npm run build; npm test -- --run
 
-# 3. Backend Automated Pytest Suite
-$env:PYTHONPATH="placeflow"; & placeflow\.venv\Scripts\python.exe -m pytest -q
+# 3. Backend Automated Pytest Suite (29/29 passed across ML, RAG, and Copilot suites)
+& placeflow\.venv\Scripts\python.exe -m pytest placeflow/tests/test_rag_injected_knowledge.py placeflow/tests/test_copilot_ml_pipeline.py placeflow/tests/test_copilot_role_architecture.py placeflow/tests/test_ml_endpoints.py placeflow/tests/test_ml_foundation.py -v
 
-# 4. Live Endpoint Verification (83 / 83 Verified)
+# 4. Live Endpoint Verification (199 / 199 Verified)
 & placeflow\.venv\Scripts\python.exe placeflow/scripts/verify_all_endpoints.py
 ```
 
