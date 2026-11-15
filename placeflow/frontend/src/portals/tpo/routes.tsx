@@ -11,6 +11,7 @@ import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 
 // Lazy-loaded TPO Pages
 const OverviewPage = lazy(() => import('./pages/OverviewPage').then((m) => ({ default: m.OverviewPage })));
+const SeasonPage = lazy(() => import('./pages/SeasonPage').then((m) => ({ default: m.SeasonPage })));
 const DrivesPage = lazy(() => import('./pages/DrivesPage').then((m) => ({ default: m.DrivesPage })));
 const DriveDetailPage = lazy(() => import('./pages/DriveDetailPage').then((m) => ({ default: m.DriveDetailPage })));
 const CompaniesPage = lazy(() => import('./pages/CompaniesPage').then((m) => ({ default: m.CompaniesPage })));
@@ -52,6 +53,7 @@ export const TpoRoutes: React.FC = () => {
         <Route element={<TpoLayout />}>
           <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<OverviewPage />} />
+          <Route path="season" element={<SeasonPage />} />
           <Route path="drives" element={<DrivesPage />} />
           <Route path="drives/:id" element={<DriveDetailPage />} />
           <Route path="companies" element={<CompaniesPage />} />
