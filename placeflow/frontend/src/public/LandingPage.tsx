@@ -11,6 +11,7 @@ import {
   Briefcase, Eye,
 } from 'lucide-react';
 import { Logo as UiLogo } from '../ui/Logo';
+import { Spine } from '../ui/Spine';
 
 /* ----------------------------- content ----------------------------- */
 
@@ -101,42 +102,47 @@ const Logo: React.FC<{ light?: boolean }> = ({ light }) => (
 const ProductPreview: React.FC = () => (
   <div className="relative">
     <div className="absolute -inset-4 bg-gradient-to-br from-brand/10 via-transparent to-accent/10 rounded-3xl blur-2xl" aria-hidden />
-    <div className="relative rounded-xl border border-line bg-surface shadow-xl overflow-hidden">
+    <div className="relative rounded-2xl border border-line bg-surface shadow-xl overflow-hidden">
       <div className="flex items-center gap-2 px-4 py-2.5 border-b border-line bg-canvas">
         <span className="w-2.5 h-2.5 rounded-full bg-slate-300" /><span className="w-2.5 h-2.5 rounded-full bg-slate-300" /><span className="w-2.5 h-2.5 rounded-full bg-slate-300" />
-        <span className="ml-3 text-xs text-ink-muted">Placement Office · Overview</span>
-        <span className="ml-auto text-xs text-ink-muted">Sample data</span>
+        <span className="ml-3 text-xs font-semibold text-ink">Journey Command &bull; Aarav (CSE)</span>
+        <span className="ml-auto text-xs text-ink-muted">Live Spine</span>
       </div>
-      <div className="p-5 space-y-5">
+      <div className="p-5 space-y-4">
+        {/* Universal Spine Preview */}
+        <div className="p-3 rounded-xl bg-canvas border border-line">
+          <span className="block text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">Candidate Journey</span>
+          <Spine
+            stages={[
+              { id: 'elig', label: 'Eligible', status: 'completed' },
+              { id: 'app', label: 'Applied', status: 'completed' },
+              { id: 'int', label: 'Interview', status: 'current' },
+              { id: 'off', label: 'Offer', status: 'upcoming' },
+              { id: 'join', label: 'Joined', status: 'upcoming' },
+            ]}
+            size="sm"
+          />
+        </div>
+
         <div className="grid grid-cols-3 gap-3">
-          {[['Open drives', '12'], ['Applications', '1,284'], ['Offers', '214']].map(([l, v]) => (
-            <div key={l} className="rounded-lg border border-line p-3">
+          {[['Open drives', '12'], ['Applications', '3'], ['Interviews', '1']].map(([l, v]) => (
+            <div key={l} className="rounded-xl border border-line p-3 bg-surface">
               <p className="text-xs font-medium text-ink-muted">{l}</p>
-              <p className="mt-1 text-xl font-semibold tabular-nums">{v}</p>
+              <p className="mt-1 text-xl font-bold font-display tabular-nums text-ink">{v}</p>
             </div>
           ))}
         </div>
-        <div>
-          <p className="text-xs font-medium text-ink-muted mb-2">Pipeline</p>
-          <div className="space-y-1.5">
-            {[['Applied', 100], ['Shortlisted', 62], ['Interviewed', 38], ['Offered', 17]].map(([l, w]) => (
-              <div key={l as string} className="flex items-center gap-3">
-                <span className="w-20 text-xs text-ink-muted">{l}</span>
-                <div className="flex-1 h-2 rounded-full bg-canvas"><div className="h-2 rounded-full bg-brand" style={{ width: `${w}%`, opacity: 0.35 + (Number(w) / 160) }} /></div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="rounded-lg border border-line divide-y divide-line">
+
+        <div className="rounded-xl border border-line divide-y divide-line overflow-hidden">
           {SAMPLE_DRIVES.map((d) => (
-            <div key={d.co} className="flex items-center gap-3 px-3 py-2.5">
-              <span className="w-8 h-8 rounded-md bg-canvas text-ink-muted flex items-center justify-center text-xs font-semibold">{d.co[0]}</span>
+            <div key={d.co} className="flex items-center gap-3 px-3 py-2.5 bg-surface hover:bg-canvas transition-colors">
+              <span className="w-8 h-8 rounded-lg bg-canvas text-ink-muted flex items-center justify-center text-xs font-bold border border-line">{d.co[0]}</span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium truncate">{d.co}</p>
+                <p className="text-sm font-semibold truncate text-ink">{d.co}</p>
                 <p className="text-xs text-ink-muted truncate">{d.role}</p>
               </div>
-              <span className="hidden sm:inline text-xs px-2 py-0.5 rounded bg-canvas text-ink-muted">{d.tier}</span>
-              <span className={`text-xs px-2 py-0.5 rounded ${d.status === 'Open' ? 'bg-green-50 text-success' : 'bg-amber-50 text-warning'}`}>{d.status}</span>
+              <span className="hidden sm:inline text-xs px-2 py-0.5 rounded-full bg-canvas text-ink-muted font-medium">{d.tier}</span>
+              <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${d.status === 'Open' ? 'bg-success-bg text-success border border-success-border' : 'bg-amber-500/10 text-amber-700 border border-amber-300'}`}>{d.status}</span>
             </div>
           ))}
         </div>
@@ -185,20 +191,21 @@ export const LandingPage: React.FC = () => {
       <section className="bg-gradient-to-b from-canvas to-surface">
         <div className="mx-auto max-w-6xl px-6 pt-16 pb-20 lg:pt-24 lg:pb-28 grid lg:grid-cols-[1.05fr_1fr] gap-14 items-center">
           <div>
-            <p className="inline-flex items-center gap-2 text-xs font-medium text-ink-muted border border-line rounded-full px-3 py-1 bg-surface">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent" /> Placement and career operations platform
+            <p className="inline-flex items-center gap-2 text-xs font-semibold text-ink-muted border border-line rounded-full px-3 py-1 bg-surface shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> From Records System to Journey System
             </p>
-            <h1 className="mt-5 text-4xl sm:text-5xl font-semibold tracking-tight leading-[1.08] text-brand">
-              Every drive, every student, one system of record.
+            <h1 className="mt-5 text-4xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight leading-[1.05] text-ink">
+              From eligible to offer, every student on a journey.
             </h1>
-            <p className="mt-5 text-lg text-ink-muted leading-relaxed max-w-xl">
-              Meridian gives placement cells, students, faculty and leadership their own workspace on shared, auditable data. Eligibility is explained, access follows each person&rsquo;s role, and nothing lives in a spreadsheet.
+            <p className="mt-5 text-base sm:text-lg text-ink-muted leading-relaxed max-w-xl">
+              Meridian replaces scattered spreadsheets with a single visible &ldquo;you are here&rdquo; tracker.
+              Eligibility is deterministic and explained, access is strictly role-governed, and real work produces clear receipts.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/login" className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-brand text-white text-sm font-medium hover:bg-brand-hover transition-colors">
-                Sign in <ArrowRight size={16} />
+              <Link to="/login" className="inline-flex items-center justify-center gap-2 px-6 h-12 sm:h-11 rounded-full bg-brand text-surface text-sm font-bold hover:bg-brand/90 transition-colors shadow-xs">
+                Enter your journey <ArrowRight size={16} />
               </Link>
-              <a href="#platform" className="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-line bg-surface text-sm font-medium hover:border-slate-400 transition-colors">
+              <a href="#platform" className="inline-flex items-center justify-center gap-2 px-6 h-12 sm:h-11 rounded-full border border-line bg-surface text-ink text-sm font-semibold hover:bg-canvas transition-colors">
                 Explore the platform
               </a>
             </div>
