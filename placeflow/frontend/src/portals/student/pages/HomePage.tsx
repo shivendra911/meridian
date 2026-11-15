@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import {
   Compass,
   ArrowRight,
@@ -34,6 +34,7 @@ import { StateBlock } from '../../../ui/StateBlock';
 export const StudentHomePage: React.FC = () => {
   useDocumentTitle('Candidate Journey');
   const navigate = useNavigate();
+  const { onOpenCopilot } = useOutletContext<{ onOpenCopilot?: () => void }>() || {};
   const auth = useContext(AuthContext);
   const canConsent = auth ? (auth.can('consent.grant.record') || auth.can('consent.withdraw.process')) : true;
 
@@ -183,17 +184,20 @@ export const StudentHomePage: React.FC = () => {
               ? () => window.open(nextInterview.venue_or_link, '_blank')
               : undefined
           }
+          onOpenCopilot={onOpenCopilot}
         />
       ) : pendingOffer ? (
         <HeroOffer
           offer={pendingOffer}
           onAccept={() => navigate('/student/applications')}
           onDecline={() => navigate('/student/applications')}
+          onOpenCopilot={onOpenCopilot}
         />
       ) : needsProfileUpdate ? (
         <HeroPreparing
           profile={profile}
           onCompleteProfile={() => navigate('/student/profile')}
+          onOpenCopilot={onOpenCopilot}
         />
       ) : unappliedEligible.length > 0 ? (
         <HeroEligible
@@ -201,6 +205,7 @@ export const StudentHomePage: React.FC = () => {
           eligibleCount={eligibleJobs.length}
           onExplore={() => navigate('/student/opportunities')}
           onApply={() => navigate('/student/opportunities')}
+          onOpenCopilot={onOpenCopilot}
         />
       ) : (
         <StateBlock variant="paper" className="space-y-3">

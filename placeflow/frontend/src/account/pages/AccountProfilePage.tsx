@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import {
   ShieldCheck,
   Camera,
@@ -10,7 +11,9 @@ import {
   Globe,
   Clock,
   Phone,
-  Info} from 'lucide-react';
+  Info,
+  Sparkles,
+} from 'lucide-react';
 import { client } from '../../core/api/client';
 import { useAuth } from '../../core/auth/useAuth';
 import { formatRoleLabel } from '../../core/auth/roleLabels';
@@ -34,6 +37,7 @@ const TIMEZONE_OPTIONS = [
 
 export const AccountProfilePage: React.FC = () => {
   const { me, refreshMe } = useAuth();
+  const { onOpenCopilot } = useOutletContext<{ onOpenCopilot?: () => void }>() || {};
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [profile, setProfile] = useState<any>(null);
@@ -157,6 +161,37 @@ export const AccountProfilePage: React.FC = () => {
           document.getElementById('editable-profile-section')?.scrollIntoView({ behavior: 'smooth' });
         }}
       />
+
+      {/* AI Career & Profile Copilot Optimization Banner */}
+      <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-surface to-amber-500/5 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+            <Sparkles size={20} className="text-amber-600 animate-pulse" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-bold text-ink m-0">Campus AI Copilot</h3>
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-900 px-2 py-0.5 rounded-full">
+                Active Profile Assistant
+              </span>
+            </div>
+            <p className="text-xs text-ink-muted mt-1 m-0">
+              Analyze your profile completeness, generate ATS-friendly headline summaries, and review placement eligibility benchmarks.
+            </p>
+          </div>
+        </div>
+
+        {onOpenCopilot && (
+          <button
+            type="button"
+            onClick={onOpenCopilot}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-amber-500 text-amber-950 text-xs font-bold hover:bg-amber-400 shadow-xs transition-all cursor-pointer shrink-0"
+          >
+            <Sparkles size={14} />
+            <span>Launch Copilot</span>
+          </button>
+        )}
+      </div>
 
       {/* Notifications / Alerts */}
       {successMsg && (

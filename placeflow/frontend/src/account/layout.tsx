@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
 import {
   User,
@@ -7,10 +7,13 @@ import {
   Lock,
   ArrowLeft,
   LayoutDashboard,
+  Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../core/auth/useAuth';
 import { Avatar } from '../ui/cards/Avatar';
 import { MacOsLoadingScreen } from '../components/ui/MacOsLoadingScreen';
+import { CampusCopilotDrawer } from '../components/ai/CampusCopilotDrawer';
+import { FloatingCopilotTrigger } from '../components/ai/FloatingCopilotTrigger';
 
 const ACCOUNT_TABS = [
   { path: '/account/home', label: 'Overview', icon: LayoutDashboard },
@@ -23,6 +26,7 @@ const ACCOUNT_TABS = [
 export const AccountLayout: React.FC = () => {
   const { me, status } = useAuth();
   const location = useLocation();
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -67,6 +71,16 @@ export const AccountLayout: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setIsCopilotOpen(true)}
+            className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-brand/5 to-amber-500/10 hover:from-amber-500/20 px-3 py-1.5 text-xs font-semibold text-ink shadow-2xs transition-colors cursor-pointer"
+            aria-label="Open Profile & Career Copilot"
+          >
+            <Sparkles size={14} className="text-amber-600 animate-pulse" />
+            <span className="hidden sm:inline font-bold">Copilot</span>
+          </button>
+
           <Link
             to="/account/profile"
             className="macos-press-sm flex items-center gap-2 rounded-full p-1 hover:bg-slate-100 transition-colors"
@@ -109,9 +123,17 @@ export const AccountLayout: React.FC = () => {
 
         {/* Tab Content with Fluid Transition */}
         <div key={location.pathname} className="flex-1 macos-elevation-dissolve">
-          <Outlet />
+          <Outlet context={{ onOpenCopilot: () => setIsCopilotOpen(true) }} />
         </div>
       </div>
+
+      {/* Floating Copilot Dock Trigger & Console Drawer */}
+      <FloatingCopilotTrigger onClick={() => setIsCopilotOpen(true)} portal={defaultPortal} />
+      <CampusCopilotDrawer
+        isOpen={isCopilotOpen}
+        onClose={() => setIsCopilotOpen(false)}
+        portal={defaultPortal}
+      />
     </div>
   );
 };

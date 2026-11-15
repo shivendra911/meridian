@@ -11,6 +11,7 @@ export interface HeroEligibleProps {
   eligibleCount: number;
   onExplore: () => void;
   onApply: (jobId: string) => void;
+  onOpenCopilot?: () => void;
 }
 
 export const HeroEligible: React.FC<HeroEligibleProps> = ({
@@ -18,6 +19,7 @@ export const HeroEligible: React.FC<HeroEligibleProps> = ({
   eligibleCount,
   onExplore,
   onApply,
+  onOpenCopilot,
 }) => {
   return (
     <StateBlock variant="paper" className="space-y-4">
@@ -39,7 +41,17 @@ export const HeroEligible: React.FC<HeroEligibleProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+          {onOpenCopilot && (
+            <button
+              type="button"
+              onClick={onOpenCopilot}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-xs font-bold text-amber-900 transition-colors cursor-pointer"
+            >
+              <Sparkles size={13} className="text-amber-600 animate-pulse" />
+              <span>Ask Copilot</span>
+            </button>
+          )}
           <Button
             variant="now"
             pill

@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { StateBlock } from '../../../ui/StateBlock';
 import { CompanyMark } from '../../../ui/cards/CompanyMark';
 import { Button } from '../../../components/ui/Button';
-import { Award, Check, Clock, X } from 'lucide-react';
+import { Award, Check, Clock, X, Sparkles } from 'lucide-react';
 import { StudentOffer } from '../api';
 
 export interface HeroOfferProps {
   offer: StudentOffer & { company_name?: string; response_deadline?: string };
   onAccept?: (offer: StudentOffer) => void;
   onDecline?: (offer: StudentOffer) => void;
+  onOpenCopilot?: () => void;
 }
 
-export const HeroOffer: React.FC<HeroOfferProps> = ({ offer, onAccept, onDecline }) => {
+export const HeroOffer: React.FC<HeroOfferProps> = ({ offer, onAccept, onDecline, onOpenCopilot }) => {
   const [isConfirmingDecline, setIsConfirmingDecline] = useState(false);
   const companyName = offer.company_name || offer.company_id || 'Corporate Partner';
 
@@ -83,13 +84,26 @@ export const HeroOffer: React.FC<HeroOfferProps> = ({ offer, onAccept, onDecline
         </div>
       </div>
 
-      <div className="flex items-center gap-2 pt-2 border-t border-white/15 text-xs text-white/80">
-        <Clock size={14} className="text-teal-200 shrink-0" />
-        <span>
-          {offer.response_deadline
-            ? `Please submit your response before ${offer.response_deadline}`
-            : 'Decision pending student signature confirmation'}
-        </span>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-white/15 text-xs text-white/80">
+        <div className="flex items-center gap-2">
+          <Clock size={14} className="text-teal-200 shrink-0" />
+          <span>
+            {offer.response_deadline
+              ? `Please submit your response before ${offer.response_deadline}`
+              : 'Decision pending student signature confirmation'}
+          </span>
+        </div>
+
+        {onOpenCopilot && (
+          <button
+            type="button"
+            onClick={onOpenCopilot}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 transition-colors shrink-0 cursor-pointer"
+          >
+            <Sparkles size={12} className="text-teal-200 animate-pulse" />
+            <span>Analyze Offer with Copilot</span>
+          </button>
+        )}
       </div>
     </StateBlock>
   );

@@ -69,14 +69,14 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             type="button"
             onClick={onOpenCopilot}
-            className="flex items-center gap-1.5 rounded-lg border border-line/80 bg-canvas/80 px-2.5 py-1.5 text-xs font-semibold text-brand-red hover:bg-red-50 hover:border-red-200 transition-colors shadow-2xs macos-press"
-            title="Campus AI Copilot (Ctrl + /)"
+            className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-brand/5 to-amber-500/10 hover:from-amber-500/20 px-3 py-1.5 text-xs font-semibold text-ink shadow-2xs transition-colors cursor-pointer"
+            title="Campus AI Copilot (Ctrl + J)"
             aria-label="Open Campus AI Copilot"
           >
-            <Sparkles size={14} className="text-brand-red shrink-0" />
-            <span className="hidden sm:inline">Copilot</span>
-            <kbd className="hidden md:inline-flex items-center rounded bg-surface border border-line/80 px-1 py-0.2 text-xs font-mono text-ink-muted">
-              Ctrl /
+            <Sparkles size={14} className="text-amber-600 animate-pulse shrink-0" />
+            <span className="hidden sm:inline font-bold">Copilot</span>
+            <kbd className="hidden md:inline-flex items-center rounded-full bg-surface border border-line/80 px-1.5 py-0.2 text-[10px] font-mono text-ink-muted">
+              Ctrl J
             </kbd>
           </button>
         )}

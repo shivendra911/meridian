@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import { toast } from 'sonner';
 import {
   ArrowLeft,
@@ -33,6 +33,7 @@ import {
 export const DriveRoomPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { onOpenCopilot } = useOutletContext<{ onOpenCopilot?: () => void }>() || {};
 
   const [job, setJob] = useState<Job | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
@@ -356,6 +357,16 @@ export const DriveRoomPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {onOpenCopilot && (
+              <button
+                type="button"
+                onClick={onOpenCopilot}
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-xs font-bold text-amber-900 transition-colors cursor-pointer"
+              >
+                <Sparkles size={13} className="text-amber-600 animate-pulse" />
+                <span>Drive AI Assistant</span>
+              </button>
+            )}
             <div className="text-right">
               <span className="block text-[11px] font-semibold text-ink-muted uppercase tracking-wider">
                 Annual Compensation
@@ -556,15 +567,27 @@ export const DriveRoomPage: React.FC = () => {
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handleResolveConflicts}
-                disabled={solving}
-                className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 text-amber-950 text-xs font-bold hover:bg-amber-400 transition-colors cursor-pointer"
-              >
-                <Sparkles size={14} />
-                {solving ? 'Solving...' : 'Resolve Clashes'}
-              </button>
+              <div className="flex items-center gap-2">
+                {onOpenCopilot && (
+                  <button
+                    type="button"
+                    onClick={onOpenCopilot}
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg border border-line bg-canvas hover:bg-surface text-ink text-xs font-semibold transition-colors cursor-pointer"
+                  >
+                    <Sparkles size={13} className="text-amber-600 animate-pulse" />
+                    <span>Consult Copilot</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleResolveConflicts}
+                  disabled={solving}
+                  className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 text-amber-950 text-xs font-bold hover:bg-amber-400 transition-colors cursor-pointer"
+                >
+                  <Sparkles size={14} />
+                  {solving ? 'Solving...' : 'Resolve Clashes'}
+                </button>
+              </div>
             </div>
 
             {solverResult && (
@@ -618,6 +641,19 @@ export const DriveRoomPage: React.FC = () => {
               <FileText size={14} className="text-brand" /> Placement Office Actions
             </h3>
             <div className="space-y-1.5">
+              {onOpenCopilot && (
+                <button
+                  type="button"
+                  onClick={onOpenCopilot}
+                  className="w-full text-left py-2 px-3 rounded-lg border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 transition-colors font-medium text-amber-950 flex items-center justify-between cursor-pointer"
+                >
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <Sparkles size={13} className="text-amber-600 animate-pulse" />
+                    <span>Ask Placement Copilot</span>
+                  </span>
+                  <span className="text-amber-700">&rarr;</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => handleOpenExplainer()}

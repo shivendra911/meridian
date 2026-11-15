@@ -8,6 +8,7 @@ import { NotificationsBell } from '../../app/shell/NotificationsBell';
 import { DelegationBanner } from '../../app/shell/DelegationBanner';
 import { CommandPalette } from '../../components/navigation/CommandPalette';
 import { CampusCopilotDrawer } from '../../components/ai/CampusCopilotDrawer';
+import { FloatingCopilotTrigger } from '../../components/ai/FloatingCopilotTrigger';
 import { ErrorBoundary } from '../../app/ErrorBoundary';
 import { X, Keyboard } from 'lucide-react';
 import { useAuth } from '../../core/auth/useAuth';
@@ -73,6 +74,7 @@ export const StudentShell: React.FC = () => {
         activeTab={location.pathname}
         onSelectTab={(path) => navigate(path)}
         onOpenCommandPalette={() => setIsPaletteOpen(true)}
+        onOpenCopilot={() => setIsCopilotOpen(true)}
         notificationCount={me?.unread_notifications || 0}
         userMenuTrigger={
           <div className="flex items-center gap-2">
@@ -115,7 +117,8 @@ export const StudentShell: React.FC = () => {
         }}
       />
 
-      {/* 5. Role-Specific Campus AI Copilot Console */}
+      {/* 5. Role-Specific Campus AI Copilot Console & Floating Dock Trigger */}
+      <FloatingCopilotTrigger onClick={() => setIsCopilotOpen(true)} portal="student" />
       <CampusCopilotDrawer
         isOpen={isCopilotOpen}
         onClose={() => setIsCopilotOpen(false)}
@@ -150,7 +153,7 @@ export const StudentShell: React.FC = () => {
               <div className="flex items-center justify-between py-1">
                 <span className="text-ink">Campus AI Copilot Console</span>
                 <kbd className="rounded border border-line bg-canvas px-2 py-0.5 font-mono text-ink">
-                  Ctrl + /
+                  Ctrl + J
                 </kbd>
               </div>
               <div className="flex items-center justify-between py-1">

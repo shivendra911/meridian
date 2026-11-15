@@ -1,5 +1,5 @@
 import React from 'react';
-import { LucideIcon, Search, Bell } from 'lucide-react';
+import { LucideIcon, Search, Bell, Sparkles } from 'lucide-react';
 import { Logo } from './Logo';
 
 export interface TopNavTabItem {
@@ -16,6 +16,7 @@ export interface TopNavBarProps {
   onSelectTab: (path: string) => void;
   onOpenCommandPalette?: () => void;
   onOpenNotifications?: () => void;
+  onOpenCopilot?: () => void;
   notificationCount?: number;
   userMenuTrigger?: React.ReactNode;
   className?: string;
@@ -27,6 +28,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
   onSelectTab,
   onOpenCommandPalette,
   onOpenNotifications,
+  onOpenCopilot,
   notificationCount = 0,
   userMenuTrigger,
   className = '',
@@ -76,8 +78,23 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({
         </nav>
       </div>
 
-      {/* Right Controls: Command Palette Search, Notifications, User Menu */}
-      <div className="flex items-center gap-3">
+      {/* Right Controls: Command Palette Search, Copilot, Notifications, User Menu */}
+      <div className="flex items-center gap-2.5">
+        {onOpenCopilot && (
+          <button
+            type="button"
+            onClick={onOpenCopilot}
+            className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-brand/5 to-amber-500/10 hover:from-amber-500/20 hover:to-brand/15 px-3 py-1.5 text-xs font-semibold text-ink shadow-2xs hover:shadow-xs transition-all duration-150 cursor-pointer"
+            aria-label="Open Campus AI Copilot (Ctrl+J)"
+          >
+            <Sparkles size={14} className="text-amber-600 animate-pulse" />
+            <span className="hidden sm:inline font-bold">Copilot</span>
+            <kbd className="hidden lg:inline-flex rounded border border-amber-500/30 bg-surface/80 px-1 py-0.2 text-[9px] font-mono text-amber-800">
+              Ctrl J
+            </kbd>
+          </button>
+        )}
+
         {onOpenCommandPalette && (
           <button
             type="button"

@@ -97,7 +97,7 @@ export const Spine: React.FC<SpineProps> = ({
                   nodeSizes[size]
                 } ${
                   isCurrent
-                    ? 'bg-now text-now-ink shadow-xs ring-4 ring-now/20 font-bold scale-110'
+                    ? 'bg-now text-now-ink font-bold scale-110 shadow-[0_0_12px_rgba(245,165,36,0.5)] ring-4 ring-now/30'
                     : isCompleted
                     ? 'bg-brand text-white'
                     : isSkipped

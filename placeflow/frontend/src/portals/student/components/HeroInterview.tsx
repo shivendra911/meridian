@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { StateBlock } from '../../../ui/StateBlock';
 import { CompanyMark } from '../../../ui/cards/CompanyMark';
 import { Button } from '../../../components/ui/Button';
-import { Calendar, MapPin, CheckSquare, Square, Video } from 'lucide-react';
+import { Calendar, MapPin, CheckSquare, Square, Video, Sparkles } from 'lucide-react';
 import { formatDateTime } from '../../../ui/format';
 import { StudentInterview } from '../api';
 
 export interface HeroInterviewProps {
   interview: StudentInterview;
   onJoin?: () => void;
+  onOpenCopilot?: () => void;
 }
 
-export const HeroInterview: React.FC<HeroInterviewProps> = ({ interview, onJoin }) => {
+export const HeroInterview: React.FC<HeroInterviewProps> = ({ interview, onJoin, onOpenCopilot }) => {
   const [checklist, setChecklist] = useState<Record<string, boolean>>({
     resume: true,
     idCard: false,
@@ -133,6 +134,17 @@ export const HeroInterview: React.FC<HeroInterviewProps> = ({ interview, onJoin 
               Revised core skills
             </span>
           </button>
+
+          {onOpenCopilot && (
+            <button
+              type="button"
+              onClick={onOpenCopilot}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 transition-colors ml-auto cursor-pointer"
+            >
+              <Sparkles size={12} className="text-now animate-pulse" />
+              <span>Revise with Copilot</span>
+            </button>
+          )}
         </div>
       </div>
     </StateBlock>

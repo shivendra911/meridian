@@ -6,6 +6,7 @@ import { DelegationBanner } from './DelegationBanner';
 import { PortalNavItem } from './types';
 import { CommandPalette } from '../../components/navigation/CommandPalette';
 import { CampusCopilotDrawer } from '../../components/ai/CampusCopilotDrawer';
+import { FloatingCopilotTrigger } from '../../components/ai/FloatingCopilotTrigger';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { X, Keyboard } from 'lucide-react';
 
@@ -96,7 +97,8 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
         }}
       />
 
-      {/* 4. Campus AI Copilot Console Drawer */}
+      {/* 4. Campus AI Copilot Console Drawer & Floating Trigger */}
+      <FloatingCopilotTrigger onClick={() => setIsCopilotOpen(true)} portal={portal} />
       <CampusCopilotDrawer
         isOpen={isCopilotOpen}
         onClose={() => setIsCopilotOpen(false)}
@@ -131,7 +133,7 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
               <div className="flex items-center justify-between py-1">
                 <span className="text-ink">Campus AI Copilot Console</span>
                 <kbd className="rounded border border-line bg-slate-100 px-2 py-0.5 font-mono text-ink">
-                  Ctrl + /
+                  Ctrl + J
                 </kbd>
               </div>
               <div className="flex items-center justify-between py-1">

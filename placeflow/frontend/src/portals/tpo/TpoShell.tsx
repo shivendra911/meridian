@@ -6,6 +6,7 @@ import { NotificationsBell } from '../../app/shell/NotificationsBell';
 import { DelegationBanner } from '../../app/shell/DelegationBanner';
 import { CommandPalette } from '../../components/navigation/CommandPalette';
 import { CampusCopilotDrawer } from '../../components/ai/CampusCopilotDrawer';
+import { FloatingCopilotTrigger } from '../../components/ai/FloatingCopilotTrigger';
 import { ErrorBoundary } from '../../app/ErrorBoundary';
 import { X, Keyboard, Sun, Calendar, Briefcase, Users, BarChart3 } from 'lucide-react';
 import { useAuth } from '../../core/auth/useAuth';
@@ -70,6 +71,7 @@ export const TpoShell: React.FC = () => {
         activeTab={location.pathname}
         onSelectTab={(path) => navigate(path)}
         onOpenCommandPalette={() => setIsPaletteOpen(true)}
+        onOpenCopilot={() => setIsCopilotOpen(true)}
         notificationCount={me?.unread_notifications || 0}
         userMenuTrigger={
           <div className="flex items-center gap-2">
@@ -105,7 +107,8 @@ export const TpoShell: React.FC = () => {
         }}
       />
 
-      {/* 4. Placement Officer Campus AI Copilot Console */}
+      {/* 4. Placement Officer Campus AI Copilot Console & Floating Dock Trigger */}
+      <FloatingCopilotTrigger onClick={() => setIsCopilotOpen(true)} portal="tpo" />
       <CampusCopilotDrawer
         isOpen={isCopilotOpen}
         onClose={() => setIsCopilotOpen(false)}
@@ -140,7 +143,7 @@ export const TpoShell: React.FC = () => {
               <div className="flex items-center justify-between py-1">
                 <span className="text-ink">Operations Copilot</span>
                 <kbd className="rounded border border-line bg-canvas px-2 py-0.5 font-mono text-ink">
-                  Ctrl + /
+                  Ctrl + J
                 </kbd>
               </div>
               <div className="flex items-center justify-between py-1">

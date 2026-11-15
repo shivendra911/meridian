@@ -7,9 +7,10 @@ import { StudentProfile } from '../api';
 export interface HeroPreparingProps {
   profile: StudentProfile | null;
   onCompleteProfile: () => void;
+  onOpenCopilot?: () => void;
 }
 
-export const HeroPreparing: React.FC<HeroPreparingProps> = ({ profile, onCompleteProfile }) => {
+export const HeroPreparing: React.FC<HeroPreparingProps> = ({ profile, onCompleteProfile, onOpenCopilot }) => {
   const hasSkills = profile?.skills && profile.skills.length > 0;
   // Endowed progress: verified university data starts the student at 72%
   const completeness = hasSkills ? 100 : 72;
@@ -33,7 +34,17 @@ export const HeroPreparing: React.FC<HeroPreparingProps> = ({ profile, onComplet
           </p>
         </div>
 
-        <div className="shrink-0">
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+          {onOpenCopilot && (
+            <button
+              type="button"
+              onClick={onOpenCopilot}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-xs font-bold text-amber-900 transition-colors cursor-pointer"
+            >
+              <Sparkles size={13} className="text-amber-600 animate-pulse" />
+              <span>Ask Copilot</span>
+            </button>
+          )}
           <Button
             variant="primary"
             pill

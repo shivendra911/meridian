@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useOutletContext } from 'react-router-dom';
 import {
   ArrowLeft,
   Calendar,
@@ -30,6 +30,7 @@ import { ErrorState } from '../../../ui/ErrorState';
 export const DriveStoryPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { onOpenCopilot } = useOutletContext<{ onOpenCopilot?: () => void }>() || {};
 
   const [opportunity, setOpportunity] = useState<StudentOpportunity | null>(null);
   const [profile, setProfile] = useState<StudentProfile | null>(null);
@@ -242,20 +243,33 @@ export const DriveStoryPage: React.FC = () => {
         </div>
 
         {/* Metadata Strip */}
-        <div className="flex flex-wrap items-center gap-4 pt-4 mt-6 border-t border-line text-xs text-ink-muted">
-          <div className="flex items-center gap-1.5">
-            <Briefcase size={14} className="text-brand shrink-0" />
-            <span>Full-time Campus Placement</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <MapPin size={14} className="text-brand shrink-0" />
-            <span>Bengaluru / Hybrid</span>
-          </div>
-          {opportunity.deadline && (
-            <div className="flex items-center gap-1.5 font-medium text-ink">
-              <Calendar size={14} className="text-now shrink-0" />
-              <span>Closes {formatDate(opportunity.deadline)}</span>
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-4 mt-6 border-t border-line text-xs text-ink-muted">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <Briefcase size={14} className="text-brand shrink-0" />
+              <span>Full-time Campus Placement</span>
             </div>
+            <div className="flex items-center gap-1.5">
+              <MapPin size={14} className="text-brand shrink-0" />
+              <span>Bengaluru / Hybrid</span>
+            </div>
+            {opportunity.deadline && (
+              <div className="flex items-center gap-1.5 font-medium text-ink">
+                <Calendar size={14} className="text-now shrink-0" />
+                <span>Closes {formatDate(opportunity.deadline)}</span>
+              </div>
+            )}
+          </div>
+
+          {onOpenCopilot && (
+            <button
+              type="button"
+              onClick={onOpenCopilot}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-xs font-bold text-amber-900 transition-colors cursor-pointer"
+            >
+              <Sparkles size={13} className="text-amber-600 animate-pulse" />
+              <span>Ask Career Copilot about {opportunity.company_name}</span>
+            </button>
           )}
         </div>
       </div>
@@ -325,6 +339,18 @@ export const DriveStoryPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          {onOpenCopilot && (
+            <button
+              type="button"
+              onClick={onOpenCopilot}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-line bg-canvas hover:bg-surface text-xs font-semibold text-ink-muted hover:text-ink transition-colors cursor-pointer"
+              title="Open Career Copilot"
+            >
+              <Sparkles size={14} className="text-amber-600 animate-pulse" />
+              <span className="hidden sm:inline">Copilot</span>
+            </button>
+          )}
+
           {opportunity.has_applied ? (
             <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-success-bg text-success border border-success-border text-xs font-bold">
               <CheckCircle2 size={16} /> Applied
