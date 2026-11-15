@@ -56,21 +56,26 @@ describe('Role-Based & User-Specific Copilot Architecture', () => {
     expect(screen.getByText('Campus AI Copilot')).toBeTruthy();
     expect(screen.getAllByText(/Candidate Career Copilot/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Student Member')).toBeTruthy();
-    expect(screen.getByText(/Aarav Sharma/i)).toBeTruthy();
-    expect(screen.getByText(/Computer Science & Engineering/i)).toBeTruthy();
+    expect(screen.getAllByText(/Aarav Sharma/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Computer Science & Engineering/i).length).toBeGreaterThanOrEqual(1);
 
     // Student-tailored starter prompt queries
     expect(screen.getByText(/Suggested Student Member Queries/i)).toBeTruthy();
-    expect(screen.getByText(/Am I eligible for upcoming Tier-1 Super Dream drives\?/i)).toBeTruthy();
+    expect(screen.getByText(/Am I eligible for upcoming Tier-1 Super Dream drives/i)).toBeTruthy();
     expect(screen.getByText(/Check my NEP 2020 completed credits for graduation/i)).toBeTruthy();
+
+    // Student profile snapshot card
+    expect(screen.getByText(/Current CGPA/i)).toBeTruthy();
+    expect(screen.getByText(/Active Drives/i)).toBeTruthy();
+    expect(screen.getByText(/NEP Credits/i)).toBeTruthy();
   });
 
   it('restricts autonomous agents to student-authorized tools (Academic Advisor & Superday)', () => {
     render(<CampusCopilotDrawer isOpen={true} onClose={vi.fn()} portal="student" />);
     fireEvent.click(screen.getByText('Autonomous Agents'));
 
-    expect(screen.getByText(/Academic Advisor/i)).toBeTruthy();
-    expect(screen.getByText(/Superday Solver/i)).toBeTruthy();
+    expect(screen.getAllByText(/Academic Advisor/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Superday Solver/i).length).toBeGreaterThanOrEqual(1);
 
     // Should NOT show Admin/Management/TPO-only agents like NIRF or JNF
     expect(screen.queryByText(/NIRF Audit/i)).toBeNull();
@@ -123,10 +128,13 @@ describe('Role-Based & User-Specific Copilot Architecture', () => {
     const submitBtn = screen.getByText('Ask Copilot');
     fireEvent.click(submitBtn);
 
-    expect(client.post).toHaveBeenCalledWith('/copilot/query/', {
-      query: 'Am I eligible for Google?',
-      context: { portal: 'student' },
-    });
+    expect(client.post).toHaveBeenCalledWith(
+      '/copilot/query/',
+      expect.objectContaining({
+        query: 'Am I eligible for Google?',
+        lens: 'student',
+      })
+    );
 
     await waitFor(() => {
       expect(screen.getByText(/Aarav, as a CSE student with 135 credits/i)).toBeTruthy();

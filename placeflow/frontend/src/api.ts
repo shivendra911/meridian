@@ -553,7 +553,7 @@ export const api = {
     }>('/v4/ai/quotas/'),
 
   // Role-Based & User-Specific Copilot API
-  getCopilotContext: () =>
+  getCopilotContext: (lens?: string) =>
     request<{
       persona: {
         role_code: string;
@@ -568,15 +568,32 @@ export const api = {
         candidate_id: string;
         allowed_agents: string[];
         quick_prompts: string[];
+        profile_summary: Record<string, any>;
+        shareable_attributes: Array<{
+          key: string;
+          label: string;
+          description: string;
+          category: string;
+          default_enabled: boolean;
+          data_payload: Record<string, any>;
+        }>;
       };
       safety_status: {
         pip_defense: string;
         dpdp_masking: string;
         audit_ledger: string;
+        consent_mode?: string;
       };
-    }>('/copilot/context/'),
+    }>(`/copilot/context/${lens ? `?lens=${encodeURIComponent(lens)}` : ''}`),
 
-  queryCopilot: (query: string, context?: Record<string, any>) =>
+  queryCopilot: (
+    query: string,
+    options?: {
+      lens?: string;
+      shared_attributes?: string[];
+      context?: Record<string, any>;
+    },
+  ) =>
     request<{
       answer: string;
       citations: Array<{
@@ -589,6 +606,14 @@ export const api = {
       trace_id: string;
       total_tokens: number;
       suggested_followups: string[];
+      shared_data_applied?: string[];
+      withheld_attributes?: string[];
+      privacy_shield?: {
+        shared_count: number;
+        total_count: number;
+        consent_mode: string;
+        dpdp_status: string;
+      };
       persona: {
         role_code: string;
         role_label: string;
@@ -598,7 +623,12 @@ export const api = {
       };
     }>('/copilot/query/', {
       method: 'POST',
-      body: JSON.stringify({ query, context }),
+      body: JSON.stringify({
+        query,
+        lens: options?.lens,
+        shared_attributes: options?.shared_attributes,
+        context: options?.context,
+      }),
     }),
 
   executeCopilotAgent: (agentName: string, payload: Record<string, any>) =>

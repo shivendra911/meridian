@@ -76,15 +76,31 @@ class MockAIProvider(AIProvider):
 
         if self.default_response:
             response_text = self.default_response
+        elif "WITHHELD: academic_records" in prompt and ("eligib" in prompt.lower() or "cgpa" in prompt.lower()):
+            response_text = (
+                "Privacy Notice: Your Academic Records & CGPA data is currently withheld from Copilot under your privacy preferences. "
+                "Based on general institutional policy, Tier-1 recruitment drives require a minimum CGPA of 7.5 and 0 active backlogs. "
+                "Enable 'Academic Performance & CGPA' in your Data Sharing panel to verify your personal eligibility."
+            )
         elif "eligibility" in prompt.lower() or "eligible" in prompt.lower():
             response_text = (
-                "Based on the institutional placement policy and your current record "
-                "(CGPA 8.4, 0 backlogs), you meet all criteria for Tier-1 engineering roles."
+                "Based on the institutional placement policy and your verified shared profile "
+                "(CGPA 8.42, 0 active backlogs, 128 completed credits), you meet all statutory eligibility criteria for Tier-1 Super Dream roles."
             )
         elif "prerequisite" in prompt.lower():
             response_text = (
                 "CS201 Data Structures requires successful completion of CS101 Introduction "
                 "to Programming with minimum grade C (NCrF Level 4.5)."
+            )
+        elif "curriculum" in prompt.lower() or "v2.0" in prompt.lower():
+            response_text = (
+                "Curriculum Analysis: Transition from v1.0 to v2.0 introduces 8 credits of Generative AI "
+                "and Cloud Systems, addressing previous industry gap recommendations from the 2025 Board of Studies."
+            )
+        elif "nirf" in prompt.lower() or "table 5.1" in prompt.lower():
+            response_text = (
+                "NIRF Table 5.1 Summary: Median salary across engineering cohorts is ₹14.8 LPA with an 89.1% graduation "
+                "outcome rate, exceeding Tier-1 accreditation threshold benchmarks."
             )
         else:
             response_text = f"Processed institutional request for prompt of length {len(prompt)}."

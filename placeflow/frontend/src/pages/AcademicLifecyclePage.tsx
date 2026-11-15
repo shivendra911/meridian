@@ -11,6 +11,7 @@ import {
   RefreshCw} from 'lucide-react';
 import { useTenant } from '../context/TenantContext';
 import { CurriculumDesigner } from '../components/academic/CurriculumDesigner';
+import { Select } from '../components/ui/Select';
 
 export const AcademicLifecyclePage: React.FC = () => {
   const { activeTenant: _activeTenant, activeInstitution: _activeInstitution } = useTenant();
@@ -351,17 +352,15 @@ export const AcademicLifecyclePage: React.FC = () => {
 
             <div>
               <label className="text-xs font-medium text-slate-300 block mb-1">Select Student</label>
-              <select
+              <Select
                 value={selectedStudent}
-                onChange={(e) => setSelectedStudent(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white"
-              >
-                {students.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} ({s.roll}) - {s.prog}
-                  </option>
-                ))}
-              </select>
+                onChange={setSelectedStudent}
+                options={students.map((s) => ({
+                  value: s.id,
+                  label: `${s.name} (${s.roll}) - ${s.prog}`,
+                }))}
+                aria-label="Select Student"
+              />
             </div>
 
             <div>

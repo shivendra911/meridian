@@ -9,6 +9,25 @@ import {
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { Select } from '../ui/Select';
+
+const PERSON_OPTIONS = [
+  { value: 'Dr. Suresh Raman (FAC004)', label: 'Dr. Suresh Raman (Senior Associate Professor · CSE)' },
+  { value: 'Dr. Ananya Sen (FAC008)', label: 'Dr. Ananya Sen (Professor · Electronics)' },
+  { value: 'Prof. Rajesh Kulkarni (FAC012)', label: 'Prof. Rajesh Kulkarni (Assistant Professor · Mathematics)' },
+  { value: 'Dr. Kavita Nair (FAC015)', label: 'Dr. Kavita Nair (Dean of Academic Affairs)' },
+];
+
+const CAMPUS_OPTIONS = [
+  { value: 'Campus North', label: 'Campus North (Main Technical Campus)' },
+  { value: 'Campus South', label: 'Campus South (Applied Research Park)' },
+];
+
+const DEPARTMENT_OPTIONS = [
+  { value: 'Computer Science & Engineering', label: 'Computer Science & Engineering' },
+  { value: 'Electronics & Communication', label: 'Electronics & Communication' },
+  { value: 'Mechanical Engineering', label: 'Mechanical Engineering' },
+];
 
 interface RoleAssignmentWizardProps {
   isOpen: boolean;
@@ -157,24 +176,12 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Institutional Member (Faculty / Staff) *
               </label>
-              <select
+              <Select
                 value={selectedPerson}
-                onChange={(e) => setSelectedPerson(e.target.value)}
-                className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white font-medium"
-              >
-                <option value="Dr. Suresh Raman (FAC004)">
-                  Dr. Suresh Raman (Senior Associate Professor &bull; CSE)
-                </option>
-                <option value="Dr. Ananya Sen (FAC008)">
-                  Dr. Ananya Sen (Professor &bull; Electronics)
-                </option>
-                <option value="Prof. Rajesh Kulkarni (FAC012)">
-                  Prof. Rajesh Kulkarni (Assistant Professor &bull; Mathematics)
-                </option>
-                <option value="Dr. Kavita Nair (FAC015)">
-                  Dr. Kavita Nair (Dean of Academic Affairs)
-                </option>
-              </select>
+                onChange={setSelectedPerson}
+                options={PERSON_OPTIONS}
+                aria-label="Institutional Member"
+              />
             </div>
 
             <div>
@@ -222,34 +229,24 @@ export const RoleAssignmentWizard: React.FC<RoleAssignmentWizardProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Campus</label>
-                <select
+                <Select
                   value={selectedCampus}
-                  onChange={(e) => setSelectedCampus(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
-                >
-                  <option value="Campus North">Campus North (Main Technical Campus)</option>
-                  <option value="Campus South">Campus South (Applied Research Park)</option>
-                </select>
+                  onChange={setSelectedCampus}
+                  options={CAMPUS_OPTIONS}
+                  aria-label="Campus"
+                />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Department / School
                 </label>
-                <select
+                <Select
                   value={selectedDepartment}
-                  onChange={(e) => setSelectedDepartment(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
-                >
-                  <option value="Computer Science & Engineering">
-                    Computer Science &amp; Engineering
-                  </option>
-                  <option value="Electronics & Communication">
-                    Electronics &amp; Communication
-                  </option>
-                  <option value="Mechanical Engineering">Mechanical Engineering</option>
-                  <option value="Management Studies">Management Studies</option>
-                </select>
+                  onChange={setSelectedDepartment}
+                  options={DEPARTMENT_OPTIONS}
+                  aria-label="Department / School"
+                />
               </div>
             </div>
 

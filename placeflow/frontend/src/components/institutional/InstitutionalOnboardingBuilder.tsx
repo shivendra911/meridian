@@ -12,6 +12,14 @@ import {
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { Select } from '../ui/Select';
+
+const GOVERNANCE_TYPE_OPTIONS = [
+  { value: 'AUTONOMOUS_INSTITUTE', label: 'Autonomous Institute (Senate Governed)' },
+  { value: 'CENTRAL_UNIVERSITY', label: 'Central University' },
+  { value: 'STATE_UNIVERSITY', label: 'State University' },
+  { value: 'DEEMED_UNIVERSITY', label: 'Deemed-to-be University' },
+];
 
 interface HierarchyNode {
   id: string;
@@ -182,16 +190,12 @@ export const InstitutionalOnboardingBuilder: React.FC<{
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Institutional Governance Type
                 </label>
-                <select
+                <Select
                   value={institutionType}
-                  onChange={(e) => setInstitutionType(e.target.value)}
-                  className="w-full text-xs border border-slate-300 rounded-lg p-2.5 bg-white"
-                >
-                  <option value="AUTONOMOUS_INSTITUTE">Autonomous Institute (Senate Governed)</option>
-                  <option value="CENTRAL_UNIVERSITY">Central University</option>
-                  <option value="STATE_UNIVERSITY">State University</option>
-                  <option value="DEEMED_UNIVERSITY">Deemed-to-be University</option>
-                </select>
+                  onChange={setInstitutionType}
+                  options={GOVERNANCE_TYPE_OPTIONS}
+                  aria-label="Institutional Governance Type"
+                />
               </div>
 
               <div>

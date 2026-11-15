@@ -114,6 +114,64 @@ def test_copilot_context_endpoint(copilot_client):
     assert persona["portal"] == "student"
     assert "AcademicAdvisorAgent" in persona["allowed_agents"]
     assert len(persona["quick_prompts"]) >= 3
+    assert "profile_summary" in persona
+    assert persona["profile_summary"]["cgpa"] > 0
+    assert "shareable_attributes" in persona
+    assert len(persona["shareable_attributes"]) >= 4
+
+
+def test_copilot_lens_switching_context(copilot_client):
+    client, _, tenant_id, _ = copilot_client
+    # Switch to faculty lens
+    resp_faculty = client.get("/api/copilot/context/?lens=faculty", HTTP_X_TENANT_ID=tenant_id)
+    assert resp_faculty.status_code == 200
+    fac_data = resp_faculty.json()["persona"]
+    assert fac_data["portal"] == "faculty"
+    assert fac_data["role_code"] == "FACULTY_MENTOR"
+    assert "advisees_count" in fac_data["profile_summary"]
+
+    # Switch to tpo lens
+    resp_tpo = client.get("/api/copilot/context/?lens=tpo", HTTP_X_TENANT_ID=tenant_id)
+    assert resp_tpo.status_code == 200
+    tpo_data = resp_tpo.json()["persona"]
+    assert tpo_data["portal"] == "tpo"
+    assert "active_drives_count" in tpo_data["profile_summary"]
+
+
+def test_copilot_granular_data_sharing_and_withholding(copilot_client):
+    client, _, tenant_id, _ = copilot_client
+    # 1. Query with explicit data sharing (academic_records shared)
+    resp_shared = client.post(
+        "/api/copilot/query/",
+        data={
+            "query": "Am I eligible for Super Dream drives with my CGPA?",
+            "lens": "student",
+            "shared_attributes": ["academic_records", "skills_and_resume"],
+        },
+        format="json",
+        HTTP_X_TENANT_ID=tenant_id,
+    )
+    assert resp_shared.status_code == 200
+    shared_data = resp_shared.json()
+    assert "Academic Performance & CGPA" in shared_data["shared_data_applied"]
+    assert "privacy_shield" in shared_data
+    assert shared_data["privacy_shield"]["shared_count"] == 2
+
+    # 2. Query with academic_records WITHHELD
+    resp_withheld = client.post(
+        "/api/copilot/query/",
+        data={
+            "query": "Am I eligible for Super Dream drives with my CGPA?",
+            "lens": "student",
+            "shared_attributes": ["skills_and_resume"],  # academic_records omitted
+        },
+        format="json",
+        HTTP_X_TENANT_ID=tenant_id,
+    )
+    assert resp_withheld.status_code == 200
+    withheld_data = resp_withheld.json()
+    assert "Academic Performance & CGPA" in withheld_data["withheld_attributes"]
+    assert "Privacy Notice" in withheld_data["answer"] or "withheld" in withheld_data["answer"].lower()
 
 
 def test_copilot_query_endpoint(copilot_client):
@@ -182,3 +240,4 @@ def test_copilot_agent_rbac_restriction(copilot_client):
     assert res_data["agent_name"] == "AcademicAdvisorAgent"
     assert res_data["status"] == "SUCCESS"
     assert "recommendation" in res_data
+

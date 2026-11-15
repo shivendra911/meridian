@@ -11,8 +11,15 @@ import {
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { Select } from '../ui/Select';
 import { toast } from 'sonner';
 import { SlideOverDrawer } from '../ui/SlideOverDrawer';
+
+const PROGRAM_OPTIONS = [
+  { value: 'CSE-BTECH-2026', label: 'B.Tech Computer Science (v2026.1)' },
+  { value: 'ECE-BTECH-2026', label: 'B.Tech Electronics & Comm (v2026.1)' },
+  { value: 'MBA-FIN-2026', label: 'MBA Financial Management (v2026)' },
+];
 
 interface CourseItem {
   code: string;
@@ -184,15 +191,12 @@ export const CurriculumDesigner: React.FC = () => {
               <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1">
                 Program Offering &amp; Version
               </span>
-              <select
+              <Select
                 value={selectedProgram}
-                onChange={(e) => setSelectedProgram(e.target.value)}
-                className="w-full text-xs font-semibold border border-slate-300 rounded p-2 bg-white"
-              >
-                <option value="CSE-BTECH-2026">B.Tech Computer Science (v2026.1)</option>
-                <option value="ECE-BTECH-2026">B.Tech Electronics &amp; Comm (v2026.1)</option>
-                <option value="MBA-FIN-2026">MBA Financial Management (v2026)</option>
-              </select>
+                onChange={setSelectedProgram}
+                options={PROGRAM_OPTIONS}
+                aria-label="Program Offering & Version"
+              />
             </div>
 
             <div className="pt-2 border-t border-slate-100">

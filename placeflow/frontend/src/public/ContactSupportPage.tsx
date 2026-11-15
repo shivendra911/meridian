@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Mail, Send, CheckCircle2 } from 'lucide-react';
+import { Select } from '../components/ui/Select';
+
+const CATEGORY_OPTIONS = [
+  { value: 'account', label: 'Account Access or Claim Issue' },
+  { value: 'record', label: 'Academic Record Discrepancy' },
+  { value: 'drive', label: 'Placement Drive Inquiry' },
+  { value: 'tech', label: 'Technical Issue or Bug Report' },
+];
 
 export const ContactSupportPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [category, setCategory] = useState('account');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
 
@@ -59,15 +68,12 @@ export const ContactSupportPage: React.FC = () => {
                 <label className="block text-xs font-semibold text-ink mb-1.5">
                   Category
                 </label>
-                <select
-                  required
-                  className="w-full px-3 py-2 text-xs border border-line rounded-lg bg-canvas text-ink focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                >
-                  <option value="account">Account Access or Claim Issue</option>
-                  <option value="record">Academic Record Discrepancy</option>
-                  <option value="drive">Placement Drive Inquiry</option>
-                  <option value="tech">Technical Issue or Bug Report</option>
-                </select>
+                <Select
+                  value={category}
+                  onChange={setCategory}
+                  options={CATEGORY_OPTIONS}
+                  aria-label="Support Category"
+                />
               </div>
 
               <div>

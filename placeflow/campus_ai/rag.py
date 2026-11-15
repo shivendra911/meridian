@@ -50,6 +50,8 @@ class InstitutionalRAGEngine:
         category: Optional[str] = None,
         institution_id: Optional[str] = None,
         top_k: int = 3,
+        profile_context: Optional[str] = None,
+        system_instruction_override: Optional[str] = None,
     ) -> GroundedRAGResponse:
         """Answers an institutional question grounded in approved regulations.
 
@@ -109,14 +111,19 @@ class InstitutionalRAGEngine:
             )
 
         context_str = "\n\n".join(context_parts)
+        profile_block = (
+            f"\n\nAuthoritative User Profile Context (Shared under DPDP Act 2023 Consent):\n{profile_context}\n\n"
+            if profile_context
+            else "\n\n"
+        )
         grounded_prompt = (
-            f"Question: {query}\n\n"
+            f"Question: {query}{profile_block}"
             f"Authoritative Institutional Excerpts:\n{context_str}\n\n"
-            f"Provide a clear, authoritative response based strictly on these excerpts. "
+            f"Provide a clear, authoritative response based strictly on these excerpts and the user's shared profile data. "
             f"Reference the issuing authority and document title."
         )
 
-        system_instruction = (
+        system_instruction = system_instruction_override or (
             "You are PlaceFlow Campus Intelligence. You answer questions strictly based on "
             "the provided institutional policy excerpts. Never invent rules or extrapolate beyond the text."
         )
