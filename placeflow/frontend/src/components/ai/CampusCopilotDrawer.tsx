@@ -160,58 +160,58 @@ interface RoleThemeConfig {
 
 const ROLE_THEMES: Record<RoleLens, RoleThemeConfig> = {
   student: {
-    gradient: 'from-indigo-950 via-purple-950 to-slate-900',
-    badgeBg: 'bg-indigo-950/80',
-    badgeBorder: 'border-indigo-700/60',
-    badgeText: 'text-indigo-300',
-    accentText: 'text-indigo-400',
-    accentBg: 'bg-indigo-500/10',
-    cardBorder: 'border-indigo-900/30',
+    gradient: 'from-[#0B1B3D] via-[#0E2352] to-[#07132B]',
+    badgeBg: 'bg-white/10',
+    badgeBorder: 'border-amber-400/40',
+    badgeText: 'text-now',
+    accentText: 'text-now',
+    accentBg: 'bg-amber-500/10',
+    cardBorder: 'border-line',
   },
   faculty: {
-    gradient: 'from-emerald-950 via-teal-950 to-slate-900',
-    badgeBg: 'bg-emerald-950/80',
-    badgeBorder: 'border-emerald-700/60',
+    gradient: 'from-[#0B1B3D] via-[#162E48] to-[#081829]',
+    badgeBg: 'bg-white/10',
+    badgeBorder: 'border-emerald-400/40',
     badgeText: 'text-emerald-300',
     accentText: 'text-emerald-400',
     accentBg: 'bg-emerald-500/10',
-    cardBorder: 'border-emerald-900/30',
+    cardBorder: 'border-line',
   },
   tpo: {
-    gradient: 'from-blue-950 via-slate-950 to-cyan-950',
-    badgeBg: 'bg-blue-950/80',
-    badgeBorder: 'border-blue-700/60',
-    badgeText: 'text-blue-300',
-    accentText: 'text-blue-400',
-    accentBg: 'bg-blue-500/10',
-    cardBorder: 'border-blue-900/30',
+    gradient: 'from-[#0B1B3D] via-[#0F2A4A] to-[#071A2E]',
+    badgeBg: 'bg-white/10',
+    badgeBorder: 'border-teal-400/40',
+    badgeText: 'text-teal-300',
+    accentText: 'text-teal-400',
+    accentBg: 'bg-teal-500/10',
+    cardBorder: 'border-line',
   },
   hod: {
-    gradient: 'from-amber-950 via-orange-950 to-slate-900',
-    badgeBg: 'bg-amber-950/80',
-    badgeBorder: 'border-amber-700/60',
+    gradient: 'from-[#0B1B3D] via-[#1C2844] to-[#09152C]',
+    badgeBg: 'bg-white/10',
+    badgeBorder: 'border-amber-400/40',
     badgeText: 'text-amber-300',
     accentText: 'text-amber-400',
     accentBg: 'bg-amber-500/10',
-    cardBorder: 'border-amber-900/30',
+    cardBorder: 'border-line',
   },
   management: {
-    gradient: 'from-fuchsia-950 via-purple-950 to-slate-900',
-    badgeBg: 'bg-fuchsia-950/80',
-    badgeBorder: 'border-fuchsia-700/60',
-    badgeText: 'text-fuchsia-300',
-    accentText: 'text-fuchsia-400',
-    accentBg: 'bg-fuchsia-500/10',
-    cardBorder: 'border-fuchsia-900/30',
+    gradient: 'from-[#0B1B3D] via-[#1A2346] to-[#081226]',
+    badgeBg: 'bg-white/10',
+    badgeBorder: 'border-indigo-400/40',
+    badgeText: 'text-indigo-300',
+    accentText: 'text-indigo-400',
+    accentBg: 'bg-indigo-500/10',
+    cardBorder: 'border-line',
   },
   admin: {
-    gradient: 'from-zinc-950 via-slate-900 to-black',
-    badgeBg: 'bg-slate-900/80',
-    badgeBorder: 'border-cyan-800/60',
-    badgeText: 'text-cyan-300',
-    accentText: 'text-cyan-400',
-    accentBg: 'bg-cyan-500/10',
-    cardBorder: 'border-slate-800/40',
+    gradient: 'from-[#090D16] via-[#111827] to-[#040810]',
+    badgeBg: 'bg-white/10',
+    badgeBorder: 'border-slate-500/40',
+    badgeText: 'text-slate-200',
+    accentText: 'text-slate-300',
+    accentBg: 'bg-slate-500/10',
+    cardBorder: 'border-line',
   },
 };
 
@@ -593,39 +593,39 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         title="Close copilot"
       />
 
-      {/* 2. Elevated Copilot Drawer Surface */}
+      {/* 2. Elevated Copilot Drawer Surface (Peek Panel) */}
       <aside
-        className="fixed inset-y-0 right-0 z-[70] w-full max-w-xl bg-surface border-l border-line/90 shadow-2xl flex flex-col font-sans transition-all duration-300 ease-out macos-drawer-enter overscroll-contain select-text"
+        className="fixed inset-y-0 right-0 z-[70] w-full max-w-xl bg-canvas border-l border-line shadow-2xl flex flex-col font-sans transition-all duration-300 ease-out select-text"
         aria-labelledby="copilot-drawer-title"
         role="dialog"
         aria-modal="true"
         onWheel={(e) => e.stopPropagation()}
       >
-      {/* 1. Masthead: Role-Specific Gradient Banner & Identity Bar with Ambient Halo */}
-      <div className={`relative overflow-hidden p-4 text-white bg-gradient-to-r ${theme.gradient} border-b border-line/40`}>
+      {/* 1. Masthead: Unified Institutional Hero Banner with Ambient Glow */}
+      <div className={`relative overflow-hidden p-5 text-white bg-gradient-to-r ${theme.gradient} border-b border-line/30`}>
         {/* Subtle Ambient Luminescence Glow */}
-        <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl opacity-20 bg-white/30" />
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className={`rounded-lg p-2 ${theme.badgeBg} border ${theme.badgeBorder} shrink-0`}>
-              <PersonaIcon size={20} className={theme.accentText} />
+        <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl opacity-20 bg-amber-400/25" />
+        <div className="relative z-10 flex items-start justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0 flex-1">
+            <div className={`rounded-xl p-2.5 ${theme.badgeBg} border ${theme.badgeBorder} shrink-0 mt-0.5 shadow-2xs`}>
+              <PersonaIcon size={22} className={theme.accentText} />
             </div>
             <div className="min-w-0 flex-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-white/80 block">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-white/70 block font-sans">
                 Campus AI Copilot
               </span>
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap mt-0.5">
                 <h2
                   id="copilot-drawer-title"
-                  className="text-sm font-semibold text-white tracking-tight truncate m-0"
+                  className="text-lg sm:text-xl font-bold text-white tracking-tight truncate m-0 font-display"
                 >
                   {persona.name}
                 </h2>
-                <span className={`inline-flex items-center rounded-full ${theme.badgeBg} px-2 py-0.5 text-[11px] font-semibold ${theme.badgeText} border ${theme.badgeBorder} shrink-0`}>
+                <span className={`inline-flex items-center rounded-full ${theme.badgeBg} px-2.5 py-0.5 text-[11px] font-bold ${theme.badgeText} border ${theme.badgeBorder} shrink-0`}>
                   {persona.badge}
                 </span>
               </div>
-              <p className="text-xs text-slate-300 m-0 truncate">
+              <p className="text-xs text-white/80 mt-1 m-0 truncate">
                 {displayName} &bull; {department}
               </p>
             </div>
@@ -634,7 +634,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
           <div className="flex items-center gap-2 shrink-0">
             {/* Verified Profile Role Lock Pill (User Cannot Switch Role) */}
             <div
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 text-xs text-white font-medium border border-white/15 select-none shadow-2xs"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-xs text-white/90 font-medium border border-white/15 select-none shadow-2xs"
               title={`Role locked to verified ${activeLens} profile`}
             >
               <Lock size={11} className="text-white/80 shrink-0" />
@@ -644,7 +644,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg p-1.5 text-slate-300 hover:bg-white/10 hover:text-white transition-colors macos-press-sm cursor-pointer"
+              className="rounded-full p-1.5 text-white/80 hover:bg-white/15 hover:text-white transition-colors cursor-pointer"
               aria-label="Close copilot"
             >
               <X size={18} />
@@ -652,23 +652,23 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
           </div>
         </div>
 
-        <p className="text-[11.5px] text-slate-300 mt-2 m-0 line-clamp-1">
+        <p className="relative z-10 text-xs text-white/75 mt-3 m-0 line-clamp-1 font-normal">
           {persona.tagline}
         </p>
       </div>
 
       {/* 2. Privacy & Statutory Compliance Bar */}
-      <div className="flex items-center justify-between border-b border-line bg-slate-50 px-4 py-2 text-xs text-ink-muted">
+      <div className="flex items-center justify-between border-b border-line bg-surface px-5 py-2.5 text-xs text-ink-muted">
         <div className="flex items-center gap-1.5">
-          <ShieldCheck size={13} className="text-emerald-600" />
-          <span className="font-medium text-ink">DPDP Act 2023 Consent Guard</span>
+          <ShieldCheck size={14} className="text-success" />
+          <span className="font-semibold text-ink">DPDP Act 2023 Consent Guard</span>
         </div>
         <button
           type="button"
           onClick={() => setPrivacyControlsOpen((prev) => !prev)}
-          className="macos-press-sm inline-flex items-center gap-1 text-[11px] font-semibold text-brand hover:underline cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-line bg-canvas hover:bg-surface text-ink text-[11px] font-semibold transition-colors cursor-pointer"
         >
-          <SlidersHorizontal size={11} />
+          <SlidersHorizontal size={11} className="text-brand" />
           <span>
             {sharedKeys.length} of {shareableAttributes.length || 5} Records Shared
           </span>
@@ -681,10 +681,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
       {/* 3. Granular Profile Data Sharing Drawer / Controls */}
       {privacyControlsOpen && (
-        <div className="border-b border-line bg-slate-100/70 p-3.5 text-xs animate-in slide-in-from-top-2 duration-150">
-          <div className="flex items-center justify-between mb-2">
+        <div className="border-b border-line bg-canvas/80 p-4 text-xs animate-in slide-in-from-top-2 duration-150">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <span className="font-semibold text-ink block">
+              <span className="font-bold text-ink block font-display">
                 Granular Profile Data Sharing
               </span>
               <span className="text-[11px] text-ink-muted">
@@ -695,15 +695,15 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
               <button
                 type="button"
                 onClick={handleSelectAllAttributes}
-                className="text-[11px] font-medium text-brand hover:underline cursor-pointer"
+                className="text-[11px] font-semibold text-brand hover:underline cursor-pointer"
               >
                 Share All
               </button>
-              <span className="text-slate-300">&bull;</span>
+              <span className="text-line-strong">&bull;</span>
               <button
                 type="button"
                 onClick={handleDeselectAllAttributes}
-                className="text-[11px] font-medium text-slate-600 hover:underline cursor-pointer"
+                className="text-[11px] font-semibold text-ink-muted hover:text-ink cursor-pointer"
               >
                 Strict Privacy
               </button>
@@ -719,22 +719,22 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
               return (
                 <div
                   key={attr.key}
-                  className={`flex items-center justify-between gap-3 p-2 rounded-lg border transition-colors ${
+                  className={`flex items-center justify-between gap-3 p-3 rounded-xl border transition-colors ${
                     checked
                       ? 'bg-surface border-line shadow-2xs'
-                      : 'bg-slate-50 border-slate-200/60 opacity-70'
+                      : 'bg-canvas border-line/60 opacity-70'
                   }`}
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-medium text-ink truncate text-xs">
+                      <span className="font-bold text-ink truncate text-xs">
                         {attr.label}
                       </span>
-                      <span className="text-[10px] font-medium px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-700">
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-canvas text-ink-muted border border-line">
                         {attr.category}
                       </span>
                     </div>
-                    <p className="text-[11px] text-ink-muted truncate m-0">
+                    <p className="text-[11px] text-ink-muted truncate m-0 mt-0.5">
                       {checked ? attr.description : '🔒 Withheld from Copilot prompt context'}
                     </p>
                   </div>
@@ -819,16 +819,16 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
       )}
 
       {/* 5. Role-Specific Profile Snapshot Card */}
-      <div className="p-3.5 border-b border-line bg-surface">
+      <div className="p-4 border-b border-line bg-canvas">
         {activeLens === 'student' && (
-          <div className="rounded-xl border border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-purple-50/40 to-slate-50 p-3 shadow-2xs">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2 min-w-0">
-                <div className="w-7 h-7 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+          <div className="rounded-2xl border border-line bg-surface p-4 shadow-xs">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-brand text-white font-bold text-xs flex items-center justify-center shrink-0 font-display">
                   {displayName.slice(0, 2).toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <span className="text-xs font-semibold text-ink truncate block">
+                  <span className="text-xs font-bold text-ink truncate block">
                     {displayName}
                   </span>
                   <span className="text-[11px] text-ink-muted font-mono truncate block">
@@ -836,55 +836,55 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   </span>
                 </div>
               </div>
-              <span className="text-[11px] font-semibold text-indigo-700 bg-indigo-100/80 border border-indigo-200 px-2 py-0.5 rounded-full shrink-0">
+              <span className="text-[11px] font-bold text-brand bg-brand/10 border border-brand/20 px-2.5 py-0.5 rounded-full shrink-0">
                 {profileSummary.degree || 'B.Tech CSE'}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-2.5">
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Current CGPA
                 </span>
                 <span
-                  className={`font-semibold ${
-                    isShared('academic_records') ? 'text-emerald-700 font-mono text-xs' : 'text-slate-400 italic text-[11px]'
+                  className={`font-display font-extrabold text-sm sm:text-base ${
+                    isShared('academic_records') ? 'text-ink' : 'text-slate-400 italic text-xs'
                   }`}
                 >
-                  {isShared('academic_records') ? `${profileSummary.cgpa || 8.42} / 10.0` : '🔒 Withheld'}
+                  {isShared('academic_records') ? `${profileSummary.cgpa || 8.42}` : '🔒 Withheld'}
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Backlogs
                 </span>
                 <span
-                  className={`font-semibold ${
-                    isShared('academic_records') ? 'text-ink font-mono text-xs' : 'text-slate-400 italic text-[11px]'
+                  className={`font-display font-extrabold text-sm sm:text-base ${
+                    isShared('academic_records') ? 'text-ink' : 'text-slate-400 italic text-xs'
                   }`}
                 >
                   {isShared('academic_records') ? `${profileSummary.backlogs || 0} Active` : '🔒 Withheld'}
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Active Drives
                 </span>
                 <span
-                  className={`font-semibold ${
-                    isShared('applications_pipeline') ? 'text-indigo-700 font-mono text-xs' : 'text-slate-400 italic text-[11px]'
+                  className={`font-display font-extrabold text-sm sm:text-base ${
+                    isShared('applications_pipeline') ? 'text-brand' : 'text-slate-400 italic text-xs'
                   }`}
                 >
                   {isShared('applications_pipeline') ? `${profileSummary.active_applications || 2} Drives` : '🔒 Withheld'}
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   NEP Credits
                 </span>
                 <span
-                  className={`font-semibold ${
-                    isShared('nep_progression') ? 'text-purple-700 font-mono text-xs' : 'text-slate-400 italic text-[11px]'
+                  className={`font-display font-extrabold text-sm sm:text-base ${
+                    isShared('nep_progression') ? 'text-ink' : 'text-slate-400 italic text-xs'
                   }`}
                 >
                   {isShared('nep_progression') ? `${profileSummary.completed_credits || 128} / 160` : '🔒 Withheld'}
@@ -895,14 +895,14 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         )}
 
         {activeLens === 'faculty' && (
-          <div className="rounded-xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-slate-50 p-3 shadow-2xs">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2 min-w-0">
-                <div className="w-7 h-7 rounded-full bg-emerald-700 text-white font-bold text-xs flex items-center justify-center shrink-0">
+          <div className="rounded-2xl border border-line bg-surface p-4 shadow-xs">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-emerald-800 text-white font-bold text-xs flex items-center justify-center shrink-0 font-display">
                   {displayName.slice(0, 2).toUpperCase()}
                 </div>
                 <div className="min-w-0">
-                  <span className="text-xs font-semibold text-ink truncate block">
+                  <span className="text-xs font-bold text-ink truncate block">
                     {displayName}
                   </span>
                   <span className="text-[11px] text-ink-muted font-mono truncate block">
@@ -910,43 +910,43 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   </span>
                 </div>
               </div>
-              <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-100/80 border border-emerald-200 px-2 py-0.5 rounded-full shrink-0">
+              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full shrink-0">
                 {profileSummary.designation || 'Associate Professor'}
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 text-xs mt-2.5">
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Assigned Advisees
                 </span>
                 <span
-                  className={`font-semibold ${
-                    isShared('mentee_roster') ? 'text-emerald-700 font-mono text-xs' : 'text-slate-400 italic text-[11px]'
+                  className={`font-display font-extrabold text-sm sm:text-base ${
+                    isShared('mentee_roster') ? 'text-ink' : 'text-slate-400 italic text-xs'
                   }`}
                 >
                   {isShared('mentee_roster') ? `${profileSummary.advisees_count || 18} Students` : '🔒 Withheld'}
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Attendance &lt;75%
                 </span>
                 <span
-                  className={`font-semibold ${
-                    isShared('attendance_alerts') ? 'text-amber-700 font-mono text-xs' : 'text-slate-400 italic text-[11px]'
+                  className={`font-display font-extrabold text-sm sm:text-base ${
+                    isShared('attendance_alerts') ? 'text-amber-700' : 'text-slate-400 italic text-xs'
                   }`}
                 >
                   {isShared('attendance_alerts') ? `${profileSummary.attendance_alerts_count || 3} At-Risk` : '🔒 Withheld'}
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Pending NOCs
                 </span>
                 <span
-                  className={`font-semibold ${
-                    isShared('noc_requests') ? 'text-teal-700 font-mono text-xs' : 'text-slate-400 italic text-[11px]'
+                  className={`font-display font-extrabold text-sm sm:text-base ${
+                    isShared('noc_requests') ? 'text-teal-700' : 'text-slate-400 italic text-xs'
                   }`}
                 >
                   {isShared('noc_requests') ? `${profileSummary.pending_nocs || 4} Requests` : '🔒 Withheld'}
@@ -957,45 +957,45 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         )}
 
         {activeLens === 'tpo' && (
-          <div className="rounded-xl border border-blue-200/80 bg-gradient-to-r from-blue-50/70 via-slate-50 to-cyan-50/40 p-3 shadow-2xs">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-ink">
+          <div className="rounded-2xl border border-line bg-surface p-4 shadow-xs">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-ink font-display">
                 Placement Cell Telemetry Command
               </span>
-              <span className="text-[11px] font-semibold text-blue-700 bg-blue-100/80 border border-blue-200 px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-bold text-teal-800 bg-teal-50 border border-teal-200 px-2.5 py-0.5 rounded-full">
                 Active Cycle 2025-26
               </span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-2">
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Active Drives
                 </span>
-                <span className="text-blue-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-ink">
                   {profileSummary.active_drives_count || 14} Drives
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Superday Slots
                 </span>
-                <span className="text-purple-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-brand">
                   {profileSummary.superday_slots || 6} Slots
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Renege Alerts
                 </span>
-                <span className="text-amber-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-amber-700">
                   {profileSummary.renege_alerts_count || 2} Flagged
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Fairness Ratio
                 </span>
-                <span className="text-emerald-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-success">
                   88% (4/5ths OK)
                 </span>
               </div>
@@ -1004,37 +1004,37 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         )}
 
         {activeLens === 'hod' && (
-          <div className="rounded-xl border border-amber-200/80 bg-gradient-to-r from-amber-50/70 via-orange-50/40 to-slate-50 p-3 shadow-2xs">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-ink">
+          <div className="rounded-2xl border border-line bg-surface p-4 shadow-xs">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-ink font-display">
                 Department Executive Performance
               </span>
-              <span className="text-[11px] font-semibold text-amber-800 bg-amber-100/80 border border-amber-200 px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
                 Curriculum v2.0 Active
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-xs mt-2">
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Placement Rate
                 </span>
-                <span className="text-emerald-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-success">
                   86.4% Placed
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Active Mentors
                 </span>
-                <span className="text-amber-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-amber-700">
                   12 Mentors
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Load Variance
                 </span>
-                <span className="text-blue-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-brand">
                   Avg 15.8 / Mentor
                 </span>
               </div>
@@ -1043,37 +1043,37 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         )}
 
         {activeLens === 'management' && (
-          <div className="rounded-xl border border-fuchsia-200/80 bg-gradient-to-r from-fuchsia-50/70 via-purple-50/40 to-slate-50 p-3 shadow-2xs">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-ink">
+          <div className="rounded-2xl border border-line bg-surface p-4 shadow-xs">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-ink font-display">
                 Institutional Strategy & Accreditation Hub
               </span>
-              <span className="text-[11px] font-semibold text-fuchsia-800 bg-fuchsia-100/80 border border-fuchsia-200 px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-bold text-brand bg-brand/10 border border-brand/20 px-2.5 py-0.5 rounded-full">
                 Tier-1 Autonomous
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-xs mt-2">
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   NIRF Table 5.1
                 </span>
-                <span className="text-purple-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-brand">
                   84.6 / 100
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   NBA Criterion 4
                 </span>
-                <span className="text-emerald-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-success">
                   92.0 / 100
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-surface border border-line">
-                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Median CTC
                 </span>
-                <span className="text-fuchsia-700 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-ink">
                   ₹14.8 LPA
                 </span>
               </div>
@@ -1082,38 +1082,38 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         )}
 
         {activeLens === 'admin' && (
-          <div className="rounded-xl border border-slate-700/60 bg-gradient-to-r from-slate-900 via-slate-800 to-black p-3 text-white shadow-2xs">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-cyan-300 flex items-center gap-1.5">
-                <Shield size={13} className="text-cyan-400" />
+          <div className="rounded-2xl border border-line bg-surface p-4 shadow-xs">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-ink flex items-center gap-1.5 font-display">
+                <Shield size={14} className="text-brand" />
                 Campus AI Governance Hub
               </span>
-              <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-950/80 border border-emerald-700/60 px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-bold text-success bg-success-bg border border-success-border px-2.5 py-0.5 rounded-full">
                 PIP Defense Strict
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-xs mt-2">
-              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-                <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-semibold">
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Token Quota
                 </span>
-                <span className="text-cyan-300 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-brand font-mono">
                   16.8% Used
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-                <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Trace Ledger
                 </span>
-                <span className="text-emerald-400 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-success font-mono">
                   1,248 Traces
                 </span>
               </div>
-              <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-                <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-semibold">
+              <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                   Blocked PIP
                 </span>
-                <span className="text-rose-400 font-mono font-semibold text-xs">
+                <span className="font-display font-extrabold text-sm sm:text-base text-danger font-mono">
                   14 Threats
                 </span>
               </div>
@@ -1122,45 +1122,45 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         )}
       </div>
 
-      {/* 6. Mode Switcher Tabs (Apple-Style Fluid Segmented Control) */}
-      <div className="border-b border-line bg-surface px-4 py-2.5">
-        <div className="macos-segmented grid grid-cols-3 gap-1 p-1 text-xs">
+      {/* 6. Mode Switcher Tabs (Segmented Control) */}
+      <div className="border-b border-line bg-canvas px-4 py-2.5">
+        <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-surface border border-line shadow-2xs text-xs">
           <button
             type="button"
             onClick={() => handleModeChange('rag')}
-            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-medium transition-all duration-150 cursor-pointer macos-press-sm ${
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-semibold transition-all duration-150 cursor-pointer ${
               activeMode === 'rag'
-                ? 'bg-surface text-ink font-semibold shadow-xs border border-line/70'
-                : 'text-ink-muted hover:text-ink hover:bg-white/40'
+                ? 'bg-ink text-white shadow-xs'
+                : 'text-ink-muted hover:text-ink hover:bg-canvas'
             }`}
           >
-            <Sparkles size={13} className={activeMode === 'rag' ? 'text-brand' : ''} />
+            <Sparkles size={13} className={activeMode === 'rag' ? 'text-now' : ''} />
             <span>Policy RAG</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleModeChange('agents')}
-            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-medium transition-all duration-150 cursor-pointer macos-press-sm ${
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-semibold transition-all duration-150 cursor-pointer ${
               activeMode === 'agents'
-                ? 'bg-surface text-ink font-semibold shadow-xs border border-line/70'
-                : 'text-ink-muted hover:text-ink hover:bg-white/40'
+                ? 'bg-ink text-white shadow-xs'
+                : 'text-ink-muted hover:text-ink hover:bg-canvas'
             }`}
           >
-            <Bot size={13} className={activeMode === 'agents' ? 'text-brand' : ''} />
+            <Bot size={13} className={activeMode === 'agents' ? 'text-now' : ''} />
             <span>Autonomous Agents</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleModeChange('traces')}
-            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-medium transition-all duration-150 cursor-pointer macos-press-sm ${
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-semibold transition-all duration-150 cursor-pointer ${
               activeMode === 'traces'
-                ? 'bg-surface text-ink font-semibold shadow-xs border border-line/70'
-                : 'text-ink-muted hover:text-ink hover:bg-white/40'
+                ? 'bg-ink text-white shadow-xs'
+                : 'text-ink-muted hover:text-ink hover:bg-canvas'
             }`}
           >
-            <Terminal size={13} className={activeMode === 'traces' ? 'text-brand' : ''} />
+            <Terminal size={13} className={activeMode === 'traces' ? 'text-now' : ''} />
             <span>Audit Ledger</span>
           </button>
         </div>
@@ -1168,20 +1168,20 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
       {/* 7. Drawer Body Content */}
       <div
-        className="flex-1 overflow-y-auto p-4 space-y-4 overscroll-contain overscroll-y-contain"
+        className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 overscroll-contain overscroll-y-contain bg-canvas"
         onWheel={(e) => e.stopPropagation()}
       >
         {error && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800 flex items-start gap-2">
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-800 flex items-start gap-2 shadow-2xs">
             <AlertTriangle size={15} className="shrink-0 mt-0.5 text-rose-600" />
             <div className="flex-1 min-w-0">
-              <span className="font-semibold block">Copilot Alert</span>
+              <span className="font-bold block">Copilot Alert</span>
               <span>{error}</span>
             </div>
             <button
               type="button"
               onClick={() => setError(null)}
-              className="text-rose-500 hover:text-rose-800 cursor-pointer"
+              className="text-rose-500 hover:text-rose-800 cursor-pointer p-0.5"
             >
               <X size={14} />
             </button>
@@ -1193,16 +1193,16 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
           <div className="space-y-4">
             {/* Role-Specific Interactive Diagnostic & Power Tools */}
             {activeLens === 'student' && (
-              <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-purple-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+              <div className="rounded-2xl border border-line bg-surface p-4 space-y-3.5 shadow-xs">
                 {/* Student Sub-Tool Navigation Pills */}
-                <div className="flex border-b border-indigo-100/80 pb-2 gap-1 text-[11px]">
+                <div className="flex p-1 rounded-xl bg-canvas border border-line gap-1 text-[11px]">
                   <button
                     type="button"
                     onClick={() => setStudentToolTab('eligibility')}
-                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all cursor-pointer ${
                       studentToolTab === 'eligibility'
-                        ? 'bg-indigo-600 text-white shadow-2xs'
-                        : 'text-indigo-900/70 hover:bg-indigo-100/60'
+                        ? 'bg-ink text-white shadow-2xs'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface'
                     }`}
                   >
                     Eligibility &amp; Resume
@@ -1210,10 +1210,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => setStudentToolTab('prep')}
-                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all cursor-pointer ${
                       studentToolTab === 'prep'
-                        ? 'bg-indigo-600 text-white shadow-2xs'
-                        : 'text-indigo-900/70 hover:bg-indigo-100/60'
+                        ? 'bg-ink text-white shadow-2xs'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface'
                     }`}
                   >
                     Recruiter Prep Blueprint
@@ -1221,10 +1221,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => setStudentToolTab('salary')}
-                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all cursor-pointer ${
                       studentToolTab === 'salary'
-                        ? 'bg-indigo-600 text-white shadow-2xs'
-                        : 'text-indigo-900/70 hover:bg-indigo-100/60'
+                        ? 'bg-ink text-white shadow-2xs'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface'
                     }`}
                   >
                     In-Hand Salary Calculator
@@ -1234,46 +1234,46 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 {studentToolTab === 'eligibility' && (
                   <div className="space-y-3 animate-in fade-in-50 duration-150">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-indigo-950 flex items-center gap-1.5">
-                        <TrendingUp size={14} className="text-indigo-600" />
+                      <span className="text-xs font-bold text-ink flex items-center gap-1.5 font-display">
+                        <TrendingUp size={15} className="text-now" />
                         Tier-1 Super Dream Eligibility Meter
                       </span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-success-bg text-success border border-success-border">
                         Eligible: Tier-1
                       </span>
                     </div>
-                    <div className="space-y-2 text-[11px]">
+                    <div className="space-y-2.5 text-[11px]">
                       <div>
                         <div className="flex justify-between text-ink-muted mb-1">
                           <span>CGPA Cut-Off Benchmark (7.50 Min)</span>
-                          <span className="font-mono font-semibold text-indigo-950">8.42 / 10.0 (+0.92 Delta)</span>
+                          <span className="font-mono font-bold text-ink">8.42 / 10.0 (+0.92 Delta)</span>
                         </div>
-                        <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
-                          <div className="h-full bg-indigo-600 rounded-full copilot-gauge-fill" style={{ width: '84.2%' }} />
+                        <div className="w-full h-2 rounded-full bg-line overflow-hidden">
+                          <div className="h-full bg-brand rounded-full" style={{ width: '84.2%' }} />
                         </div>
                       </div>
                       <div>
                         <div className="flex justify-between text-ink-muted mb-1">
                           <span>NEP Degree Credits Completed (128 / 160)</span>
-                          <span className="font-mono font-semibold text-purple-900">80% Level 8 Honours</span>
+                          <span className="font-mono font-bold text-ink">80% Level 8 Honours</span>
                         </div>
-                        <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
-                          <div className="h-full bg-purple-600 rounded-full copilot-gauge-fill" style={{ width: '80%' }} />
+                        <div className="w-full h-2 rounded-full bg-line overflow-hidden">
+                          <div className="h-full bg-now rounded-full" style={{ width: '80%' }} />
                         </div>
                       </div>
                     </div>
 
                     {/* 1-Click ATS Resume Bullet Optimizer Collapsible */}
-                    <div className="pt-2 border-t border-indigo-100/80">
+                    <div className="pt-2 border-t border-line">
                       <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-semibold text-ink flex items-center gap-1">
-                          <FileText size={12} className="text-indigo-600" />
+                        <span className="text-[11px] font-bold text-ink flex items-center gap-1">
+                          <FileText size={12} className="text-brand" />
                           ATS Resume Bullet Improver
                         </span>
                         <button
                           type="button"
                           onClick={() => setResumeToolOpen((p) => !p)}
-                          className="text-[11px] font-medium text-brand hover:underline cursor-pointer"
+                          className="text-[11px] font-semibold text-brand hover:underline cursor-pointer"
                         >
                           {resumeToolOpen ? 'Hide Tool' : 'Open ATS Rewriter'}
                         </button>
@@ -1285,7 +1285,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                             value={resumeBulletInput}
                             onChange={(e) => setResumeBulletInput(e.target.value)}
                             placeholder="Paste draft resume bullet (e.g. Built a full stack portal with React)..."
-                            className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-line bg-surface text-ink focus:outline-hidden focus:border-brand"
+                            className="w-full px-3 py-2 text-xs rounded-xl border border-line bg-canvas/40 text-ink focus:outline-hidden focus:border-brand focus:bg-surface"
                           />
                           <button
                             type="button"
@@ -1294,9 +1294,9 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                               setQueryInput(query);
                               handleSubmitRag(undefined, query);
                             }}
-                            className="macos-press-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-semibold cursor-pointer shadow-2xs"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand hover:bg-brand-hover text-white text-[11px] font-bold cursor-pointer shadow-xs transition-colors"
                           >
-                            <Sparkles size={12} />
+                            <Sparkles size={12} className="text-now" />
                             <span>Optimize for Tier-1 ATS</span>
                           </button>
                         </div>
@@ -1306,10 +1306,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 )}
 
                 {studentToolTab === 'prep' && (
-                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                  <div className="space-y-3 animate-in fade-in-50 duration-150 text-[11px]">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-indigo-950 flex items-center gap-1">
-                        <BookOpen size={13} className="text-indigo-600" />
+                      <span className="font-bold text-ink flex items-center gap-1 font-display">
+                        <BookOpen size={13} className="text-brand" />
                         Target Recruiter Interview Cheat Sheet
                       </span>
                       <div className="flex gap-1">
@@ -1318,10 +1318,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                             key={co}
                             type="button"
                             onClick={() => setSelectedCompanyPrep(co)}
-                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
+                            className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-colors cursor-pointer border ${
                               selectedCompanyPrep === co
-                                ? 'bg-indigo-700 text-white'
-                                : 'bg-surface text-ink border border-line hover:bg-slate-100'
+                                ? 'bg-ink text-white border-ink'
+                                : 'bg-surface text-ink border-line hover:bg-canvas'
                             }`}
                           >
                             {co}
@@ -1329,9 +1329,9 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                         ))}
                       </div>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-surface border border-line space-y-1">
-                      <span className="font-semibold text-ink block">{selectedCompanyPrep} Campus Hiring Blueprint</span>
-                      <p className="text-[10px] text-ink-muted m-0">
+                    <div className="p-3 rounded-xl bg-canvas border border-line space-y-1">
+                      <span className="font-bold text-ink block">{selectedCompanyPrep} Campus Hiring Blueprint</span>
+                      <p className="text-[11px] text-ink-muted m-0 leading-relaxed">
                         {selectedCompanyPrep === 'Google' && 'Focus: Distributed Graph Algorithms, Binary Search on Answer, System Design (Rate Limiters).'}
                         {selectedCompanyPrep === 'Microsoft' && 'Focus: Dynamic Programming (Subsequences), Tree Traversal, REST API Concurrency.'}
                         {selectedCompanyPrep === 'Goldman Sachs' && 'Focus: Numerical Probability, Hash Table Inversion, Low-Latency Java/C++ Concurrency.'}
@@ -1344,22 +1344,22 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                         setQueryInput(q);
                         handleSubmitRag(undefined, q);
                       }}
-                      className="macos-press-sm w-full py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
+                      className="w-full py-2 rounded-full bg-brand hover:bg-brand-hover text-white font-bold text-center text-xs shadow-xs cursor-pointer inline-flex items-center justify-center gap-1.5 transition-colors"
                     >
-                      <Sparkles size={12} />
+                      <Sparkles size={13} className="text-now" />
                       <span>Generate {selectedCompanyPrep} Prep Blueprint</span>
                     </button>
                   </div>
                 )}
 
                 {studentToolTab === 'salary' && (
-                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                  <div className="space-y-3 animate-in fade-in-50 duration-150 text-[11px]">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-indigo-950 flex items-center gap-1">
-                        <Wallet size={13} className="text-indigo-600" />
+                      <span className="font-bold text-ink flex items-center gap-1 font-display">
+                        <Wallet size={14} className="text-brand" />
                         CTC to Net Monthly In-Hand Estimator
                       </span>
-                      <span className="text-emerald-700 font-mono font-semibold">₹{ctcInput} LPA</span>
+                      <span className="text-success font-mono font-bold text-xs">₹{ctcInput} LPA</span>
                     </div>
                     <div className="flex gap-1.5">
                       {['12.0', '26.5', '45.0'].map((bracket) => (
@@ -1367,24 +1367,24 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                           key={bracket}
                           type="button"
                           onClick={() => setCtcInput(bracket)}
-                          className={`flex-1 py-1 rounded text-center text-[10px] font-semibold transition-colors cursor-pointer border ${
+                          className={`flex-1 py-1.5 rounded-full text-center text-[10px] font-bold transition-colors cursor-pointer border ${
                             ctcInput === bracket
-                              ? 'bg-indigo-600 text-white border-indigo-600'
-                              : 'bg-surface text-ink border-line hover:bg-slate-50'
+                              ? 'bg-ink text-white border-ink shadow-2xs'
+                              : 'bg-surface text-ink border-line hover:bg-canvas'
                           }`}
                         >
                           ₹{bracket} LPA
                         </button>
                       ))}
                     </div>
-                    <div className="grid grid-cols-2 gap-1.5 text-[10px]">
-                      <div className="p-2 rounded bg-surface border border-line">
-                        <span className="text-ink-muted block">Annual Base</span>
-                        <span className="font-mono font-semibold text-ink">₹{(parseFloat(ctcInput) * 0.68).toFixed(1)} LPA</span>
+                    <div className="grid grid-cols-2 gap-2 text-[10px]">
+                      <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                        <span className="text-ink-muted block uppercase tracking-wider font-semibold">Annual Base</span>
+                        <span className="font-mono font-bold text-ink text-xs">₹{(parseFloat(ctcInput) * 0.68).toFixed(1)} LPA</span>
                       </div>
-                      <div className="p-2 rounded bg-surface border border-line">
-                        <span className="text-ink-muted block">Estimated Monthly In-Hand</span>
-                        <span className="font-mono font-semibold text-emerald-700">~₹{Math.round((parseFloat(ctcInput) * 68000) / 12).toLocaleString('en-IN')} /mo</span>
+                      <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                        <span className="text-ink-muted block uppercase tracking-wider font-semibold">Estimated Monthly Take-Home</span>
+                        <span className="font-mono font-bold text-success text-xs">~₹{Math.round((parseFloat(ctcInput) * 68000) / 12).toLocaleString('en-IN')} /mo</span>
                       </div>
                     </div>
                     <button
@@ -1394,9 +1394,9 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                         setQueryInput(q);
                         handleSubmitRag(undefined, q);
                       }}
-                      className="macos-press-sm w-full py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
+                      className="w-full py-2 rounded-full bg-brand hover:bg-brand-hover text-white font-bold text-center text-xs shadow-xs cursor-pointer inline-flex items-center justify-center gap-1.5 transition-colors"
                     >
-                      <Calculator size={12} />
+                      <Calculator size={13} className="text-now" />
                       <span>Get Detailed Compensation Analysis</span>
                     </button>
                   </div>
@@ -1405,16 +1405,16 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             )}
 
             {activeLens === 'faculty' && (
-              <div className="rounded-xl border border-emerald-100 bg-gradient-to-br from-emerald-50/70 via-teal-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+              <div className="rounded-2xl border border-line bg-surface p-4 space-y-3.5 shadow-xs">
                 {/* Faculty Sub-Tool Navigation */}
-                <div className="flex border-b border-emerald-100/80 pb-2 gap-1 text-[11px]">
+                <div className="flex p-1 rounded-xl bg-canvas border border-line gap-1 text-[11px]">
                   <button
                     type="button"
                     onClick={() => setFacultyToolTab('attendance')}
-                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all cursor-pointer ${
                       facultyToolTab === 'attendance'
-                        ? 'bg-emerald-700 text-white shadow-2xs'
-                        : 'text-emerald-900/70 hover:bg-emerald-100/60'
+                        ? 'bg-ink text-white shadow-2xs'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface'
                     }`}
                   >
                     Attendance &amp; NOC Alerts
@@ -1422,10 +1422,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => setFacultyToolTab('lor')}
-                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all cursor-pointer ${
                       facultyToolTab === 'lor'
-                        ? 'bg-emerald-700 text-white shadow-2xs'
-                        : 'text-emerald-900/70 hover:bg-emerald-100/60'
+                        ? 'bg-ink text-white shadow-2xs'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface'
                     }`}
                   >
                     1-Click LOR Drafter
@@ -1433,28 +1433,28 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 </div>
 
                 {facultyToolTab === 'attendance' && (
-                  <div className="space-y-2.5 animate-in fade-in-50 duration-150">
+                  <div className="space-y-3 animate-in fade-in-50 duration-150">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-emerald-950 flex items-center gap-1.5">
-                        <AlertTriangle size={13} className="text-amber-600" />
+                      <span className="text-xs font-bold text-ink flex items-center gap-1.5 font-display">
+                        <AlertTriangle size={14} className="text-amber-600" />
                         Advisee Attendance Intervention Radar
                       </span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
                         3 Students &lt; 75%
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-1.5 text-[11px]">
-                      <div className="p-2 rounded-lg bg-surface border border-line">
-                        <span className="font-semibold text-ink block truncate">Diya Patel</span>
-                        <span className="text-amber-700 font-mono text-[10px] block">71% Attendance</span>
+                    <div className="grid grid-cols-3 gap-2 text-[11px]">
+                      <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                        <span className="font-bold text-ink block truncate">Diya Patel</span>
+                        <span className="text-amber-700 font-mono text-[10px] block mt-0.5 font-bold">71% Attendance</span>
                       </div>
-                      <div className="p-2 rounded-lg bg-surface border border-line">
-                        <span className="font-semibold text-ink block truncate">Rohan Verma</span>
-                        <span className="text-rose-700 font-mono text-[10px] block">68% Attendance</span>
+                      <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                        <span className="font-bold text-ink block truncate">Rohan Verma</span>
+                        <span className="text-danger font-mono text-[10px] block mt-0.5 font-bold">68% Attendance</span>
                       </div>
-                      <div className="p-2 rounded-lg bg-surface border border-line">
-                        <span className="font-semibold text-ink block truncate">Tanvi Shah</span>
-                        <span className="text-amber-700 font-mono text-[10px] block">74% Attendance</span>
+                      <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                        <span className="font-bold text-ink block truncate">Tanvi Shah</span>
+                        <span className="text-amber-700 font-mono text-[10px] block mt-0.5 font-bold">74% Attendance</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between pt-1">
@@ -1465,7 +1465,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                           setQueryInput(q);
                           handleSubmitRag(undefined, q);
                         }}
-                        className="macos-press-sm text-[11px] font-semibold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 cursor-pointer"
+                        className="text-[11px] font-bold text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
                       >
                         <span>Draft Warning Notices</span>
                         <ArrowRight size={11} />
@@ -1477,7 +1477,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                           setQueryInput(q);
                           handleSubmitRag(undefined, q);
                         }}
-                        className="macos-press-sm text-[11px] font-semibold text-teal-700 hover:text-teal-900 cursor-pointer"
+                        className="text-[11px] font-bold text-brand hover:underline cursor-pointer"
                       >
                         Evaluate Pending NOCs &rarr;
                       </button>
@@ -1486,15 +1486,15 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 )}
 
                 {facultyToolTab === 'lor' && (
-                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                  <div className="space-y-3 animate-in fade-in-50 duration-150 text-[11px]">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-emerald-950 flex items-center gap-1">
-                        <Award size={13} className="text-emerald-600" />
+                      <span className="font-bold text-ink flex items-center gap-1 font-display">
+                        <Award size={14} className="text-brand" />
                         Grounded Academic Letter of Recommendation
                       </span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-surface border border-line space-y-1.5">
-                      <label className="text-[10px] font-semibold text-ink-muted uppercase block">Select Target Advisee</label>
+                    <div className="p-3 rounded-xl bg-canvas border border-line space-y-2">
+                      <label className="text-[10px] font-bold text-ink-muted uppercase block">Select Target Advisee</label>
                       <Select
                         value={lorStudent}
                         onChange={(val) => setLorStudent(val)}
@@ -1514,9 +1514,9 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                         setQueryInput(q);
                         handleSubmitRag(undefined, q);
                       }}
-                      className="macos-press-sm w-full py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
+                      className="w-full py-2 rounded-full bg-brand hover:bg-brand-hover text-white font-bold text-center text-xs shadow-xs cursor-pointer inline-flex items-center justify-center gap-1.5 transition-colors"
                     >
-                      <Award size={12} />
+                      <Award size={13} className="text-now" />
                       <span>Generate Academic Recommendation Letter</span>
                     </button>
                   </div>
@@ -1525,16 +1525,16 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             )}
 
             {activeLens === 'tpo' && (
-              <div className="rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50/70 via-cyan-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+              <div className="rounded-2xl border border-line bg-surface p-4 space-y-3.5 shadow-xs">
                 {/* TPO Sub-Tool Navigation */}
-                <div className="flex border-b border-blue-100/80 pb-2 gap-1 text-[11px]">
+                <div className="flex p-1 rounded-xl bg-canvas border border-line gap-1 text-[11px]">
                   <button
                     type="button"
                     onClick={() => setTpoToolTab('superday')}
-                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all cursor-pointer ${
                       tpoToolTab === 'superday'
-                        ? 'bg-blue-600 text-white shadow-2xs'
-                        : 'text-blue-900/70 hover:bg-blue-100/60'
+                        ? 'bg-ink text-white shadow-2xs'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface'
                     }`}
                   >
                     Superday Clashes
@@ -1542,10 +1542,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => setTpoToolTab('shortlist')}
-                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all cursor-pointer ${
                       tpoToolTab === 'shortlist'
-                        ? 'bg-blue-600 text-white shadow-2xs'
-                        : 'text-blue-900/70 hover:bg-blue-100/60'
+                        ? 'bg-ink text-white shadow-2xs'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface'
                     }`}
                   >
                     Shortlist Engine
@@ -1553,22 +1553,22 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 </div>
 
                 {tpoToolTab === 'superday' && (
-                  <div className="space-y-2.5 animate-in fade-in-50 duration-150">
+                  <div className="space-y-3 animate-in fade-in-50 duration-150">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-blue-950 flex items-center gap-1.5">
-                        <Users size={13} className="text-blue-600" />
+                      <span className="text-xs font-bold text-ink flex items-center gap-1.5 font-display">
+                        <Users size={14} className="text-brand" />
                         Superday Interview Conflict Arbitrator
                       </span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
                         2 Clashes Flagged
                       </span>
                     </div>
-                    <div className="p-2 rounded-lg bg-surface border border-line text-[11px] space-y-1">
+                    <div className="p-3 rounded-xl bg-canvas border border-line text-[11px] space-y-1">
                       <div className="flex justify-between items-center text-ink">
-                        <span className="font-medium">Google (10:00-11:00) vs Goldman Sachs (10:30-11:30)</span>
-                        <span className="text-rose-600 font-mono text-[10px] font-semibold">30m Overlap</span>
+                        <span className="font-bold">Google (10:00-11:00) vs Goldman Sachs (10:30-11:30)</span>
+                        <span className="text-danger font-mono text-[10px] font-bold">30m Overlap</span>
                       </div>
-                      <p className="text-[10px] text-ink-muted m-0">Candidate: STU_AARAV_001 · Technical Round 2 Overlap</p>
+                      <p className="text-[11px] text-ink-muted m-0">Candidate: STU_AARAV_001 · Technical Round 2 Overlap</p>
                     </div>
                     <div className="flex items-center justify-between pt-1">
                       <button
@@ -1577,7 +1577,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                           setSelectedAgent('SuperdayClashSolverAgent');
                           setActiveMode('agents');
                         }}
-                        className="macos-press-sm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-semibold cursor-pointer shadow-2xs"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-now text-now-ink hover:bg-amber-400 text-xs font-bold cursor-pointer shadow-xs transition-colors"
                       >
                         <Play size={11} />
                         <span>Solve Clashes via Superday Agent</span>
@@ -1589,7 +1589,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                           setQueryInput(q);
                           handleSubmitRag(undefined, q);
                         }}
-                        className="macos-press-sm text-[11px] font-semibold text-blue-700 hover:underline cursor-pointer"
+                        className="text-[11px] font-bold text-brand hover:underline cursor-pointer"
                       >
                         4/5ths Fairness Audit &rarr;
                       </button>
@@ -1598,31 +1598,31 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 )}
 
                 {tpoToolTab === 'shortlist' && (
-                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                  <div className="space-y-3 animate-in fade-in-50 duration-150 text-[11px]">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-blue-950 flex items-center gap-1">
-                        <CheckCheck size={13} className="text-blue-600" />
+                      <span className="font-bold text-ink flex items-center gap-1 font-display">
+                        <CheckCheck size={14} className="text-brand" />
                         Recruiter Cutoff Shortlist Simulator
                       </span>
-                      <span className="text-emerald-700 font-mono font-semibold">184 / 240 Eligible</span>
+                      <span className="text-success font-mono font-bold">184 / 240 Eligible</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-[10px]">
                       <div>
-                        <label className="text-ink-muted block mb-0.5">Min CGPA Cutoff</label>
+                        <label className="text-ink-muted block mb-1 font-bold uppercase">Min CGPA Cutoff</label>
                         <input
                           type="text"
                           value={shortlistCgpa}
                           onChange={(e) => setShortlistCgpa(e.target.value)}
-                          className="w-full px-2 py-1 border border-line rounded bg-surface font-mono text-xs"
+                          className="w-full px-3 py-1.5 border border-line rounded-xl bg-canvas font-mono text-xs text-ink focus:bg-surface focus:border-brand"
                         />
                       </div>
                       <div>
-                        <label className="text-ink-muted block mb-0.5">Max Backlogs Allowed</label>
+                        <label className="text-ink-muted block mb-1 font-bold uppercase">Max Backlogs Allowed</label>
                         <input
                           type="text"
                           disabled
                           value="0 Backlogs"
-                          className="w-full px-2 py-1 border border-line rounded bg-slate-100 text-ink-muted font-mono text-xs"
+                          className="w-full px-3 py-1.5 border border-line rounded-xl bg-canvas/70 text-ink-muted font-mono text-xs"
                         />
                       </div>
                     </div>
@@ -1633,9 +1633,9 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                         setQueryInput(q);
                         handleSubmitRag(undefined, q);
                       }}
-                      className="macos-press-sm w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
+                      className="w-full py-2 rounded-full bg-brand hover:bg-brand-hover text-white font-bold text-center text-xs shadow-xs cursor-pointer inline-flex items-center justify-center gap-1.5 transition-colors"
                     >
-                      <CheckCheck size={12} />
+                      <CheckCheck size={13} className="text-now" />
                       <span>Verify Shortlist &amp; Generate Manifest</span>
                     </button>
                   </div>
@@ -1644,16 +1644,16 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             )}
 
             {activeLens === 'hod' && (
-              <div className="rounded-xl border border-amber-100 bg-gradient-to-br from-amber-50/70 via-orange-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+              <div className="rounded-2xl border border-line bg-surface p-4 space-y-3.5 shadow-xs">
                 {/* HOD Sub-Tool Navigation */}
-                <div className="flex border-b border-amber-100/80 pb-2 gap-1 text-[11px]">
+                <div className="flex p-1 rounded-xl bg-canvas border border-line gap-1 text-[11px]">
                   <button
                     type="button"
                     onClick={() => setHodToolTab('curriculum')}
-                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all cursor-pointer ${
                       hodToolTab === 'curriculum'
-                        ? 'bg-amber-700 text-white shadow-2xs'
-                        : 'text-amber-900/70 hover:bg-amber-100/60'
+                        ? 'bg-ink text-white shadow-2xs'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface'
                     }`}
                   >
                     Curriculum v2.0
@@ -1661,10 +1661,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   <button
                     type="button"
                     onClick={() => setHodToolTab('skillgap')}
-                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg text-center font-bold transition-all cursor-pointer ${
                       hodToolTab === 'skillgap'
-                        ? 'bg-amber-700 text-white shadow-2xs'
-                        : 'text-amber-900/70 hover:bg-amber-100/60'
+                        ? 'bg-ink text-white shadow-2xs'
+                        : 'text-ink-muted hover:text-ink hover:bg-surface'
                     }`}
                   >
                     Skill Deficits &amp; Targets
@@ -1672,28 +1672,28 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 </div>
 
                 {hodToolTab === 'curriculum' && (
-                  <div className="space-y-2.5 animate-in fade-in-50 duration-150">
+                  <div className="space-y-3 animate-in fade-in-50 duration-150">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-amber-950 flex items-center gap-1.5">
-                        <Building2 size={13} className="text-amber-600" />
+                      <span className="text-xs font-bold text-ink flex items-center gap-1.5 font-display">
+                        <Building2 size={14} className="text-brand" />
                         Curriculum v2.0 Industry Gap Diagnostics
                       </span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                      <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand/10 text-brand border border-brand/20">
                         NEP 2020 Active
                       </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-1.5 text-[11px]">
-                      <div className="p-2 rounded-lg bg-surface border border-line">
-                        <span className="text-[10px] text-ink-muted uppercase block font-semibold">Conversion</span>
-                        <span className="font-mono font-semibold text-emerald-700">86.4%</span>
+                    <div className="grid grid-cols-3 gap-2 text-[11px]">
+                      <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                        <span className="text-[10px] text-ink-muted uppercase block font-bold">Conversion</span>
+                        <span className="font-display font-bold text-success text-xs">86.4%</span>
                       </div>
-                      <div className="p-2 rounded-lg bg-surface border border-line">
-                        <span className="text-[10px] text-ink-muted uppercase block font-semibold">New AI Credits</span>
-                        <span className="font-mono font-semibold text-amber-700">+8 Credits</span>
+                      <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                        <span className="text-[10px] text-ink-muted uppercase block font-bold">New AI Credits</span>
+                        <span className="font-display font-bold text-brand text-xs">+8 Credits</span>
                       </div>
-                      <div className="p-2 rounded-lg bg-surface border border-line">
-                        <span className="text-[10px] text-ink-muted uppercase block font-semibold">Mentor Variance</span>
-                        <span className="font-mono font-semibold text-slate-700">±0.04</span>
+                      <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                        <span className="text-[10px] text-ink-muted uppercase block font-bold">Mentor Variance</span>
+                        <span className="font-mono font-bold text-ink-secondary text-xs">±0.04</span>
                       </div>
                     </div>
                     <button
@@ -1703,7 +1703,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                         setQueryInput(q);
                         handleSubmitRag(undefined, q);
                       }}
-                      className="macos-press-sm text-[11px] font-semibold text-amber-900 hover:underline inline-flex items-center gap-1 cursor-pointer pt-1"
+                      className="text-[11px] font-bold text-brand hover:underline inline-flex items-center gap-1 cursor-pointer pt-1"
                     >
                       <span>Run Curriculum Diff Audit</span>
                       <ArrowRight size={11} />
@@ -1712,12 +1712,12 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 )}
 
                 {hodToolTab === 'skillgap' && (
-                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                  <div className="space-y-3 animate-in fade-in-50 duration-150 text-[11px]">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-amber-950">Placement Benchmark: 86.4% (Target: 91.2%)</span>
-                      <span className="text-amber-700 font-mono text-[10px] font-semibold">-4.8% Gap</span>
+                      <span className="font-bold text-ink">Placement Benchmark: 86.4% (Target: 91.2%)</span>
+                      <span className="text-amber-700 font-mono text-[10px] font-bold">-4.8% Gap</span>
                     </div>
-                    <div className="p-2 rounded-lg bg-surface border border-line text-[10px] text-ink-muted">
+                    <div className="p-3 rounded-xl bg-canvas border border-line text-[11px] text-ink-muted">
                       <span>Primary rejection reasons in Technical Rounds: Distributed Systems Caching (42%) and Concurrent Transaction Locks (31%).</span>
                     </div>
                     <button
@@ -1727,9 +1727,9 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                         setQueryInput(q);
                         handleSubmitRag(undefined, q);
                       }}
-                      className="macos-press-sm w-full py-1.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
+                      className="w-full py-2 rounded-full bg-brand hover:bg-brand-hover text-white font-bold text-center text-xs shadow-xs cursor-pointer inline-flex items-center justify-center gap-1.5 transition-colors"
                     >
-                      <TrendingUp size={12} />
+                      <TrendingUp size={13} className="text-now" />
                       <span>Recommend Skill Deficit Workshops</span>
                     </button>
                   </div>
@@ -1738,24 +1738,24 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             )}
 
             {activeLens === 'management' && (
-              <div className="rounded-xl border border-fuchsia-100 bg-gradient-to-br from-fuchsia-50/70 via-purple-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+              <div className="rounded-2xl border border-line bg-surface p-4 space-y-3.5 shadow-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-fuchsia-950 flex items-center gap-1.5">
-                    <Landmark size={13} className="text-fuchsia-600" />
+                  <span className="text-xs font-bold text-ink flex items-center gap-1.5 font-display">
+                    <Landmark size={14} className="text-brand" />
                     NIRF Table 5.1 &amp; NBA Criterion 4 Projection
                   </span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-fuchsia-100 text-fuchsia-900">
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-brand/10 text-brand border border-brand/20">
                     NIRF GO: 84.6 / 100
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-[11px]">
-                  <div className="p-2 rounded-lg bg-surface border border-line">
-                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">Cross-Campus Median CTC</span>
-                    <span className="font-mono font-semibold text-fuchsia-800 text-xs">₹14.2 LPA</span>
+                  <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                    <span className="text-[10px] text-ink-muted uppercase block font-bold">Cross-Campus Median CTC</span>
+                    <span className="font-display font-bold text-brand text-xs">₹14.2 LPA</span>
                   </div>
-                  <div className="p-2 rounded-lg bg-surface border border-line">
-                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">NBA Placement Index</span>
-                    <span className="font-mono font-semibold text-emerald-700 text-xs">92 / 100 Points</span>
+                  <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                    <span className="text-[10px] text-ink-muted uppercase block font-bold">NBA Placement Index</span>
+                    <span className="font-display font-bold text-success text-xs">92 / 100 Points</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between pt-1">
@@ -1766,7 +1766,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                       setQueryInput(q);
                       handleSubmitRag(undefined, q);
                     }}
-                    className="macos-press-sm text-[11px] font-semibold text-fuchsia-800 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                    className="text-[11px] font-bold text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
                   >
                     <span>Audit Statutory Outcomes</span>
                     <ArrowRight size={11} />
@@ -1778,7 +1778,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                       setQueryInput(q);
                       handleSubmitRag(undefined, q);
                     }}
-                    className="macos-press-sm text-[11px] font-semibold text-fuchsia-900 hover:underline cursor-pointer"
+                    className="text-[11px] font-bold text-brand hover:underline cursor-pointer"
                   >
                     Senate Digest &rarr;
                   </button>
@@ -1787,34 +1787,34 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             )}
 
             {activeLens === 'admin' && (
-              <div className="rounded-xl border border-slate-700/60 bg-gradient-to-br from-slate-900 via-slate-800 to-black p-3.5 space-y-3 text-white shadow-2xs">
+              <div className="rounded-2xl border border-line bg-surface p-4 space-y-3.5 shadow-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-cyan-300 flex items-center gap-1.5">
-                    <Shield size={13} className="text-cyan-400" />
+                  <span className="text-xs font-bold text-ink flex items-center gap-1.5 font-display">
+                    <Shield size={14} className="text-brand" />
                     Zero-Injection Security &amp; Token Telemetry
                   </span>
-                  <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800/60">
+                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-success-bg text-success border border-success-border">
                     PIP Defense: ACTIVE
                   </span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-[11px]">
-                  <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-                    <span className="text-[10px] text-slate-400 uppercase block font-semibold">Quota Consumed</span>
-                    <span className="font-mono font-semibold text-cyan-400">16.8% (42.1k / 250k)</span>
+                  <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                    <span className="text-[10px] text-ink-muted uppercase block font-bold">Quota Consumed</span>
+                    <span className="font-mono font-bold text-brand text-xs">16.8% (42.1k / 250k)</span>
                   </div>
-                  <div className="p-2 rounded-lg bg-white/5 border border-white/10">
-                    <span className="text-[10px] text-slate-400 uppercase block font-semibold">Blocked PIP Threats</span>
-                    <span className="font-mono font-semibold text-rose-400">14 Vectors Prevented</span>
+                  <div className="p-2.5 rounded-xl bg-canvas border border-line">
+                    <span className="text-[10px] text-ink-muted uppercase block font-bold">Blocked PIP Threats</span>
+                    <span className="font-mono font-bold text-danger text-xs">14 Vectors Prevented</span>
                   </div>
                 </div>
-                <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
-                  <span className="text-slate-400 font-mono text-[10px]">
+                <div className="pt-2 border-t border-line flex items-center justify-between text-[11px]">
+                  <span className="text-ink-muted font-mono text-[10px]">
                     {adminMerkleVerified ? '✓ Merkle Root Verified (SHA-256)' : '1,248 Traces Stored'}
                   </span>
                   <button
                     type="button"
                     onClick={() => setAdminMerkleVerified(true)}
-                    className="macos-press-sm px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[10px] font-semibold hover:bg-cyan-500/30 cursor-pointer"
+                    className="px-3 py-1 rounded-full bg-brand/10 text-brand border border-brand/20 text-[10px] font-bold hover:bg-brand/20 cursor-pointer transition-colors"
                   >
                     {adminMerkleVerified ? 'Ledger Untampered' : 'Verify Merkle Hash'}
                   </button>
@@ -1823,8 +1823,8 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             )}
 
             {/* Quick Action Prompt Chips */}
-            <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-ink-muted block mb-2">
+            <div className="space-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted block">
                 Suggested {persona.badge} Queries
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -1836,8 +1836,9 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                       setQueryInput(sq);
                       handleSubmitRag(undefined, sq);
                     }}
-                    className="macos-press-sm inline-flex items-center rounded-lg border border-line bg-surface px-2.5 py-1.5 text-xs text-ink hover:border-brand/40 hover:bg-slate-50 transition-colors text-left cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface hover:border-amber-400 hover:bg-amber-50/40 px-3 py-1.5 text-xs font-medium text-ink transition-all shadow-2xs text-left cursor-pointer"
                   >
+                    <Sparkles size={11} className="text-now shrink-0" />
                     <span>{sq}</span>
                   </button>
                 ))}
@@ -1845,8 +1846,8 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             </div>
 
             {/* User Input Form */}
-            <form onSubmit={handleSubmitRag} className="space-y-2">
-              <label htmlFor="copilot-query-input" className="block text-xs font-medium text-ink">
+            <form onSubmit={handleSubmitRag} className="rounded-2xl border border-line bg-surface p-4 shadow-xs space-y-3">
+              <label htmlFor="copilot-query-input" className="block text-xs font-bold text-ink font-display">
                 Ask a Policy or Workflow Question
               </label>
               <div className="relative">
@@ -1856,19 +1857,19 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   value={queryInput}
                   onChange={(e) => setQueryInput(e.target.value)}
                   placeholder="Ask about placement policy, interview preparation, or workflow..."
-                  className="w-full resize-none rounded-xl border border-line bg-surface p-3 text-xs text-ink placeholder:text-ink-muted focus:border-brand focus:outline-hidden focus:ring-1 focus:ring-brand shadow-2xs"
+                  className="w-full resize-none rounded-xl border border-line bg-canvas/40 p-3 text-xs text-ink placeholder:text-ink-muted focus:border-brand focus:bg-surface focus:outline-hidden transition-all shadow-2xs"
                   disabled={loading}
                 />
               </div>
 
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] text-ink-muted">
+              <div className="flex items-center justify-between gap-3 pt-1">
+                <span className="text-[11px] text-ink-muted truncate">
                   Grounding with {sharedKeys.length} authorized profile records
                 </span>
                 <button
                   type="submit"
                   disabled={loading || !queryInput.trim()}
-                  className="macos-press inline-flex items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-brand-hover transition-colors disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-full bg-now text-now-ink hover:bg-amber-400 font-bold px-4 py-2 text-xs shadow-xs transition-colors disabled:opacity-50 cursor-pointer shrink-0"
                 >
                   {loading ? (
                     <>
@@ -1887,46 +1888,46 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
             {/* Answer Display Card with Grounded Data Provenance */}
             {ragResult && (
-              <div className="copilot-reveal rounded-xl border border-line bg-surface p-4 shadow-sm space-y-3">
-                <div className="flex items-center justify-between border-b border-line pb-2">
-                  <div className="flex items-center gap-1.5">
-                    <CheckCircle2 size={15} className="text-emerald-600" />
-                    <span className="text-xs font-semibold text-ink">
+              <div className="rounded-2xl border border-line bg-surface p-5 shadow-xs space-y-4">
+                <div className="flex items-center justify-between border-b border-line pb-3">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-success shrink-0" />
+                    <span className="text-xs font-bold text-ink font-display">
                       Authoritative Grounded Response
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-success-bg text-success border border-success-border font-bold">
                       Groundedness: {Math.round(ragResult.groundedness_score * 100)}%
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={handleCopyAnswer}
-                    className="macos-press-sm inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 hover:text-ink cursor-pointer"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-ink-muted hover:text-ink cursor-pointer"
                   >
-                    {copied ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
+                    {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
                     <span>{copied ? 'Copied' : 'Copy'}</span>
                   </button>
                 </div>
 
-                {/* Fluid Groundedness Gauge */}
-                <div className="w-full h-1 rounded-full bg-slate-100 overflow-hidden">
+                {/* Groundedness Gauge */}
+                <div className="w-full h-1.5 rounded-full bg-line overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full copilot-gauge-fill"
+                    className="h-full bg-brand rounded-full transition-all duration-300"
                     style={{ width: `${Math.round(ragResult.groundedness_score * 100)}%` }}
                   />
                 </div>
 
                 {/* Profile Data Provenance Banner */}
                 {ragResult.shared_data_applied && ragResult.shared_data_applied.length > 0 && (
-                  <div className="rounded-lg bg-emerald-50/60 border border-emerald-200/60 p-2 text-[11px]">
-                    <span className="font-semibold text-emerald-900 block mb-0.5">
+                  <div className="rounded-xl bg-success-bg/60 border border-success-border p-3 text-[11px]">
+                    <span className="font-bold text-success block mb-1">
                       ✓ Profile Records Ingested into Context:
                     </span>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {ragResult.shared_data_applied.map((field, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-medium"
+                          className="px-2 py-0.5 rounded-full bg-white text-success border border-success-border text-[10px] font-semibold shadow-2xs"
                         >
                           {field}
                         </span>
@@ -1937,8 +1938,8 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
                 {/* Withheld Profile Data Banner */}
                 {ragResult.withheld_attributes && ragResult.withheld_attributes.length > 0 && (
-                  <div className="rounded-lg bg-slate-50 border border-slate-200/80 p-2 text-[11px]">
-                    <span className="font-semibold text-slate-700 block mb-0.5">
+                  <div className="rounded-xl bg-canvas border border-line p-3 text-[11px]">
+                    <span className="font-bold text-ink-secondary block mb-1">
                       🔒 Withheld by Your Privacy Configuration:
                     </span>
                     <span className="text-ink-muted text-[10px]">
@@ -1947,28 +1948,28 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   </div>
                 )}
 
-                <div className="text-xs leading-relaxed text-ink whitespace-pre-wrap">
+                <div className="text-xs sm:text-sm leading-relaxed text-ink whitespace-pre-wrap">
                   {ragResult.answer}
                 </div>
 
                 {/* Statutory Citations */}
                 {ragResult.citations && ragResult.citations.length > 0 && (
-                  <div className="border-t border-line pt-2.5">
-                    <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1.5">
+                  <div className="border-t border-line pt-3 space-y-2">
+                    <span className="text-[11px] font-bold text-ink-muted uppercase tracking-wider block">
                       Official Document Citations
                     </span>
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       {ragResult.citations.map((c, i) => (
                         <div
                           key={i}
-                          className="rounded-lg border border-line/60 bg-slate-50 p-2 text-xs flex items-start gap-2"
+                          className="rounded-xl border border-line bg-canvas p-3 text-xs flex items-start gap-2.5"
                         >
-                          <BookOpen size={13} className="text-brand shrink-0 mt-0.5" />
+                          <BookOpen size={14} className="text-brand shrink-0 mt-0.5" />
                           <div className="min-w-0 flex-1">
-                            <span className="font-medium text-ink block truncate">
+                            <span className="font-bold text-ink block truncate">
                               {c.doc_title} ({c.version})
                             </span>
-                            <span className="text-[11px] text-ink-muted block truncate">
+                            <span className="text-[11px] text-ink-muted block truncate mt-0.5">
                               {c.section_heading} &bull; Authority: {c.source_authority}
                             </span>
                           </div>
@@ -1980,8 +1981,8 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
                 {/* Suggested Follow-ups */}
                 {ragResult.suggested_followups && ragResult.suggested_followups.length > 0 && (
-                  <div className="border-t border-line pt-2.5">
-                    <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider block mb-1.5">
+                  <div className="border-t border-line pt-3 space-y-2">
+                    <span className="text-[11px] font-bold text-ink-muted uppercase tracking-wider block">
                       Suggested Follow-ups
                     </span>
                     <div className="flex flex-wrap gap-1.5">
@@ -1993,7 +1994,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                             setQueryInput(fu);
                             handleSubmitRag(undefined, fu);
                           }}
-                          className="macos-press-sm px-2.5 py-1 rounded-lg border border-line bg-slate-50 text-[11px] text-brand hover:border-brand/40 font-medium cursor-pointer"
+                          className="px-3 py-1.5 rounded-full border border-line bg-canvas hover:bg-surface text-xs text-brand font-semibold transition-colors cursor-pointer"
                         >
                           {fu}
                         </button>
@@ -2146,7 +2147,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
               type="button"
               onClick={handleExecuteAgent}
               disabled={loading}
-              className="macos-press w-full inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-brand-hover transition-colors disabled:opacity-50 cursor-pointer"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-brand-hover transition-colors disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <>
@@ -2155,7 +2156,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 </>
               ) : (
                 <>
-                  <Bot size={14} />
+                  <Bot size={14} className="text-now" />
                   <span>Execute {selectedAgent}</span>
                 </>
               )}
@@ -2163,30 +2164,30 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
             {/* Agent Result Card */}
             {agentResult && (
-              <div className="rounded-xl border border-line bg-surface p-3.5 space-y-2.5 text-xs shadow-xs">
-                <div className="flex items-center justify-between border-b border-line pb-2">
+              <div className="rounded-2xl border border-line bg-surface p-4 space-y-3 text-xs shadow-xs">
+                <div className="flex items-center justify-between border-b border-line pb-2.5">
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 size={15} className="text-emerald-600" />
-                    <span className="font-semibold text-ink">
+                    <CheckCircle2 size={16} className="text-success" />
+                    <span className="font-bold text-ink font-display">
                       {agentResult.agent_name} Execution Complete
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold">
+                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-success-bg text-success border border-success-border font-bold">
                     {agentResult.status}
                   </span>
                 </div>
 
-                <p className="text-xs text-ink m-0">{agentResult.summary}</p>
+                <p className="text-xs text-ink m-0 leading-relaxed">{agentResult.summary}</p>
 
                 {agentResult.tool_results && agentResult.tool_results.length > 0 && (
-                  <div className="space-y-1.5 pt-2 border-t border-line">
-                    <span className="text-[10px] font-semibold text-ink-muted uppercase tracking-wider block">
+                  <div className="space-y-2 pt-2 border-t border-line">
+                    <span className="text-[10px] font-bold text-ink-muted uppercase tracking-wider block">
                       Tool Executions
                     </span>
                     {agentResult.tool_results.map((tr, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-line/60">
-                        <span className="font-mono text-[11px] text-ink font-medium">{tr.tool_name}</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium">
+                      <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-canvas border border-line">
+                        <span className="font-mono text-[11px] text-ink font-bold">{tr.tool_name}</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-success-bg text-success border border-success-border font-semibold">
                           {tr.status}
                         </span>
                       </div>
@@ -2195,7 +2196,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 )}
 
                 {agentResult.recommendation && (
-                  <div className="rounded-lg bg-slate-900 text-slate-100 p-2.5 font-mono text-[11px] overflow-x-auto">
+                  <div className="rounded-xl bg-slate-900 text-slate-100 p-3 font-mono text-[11px] overflow-x-auto">
                     <pre className="m-0 whitespace-pre-wrap">
                       {JSON.stringify(agentResult.recommendation, null, 2)}
                     </pre>
@@ -2211,19 +2212,19 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
           <div className="space-y-3">
             {quotaInfo?.metrics && (
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="rounded-lg border border-line bg-surface p-2.5">
-                  <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+                <div className="rounded-xl border border-line bg-surface p-3 shadow-2xs">
+                  <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                     Total Executions
                   </span>
-                  <span className="text-sm font-bold text-ink font-mono">
+                  <span className="text-base font-extrabold text-ink font-display mt-0.5 block">
                     {quotaInfo.metrics.total_traces}
                   </span>
                 </div>
-                <div className="rounded-lg border border-line bg-surface p-2.5">
-                  <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-semibold">
+                <div className="rounded-xl border border-line bg-surface p-3 shadow-2xs">
+                  <span className="text-[10px] text-ink-muted block uppercase tracking-wider font-bold">
                     Avg Latency
                   </span>
-                  <span className="text-sm font-bold text-brand font-mono">
+                  <span className="text-base font-extrabold text-brand font-display mt-0.5 block">
                     {Math.round(quotaInfo.metrics.avg_latency_ms)}ms
                   </span>
                 </div>
@@ -2231,11 +2232,11 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             )}
 
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-ink">Recent Audit Ledger Traces</span>
+              <span className="text-xs font-bold text-ink font-display">Recent Audit Ledger Traces</span>
               <button
                 type="button"
                 onClick={loadTraces}
-                className="text-[11px] text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
+                className="text-xs font-bold text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
               >
                 <RefreshCw size={11} />
                 <span>Refresh</span>
@@ -2244,30 +2245,32 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
             <div className="space-y-2">
               {traces.length === 0 ? (
-                <div className="text-center py-6 text-xs text-ink-muted">
+                <div className="text-center py-8 text-xs text-ink-muted bg-surface rounded-2xl border border-line">
                   No traces recorded in active tenant yet.
                 </div>
               ) : (
                 traces.map((tr) => (
                   <div
                     key={tr.trace_id}
-                    className="rounded-lg border border-line bg-surface p-2.5 text-xs space-y-1"
+                    className="rounded-xl border border-line bg-surface p-3 text-xs space-y-1.5 shadow-2xs hover:border-brand/40 transition-colors"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[11px] text-brand font-medium">
+                      <span className="font-mono text-xs text-brand font-bold">
                         {tr.task_type}
                       </span>
                       <span className="text-[10px] text-ink-muted">
                         {new Date(tr.created_at).toLocaleTimeString()}
                       </span>
                     </div>
-                    <p className="text-[11px] text-ink line-clamp-1 m-0">
+                    <p className="text-xs text-ink line-clamp-1 m-0">
                       {tr.prompt_snippet}
                     </p>
-                    <div className="flex items-center gap-2 text-[10px] text-ink-muted font-mono">
+                    <div className="flex items-center gap-2 text-[11px] text-ink-muted font-mono pt-1">
                       <span>{tr.total_tokens} tokens</span>
                       <span>&bull;</span>
-                      <span>PIP: {tr.pip_passed ? '✓ Clean' : '⚠ Blocked'}</span>
+                      <span className={tr.pip_passed ? 'text-success font-semibold' : 'text-danger font-semibold'}>
+                        PIP: {tr.pip_passed ? '✓ Clean' : '⚠ Blocked'}
+                      </span>
                     </div>
                   </div>
                 ))
@@ -2278,12 +2281,12 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
       </div>
 
       {/* 8. Bottom Footer Status */}
-      <div className="border-t border-line bg-surface px-4 py-2 text-[11px] text-ink-muted flex items-center justify-between">
+      <div className="border-t border-line bg-surface px-5 py-3 text-xs text-ink-muted flex items-center justify-between">
         <span className="truncate">
           Grounded with role persona &bull; {displayName} ({activeLens} profile locked)
         </span>
-        <span className="text-emerald-700 font-medium shrink-0">
-          DPDP 2023 Shield: Active
+        <span className="text-success font-bold shrink-0 flex items-center gap-1">
+          <ShieldCheck size={13} /> DPDP 2023 Shield: Active
         </span>
       </div>
     </aside>
