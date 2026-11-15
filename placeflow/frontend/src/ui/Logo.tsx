@@ -5,6 +5,8 @@ export interface LogoProps {
   className?: string;
   showText?: boolean;
   subtitle?: string;
+  /** 'onDark' (default) for navy backgrounds, 'onLight' for white ones */
+  tone?: 'onDark' | 'onLight';
 }
 
 export const Logo: React.FC<LogoProps> = ({
@@ -12,6 +14,7 @@ export const Logo: React.FC<LogoProps> = ({
   className = '',
   showText = false,
   subtitle,
+  tone = 'onDark',
 }) => {
   const sizeClasses = {
     sm: 'w-6 h-6 text-xs rounded-md',
@@ -34,11 +37,11 @@ export const Logo: React.FC<LogoProps> = ({
     <div className="inline-flex items-center gap-2.5">
       {mark}
       <div className="min-w-0">
-        <span className="block font-semibold text-[15px] leading-tight text-white tracking-tight truncate">
+        <span className={`block font-semibold text-[15px] leading-tight ${tone === 'onLight' ? 'text-ink' : 'text-white'} tracking-tight truncate`}>
           Meridian
         </span>
         {subtitle && (
-          <span className="block text-xs leading-tight text-slate-400 truncate mt-0.5">
+          <span className={`block text-xs leading-tight ${tone === 'onLight' ? 'text-ink-muted' : 'text-slate-400'} truncate mt-0.5`}>
             {subtitle}
           </span>
         )}

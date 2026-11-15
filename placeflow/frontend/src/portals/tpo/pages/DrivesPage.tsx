@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
-import { Job } from '../../../types';
+import { Job, Application } from '../../../types';
 import { Briefcase, ArrowRight, Sparkles, Search, Filter, LayoutGrid, List } from 'lucide-react';
 import { PageHeader } from '../../../components/ui/PageHeader';
-import { Card } from '../../../components/ui/Card';
 import { Button } from '../../../components/ui/Button';
 import { Badge } from '../../../components/ui/Badge';
 import { Skeleton } from '../../../components/ui/Skeleton';
@@ -17,6 +16,7 @@ export const DrivesPage: React.FC = () => {
   useDocumentTitle('Drives');
   const navigate = useNavigate();
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [isWizardOpen, setIsWizardOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -25,9 +25,13 @@ export const DrivesPage: React.FC = () => {
 
   const fetchJobs = () => {
     setLoading(true);
-    api.getJobs()
-      .then((res) => {
-        setJobs(res.jobs || []);
+    Promise.all([
+      api.getJobs(),
+      api.getApplications().catch(() => ({ count: 0, applications: [] })),
+    ])
+      .then(([jRes, aRes]) => {
+        setJobs(jRes.jobs || []);
+        setApplications(aRes.applications || []);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -103,63 +107,61 @@ export const DrivesPage: React.FC = () => {
         }
       />
 
-      {/* Search and Tier Filter Bar */}
-      <Card className="p-3">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-ink-muted" />
-            <input
-              type="text"
-              placeholder="Search by role, company, or JNF ID..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-canvas border border-line rounded focus:bg-surface focus:outline-hidden"
-            />
-          </div>
+      {/* Search and Tier Filter Bar — 40px inline row */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 min-h-[40px]">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-ink-muted" />
+          <input
+            type="text"
+            placeholder="Search by role, company, or JNF ID..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-surface border border-line rounded-lg focus:outline-hidden focus:ring-2 focus:ring-brand/20"
+          />
+        </div>
 
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <Filter className="h-3.5 w-3.5 text-ink-muted mr-1" />
-            <span className="text-xs text-ink-muted mr-1">Tier:</span>
-            {['ALL', 'Normal', 'Dream', 'Super Dream'].map((tier) => (
-              <button
-                key={tier}
-                onClick={() => setTierFilter(tier)}
-                className={`px-2.5 py-1 text-xs rounded font-medium transition-colors ${
-                  tierFilter === tier
-                    ? 'bg-brand text-white'
-                    : 'bg-canvas text-ink hover:bg-line border border-line'
-                }`}
-              >
-                {tier}
-              </button>
-            ))}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Filter className="h-3.5 w-3.5 text-ink-muted mr-1" />
+          <span className="text-xs text-ink-muted mr-1">Tier:</span>
+          {['ALL', 'Normal', 'Dream', 'Super Dream'].map((tier) => (
+            <button
+              key={tier}
+              onClick={() => setTierFilter(tier)}
+              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+                tierFilter === tier
+                  ? 'bg-brand text-white'
+                  : 'bg-surface text-ink hover:bg-canvas border border-line'
+              }`}
+            >
+              {tier}
+            </button>
+          ))}
 
-            {/* View Mode Switcher */}
-            <div className="flex items-center ml-2 pl-2 border-l border-line gap-1">
-              <button
-                type="button"
-                onClick={() => setViewMode('cards')}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === 'cards' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
-                }`}
-                title="Cards view"
-              >
-                <LayoutGrid size={14} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode('table')}
-                className={`p-1.5 rounded transition-colors ${
-                  viewMode === 'table' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
-                }`}
-                title="Table view"
-              >
-                <List size={14} />
-              </button>
-            </div>
+          {/* View Mode Switcher */}
+          <div className="flex items-center ml-2 pl-2 border-l border-line gap-1">
+            <button
+              type="button"
+              onClick={() => setViewMode('cards')}
+              className={`p-1.5 rounded transition-colors ${
+                viewMode === 'cards' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              }`}
+              title="Cards view"
+            >
+              <LayoutGrid size={14} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('table')}
+              className={`p-1.5 rounded transition-colors ${
+                viewMode === 'table' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              }`}
+              title="Table view"
+            >
+              <List size={14} />
+            </button>
           </div>
         </div>
-      </Card>
+      </div>
 
       {loading ? (
         <div className="rounded-lg border border-line bg-surface p-6 space-y-3">
@@ -182,22 +184,37 @@ export const DrivesPage: React.FC = () => {
         />
       ) : viewMode === 'cards' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredJobs.map((j) => (
-            <DriveCard
-              key={j.job_id}
-              data={{
-                drive_id: j.job_id,
-                job_id: j.job_id,
-                company_name: resolveCompanyName(j.company_id),
-                role: j.title,
-                tier: j.tier,
-                package_lpa: j.package_lpa,
-                eligible: true,
-              }}
-              onClick={() => navigate(`/tpo/drives/${j.job_id}`)}
-              onApply={() => navigate(`/tpo/drives/${j.job_id}`)}
-            />
-          ))}
+          {filteredJobs.map((j) => {
+            const jobApps = applications.filter((a) => a.job_id === j.job_id);
+            const applicants_count = jobApps.length;
+            const shortlisted_count = jobApps.filter(
+              (a) => a.status === 'Shortlisted' || a.status === 'Interviewing' || a.status === 'Selected'
+            ).length;
+            const offers_count = jobApps.filter((a) => a.status === 'Selected').length;
+
+            return (
+              <DriveCard
+                key={j.job_id}
+                variant="manage"
+                data={{
+                  drive_id: j.job_id,
+                  job_id: j.job_id,
+                  company_name: resolveCompanyName(j.company_id),
+                  role: j.title,
+                  tier: j.tier,
+                  package_lpa: j.package_lpa,
+                  location: j.location,
+                  deadline: j.deadline,
+                  status: j.status,
+                  applicants_count,
+                  shortlisted_count,
+                  offers_count,
+                }}
+                onClick={() => navigate(`/tpo/drives/${j.job_id}`)}
+                onManage={() => navigate(`/tpo/drives/${j.job_id}`)}
+              />
+            );
+          })}
         </div>
       ) : (
         <div className="rounded-lg border border-line bg-surface overflow-hidden">

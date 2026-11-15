@@ -120,12 +120,12 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
         }
       />
 
-      {/* What Needs Me Now — Actionable TaskCards */}
+      {/* What Needs Me Now — Actionable TaskCards (First card full-width focal element) */}
       <div className="space-y-3">
         <h3 className="text-xs font-bold text-ink-muted uppercase tracking-wider">
           What Needs Me Now
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-3">
           <TaskCard
             data={{
               task_id: 'task_superday',
@@ -136,29 +136,32 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
               action_label: 'Resolve Conflicts',
             }}
             onAction={() => navigate('/tpo/interviews')}
+            className="w-full shadow-xs"
           />
-          <TaskCard
-            data={{
-              task_id: 'task_renege',
-              title: 'Renege Radar: High-risk post-offer candidate alerts',
-              due: null,
-              priority: 'MEDIUM',
-              icon: Radar,
-              action_label: 'Inspect Risk',
-            }}
-            onAction={() => navigate('/tpo/insights/renege')}
-          />
-          <TaskCard
-            data={{
-              task_id: 'task_drives',
-              title: 'Open JNF Drives: Pending recruiter approvals',
-              due: null,
-              priority: 'MEDIUM',
-              icon: Briefcase,
-              action_label: 'Review Drives',
-            }}
-            onAction={() => navigate('/tpo/drives')}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <TaskCard
+              data={{
+                task_id: 'task_renege',
+                title: 'Renege Radar: High-risk post-offer candidate alerts',
+                due: null,
+                priority: 'MEDIUM',
+                icon: Radar,
+                action_label: 'Inspect Risk',
+              }}
+              onAction={() => navigate('/tpo/insights/renege')}
+            />
+            <TaskCard
+              data={{
+                task_id: 'task_drives',
+                title: 'Open JNF Drives: Pending recruiter approvals',
+                due: null,
+                priority: 'MEDIUM',
+                icon: Briefcase,
+                action_label: 'Review Drives',
+              }}
+              onAction={() => navigate('/tpo/drives')}
+            />
+          </div>
         </div>
       </div>
 

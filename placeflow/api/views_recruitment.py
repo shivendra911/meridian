@@ -170,6 +170,12 @@ class InterviewListView(APIView):
     def get(self, request):
         db = get_db()
         loops = scoped_find("interviews", request.user, sort="scheduled_start", limit=300, db=db)
+        for inv in loops:
+            sid = inv.get("student_id")
+            if sid:
+                stu = scoped_get("students", request.user, {"student_id": sid}, db=db)
+                if stu:
+                    inv["student_name"] = stu.get("name")
         return Response({"count": len(loops), "interviews": loops}, status=status.HTTP_200_OK)
 
     def post(self, request):

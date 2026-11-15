@@ -64,14 +64,14 @@ export const WorkspaceSwitcher: React.FC<WorkspaceSwitcherProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex w-full items-center justify-between gap-2 rounded-lg bg-white/10 px-2.5 py-1.5 text-xs text-white hover:bg-white/15 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+        className="flex w-full items-center justify-between gap-2 rounded-lg border border-line bg-canvas px-2.5 py-1.5 text-xs text-ink hover:bg-line/50 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
         title="Switch institutional workspace"
       >
         <div className="flex items-center gap-2 min-w-0">
-          <ActiveIcon size={14} className="text-slate-300 shrink-0" />
+          <ActiveIcon size={14} className="text-ink-muted shrink-0" />
           <span className="font-medium truncate">{activeMeta.shortName}</span>
         </div>
-        <ChevronDown size={13} className="text-slate-400 shrink-0" />
+        <ChevronDown size={13} className="text-ink-muted shrink-0" />
       </button>
 
       {isOpen && (

@@ -52,18 +52,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const sidebarContent = (
-    <div className="flex h-full flex-col select-none bg-brand text-slate-300">
+    <div className="flex h-full flex-col select-none bg-surface text-ink border-r border-line">
       {/* 56px Header: Aligned with TopBar */}
-      <div className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 px-4">
+      <div className="flex h-14 shrink-0 items-center justify-between border-b border-line px-4">
         <div className="flex items-center gap-2.5 min-w-0">
-          <Logo size="md" showText={!isCollapsed} subtitle={portalMeta.shortName} />
+          <Logo size="md" tone="onLight" showText={!isCollapsed} subtitle={portalMeta.shortName} />
         </div>
 
         {/* Mobile close button */}
         <button
           type="button"
           onClick={onCloseMobile}
-          className="lg:hidden text-slate-400 hover:text-white p-1 rounded"
+          className="lg:hidden text-ink-muted hover:text-ink p-1 rounded"
         >
           <X size={18} />
         </button>
@@ -71,7 +71,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Workspace Switcher in Header (when not collapsed and user has multiple portals) */}
       {!isCollapsed && me?.portals && me.portals.length > 1 && (
-        <div className="border-b border-white/10 p-2.5">
+        <div className="border-b border-line p-2.5">
           <WorkspaceSwitcher currentPortal={portal} />
         </div>
       )}
@@ -90,16 +90,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
               title={isCollapsed ? item.label : undefined}
               className={`relative flex items-center h-9 rounded-lg px-3 text-xs font-medium transition-all duration-150 ${
                 active
-                  ? 'bg-white/12 text-white font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:bg-white before:rounded-r'
-                  : 'text-slate-300 hover:bg-white/8 hover:text-white'
+                  ? 'bg-brand/10 text-brand font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:bg-brand before:rounded-r'
+                  : 'text-ink/80 hover:bg-canvas hover:text-ink'
               }`}
             >
-              <Icon size={16} className={`shrink-0 ${active ? 'text-white' : 'text-slate-400'}`} />
+              <Icon size={16} className={`shrink-0 ${active ? 'text-brand' : 'text-ink-muted'}`} />
               {!isCollapsed && (
                 <>
                   <span className="ml-2.5 flex-1 truncate">{item.label}</span>
                   {item.badge && (
-                    <span className="ml-auto inline-flex items-center rounded-full bg-white/15 px-1.5 py-0.2 text-xs font-semibold text-white">
+                    <span className="ml-auto inline-flex items-center rounded-full bg-brand/10 px-1.5 py-0.2 text-xs font-semibold text-brand">
                       {item.badge}
                     </span>
                   )}
@@ -111,12 +111,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </nav>
 
       {/* Footer: Help & Collapse Button only */}
-      <div className="shrink-0 border-t border-white/10 p-2 flex items-center justify-between">
+      <div className="shrink-0 border-t border-line p-2 flex items-center justify-between">
         {onOpenShortcuts && !isCollapsed && (
           <button
             type="button"
             onClick={onOpenShortcuts}
-            className="flex items-center gap-2 rounded-lg p-2 text-xs text-slate-400 hover:text-white hover:bg-white/8 transition-colors"
+            className="flex items-center gap-2 rounded-lg p-2 text-xs text-ink-muted hover:text-ink hover:bg-canvas transition-colors"
             title="Keyboard shortcuts (?)"
           >
             <HelpCircle size={15} />
@@ -127,7 +127,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <button
           type="button"
           onClick={onToggleCollapse}
-          className="hidden lg:flex items-center justify-center rounded-lg p-2 text-slate-400 hover:text-white hover:bg-white/8 transition-colors ml-auto"
+          className="hidden lg:flex items-center justify-center rounded-lg p-2 text-ink-muted hover:text-ink hover:bg-canvas transition-colors ml-auto"
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}

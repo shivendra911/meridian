@@ -81,9 +81,12 @@ export const PersonChip: React.FC<PersonChipProps> = ({
         onKeyDown={handleKeyDown}
         className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface py-0.5 pl-0.5 pr-2.5 text-xs text-ink hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 transition-colors"
       >
-        <Avatar src={avatar_url} name={name} size={20} />
+        <Avatar src={avatar_url} name={name} size={24} />
         <span className="font-medium truncate max-w-[140px]">{name}</span>
-        {role && (
+        {person_id && (
+          <span className="text-[11px] text-ink-muted font-normal truncate">· {person_id}</span>
+        )}
+        {role && !person_id && (
           <span className="text-xs text-ink-muted">· {formatRoleLabel(role)}</span>
         )}
       </button>

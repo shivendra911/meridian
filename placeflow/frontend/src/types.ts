@@ -292,6 +292,7 @@ export interface Interview {
   interview_id: string;
   application_id: string;
   student_id: string;
+  student_name?: string;
   round: string;
   scheduled_start: string;
   scheduled_end: string;

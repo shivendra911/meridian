@@ -30,6 +30,7 @@ import {
   ShieldCheck,
   ChevronRight} from 'lucide-react';
 import { toast } from 'sonner';
+import { formatDate } from '../../../ui/format';
 
 export const StudentDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -632,7 +633,7 @@ export const StudentDetailPage: React.FC = () => {
                       </span>
                     )}
                     <span className="text-xs text-slate-400 font-mono">
-                      {rel.created_at ? new Date(rel.created_at).toLocaleDateString() : ''}
+                      {rel.created_at ? formatDate(rel.created_at) : ''}
                     </span>
                   </div>
                 </div>
@@ -761,10 +762,7 @@ export const StudentDetailPage: React.FC = () => {
                         </Badge>
                       </td>
                       <td className="px-4 py-3.5 text-right font-mono text-slate-400 text-xs">
-                        {app.applied_at ? new Date(app.applied_at).toLocaleDateString([], {
-                          month: 'short',
-                          day: 'numeric',
-                        }) : '—'}
+                        {app.applied_at ? formatDate(app.applied_at) : '—'}
                       </td>
                     </tr>
                   ))}
@@ -949,7 +947,7 @@ export const StudentDetailPage: React.FC = () => {
                       <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-mono">
                         <span>Notice: {c.notice_version || 'v2026.1-DPDP'}</span>
                         {c.granted_at && (
-                          <span>Granted: {new Date(c.granted_at).toLocaleDateString()}</span>
+                          <span>Granted: {formatDate(c.granted_at)}</span>
                         )}
                       </div>
                     </div>

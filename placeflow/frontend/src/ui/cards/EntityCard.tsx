@@ -73,7 +73,7 @@ export const EntityCard: React.FC<EntityCardProps> = ({
       onKeyDown={clickable ? handleKeyDown : undefined}
       className={`rounded-lg border border-line bg-surface p-4 transition-all duration-150 ${
         clickable
-          ? 'cursor-pointer hover:border-slate-300 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2'
+          ? 'entity-card-clickable cursor-pointer hover:border-slate-300 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2'
           : ''
       } ${className}`}
     >

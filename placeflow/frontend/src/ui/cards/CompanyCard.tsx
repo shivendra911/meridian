@@ -1,6 +1,7 @@
 import React from 'react';
-import { Building2, MapPin, Briefcase, Calendar } from 'lucide-react';
+import { MapPin, Briefcase, Calendar } from 'lucide-react';
 import { EntityCard } from './EntityCard';
+import { CompanyMark } from './CompanyMark';
 import { CompanyCardSkeleton } from './CardSkeleton';
 import { formatDate } from '../format';
 
@@ -52,13 +53,7 @@ export const CompanyCard: React.FC<CompanyCardProps> = ({
   return (
     <EntityCard clickable={Boolean(onClick)} onClick={onClick} className={className}>
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 border border-slate-200">
-          {data.mark ? (
-            <img src={data.mark} alt="" className="h-full w-full object-contain rounded-lg" />
-          ) : (
-            <Building2 size={20} className="text-slate-500" />
-          )}
-        </div>
+        <CompanyMark name={data.name} mark={data.mark} size="md" />
 
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">

@@ -115,6 +115,7 @@ const InterviewSchema = z.object({
   interview_id: z.string(),
   application_id: z.string().default(''),
   student_id: z.string().default(''),
+  student_name: z.string().nullable().optional(),
   job_id: z.string().default(''),
   round: z.union([z.number(), z.string()]).default(1),
   scheduled_start: z.string().default(''),

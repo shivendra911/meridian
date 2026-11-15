@@ -13,3 +13,6 @@ export * from './TaskCard';
 export { StatCard } from '../../components/ui/StatCard';
 export type { StatCardProps } from '../../components/ui/StatCard';
 
+export { CompanyMark } from './CompanyMark';
+export * from './SummaryStrip';
+

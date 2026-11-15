@@ -19,13 +19,14 @@ import {
   StudentOffer} from '../api';
 import {
   PageHeader,
-  StatCard,
+  SummaryStrip,
   Button,
   Skeleton,
   EmptyState,
   ApplicationCard,
   InterviewCard,
   OfferCard,
+  formatDate,
   useDocumentTitle} from '../../../ui';
 import { ErrorState } from '../../../ui/ErrorState';
 
@@ -104,8 +105,7 @@ export const StudentApplicationsPage: React.FC = () => {
   return (
     <div className="space-y-6 font-sans">
       <PageHeader
-        title="Application & Decision Ledger"
-        description="Status of active drive applications, evaluation stages, and employment offers."
+        title="My applications"
         actions={
           <Button
             variant="outline"
@@ -117,27 +117,14 @@ export const StudentApplicationsPage: React.FC = () => {
         }
       />
 
-      {/* KPI Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard
-          label="Submitted Applications"
-          value={applications.length}
-          hint="Total drive submissions"
-          icon={FileText}
-        />
-        <StatCard
-          label="Active Interview Rounds"
-          value={activeInterviews.length}
-          hint={`${interviews.length} total scheduled`}
-          icon={Calendar}
-        />
-        <StatCard
-          label="Placement Offers"
-          value={offers.length}
-          hint={offers.length > 0 ? 'Action required' : 'Awaiting decisions'}
-          icon={Award}
-        />
-      </div>
+      {/* Summary Strip (replaces separate StatCards) */}
+      <SummaryStrip
+        items={[
+          { label: 'Submitted applications', value: applications.length, hint: 'Total drive submissions' },
+          { label: 'Active interview rounds', value: activeInterviews.length, hint: `${interviews.length} total scheduled` },
+          { label: 'Placement offers', value: offers.length, hint: offers.length > 0 ? 'Action required' : 'Awaiting decisions' },
+        ]}
+      />
 
       {/* Pipeline Navigation Tabs */}
       <div className="flex items-center gap-2 border-b border-line pb-px">
@@ -199,7 +186,7 @@ export const StudentApplicationsPage: React.FC = () => {
                     company_name: app.company_name,
                     stage: app.status,
                     applied_at: app.application_date,
-                    last_update: app.application_date ? new Date(app.application_date).toLocaleDateString() : 'Active',
+                    last_update: app.application_date ? formatDate(app.application_date) : 'Active',
                   }}
                 />
               ))}

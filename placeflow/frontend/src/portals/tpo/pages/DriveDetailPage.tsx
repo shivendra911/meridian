@@ -21,6 +21,7 @@ import {
   EligibilityExplainerDrawer,
   EligibilityReport} from '../../../components/recruitment/EligibilityExplainerDrawer';
 import { resolveCompanyName } from '../../../utils/formatters';
+import { PersonChip, formatDate } from '../../../ui';
 
 export const DriveDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -318,15 +319,14 @@ export const DriveDetailPage: React.FC = () => {
                   <tr key={app.application_id} className="h-10 hover:bg-canvas/50 transition-colors">
                     <td className="py-2 px-4 font-mono font-medium text-brand">{app.application_id}</td>
                     <td className="py-2 px-4 font-medium text-ink">
-                      <button
+                      <PersonChip
+                        name={app.student_name || app.student?.name || app.student_id}
+                        person_id={app.student_id}
                         onClick={() => navigate(`/tpo/students/${app.student_id}`)}
-                        className="text-left hover:text-brand hover:underline font-semibold cursor-pointer"
-                      >
-                        {app.student_name || app.student?.name || app.student_id} <span className="font-normal text-ink-muted font-mono text-xs">({app.student_id})</span>
-                      </button>
+                      />
                     </td>
-                    <td className="py-2 px-4 text-ink-muted font-mono tabular-nums">
-                      {app.application_date || app.applied_at ? new Date(app.application_date || app.applied_at).toLocaleDateString([], { month: 'short', day: 'numeric' }) : 'Active'}
+                    <td className="py-2 px-4 text-ink-muted tabular-nums">
+                      {app.application_date || app.applied_at ? formatDate(app.application_date || app.applied_at) : 'Active'}
                     </td>
                     <td className="py-2 px-4">
                       <select
@@ -381,7 +381,13 @@ export const DriveDetailPage: React.FC = () => {
                 {interviews.map((iv) => (
                   <tr key={iv.interview_id} className="h-10 hover:bg-canvas/50 transition-colors">
                     <td className="py-2 px-4 font-mono font-medium text-brand">{iv.interview_id}</td>
-                    <td className="py-2 px-4 font-medium text-ink">{iv.student_id}</td>
+                    <td className="py-2 px-4 font-medium text-ink">
+                      <PersonChip
+                        name={iv.student_name || iv.student_id}
+                        person_id={iv.student_id}
+                        onClick={() => navigate(`/tpo/students/${iv.student_id}`)}
+                      />
+                    </td>
                     <td className="py-2 px-4 text-ink-muted">{iv.round || 'Technical Round 1'}</td>
                     <td className="py-2 px-4 text-ink-muted">{iv.mode} {iv.venue ? `(${iv.venue})` : ''}</td>
                     <td className="py-2 px-4 text-right">
@@ -418,12 +424,18 @@ export const DriveDetailPage: React.FC = () => {
                 {placements.map((p) => (
                   <tr key={p.placement_id} className="h-10 hover:bg-canvas/50 transition-colors">
                     <td className="py-2 px-4 font-mono font-medium text-brand">{p.placement_id}</td>
-                    <td className="py-2 px-4 font-medium text-ink">{p.student_id}</td>
+                    <td className="py-2 px-4 font-medium text-ink">
+                      <PersonChip
+                        name={p.student_id}
+                        person_id={p.student_id}
+                        onClick={() => navigate(`/tpo/students/${p.student_id}`)}
+                      />
+                    </td>
                     <td className="py-2 px-4 font-semibold text-success tabular-nums">
                       ₹{p.package_lpa} LPA
                     </td>
-                    <td className="py-2 px-4 text-ink-muted font-mono tabular-nums">
-                      {p.placement_date ? new Date(p.placement_date).toLocaleDateString() : 'Active'}
+                    <td className="py-2 px-4 text-ink-muted tabular-nums">
+                      {p.placement_date ? formatDate(p.placement_date) : 'Active'}
                     </td>
                     <td className="py-2 px-4 text-right">
                       <Badge variant="success" size="xs">Accepted</Badge>

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Building2, Check, Clock, X } from 'lucide-react';
+import { Check, Clock, X } from 'lucide-react';
 import { EntityCard } from './EntityCard';
+import { CompanyMark } from './CompanyMark';
 import { ApplicationCardSkeleton } from './CardSkeleton';
 import { formatDate } from '../format';
 
@@ -66,13 +67,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
       {/* Header: Role and Company */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-100 border border-slate-200">
-            {data.company_mark ? (
-              <img src={data.company_mark} alt="" className="h-full w-full object-contain rounded-md" />
-            ) : (
-              <Building2 size={16} className="text-slate-500" />
-            )}
-          </div>
+          <CompanyMark name={data.company_name} mark={data.company_mark} size="sm" />
           <div className="min-w-0">
             <h3 className="text-sm font-semibold text-ink truncate m-0" title={data.role}>
               {data.role}

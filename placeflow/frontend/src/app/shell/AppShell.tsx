@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
 import { DelegationBanner } from './DelegationBanner';
@@ -17,6 +17,7 @@ export interface AppShellProps {
 
 export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
@@ -69,7 +70,7 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
 
         <DelegationBanner />
 
-        <main className="flex-1 w-full max-w-[1280px] mx-auto p-4 sm:p-6 lg:p-8">
+        <main key={location.pathname} className="flex-1 w-full max-w-[1280px] mx-auto p-4 sm:p-6 lg:p-8 page-content-fade">
           <ErrorBoundary>
             {children || <Outlet context={{ onOpenCopilot: () => setIsCopilotOpen(true) }} />}
           </ErrorBoundary>

@@ -11,25 +11,21 @@ export interface AvatarProps {
 }
 
 const PALETTES = [
-  'bg-blue-100 text-blue-800',
-  'bg-emerald-100 text-emerald-800',
-  'bg-amber-100 text-amber-800',
-  'bg-purple-100 text-purple-800',
-  'bg-rose-100 text-rose-800',
-  'bg-indigo-100 text-indigo-800',
-  'bg-teal-100 text-teal-800',
-  'bg-slate-100 text-slate-800',
+  'bg-blue-50 text-blue-700 border-blue-100',
+  'bg-emerald-50 text-emerald-700 border-emerald-100',
+  'bg-amber-50 text-amber-700 border-amber-100',
+  'bg-violet-50 text-violet-700 border-violet-100',
+  'bg-rose-50 text-rose-700 border-rose-100',
+  'bg-cyan-50 text-cyan-700 border-cyan-100',
+  'bg-lime-50 text-lime-700 border-lime-100',
+  'bg-orange-50 text-orange-700 border-orange-100',
 ];
 
 function getPalette(name?: string | null): string {
-  if (!name) return PALETTES[7];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = (hash << 5) - hash + name.charCodeAt(i);
-    hash |= 0;
-  }
-  const idx = Math.abs(hash) % PALETTES.length;
-  return PALETTES[idx];
+  if (!name) return PALETTES[0];
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return PALETTES[h % PALETTES.length];
 }
 
 const SIZE_CLASSES: Record<number, { container: string; text: string; ring: string }> = {

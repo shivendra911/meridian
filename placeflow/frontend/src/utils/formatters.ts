@@ -21,9 +21,9 @@ export function formatFriendlyDate(dateStr?: string): string {
   try {
     const d = new Date(dateStr);
     if (isNaN(d.getTime())) return dateStr;
-    return d.toLocaleDateString([], {
-      month: 'short',
+    return d.toLocaleDateString('en-GB', {
       day: 'numeric',
+      month: 'short',
       year: 'numeric',
     });
   } catch {

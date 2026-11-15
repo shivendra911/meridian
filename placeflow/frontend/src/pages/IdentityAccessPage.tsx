@@ -15,7 +15,7 @@ import {
   Search} from 'lucide-react';
 import { api } from '../api';
 import { toast } from 'sonner';
-import { EmptyState } from '../ui';
+import { EmptyState, formatDate } from '../ui';
 import { useTenant } from '../context/TenantContext';
 import { RoleAssignmentWizard } from '../components/iam/RoleAssignmentWizard';
 
@@ -317,7 +317,7 @@ export const IdentityAccessPage: React.FC = () => {
                     </span>
                   </td>
                   <td className="py-2.5 px-4 text-slate-500 font-mono text-xs">
-                    {new Date(id.created_at).toLocaleDateString()}
+                    {formatDate(id.created_at)}
                   </td>
                 </tr>
               ))}
@@ -398,7 +398,7 @@ export const IdentityAccessPage: React.FC = () => {
                   </td>
                   <td className="py-2.5 px-4 font-mono text-xs text-slate-700">{a.scope_id}</td>
                   <td className="py-2.5 px-4 text-slate-500 font-mono text-xs">
-                    {a.valid_to ? new Date(a.valid_to).toLocaleDateString() : 'PERMANENT'}
+                    {a.valid_to ? formatDate(a.valid_to) : 'PERMANENT'}
                   </td>
                   <td className="py-2.5 px-4">
                     <span className="inline-block px-1.5 py-0.5 rounded text-xs font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
