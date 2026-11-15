@@ -276,7 +276,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 onClick={() => { if (onNavigateTab) onNavigateTab('superday'); else navigate('/tpo/interviews'); }}
-                className="p-3 rounded-lg border border-line bg-surface hover:bg-canvas text-left transition-colors duration-150 cursor-pointer"
+                className="p-3 rounded-lg border border-line bg-surface hover:bg-canvas text-left transition-colors duration-150 cursor-pointer card-interactive macos-press-card"
               >
                 <div className="flex items-center justify-between text-xs font-semibold text-ink">
                   <span>Superday Clash Solver</span>
@@ -289,7 +289,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({ onNavigateTab }) => 
 
               <button
                 onClick={() => { if (onNavigateTab) onNavigateTab('renege'); else navigate('/tpo/insights/renege'); }}
-                className="p-3 rounded-lg border border-line bg-surface hover:bg-canvas text-left transition-colors duration-150 cursor-pointer"
+                className="p-3 rounded-lg border border-line bg-surface hover:bg-canvas text-left transition-colors duration-150 cursor-pointer card-interactive macos-press-card"
               >
                 <div className="flex items-center justify-between text-xs font-semibold text-ink">
                   <span>Retention Radar</span>

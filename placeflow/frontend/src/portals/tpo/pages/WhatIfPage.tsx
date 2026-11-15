@@ -69,7 +69,7 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
       {/* Back link */}
       <button
         onClick={onBack}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-cardinal transition-colors"
+        className="macos-press-sm inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-cardinal transition-colors cursor-pointer"
       >
         <ArrowLeft size={13} />
         <span>Return to Candidate Dossier ({studentId})</span>
@@ -176,7 +176,7 @@ export const WhatIfPage: React.FC<WhatIfPageProps> = ({ studentId, onBack }) => 
               <button
                 type="submit"
                 disabled={computing}
-                className="w-full py-2 bg-cardinal hover:bg-cardinal-dark text-white text-xs font-semibold rounded shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                className="macos-press w-full py-2 bg-cardinal hover:bg-cardinal-dark text-white text-xs font-semibold rounded shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {computing ? <Activity className="animate-spin" size={13} /> : <TrendingUp size={13} />}
                 <span>Recompute What-If Simulation</span>

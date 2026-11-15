@@ -130,7 +130,7 @@ export const StudentOpportunitiesPage: React.FC = () => {
         <div className="flex items-center gap-1 bg-canvas p-1 rounded-lg border border-line">
           <button
             onClick={() => setActiveTab('eligible')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+            className={`macos-press-sm px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
               activeTab === 'eligible'
                 ? 'bg-surface text-ink shadow-xs'
                 : 'text-ink-muted hover:text-ink'
@@ -140,7 +140,7 @@ export const StudentOpportunitiesPage: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('all')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+            className={`macos-press-sm px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
               activeTab === 'all'
                 ? 'bg-surface text-ink shadow-xs'
                 : 'text-ink-muted hover:text-ink'

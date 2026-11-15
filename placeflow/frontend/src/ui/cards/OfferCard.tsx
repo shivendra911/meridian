@@ -107,7 +107,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
                   e.stopPropagation();
                   setShowDeclineConfirm(true);
                 }}
-                className="inline-flex items-center gap-1 rounded border border-rose-200 bg-white px-2.5 py-1 text-xs font-medium text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="inline-flex items-center gap-1 rounded border border-rose-200 bg-white px-2.5 py-1 text-xs font-medium text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500 macos-press-sm"
               >
                 <X size={12} />
                 <span>Decline</span>
@@ -121,7 +121,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
                   e.stopPropagation();
                   onAccept();
                 }}
-                className="inline-flex items-center gap-1 rounded bg-brand px-3 py-1 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1"
+                className="inline-flex items-center gap-1 rounded bg-brand px-3 py-1 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 macos-press-sm"
               >
                 <Check size={12} />
                 <span>Accept offer</span>
@@ -133,8 +133,8 @@ export const OfferCard: React.FC<OfferCardProps> = ({
 
       {/* Decline Confirmation Dialog */}
       {showDeclineConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-sm rounded-xl bg-surface p-5 shadow-2xl border border-line animate-in zoom-in-95">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
+          <div className="w-full max-w-sm rounded-xl bg-surface p-5 shadow-macos-window border border-line/80 macos-sheet-enter">
             <div className="flex items-center gap-3 text-rose-600">
               <AlertTriangle className="h-6 w-6 shrink-0" />
               <h3 className="text-base font-semibold text-ink m-0">Decline this placement offer?</h3>
@@ -148,7 +148,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
               <button
                 type="button"
                 onClick={() => setShowDeclineConfirm(false)}
-                className="rounded border border-line bg-white px-3 py-1.5 text-xs font-medium text-ink hover:bg-slate-50"
+                className="rounded border border-line bg-white px-3 py-1.5 text-xs font-medium text-ink hover:bg-slate-50 macos-press-sm"
               >
                 Cancel
               </button>
@@ -158,7 +158,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
                   setShowDeclineConfirm(false);
                   if (onDecline) onDecline();
                 }}
-                className="rounded bg-rose-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-rose-700"
+                className="rounded bg-rose-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-rose-700 macos-press-sm"
               >
                 Confirm decline
               </button>

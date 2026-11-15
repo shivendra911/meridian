@@ -169,7 +169,7 @@ export const HodHomePage: React.FC = () => {
           <div className="space-y-2.5">
             <button
               onClick={() => navigate('/hod/curriculum')}
-              className="w-full p-3 rounded-lg border border-line bg-canvas hover:bg-slate-100 transition-colors flex items-center justify-between text-xs cursor-pointer"
+              className="macos-press-sm w-full p-3 rounded-lg border border-line bg-canvas hover:bg-slate-100 transition-colors flex items-center justify-between text-xs cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
                 <BookOpen size={16} className="text-brand" />
@@ -180,7 +180,7 @@ export const HodHomePage: React.FC = () => {
 
             <button
               onClick={() => navigate('/hod/faculty')}
-              className="w-full p-3 rounded-lg border border-line bg-canvas hover:bg-slate-100 transition-colors flex items-center justify-between text-xs cursor-pointer"
+              className="macos-press-sm w-full p-3 rounded-lg border border-line bg-canvas hover:bg-slate-100 transition-colors flex items-center justify-between text-xs cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
                 <Users size={16} className="text-brand" />
@@ -191,7 +191,7 @@ export const HodHomePage: React.FC = () => {
 
             <button
               onClick={() => navigate('/hod/placements')}
-              className="w-full p-3 rounded-lg border border-line bg-canvas hover:bg-slate-100 transition-colors flex items-center justify-between text-xs cursor-pointer"
+              className="macos-press-sm w-full p-3 rounded-lg border border-line bg-canvas hover:bg-slate-100 transition-colors flex items-center justify-between text-xs cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
                 <Award size={16} className="text-brand" />

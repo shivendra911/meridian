@@ -208,9 +208,9 @@ export const ApplicationsPage: React.FC = () => {
             <button
               key={st}
               onClick={() => setStatusFilter(st)}
-              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+              className={`macos-press-sm px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
                 statusFilter === st
-                  ? 'bg-brand text-white'
+                  ? 'bg-brand text-white shadow-xs'
                   : 'bg-surface text-ink hover:bg-canvas border border-line'
               }`}
             >
@@ -223,8 +223,8 @@ export const ApplicationsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode('board')}
-              className={`p-1.5 rounded transition-colors ${
-                viewMode === 'board' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              className={`macos-press-sm p-1.5 rounded transition-colors ${
+                viewMode === 'board' ? 'bg-brand text-white shadow-xs' : 'text-ink-muted hover:text-ink'
               }`}
               title="Board view"
             >
@@ -233,8 +233,8 @@ export const ApplicationsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode('table')}
-              className={`p-1.5 rounded transition-colors ${
-                viewMode === 'table' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              className={`macos-press-sm p-1.5 rounded transition-colors ${
+                viewMode === 'table' ? 'bg-brand text-white shadow-xs' : 'text-ink-muted hover:text-ink'
               }`}
               title="Table view"
             >
@@ -281,7 +281,7 @@ export const ApplicationsPage: React.FC = () => {
                     return (
                       <div
                         key={norm.id || app.application_id}
-                        className="rounded-lg border border-line bg-surface p-3 shadow-xs space-y-2.5 hover:border-brand/30 transition-all"
+                        className="rounded-lg border border-line bg-surface p-3 shadow-xs space-y-2.5 hover:border-brand/30 transition-all card-interactive macos-press-card"
                       >
                         <div className="flex items-center justify-between gap-1.5">
                           <PersonChip
@@ -318,7 +318,7 @@ export const ApplicationsPage: React.FC = () => {
                           <span>{app.application_date || app.applied_at ? formatDate(app.application_date || app.applied_at) : 'Active'}</span>
                           <button
                             onClick={() => handleOpenExplainability(app)}
-                            className="text-brand hover:underline font-medium inline-flex items-center gap-0.5 cursor-pointer"
+                            className="macos-press-sm text-brand hover:underline font-medium inline-flex items-center gap-0.5 cursor-pointer"
                           >
                             <HelpCircle size={12} />
                             Explain
@@ -405,7 +405,7 @@ export const ApplicationsPage: React.FC = () => {
                       <td className="py-2.5 px-4 text-right">
                         <button
                           onClick={() => handleOpenExplainability(app)}
-                          className="text-xs font-medium text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
+                          className="macos-press-sm text-xs font-medium text-brand hover:underline inline-flex items-center gap-1 cursor-pointer"
                         >
                           <HelpCircle size={13} />
                           <span>Explain Match</span>

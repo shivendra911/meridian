@@ -149,7 +149,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
           <button
             type="button"
             onClick={onMessage}
-            className="rounded border border-line bg-white px-2.5 py-1 text-xs font-medium text-ink hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-brand"
+            className="macos-press-sm rounded border border-line bg-white px-2.5 py-1 text-xs font-medium text-ink hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-brand cursor-pointer"
           >
             Message
           </button>
@@ -158,7 +158,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
           <button
             type="button"
             onClick={onViewProfile}
-            className="inline-flex items-center gap-1 rounded bg-brand px-3 py-1 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1"
+            className="macos-press-sm inline-flex items-center gap-1 rounded bg-brand px-3 py-1 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 cursor-pointer"
           >
             <span>View profile</span>
             <ExternalLink size={11} />

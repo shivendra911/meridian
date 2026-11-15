@@ -40,7 +40,7 @@ export const SummaryStrip: React.FC<SummaryStripProps> = ({ items, className = '
             key={idx}
             onClick={item.onClick}
             className={`px-5 py-3.5 flex flex-col justify-center min-h-[72px] ${
-              item.onClick ? 'cursor-pointer hover:bg-canvas/50 transition-colors' : ''
+              item.onClick ? 'cursor-pointer hover:bg-canvas/50 transition-colors macos-press-sm' : ''
             } ${item.className || ''}`}
           >
             <span className="text-2xl font-bold tracking-tight text-ink tabular-nums leading-tight">

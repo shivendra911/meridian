@@ -127,9 +127,9 @@ export const DrivesPage: React.FC = () => {
             <button
               key={tier}
               onClick={() => setTierFilter(tier)}
-              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+              className={`macos-press-sm px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
                 tierFilter === tier
-                  ? 'bg-brand text-white'
+                  ? 'bg-brand text-white shadow-xs'
                   : 'bg-surface text-ink hover:bg-canvas border border-line'
               }`}
             >
@@ -142,8 +142,8 @@ export const DrivesPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode('cards')}
-              className={`p-1.5 rounded transition-colors ${
-                viewMode === 'cards' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              className={`macos-press-sm p-1.5 rounded transition-colors ${
+                viewMode === 'cards' ? 'bg-brand text-white shadow-xs' : 'text-ink-muted hover:text-ink'
               }`}
               title="Cards view"
             >
@@ -152,8 +152,8 @@ export const DrivesPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setViewMode('table')}
-              className={`p-1.5 rounded transition-colors ${
-                viewMode === 'table' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+              className={`macos-press-sm p-1.5 rounded transition-colors ${
+                viewMode === 'table' ? 'bg-brand text-white shadow-xs' : 'text-ink-muted hover:text-ink'
               }`}
               title="Table view"
             >
@@ -274,7 +274,7 @@ export const DrivesPage: React.FC = () => {
                           e.stopPropagation();
                           navigate(`/tpo/drives/${j.job_id}`);
                         }}
-                        className="text-brand hover:underline inline-flex items-center gap-1 font-medium cursor-pointer"
+                        className="macos-press-sm text-brand hover:underline inline-flex items-center gap-1 font-medium cursor-pointer"
                       >
                         <span>Inspect</span>
                         <ArrowRight size={13} />

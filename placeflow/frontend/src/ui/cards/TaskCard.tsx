@@ -57,8 +57,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`rounded-lg border border-line bg-surface p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${
-        onClick ? 'cursor-pointer hover:border-slate-300 hover:bg-slate-50' : ''
+      className={`rounded-lg border border-line bg-surface p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+        onClick ? 'card-interactive macos-press-card cursor-pointer' : ''
       } ${className}`}
     >
       {/* Icon + Title + Due */}
@@ -92,7 +92,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             e.stopPropagation();
             onAction();
           }}
-          className="inline-flex self-end sm:self-center shrink-0 items-center gap-1 rounded bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 transition-colors"
+          className="inline-flex self-end sm:self-center shrink-0 items-center gap-1 rounded bg-brand px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 transition-colors macos-press"
         >
           <span>{data.action_label || 'View'}</span>
           <ArrowRight size={12} />

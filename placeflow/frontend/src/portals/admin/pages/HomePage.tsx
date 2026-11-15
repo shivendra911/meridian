@@ -115,7 +115,7 @@ export const AdminHomePage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
           onClick={() => navigate('/admin/hierarchy')}
-          className="p-5 rounded-xl border border-line bg-surface hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between"
+          className="p-5 rounded-xl border border-line bg-surface hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between card-interactive macos-press-card"
         >
           <div className="space-y-2">
             <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
@@ -134,7 +134,7 @@ export const AdminHomePage: React.FC = () => {
 
         <div
           onClick={() => navigate('/admin/iam')}
-          className="p-5 rounded-xl border border-line bg-surface hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between"
+          className="p-5 rounded-xl border border-line bg-surface hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between card-interactive macos-press-card"
         >
           <div className="space-y-2">
             <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -153,7 +153,7 @@ export const AdminHomePage: React.FC = () => {
 
         <div
           onClick={() => navigate('/admin/academic')}
-          className="p-5 rounded-xl border border-line bg-surface hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between"
+          className="p-5 rounded-xl border border-line bg-surface hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between card-interactive macos-press-card"
         >
           <div className="space-y-2">
             <div className="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">

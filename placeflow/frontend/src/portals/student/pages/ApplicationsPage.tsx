@@ -130,7 +130,7 @@ export const StudentApplicationsPage: React.FC = () => {
       <div className="flex items-center gap-2 border-b border-line pb-px">
         <button
           onClick={() => setActiveTab('applications')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
+          className={`macos-press-sm flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
             activeTab === 'applications'
               ? 'border-brand text-brand'
               : 'border-transparent text-ink-muted hover:text-ink'
@@ -142,7 +142,7 @@ export const StudentApplicationsPage: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('interviews')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
+          className={`macos-press-sm flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
             activeTab === 'interviews'
               ? 'border-brand text-brand'
               : 'border-transparent text-ink-muted hover:text-ink'
@@ -154,7 +154,7 @@ export const StudentApplicationsPage: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('offers')}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
+          className={`macos-press-sm flex items-center gap-2 px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors cursor-pointer ${
             activeTab === 'offers'
               ? 'border-brand text-brand'
               : 'border-transparent text-ink-muted hover:text-ink'

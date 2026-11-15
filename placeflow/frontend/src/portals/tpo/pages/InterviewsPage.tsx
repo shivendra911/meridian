@@ -207,9 +207,9 @@ export const InterviewsPage: React.FC = () => {
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
-                  className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+                  className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors macos-press-sm ${
                     statusFilter === st
-                      ? 'bg-brand text-white'
+                      ? 'bg-brand text-white shadow-xs'
                       : 'bg-surface text-ink hover:bg-canvas border border-line'
                   }`}
                 >
@@ -222,8 +222,8 @@ export const InterviewsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setViewMode('grouped')}
-                  className={`p-1.5 rounded transition-colors ${
-                    viewMode === 'grouped' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+                  className={`p-1.5 rounded transition-colors macos-press-sm ${
+                    viewMode === 'grouped' ? 'bg-brand text-white shadow-xs' : 'text-ink-muted hover:text-ink'
                   }`}
                   title="Grouped by day"
                 >
@@ -232,8 +232,8 @@ export const InterviewsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setViewMode('table')}
-                  className={`p-1.5 rounded transition-colors ${
-                    viewMode === 'table' ? 'bg-brand text-white' : 'text-ink-muted hover:text-ink'
+                  className={`p-1.5 rounded transition-colors macos-press-sm ${
+                    viewMode === 'table' ? 'bg-brand text-white shadow-xs' : 'text-ink-muted hover:text-ink'
                   }`}
                   title="Table view"
                 >

@@ -109,7 +109,7 @@ export const InterviewCard: React.FC<InterviewCardProps> = ({
               e.stopPropagation();
               onAddToCalendar();
             }}
-            className="inline-flex items-center gap-1.5 rounded border border-line bg-white px-2.5 py-1 text-xs font-medium text-ink hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand"
+            className="inline-flex items-center gap-1.5 rounded border border-line bg-white px-2.5 py-1 text-xs font-medium text-ink hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand macos-press-sm"
           >
             <CalendarPlus size={12} />
             <span>Add to calendar</span>
@@ -124,7 +124,7 @@ export const InterviewCard: React.FC<InterviewCardProps> = ({
               if (onJoin) onJoin();
               else if (data.venue_or_link) window.open(data.venue_or_link, '_blank');
             }}
-            className="inline-flex items-center gap-1 rounded bg-brand px-3 py-1 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1"
+            className="inline-flex items-center gap-1 rounded bg-brand px-3 py-1 text-xs font-medium text-white hover:bg-brand-hover focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 macos-press-sm"
           >
             <span>Join</span>
             <ExternalLink size={11} />

@@ -146,9 +146,9 @@ export const OffersPage: React.FC = () => {
                 <button
                   key={tier}
                   onClick={() => setTierFilter(tier)}
-                  className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+                  className={`macos-press-sm px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
                     tierFilter === tier
-                      ? 'bg-brand text-white'
+                      ? 'bg-brand text-white shadow-xs'
                       : 'bg-surface text-ink hover:bg-canvas border border-line'
                   }`}
                 >

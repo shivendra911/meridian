@@ -170,7 +170,7 @@ export const DriveCard: React.FC<DriveCardProps> = ({
               if (onManage) onManage();
               else if (onClick) onClick();
             }}
-            className="inline-flex items-center justify-center rounded-md px-3.5 py-1.5 text-xs font-medium bg-brand text-white hover:bg-brand-hover transition-colors focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1"
+            className="inline-flex items-center justify-center rounded-md px-3.5 py-1.5 text-xs font-medium bg-brand text-white hover:bg-brand-hover transition-colors focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 macos-press"
           >
             Manage
           </button>
@@ -206,7 +206,7 @@ export const DriveCard: React.FC<DriveCardProps> = ({
                 e.stopPropagation();
                 onApply();
               }}
-              className={`inline-flex items-center justify-center rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 ${
+              className={`inline-flex items-center justify-center rounded-md px-3.5 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 macos-press ${
                 data.eligible
                   ? 'bg-brand text-white hover:bg-brand-hover'
                   : 'bg-slate-100 text-slate-400 cursor-not-allowed'

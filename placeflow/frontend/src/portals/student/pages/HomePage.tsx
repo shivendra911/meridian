@@ -229,7 +229,7 @@ export const StudentHomePage: React.FC = () => {
       />
 
       {/* 0. Lead with "Next Step" Focal Card */}
-      <div className="rounded-xl border border-brand/20 bg-linear-to-r from-surface to-brand/5 p-5 shadow-xs">
+      <div className="rounded-xl border border-brand/20 bg-linear-to-r from-surface to-brand/5 p-5 shadow-xs card-interactive macos-press-card">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3.5">
             {nextInterview ? (

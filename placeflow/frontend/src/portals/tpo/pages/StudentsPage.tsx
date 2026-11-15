@@ -314,7 +314,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
         <div className="flex items-center gap-1 bg-slate-100 p-1 rounded border border-slate-200">
           <button
             onClick={() => setViewMode('table')}
-            className={`p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-all ${
+            className={`macos-press-sm p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-all ${
               viewMode === 'table' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500'
             }`}
           >
@@ -323,7 +323,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
           </button>
           <button
             onClick={() => setViewMode('cards')}
-            className={`p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-all ${
+            className={`macos-press-sm p-1.5 rounded flex items-center gap-1.5 text-xs font-medium transition-all ${
               viewMode === 'cards' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-500'
             }`}
           >
@@ -342,7 +342,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
             <button
               key={dept}
               onClick={() => setSelectedDept(dept)}
-              className={`px-2.5 py-1 text-xs rounded font-medium transition-all ${
+              className={`macos-press-sm px-2.5 py-1 text-xs rounded font-medium transition-all ${
                 selectedDept === dept
                   ? 'bg-navy-900 text-white shadow-2xs'
                   : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -406,7 +406,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
           {students.map((student) => (
             <div
               key={student.student_id}
-              className="bg-white border border-slate-200 rounded shadow-subtle p-5 hover:border-slate-300 transition-all flex flex-col justify-between"
+              className="bg-white border border-slate-200 rounded shadow-subtle p-5 hover:border-slate-300 transition-all flex flex-col justify-between card-interactive macos-press-card"
             >
               <div>
                 <div className="flex items-start justify-between mb-3">
@@ -484,7 +484,7 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
               <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                 <button
                   onClick={() => handleSelectStudent(student.student_id)}
-                  className="text-xs font-semibold text-cardinal hover:underline flex items-center gap-1"
+                  className="macos-press-sm text-xs font-semibold text-cardinal hover:underline flex items-center gap-1"
                 >
                   <span>Open Dossier</span>
                   <ChevronRight size={13} />
@@ -492,14 +492,14 @@ export const StudentsPage: React.FC<StudentsPageProps> = ({
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => handleOpenWhatIf(student.student_id)}
-                    className="p-1.5 text-slate-600 hover:text-cardinal bg-slate-100 hover:bg-slate-200 rounded"
+                    className="macos-press-sm p-1.5 text-slate-600 hover:text-cardinal bg-slate-100 hover:bg-slate-200 rounded"
                     title="Run What-If Simulation"
                   >
                     <Sliders size={13} />
                   </button>
                   <button
                     onClick={() => handleOpenConsent(student.student_id)}
-                    className="p-1.5 text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-slate-200 rounded"
+                    className="macos-press-sm p-1.5 text-slate-600 hover:text-emerald-700 bg-slate-100 hover:bg-slate-200 rounded"
                     title="Manage DPDP Consents"
                   >
                     <Shield size={13} />

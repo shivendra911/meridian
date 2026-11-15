@@ -352,7 +352,7 @@ export const StudentProfilePage: React.FC = () => {
                             toast.info(`Added "${rec}" to portfolio. Remember to click "Save Portfolio".`);
                           }
                         }}
-                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border transition-colors ${
+                        className={`macos-press-sm inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border transition-colors ${
                           alreadyHas
                             ? 'bg-canvas border-line text-ink-muted opacity-60 cursor-default'
                             : 'bg-brand/5 border-brand/20 text-brand hover:bg-brand/10 cursor-pointer'

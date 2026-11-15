@@ -33,7 +33,7 @@ export const StatCard: React.FC<StatCardProps> = ({
     <div
       onClick={onClick}
       className={`rounded-lg border border-line bg-surface p-4 transition-colors ${
-        onClick ? 'cursor-pointer hover:border-slate-300' : ''
+        onClick ? 'card-interactive macos-press-card cursor-pointer' : ''
       } ${className}`}
     >
       <div className="flex items-start justify-between gap-3">

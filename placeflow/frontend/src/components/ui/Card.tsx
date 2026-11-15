@@ -27,6 +27,8 @@ export const Card: React.FC<CardProps> = ({
     <div
       onClick={onClick}
       className={`rounded-lg border border-line bg-surface overflow-hidden ${
+        onClick ? 'card-interactive macos-press-card cursor-pointer' : ''
+      } ${
         headerRibbonColor ? 'border-t-2' : ''
       } ${className}`}
       style={headerRibbonColor ? { borderTopColor: headerRibbonColor } : {}}

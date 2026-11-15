@@ -70,9 +70,9 @@ export const SuperdayPage: React.FC = () => {
           <button
             onClick={handleResolve}
             disabled={resolving || conflicts.length === 0}
-            className={`px-4 py-2 text-xs font-semibold rounded shadow-xs flex items-center gap-2 transition-colors ${
+            className={`macos-press px-4 py-2 text-xs font-semibold rounded shadow-xs flex items-center gap-2 transition-colors ${
               conflicts.length > 0
-                ? 'bg-cardinal hover:bg-cardinal-dark text-white'
+                ? 'bg-cardinal hover:bg-cardinal-dark text-white cursor-pointer'
                 : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
             }`}
           >
