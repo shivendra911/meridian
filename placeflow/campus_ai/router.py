@@ -87,6 +87,34 @@ class MockAIProvider(AIProvider):
                 "Based on the institutional placement policy and your verified shared profile "
                 "(CGPA 8.42, 0 active backlogs, 128 completed credits), you meet all statutory eligibility criteria for Tier-1 Super Dream roles."
             )
+        elif "resume" in prompt.lower() or "ats" in prompt.lower() or "bullet" in prompt.lower():
+            response_text = (
+                "Resume ATS Optimization Analysis:\n"
+                "• Strengthened Action Verbs: Replaced passive language with high-impact engineering leadership verbs.\n"
+                "• Quantified Metric Impact: Formatted with action + scope + quantifiable result (e.g. 'Engineered distributed microservices processing 12,000+ daily campus transactions, reducing p99 latency by 34%').\n"
+                "• NEP & Skills Alignment: Tagged keywords matching Tier-1 job descriptions (FastAPI, React, Distributed Systems, PostgreSQL, Docker)."
+            )
+        elif "attendance" in prompt.lower() or "noc" in prompt.lower() or "advisee" in prompt.lower():
+            response_text = (
+                "Advisee Attendance & Leave Endorsement Audit:\n"
+                "• 3 advisees currently flagged with attendance < 75% (Diya Patel 71%, Rohan Verma 68%, Tanvi Shah 74%).\n"
+                "• Institutional Policy Ruling: Under Placement Leave Bylaw Section 4.2, students below 75% attendance require an Academic Senate Review before off-campus corporate placement NOCs can be endorsed.\n"
+                "• Recommended Action: Issue attendance remediation notices before signing upcoming semester NOC requests."
+            )
+        elif "fairness" in prompt.lower() or "eeoc" in prompt.lower() or "4/5" in prompt.lower():
+            response_text = (
+                "Section 9.3 Statutory Placement Fairness Telemetry:\n"
+                "• Four-Fifths EEOC Rule Compliance: Overall gender selection ratio stands at 88.2% (exceeding the 80% statutory minimum benchmark).\n"
+                "• Department Parity: CSE, ECE, and Mechanical show balanced selection rates across corporate interview tiers.\n"
+                "• Zero Disparate Impact: No systemic adverse selection detected across active campus recruitment drives."
+            )
+        elif "renege" in prompt.lower() or "risk" in prompt.lower():
+            response_text = (
+                "Placement Renege Risk Analysis:\n"
+                "• 2 candidate profiles flagged with elevated offer disparity risk (holding Dream offer while interviewing for Super Dream).\n"
+                "• Policy Safeguard: Institutional one-student-one-offer rules apply once acceptance letter is signed.\n"
+                "• Mitigation Protocol: Placement cell counselors notified to confirm candidate binding intent before Superday round."
+            )
         elif "prerequisite" in prompt.lower():
             response_text = (
                 "CS201 Data Structures requires successful completion of CS101 Introduction "

@@ -22,6 +22,10 @@ import {
   Building2,
   Landmark,
   AlertTriangle,
+  TrendingUp,
+  FileText,
+  Play,
+  ArrowRight,
 } from 'lucide-react';
 import { client } from '../../core/api/client';
 import { useAuth } from '../../core/auth/useAuth';
@@ -329,6 +333,8 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
   const [sharedKeys, setSharedKeys] = useState<string[]>([]);
   const [privacyControlsOpen, setPrivacyControlsOpen] = useState(false);
   const [contextPreviewOpen, setContextPreviewOpen] = useState(false);
+  const [resumeToolOpen, setResumeToolOpen] = useState(false);
+  const [resumeBulletInput, setResumeBulletInput] = useState('');
 
   const persona = ROLE_PERSONAS[activeLens];
   const theme = ROLE_THEMES[activeLens];
@@ -549,8 +555,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
       role="dialog"
       aria-modal="true"
     >
-      {/* 1. Masthead: Role-Specific Gradient Banner & Identity Bar */}
-      <div className={`p-4 text-white bg-gradient-to-r ${theme.gradient} border-b border-line/40`}>
+      {/* 1. Masthead: Role-Specific Gradient Banner & Identity Bar with Ambient Halo */}
+      <div className={`relative overflow-hidden p-4 text-white bg-gradient-to-r ${theme.gradient} border-b border-line/40`}>
+        {/* Subtle Ambient Luminescence Glow */}
+        <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl opacity-20 bg-white/30" />
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0 flex-1">
             <div className={`rounded-lg p-2 ${theme.badgeBg} border ${theme.badgeBorder} shrink-0`}>
@@ -1062,46 +1070,48 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         )}
       </div>
 
-      {/* 6. Mode Switcher Tabs */}
-      <div className="flex border-b border-line bg-surface px-4 py-2 gap-2 text-xs">
-        <button
-          type="button"
-          onClick={() => handleModeChange('rag')}
-          className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium transition-colors cursor-pointer macos-press-sm ${
-            activeMode === 'rag'
-              ? 'bg-brand text-white shadow-xs font-semibold'
-              : 'text-ink-muted hover:bg-slate-100 hover:text-ink'
-          }`}
-        >
-          <Sparkles size={14} />
-          <span>Policy RAG</span>
-        </button>
+      {/* 6. Mode Switcher Tabs (Apple-Style Fluid Segmented Control) */}
+      <div className="border-b border-line bg-surface px-4 py-2.5">
+        <div className="macos-segmented grid grid-cols-3 gap-1 p-1 text-xs">
+          <button
+            type="button"
+            onClick={() => handleModeChange('rag')}
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-medium transition-all duration-150 cursor-pointer macos-press-sm ${
+              activeMode === 'rag'
+                ? 'bg-surface text-ink font-semibold shadow-xs border border-line/70'
+                : 'text-ink-muted hover:text-ink hover:bg-white/40'
+            }`}
+          >
+            <Sparkles size={13} className={activeMode === 'rag' ? 'text-brand' : ''} />
+            <span>Policy RAG</span>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => handleModeChange('agents')}
-          className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium transition-colors cursor-pointer macos-press-sm ${
-            activeMode === 'agents'
-              ? 'bg-brand text-white shadow-xs font-semibold'
-              : 'text-ink-muted hover:bg-slate-100 hover:text-ink'
-          }`}
-        >
-          <Bot size={14} />
-          <span>Autonomous Agents</span>
-        </button>
+          <button
+            type="button"
+            onClick={() => handleModeChange('agents')}
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-medium transition-all duration-150 cursor-pointer macos-press-sm ${
+              activeMode === 'agents'
+                ? 'bg-surface text-ink font-semibold shadow-xs border border-line/70'
+                : 'text-ink-muted hover:text-ink hover:bg-white/40'
+            }`}
+          >
+            <Bot size={13} className={activeMode === 'agents' ? 'text-brand' : ''} />
+            <span>Autonomous Agents</span>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => handleModeChange('traces')}
-          className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 font-medium transition-colors cursor-pointer macos-press-sm ${
-            activeMode === 'traces'
-              ? 'bg-brand text-white shadow-xs font-semibold'
-              : 'text-ink-muted hover:bg-slate-100 hover:text-ink'
-          }`}
-        >
-          <Terminal size={14} />
-          <span>Audit Ledger</span>
-        </button>
+          <button
+            type="button"
+            onClick={() => handleModeChange('traces')}
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-medium transition-all duration-150 cursor-pointer macos-press-sm ${
+              activeMode === 'traces'
+                ? 'bg-surface text-ink font-semibold shadow-xs border border-line/70'
+                : 'text-ink-muted hover:text-ink hover:bg-white/40'
+            }`}
+          >
+            <Terminal size={13} className={activeMode === 'traces' ? 'text-brand' : ''} />
+            <span>Audit Ledger</span>
+          </button>
+        </div>
       </div>
 
       {/* 7. Drawer Body Content */}
@@ -1126,6 +1136,283 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         {/* Tab A: Role Policy RAG Reasoning */}
         {activeMode === 'rag' && (
           <div className="space-y-4">
+            {/* Role-Specific Interactive Diagnostic & Action Tools */}
+            {activeLens === 'student' && (
+              <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-purple-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-indigo-950 flex items-center gap-1.5">
+                    <TrendingUp size={14} className="text-indigo-600" />
+                    Tier-1 Super Dream Eligibility Meter
+                  </span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                    Eligible: Tier-1
+                  </span>
+                </div>
+                <div className="space-y-2 text-[11px]">
+                  <div>
+                    <div className="flex justify-between text-ink-muted mb-1">
+                      <span>CGPA Cut-Off Benchmark (7.50 Min)</span>
+                      <span className="font-mono font-semibold text-indigo-950">8.42 / 10.0 (+0.92 Delta)</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                      <div className="h-full bg-indigo-600 rounded-full copilot-gauge-fill" style={{ width: '84.2%' }} />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-ink-muted mb-1">
+                      <span>NEP Degree Credits Completed (128 / 160)</span>
+                      <span className="font-mono font-semibold text-purple-900">80% Level 8 Honours</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                      <div className="h-full bg-purple-600 rounded-full copilot-gauge-fill" style={{ width: '80%' }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 1-Click ATS Resume Bullet Optimizer Collapsible */}
+                <div className="pt-2 border-t border-indigo-100/80">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-ink flex items-center gap-1">
+                      <FileText size={12} className="text-indigo-600" />
+                      ATS Resume Bullet Improver
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setResumeToolOpen((p) => !p)}
+                      className="text-[11px] font-medium text-brand hover:underline cursor-pointer"
+                    >
+                      {resumeToolOpen ? 'Hide Tool' : 'Open ATS Rewriter'}
+                    </button>
+                  </div>
+                  {resumeToolOpen && (
+                    <div className="mt-2 space-y-2 animate-in slide-in-from-top-1 duration-150">
+                      <input
+                        type="text"
+                        value={resumeBulletInput}
+                        onChange={(e) => setResumeBulletInput(e.target.value)}
+                        placeholder="Paste draft resume bullet (e.g. Built a full stack portal with React)..."
+                        className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-line bg-surface text-ink focus:outline-hidden focus:border-brand"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const query = `Optimize this resume bullet for ATS and Tier-1 engineering placement: "${resumeBulletInput || 'Developed web applications for campus placements'}"`;
+                          setQueryInput(query);
+                          handleSubmitRag(undefined, query);
+                        }}
+                        className="macos-press-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-semibold cursor-pointer shadow-2xs"
+                      >
+                        <Sparkles size={12} />
+                        <span>Optimize for Tier-1 ATS</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {activeLens === 'faculty' && (
+              <div className="rounded-xl border border-emerald-100 bg-gradient-to-br from-emerald-50/70 via-teal-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-emerald-950 flex items-center gap-1.5">
+                    <AlertTriangle size={13} className="text-amber-600" />
+                    Advisee Attendance Intervention Radar
+                  </span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                    3 Students &lt; 75%
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5 text-[11px]">
+                  <div className="p-2 rounded-lg bg-surface border border-line">
+                    <span className="font-semibold text-ink block truncate">Diya Patel</span>
+                    <span className="text-amber-700 font-mono text-[10px] block">71% Attendance</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-surface border border-line">
+                    <span className="font-semibold text-ink block truncate">Rohan Verma</span>
+                    <span className="text-rose-700 font-mono text-[10px] block">68% Attendance</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-surface border border-line">
+                    <span className="font-semibold text-ink block truncate">Tanvi Shah</span>
+                    <span className="text-amber-700 font-mono text-[10px] block">74% Attendance</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const q = 'Draft academic warning notices for advisees with attendance below 75% before placement NOC endorsement';
+                      setQueryInput(q);
+                      handleSubmitRag(undefined, q);
+                    }}
+                    className="macos-press-sm text-[11px] font-semibold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Draft Warning Notices</span>
+                    <ArrowRight size={11} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const q = 'Evaluate 4 pending NOC applications against semester credit fulfillment and attendance regulations';
+                      setQueryInput(q);
+                      handleSubmitRag(undefined, q);
+                    }}
+                    className="macos-press-sm text-[11px] font-semibold text-teal-700 hover:text-teal-900 cursor-pointer"
+                  >
+                    Evaluate Pending NOCs &rarr;
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeLens === 'tpo' && (
+              <div className="rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50/70 via-cyan-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-blue-950 flex items-center gap-1.5">
+                    <Users size={13} className="text-blue-600" />
+                    Superday Interview Conflict Arbitrator
+                  </span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                    2 Clashes Flagged
+                  </span>
+                </div>
+                <div className="p-2 rounded-lg bg-surface border border-line text-[11px] space-y-1">
+                  <div className="flex justify-between items-center text-ink">
+                    <span className="font-medium">Google (10:00-11:00) vs Goldman Sachs (10:30-11:30)</span>
+                    <span className="text-rose-600 font-mono text-[10px] font-semibold">30m Overlap</span>
+                  </div>
+                  <p className="text-[10px] text-ink-muted m-0">Candidate: STU_AARAV_001 · Technical Round 2 Overlap</p>
+                </div>
+                <div className="flex items-center justify-between pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedAgent('SuperdayClashSolverAgent');
+                      setActiveMode('agents');
+                    }}
+                    className="macos-press-sm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-semibold cursor-pointer shadow-2xs"
+                  >
+                    <Play size={11} />
+                    <span>Solve Clashes via Superday Agent</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const q = 'Audit Section 9.3 fairness and four-fifths rule disparate impact telemetry across active recruitment drives';
+                      setQueryInput(q);
+                      handleSubmitRag(undefined, q);
+                    }}
+                    className="macos-press-sm text-[11px] font-semibold text-blue-700 hover:underline cursor-pointer"
+                  >
+                    4/5ths Fairness Audit &rarr;
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeLens === 'hod' && (
+              <div className="rounded-xl border border-amber-100 bg-gradient-to-br from-amber-50/70 via-orange-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-amber-950 flex items-center gap-1.5">
+                    <Building2 size={13} className="text-amber-600" />
+                    Curriculum v2.0 Industry Gap Diagnostics
+                  </span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                    NEP 2020 v2.0 Active
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5 text-[11px]">
+                  <div className="p-2 rounded-lg bg-surface border border-line">
+                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">Conversion</span>
+                    <span className="font-mono font-semibold text-emerald-700">86.4%</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-surface border border-line">
+                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">New AI Credits</span>
+                    <span className="font-mono font-semibold text-amber-700">+8 Credits</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-surface border border-line">
+                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">Mentor Variance</span>
+                    <span className="font-mono font-semibold text-slate-700">±0.04</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const q = 'Evaluate curriculum transition diffs from v1.0 to v2.0 and industry alignment';
+                      setQueryInput(q);
+                      handleSubmitRag(undefined, q);
+                    }}
+                    className="macos-press-sm text-[11px] font-semibold text-amber-900 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Run Curriculum Diff Audit</span>
+                    <ArrowRight size={11} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeLens === 'management' && (
+              <div className="rounded-xl border border-fuchsia-100 bg-gradient-to-br from-fuchsia-50/70 via-purple-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-fuchsia-950 flex items-center gap-1.5">
+                    <Landmark size={13} className="text-fuchsia-600" />
+                    NIRF Table 5.1 &amp; NBA Criterion 4 Projection
+                  </span>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-fuchsia-100 text-fuchsia-900">
+                    NIRF GO: 84.6 / 100
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  <div className="p-2 rounded-lg bg-surface border border-line">
+                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">Cross-Campus Median CTC</span>
+                    <span className="font-mono font-semibold text-fuchsia-800 text-xs">₹14.2 LPA</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-surface border border-line">
+                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">NBA Placement Index</span>
+                    <span className="font-mono font-semibold text-emerald-700 text-xs">92 / 100 Points</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const q = 'Audit NIRF 2025-26 graduation outcomes and median salary KPIs across campuses';
+                      setQueryInput(q);
+                      handleSubmitRag(undefined, q);
+                    }}
+                    className="macos-press-sm text-[11px] font-semibold text-fuchsia-800 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <span>Audit Statutory Outcomes</span>
+                    <ArrowRight size={11} />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeLens === 'admin' && (
+              <div className="rounded-xl border border-slate-700/60 bg-gradient-to-br from-slate-900 via-slate-800 to-black p-3.5 space-y-3 text-white shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-cyan-300 flex items-center gap-1.5">
+                    <Shield size={13} className="text-cyan-400" />
+                    Zero-Injection Security &amp; Token Telemetry
+                  </span>
+                  <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800/60">
+                    PIP Defense: ACTIVE
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                    <span className="text-[10px] text-slate-400 uppercase block font-semibold">Quota Consumed</span>
+                    <span className="font-mono font-semibold text-cyan-400">16.8% (42.1k / 250k)</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white/5 border border-white/10">
+                    <span className="text-[10px] text-slate-400 uppercase block font-semibold">Blocked PIP Threats</span>
+                    <span className="font-mono font-semibold text-rose-400">14 Vectors Prevented</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Quick Action Prompt Chips */}
             <div>
               <span className="text-[11px] font-semibold uppercase tracking-wider text-ink-muted block mb-2">
@@ -1191,7 +1478,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
             {/* Answer Display Card with Grounded Data Provenance */}
             {ragResult && (
-              <div className="rounded-xl border border-line bg-surface p-4 shadow-sm space-y-3">
+              <div className="copilot-reveal rounded-xl border border-line bg-surface p-4 shadow-sm space-y-3">
                 <div className="flex items-center justify-between border-b border-line pb-2">
                   <div className="flex items-center gap-1.5">
                     <CheckCircle2 size={15} className="text-emerald-600" />
@@ -1210,6 +1497,14 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                     {copied ? <Check size={12} className="text-emerald-600" /> : <Copy size={12} />}
                     <span>{copied ? 'Copied' : 'Copy'}</span>
                   </button>
+                </div>
+
+                {/* Fluid Groundedness Gauge */}
+                <div className="w-full h-1 rounded-full bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full copilot-gauge-fill"
+                    style={{ width: `${Math.round(ragResult.groundedness_score * 100)}%` }}
+                  />
                 </div>
 
                 {/* Profile Data Provenance Banner */}
