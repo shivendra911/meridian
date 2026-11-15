@@ -348,7 +348,6 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
   const [shortlistCgpa, setShortlistCgpa] = useState('7.5');
   const [hodToolTab, setHodToolTab] = useState<'curriculum' | 'skillgap'>('curriculum');
   const [adminMerkleVerified, setAdminMerkleVerified] = useState(false);
-  const [toolsExpanded, setToolsExpanded] = useState(true);
 
   const persona = ROLE_PERSONAS[activeLens];
   const theme = ROLE_THEMES[activeLens];
@@ -596,7 +595,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
       {/* 2. Elevated Copilot Drawer Surface (Peek Panel) */}
       <aside
-        className="fixed inset-y-0 right-0 z-[70] w-full max-w-xl md:max-w-2xl lg:max-w-[720px] bg-canvas border-l border-line shadow-2xl flex flex-col font-sans transition-all duration-300 ease-out select-text"
+        className="fixed inset-y-0 right-0 z-[70] w-full max-w-xl md:max-w-2xl bg-canvas border-l border-line shadow-2xl flex flex-col font-sans transition-all duration-300 ease-out select-text"
         aria-labelledby="copilot-drawer-title"
         role="dialog"
         aria-modal="true"
@@ -819,7 +818,73 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         </div>
       )}
 
-      {/* 5. Role-Specific Profile Snapshot Card */}
+      {/* 6. Mode Switcher Tabs (Segmented Control) */}
+      <div className="border-b border-line bg-canvas px-4 py-2.5">
+        <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-surface border border-line shadow-2xs text-xs">
+          <button
+            type="button"
+            onClick={() => handleModeChange('rag')}
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-semibold transition-all duration-150 cursor-pointer ${
+              activeMode === 'rag'
+                ? 'bg-ink text-white shadow-xs'
+                : 'text-ink-muted hover:text-ink hover:bg-canvas'
+            }`}
+          >
+            <Sparkles size={13} className={activeMode === 'rag' ? 'text-now' : ''} />
+            <span>Policy RAG</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleModeChange('agents')}
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-semibold transition-all duration-150 cursor-pointer ${
+              activeMode === 'agents'
+                ? 'bg-ink text-white shadow-xs'
+                : 'text-ink-muted hover:text-ink hover:bg-canvas'
+            }`}
+          >
+            <Bot size={13} className={activeMode === 'agents' ? 'text-now' : ''} />
+            <span>Autonomous Agents</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleModeChange('traces')}
+            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-semibold transition-all duration-150 cursor-pointer ${
+              activeMode === 'traces'
+                ? 'bg-ink text-white shadow-xs'
+                : 'text-ink-muted hover:text-ink hover:bg-canvas'
+            }`}
+          >
+            <Terminal size={13} className={activeMode === 'traces' ? 'text-now' : ''} />
+            <span>Audit Ledger</span>
+          </button>
+        </div>
+      </div>
+
+      {/* 7. Drawer Body Content */}
+      <div
+        className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 overscroll-contain overscroll-y-contain bg-canvas"
+        onWheel={(e) => e.stopPropagation()}
+      >
+        {error && (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-800 flex items-start gap-2 shadow-2xs">
+            <AlertTriangle size={15} className="shrink-0 mt-0.5 text-rose-600" />
+            <div className="flex-1 min-w-0">
+              <span className="font-bold block">Copilot Alert</span>
+              <span>{error}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setError(null)}
+              className="text-rose-500 hover:text-rose-800 cursor-pointer p-0.5"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
+        {/* 5. Role-Specific Profile Snapshot Card */}
       <div className="p-4 border-b border-line bg-canvas">
         {activeLens === 'student' && (
           <div className="rounded-2xl border border-line bg-surface p-4 shadow-xs">
@@ -1123,119 +1188,39 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         )}
       </div>
 
-      {/* 6. Mode Switcher Tabs (Segmented Control) */}
-      <div className="border-b border-line bg-canvas px-4 py-2.5">
-        <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-surface border border-line shadow-2xs text-xs">
-          <button
-            type="button"
-            onClick={() => handleModeChange('rag')}
-            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-semibold transition-all duration-150 cursor-pointer ${
-              activeMode === 'rag'
-                ? 'bg-ink text-white shadow-xs'
-                : 'text-ink-muted hover:text-ink hover:bg-canvas'
-            }`}
-          >
-            <Sparkles size={13} className={activeMode === 'rag' ? 'text-now' : ''} />
-            <span>Policy RAG</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleModeChange('agents')}
-            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-semibold transition-all duration-150 cursor-pointer ${
-              activeMode === 'agents'
-                ? 'bg-ink text-white shadow-xs'
-                : 'text-ink-muted hover:text-ink hover:bg-canvas'
-            }`}
-          >
-            <Bot size={13} className={activeMode === 'agents' ? 'text-now' : ''} />
-            <span>Autonomous Agents</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleModeChange('traces')}
-            className={`flex items-center justify-center gap-1.5 rounded-lg py-1.5 font-semibold transition-all duration-150 cursor-pointer ${
-              activeMode === 'traces'
-                ? 'bg-ink text-white shadow-xs'
-                : 'text-ink-muted hover:text-ink hover:bg-canvas'
-            }`}
-          >
-            <Terminal size={13} className={activeMode === 'traces' ? 'text-now' : ''} />
-            <span>Audit Ledger</span>
-          </button>
-        </div>
-      </div>
-
-      {/* 7. Drawer Body Content */}
-      <div
-        className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 overscroll-contain overscroll-y-contain bg-canvas"
-        onWheel={(e) => e.stopPropagation()}
-      >
-        {error && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-800 flex items-start gap-2 shadow-2xs">
-            <AlertTriangle size={15} className="shrink-0 mt-0.5 text-rose-600" />
-            <div className="flex-1 min-w-0">
-              <span className="font-bold block">Copilot Alert</span>
-              <span>{error}</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setError(null)}
-              className="text-rose-500 hover:text-rose-800 cursor-pointer p-0.5"
-            >
-              <X size={14} />
-            </button>
-          </div>
-        )}
-
         {/* Tab A: Role Policy RAG Reasoning */}
         {activeMode === 'rag' && (
           <div className="space-y-4">
-            {/* 1. Answer Display Card with Grounded Data Provenance (Hero Presentation when available) */}
+            {/* Answer Display Card with Grounded Data Provenance */}
+            {/* Answer Display Card with Grounded Data Provenance */}
             {ragResult && (
-              <div className="rounded-2xl border-2 border-line bg-surface p-5 sm:p-6 shadow-sm space-y-4 animate-in fade-in-50 duration-200">
+              <div className="rounded-2xl border border-line bg-surface p-5 shadow-xs space-y-4">
                 <div className="flex items-center justify-between border-b border-line pb-3">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-full bg-success-bg border border-success-border">
-                      <CheckCircle2 size={16} className="text-success shrink-0" />
-                    </div>
-                    <div>
-                      <span className="text-xs sm:text-sm font-bold text-ink font-display block">
-                        Authoritative Grounded Response
-                      </span>
-                      <span className="text-[10px] text-ink-muted">
-                        Verified against active institutional bylaws
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] sm:text-xs font-mono px-2.5 py-1 rounded-full bg-success-bg text-success border border-success-border font-bold">
+                    <CheckCircle2 size={16} className="text-success shrink-0" />
+                    <span className="text-xs font-bold text-ink font-display">
+                      Authoritative Grounded Response
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-success-bg text-success border border-success-border font-bold">
                       Groundedness: {Math.round(ragResult.groundedness_score * 100)}%
                     </span>
-                    <button
-                      type="button"
-                      onClick={handleCopyAnswer}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-line bg-canvas hover:bg-surface text-[11px] font-semibold text-ink-muted hover:text-ink transition-colors cursor-pointer"
-                    >
-                      {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
-                      <span>{copied ? 'Copied' : 'Copy'}</span>
-                    </button>
                   </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyAnswer}
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-ink-muted hover:text-ink cursor-pointer"
+                  >
+                    {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
+                    <span>{copied ? 'Copied' : 'Copy'}</span>
+                  </button>
                 </div>
 
                 {/* Groundedness Gauge */}
-                <div className="space-y-1">
-                  <div className="w-full h-2 rounded-full bg-line overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-amber-500 to-emerald-600 rounded-full transition-all duration-300"
-                      style={{ width: `${Math.round(ragResult.groundedness_score * 100)}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-between text-[10px] text-ink-muted font-mono">
-                    <span>Provenance Confidence</span>
-                    <span>{ragResult.total_tokens ? `${ragResult.total_tokens} tokens` : 'Authoritative'}</span>
-                  </div>
+                <div className="w-full h-1.5 rounded-full bg-line overflow-hidden">
+                  <div
+                    className="h-full bg-brand rounded-full transition-all duration-300"
+                    style={{ width: `${Math.round(ragResult.groundedness_score * 100)}%` }}
+                  />
                 </div>
 
                 {/* Profile Data Provenance Banner */}
@@ -1269,8 +1254,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   </div>
                 )}
 
-                {/* Main Grounded Answer Body */}
-                <div className="text-xs sm:text-sm leading-relaxed text-ink whitespace-pre-wrap bg-canvas/40 p-4 rounded-xl border border-line/60">
+                <div className="text-xs sm:text-sm leading-relaxed text-ink whitespace-pre-wrap">
                   {ragResult.answer}
                 </div>
 
@@ -1284,23 +1268,15 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                       {ragResult.citations.map((c, i) => (
                         <div
                           key={i}
-                          className="rounded-xl border border-line bg-canvas p-3 text-xs flex items-start gap-2.5 shadow-2xs hover:border-brand/40 transition-colors"
+                          className="rounded-xl border border-line bg-canvas p-3 text-xs flex items-start gap-2.5"
                         >
-                          <BookOpen size={15} className="text-brand shrink-0 mt-0.5" />
+                          <BookOpen size={14} className="text-brand shrink-0 mt-0.5" />
                           <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-1.5 flex-wrap">
-                              <span className="font-bold text-ink truncate">
-                                {c.doc_title}
-                              </span>
-                              <span className="px-1.5 py-0.2 rounded-full bg-surface border border-line text-[10px] font-mono text-ink-muted">
-                                {c.version}
-                              </span>
-                            </div>
-                            <span className="text-[11px] text-ink-secondary block mt-0.5">
-                              {c.section_heading}
+                            <span className="font-bold text-ink block truncate">
+                              {c.doc_title} ({c.version})
                             </span>
-                            <span className="text-[10px] text-ink-muted block mt-0.5 font-mono">
-                              Source Authority: {c.source_authority}
+                            <span className="text-[11px] text-ink-muted block truncate mt-0.5">
+                              {c.section_heading} &bull; Authority: {c.source_authority}
                             </span>
                           </div>
                         </div>
@@ -1324,10 +1300,9 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                             setQueryInput(fu);
                             handleSubmitRag(undefined, fu);
                           }}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-canvas hover:bg-surface hover:border-amber-400 text-xs text-brand font-semibold transition-all shadow-2xs cursor-pointer active:scale-95"
+                          className="px-3 py-1.5 rounded-full border border-line bg-canvas hover:bg-surface text-xs text-brand font-semibold transition-colors cursor-pointer"
                         >
-                          <Sparkles size={11} className="text-now" />
-                          <span>{fu}</span>
+                          {fu}
                         </button>
                       ))}
                     </div>
@@ -1336,44 +1311,32 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
               </div>
             )}
 
-            {/* 2. Welcoming Journey Copilot Prompt Card (Displayed when no answer yet) */}
-            {!ragResult && (
-              <div className="rounded-2xl border border-line bg-surface p-5 shadow-xs space-y-3">
-                <div className="flex items-start gap-3">
-                  <div className={`p-2.5 rounded-xl ${theme.badgeBg} border ${theme.badgeBorder} shrink-0`}>
-                    <Sparkles size={20} className={theme.accentText} />
-                  </div>
-                  <div>
-                    <h3 className="font-display font-bold text-ink text-sm sm:text-base m-0">
-                      How can I assist your {persona.badge.toLowerCase()} journey today?
-                    </h3>
-                    <p className="text-xs text-ink-muted mt-1 m-0 leading-relaxed">
-                      Ask about campus placement policy, salary tax take-home, ATS resume optimizations, interview clash arbitration, or NEP 2020 exit credits using the interaction console below.
-                    </p>
-                  </div>
-                </div>
+            {/* Quick Action Prompt Chips */}
+            {/* Quick Action Prompt Chips */}
+            <div className="space-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-ink-muted block">
+                Suggested {persona.badge} Queries
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {persona.sampleQueries.map((sq, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => {
+                      setQueryInput(sq);
+                      handleSubmitRag(undefined, sq);
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface hover:border-amber-400 hover:bg-amber-50/40 px-3 py-1.5 text-xs font-medium text-ink transition-all shadow-2xs text-left cursor-pointer"
+                  >
+                    <Sparkles size={11} className="text-now shrink-0" />
+                    <span>{sq}</span>
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
 
-            {/* 3. Interactive Role Diagnostic Tools (Collapsible & Clean) */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-bold text-ink-secondary uppercase tracking-wider font-display">
-                  Interactive Role Diagnostic Tools
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setToolsExpanded((p) => !p)}
-                  className="text-[11px] font-semibold text-brand hover:underline cursor-pointer flex items-center gap-1"
-                >
-                  <span>{toolsExpanded ? 'Collapse Tools' : 'Expand Tools'}</span>
-                  <ChevronDown size={12} className={`transition-transform duration-150 ${toolsExpanded ? 'rotate-180' : ''}`} />
-                </button>
-              </div>
-
-              {toolsExpanded && (
-                <>
-                  {/* Role-Specific Interactive Diagnostic & Power Tools */}
+            {/* Role-Specific Interactive Diagnostic & Power Tools */}
+            {/* Role-Specific Interactive Diagnostic & Power Tools */}
             {activeLens === 'student' && (
               <div className="rounded-2xl border border-line bg-surface p-4 space-y-3.5 shadow-xs">
                 {/* Student Sub-Tool Navigation Pills */}
@@ -2003,9 +1966,6 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 </div>
               </div>
             )}
-                </>
-              )}
-            </div>
           </div>
         )}
 
@@ -2166,20 +2126,13 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
             {/* Agent Result Card */}
             {agentResult && (
-              <div className="rounded-2xl border-2 border-line bg-surface p-5 space-y-4 text-xs shadow-sm animate-in fade-in-50 duration-200">
-                <div className="flex items-center justify-between border-b border-line pb-3">
+              <div className="rounded-2xl border border-line bg-surface p-4 space-y-3.5 text-xs shadow-xs animate-in fade-in-50 duration-200">
+                <div className="flex items-center justify-between border-b border-line pb-2.5">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-full bg-success-bg border border-success-border">
-                      <CheckCircle2 size={16} className="text-success" />
-                    </div>
-                    <div>
-                      <span className="font-bold text-ink font-display text-sm block">
-                        {agentResult.agent_name} Execution Complete
-                      </span>
-                      <span className="text-[10px] text-ink-muted">
-                        Autonomous policy execution successful
-                      </span>
-                    </div>
+                    <CheckCircle2 size={16} className="text-success" />
+                    <span className="font-bold text-ink font-display text-sm">
+                      {agentResult.agent_name} Execution Complete
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-success-bg text-success border border-success-border font-bold">
@@ -2191,62 +2144,62 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   </div>
                 </div>
 
-                <div className="rounded-xl bg-brand/5 border border-brand/20 p-3.5 text-xs text-ink font-medium leading-relaxed">
+                <div className="rounded-xl bg-brand/5 border border-brand/20 p-3 text-xs text-ink font-medium leading-relaxed">
                   {agentResult.summary}
                 </div>
 
                 {/* Specialized Visual Outcome Visualizer per Agent */}
                 {agentResult.agent_name === 'JNFIntelligenceAgent' && (
-                  <div className="rounded-2xl border-2 border-amber-400/30 bg-amber-500/5 p-4 space-y-3">
+                  <div className="rounded-xl border border-amber-300 bg-amber-50/50 p-3.5 space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Building2 size={16} className="text-now" />
-                        <span className="font-bold text-xs text-ink font-display">{jnfCompany} Classification Certificate</span>
-                      </div>
-                      <span className="px-3 py-1 rounded-full bg-now text-now-ink text-[11px] font-extrabold shadow-2xs">
-                        Tier-1 Super Dream Role
+                      <span className="font-bold text-xs text-ink font-display flex items-center gap-1.5">
+                        <Building2 size={14} className="text-now" />
+                        {jnfCompany} Classification Certificate
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-now text-now-ink text-[10px] font-extrabold shadow-2xs">
+                        Tier-1 Super Dream
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-xs">
-                      <div className="p-2.5 rounded-xl bg-surface border border-line">
+                      <div className="p-2 rounded-lg bg-surface border border-line">
                         <span className="text-[10px] text-ink-muted block uppercase font-bold">Annual CTC</span>
-                        <span className="font-display font-bold text-ink text-sm">₹{jnfCtc} LPA</span>
+                        <span className="font-display font-bold text-ink text-xs">₹{jnfCtc} LPA</span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-surface border border-line">
+                      <div className="p-2 rounded-lg bg-surface border border-line">
                         <span className="text-[10px] text-ink-muted block uppercase font-bold">Min CGPA</span>
-                        <span className="font-mono font-bold text-ink text-sm">{jnfCgpa} / 10.0</span>
+                        <span className="font-mono font-bold text-ink text-xs">{jnfCgpa} / 10.0</span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-surface border border-line">
+                      <div className="p-2 rounded-lg bg-surface border border-line">
                         <span className="text-[10px] text-ink-muted block uppercase font-bold">Monthly Stipend</span>
-                        <span className="font-mono font-bold text-success text-sm">₹85,000 /mo</span>
+                        <span className="font-mono font-bold text-success text-xs">₹85,000 /mo</span>
                       </div>
                     </div>
-                    <div className="text-[11px] text-ink-secondary flex items-center gap-1.5 pt-1">
-                      <CheckCircle2 size={13} className="text-success shrink-0" />
-                      <span>Institutional Tier-1 Entitlement &bull; Multi-Offer Permitted per Section 4.2</span>
+                    <div className="text-[10px] text-ink-secondary flex items-center gap-1 pt-0.5">
+                      <CheckCircle2 size={12} className="text-success shrink-0" />
+                      <span>Verified Tier-1 Multi-Offer Entitled per Senate Regulations Section 4.2</span>
                     </div>
                   </div>
                 )}
 
                 {agentResult.agent_name === 'SuperdayClashSolverAgent' && (
-                  <div className="rounded-2xl border-2 border-teal-400/30 bg-teal-500/5 p-4 space-y-3">
+                  <div className="rounded-xl border border-teal-300 bg-teal-50/50 p-3.5 space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Users size={16} className="text-teal-700" />
-                        <span className="font-bold text-xs text-ink font-display">Superday Interview Conflict Resolution Matrix</span>
-                      </div>
-                      <span className="px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold border border-teal-300">
+                      <span className="font-bold text-xs text-ink font-display flex items-center gap-1.5">
+                        <Users size={14} className="text-teal-700" />
+                        Superday Conflict Resolution Matrix
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 text-[10px] font-bold border border-teal-300">
                         Overlap Resolved
                       </span>
                     </div>
-                    <div className="space-y-2 text-xs">
-                      <div className="p-2.5 rounded-xl bg-surface border border-line flex items-center justify-between">
-                        <span className="font-semibold text-ink">Slot 1: Google Technical Round</span>
-                        <span className="font-mono text-[11px] text-ink-muted">10:00 - 11:00 AM (Fixed)</span>
+                    <div className="space-y-1.5 text-xs">
+                      <div className="p-2 rounded-lg bg-surface border border-line flex items-center justify-between">
+                        <span className="font-semibold text-ink text-[11px]">Slot 1: Google Technical Round</span>
+                        <span className="font-mono text-[10px] text-ink-muted">10:00 - 11:00 AM (Fixed)</span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-surface border border-line flex items-center justify-between">
-                        <span className="font-semibold text-ink">Slot 2: Goldman Sachs System Design</span>
-                        <span className="font-mono text-[11px] text-teal-700 font-bold">Rescheduled: 14:00 - 15:00 PM</span>
+                      <div className="p-2 rounded-lg bg-surface border border-line flex items-center justify-between">
+                        <span className="font-semibold text-ink text-[11px]">Slot 2: Goldman Sachs System Design</span>
+                        <span className="font-mono text-[10px] text-teal-700 font-bold">Rescheduled: 14:00 - 15:00 PM</span>
                       </div>
                     </div>
                   </div>
@@ -2258,7 +2211,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                       Tool Executions Pipeline
                     </span>
                     {agentResult.tool_results.map((tr, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-canvas border border-line">
+                      <div key={idx} className="flex items-center justify-between p-2 rounded-xl bg-canvas border border-line">
                         <span className="font-mono text-[11px] text-ink font-bold">{tr.tool_name}</span>
                         <div className="flex items-center gap-1.5">
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-success-bg text-success border border-success-border font-semibold">
@@ -2275,11 +2228,11 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
                 {agentResult.recommendation && (
                   <details open className="group pt-2 border-t border-line">
-                    <summary className="text-[11px] font-bold text-ink-muted uppercase tracking-wider cursor-pointer hover:text-ink flex items-center justify-between select-none">
+                    <summary className="text-[10px] font-bold text-ink-muted uppercase tracking-wider cursor-pointer hover:text-ink flex items-center justify-between select-none">
                       <span>Recommendation Payload Inspector</span>
-                      <ChevronDown size={12} className="transition-transform group-open:rotate-180" />
+                      <ChevronDown size={11} className="transition-transform group-open:rotate-180" />
                     </summary>
-                    <div className="mt-2 rounded-xl bg-slate-900 text-slate-100 p-3 font-mono text-[11px] overflow-x-auto shadow-inner">
+                    <div className="mt-1.5 rounded-xl bg-slate-900 text-slate-100 p-2.5 font-mono text-[11px] overflow-x-auto shadow-inner">
                       <pre className="m-0 whitespace-pre-wrap">
                         {JSON.stringify(agentResult.recommendation, null, 2)}
                       </pre>
@@ -2364,46 +2317,17 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         )}
       </div>
 
-      {/* 8. Elevated Bottom Interaction Dock (Decongested & Always Accessible) */}
+      {/* Sleek Docked User Input Console (Always Accessible, Never Cramped) */}
       {activeMode === 'rag' && (
-        <div className="border-t border-line bg-surface/95 backdrop-blur-md p-4 sm:p-5 shrink-0 shadow-lg z-20 space-y-3">
-          {/* Quick Suggested Queries Shelf */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-[11px] text-ink-muted">
-              <span className="font-bold uppercase tracking-wider text-ink-secondary">
-                Suggested {persona.badge} Queries
-              </span>
-              <span className="font-semibold text-[10px] text-success flex items-center gap-1">
-                <ShieldCheck size={11} /> {sharedKeys.length} records authorized
-              </span>
-            </div>
-            <div className="flex gap-2 overflow-x-auto pb-1 pt-0.5 no-scrollbar pr-1 -mr-1">
-              {persona.sampleQueries.map((sq, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => {
-                    setQueryInput(sq);
-                    handleSubmitRag(undefined, sq);
-                  }}
-                  className="inline-flex items-center gap-1.5 shrink-0 rounded-full border border-line bg-canvas hover:border-amber-400 hover:bg-amber-50/50 px-3.5 py-1.5 text-xs font-semibold text-ink transition-all shadow-2xs hover:shadow-xs cursor-pointer active:scale-95"
-                >
-                  <Sparkles size={12} className="text-now shrink-0" />
-                  <span className="whitespace-nowrap">{sq}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Spacious User Input Form */}
-          <form onSubmit={handleSubmitRag} className="space-y-2">
-            <div className="relative rounded-2xl border-2 border-line bg-canvas/60 focus-within:border-now focus-within:bg-surface focus-within:ring-3 focus-within:ring-now/20 transition-all p-3 shadow-2xs">
+        <div className="border-t border-line bg-surface p-3 sm:p-3.5 shrink-0 shadow-lg">
+          <form onSubmit={handleSubmitRag} className="space-y-1.5">
+            <div className="relative flex items-center gap-2 rounded-2xl border-2 border-line bg-canvas/60 focus-within:border-now focus-within:bg-surface focus-within:ring-2 focus-within:ring-now/20 transition-all p-1.5 pr-2 shadow-2xs">
               <label htmlFor="copilot-query-input" className="sr-only">
                 Ask a Policy or Workflow Question
               </label>
               <textarea
                 id="copilot-query-input"
-                rows={2}
+                rows={1}
                 value={queryInput}
                 onChange={(e) => setQueryInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -2413,39 +2337,36 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                   }
                 }}
                 placeholder="Ask about placement policy, interview preparation, or workflow..."
-                className="w-full resize-none border-0 bg-transparent p-0 text-xs sm:text-sm text-ink placeholder:text-ink-muted focus:outline-hidden leading-relaxed"
+                className="flex-1 resize-none border-0 bg-transparent px-3 py-1.5 text-xs sm:text-sm text-ink placeholder:text-ink-muted focus:outline-hidden min-h-[38px] max-h-24 leading-relaxed"
                 disabled={loading}
               />
-
-              <div className="flex items-center justify-between pt-2 border-t border-line/50 mt-1">
-                <span className="text-[10px] sm:text-[11px] text-ink-muted truncate mr-2">
-                  Press <kbd className="px-1.5 py-0.5 rounded bg-line/60 font-mono text-[9px] text-ink font-semibold">Enter ↵</kbd> to ask &bull; DPDP 2023 Consent Guard Active
-                </span>
-
-                <button
-                  type="submit"
-                  disabled={loading || !queryInput.trim()}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-full bg-now text-now-ink hover:bg-amber-400 font-bold px-4 sm:px-5 py-2 text-xs shadow-xs hover:shadow-sm transition-all disabled:opacity-40 cursor-pointer shrink-0 active:scale-95"
-                >
-                  {loading ? (
-                    <>
-                      <RefreshCw size={13} className="animate-spin text-now-ink" />
-                      <span>Reasoning...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send size={13} className="text-now-ink" />
-                      <span>Ask Copilot</span>
-                    </>
-                  )}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={loading || !queryInput.trim()}
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-now text-now-ink hover:bg-amber-400 font-bold px-4 py-2 text-xs shadow-xs transition-colors disabled:opacity-40 cursor-pointer shrink-0"
+              >
+                {loading ? (
+                  <>
+                    <RefreshCw size={13} className="animate-spin text-now-ink" />
+                    <span>Reasoning...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send size={13} className="text-now-ink" />
+                    <span>Ask Copilot</span>
+                  </>
+                )}
+              </button>
+            </div>
+            <div className="flex items-center justify-between px-1 text-[10px] text-ink-muted">
+              <span>Press <kbd className="font-semibold text-ink">Enter ↵</kbd> to ask &bull; DPDP 2023 Consent Guard Active</span>
+              <span className="text-success font-medium">{sharedKeys.length} records authorized</span>
             </div>
           </form>
         </div>
       )}
 
-      {/* 9. Bottom Footer Status */}
+      {/* 8. Bottom Footer Status */}
       <div className="border-t border-line bg-surface px-5 py-3 text-xs text-ink-muted flex items-center justify-between">
         <span className="truncate">
           Grounded with role persona &bull; {displayName} ({activeLens} profile locked)
