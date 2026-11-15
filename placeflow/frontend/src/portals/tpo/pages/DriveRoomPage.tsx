@@ -401,7 +401,10 @@ export const DriveRoomPage: React.FC = () => {
                 Live Eligible Pool
               </span>
               <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-3xl font-display font-bold text-brand tabular-nums">
+                <span
+                  data-testid="live-eligible-count"
+                  className="text-3xl font-display font-bold text-brand tabular-nums"
+                >
                   {eligibleCount}
                 </span>
                 <span className="text-xs text-ink-muted">of {totalStudents} students ({eligiblePct}%)</span>
