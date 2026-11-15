@@ -6,8 +6,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import {
-  Search} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { studentApi, StudentOpportunity } from '../api';
 import { PageHeader, Skeleton, EmptyState, DriveCard, useDocumentTitle, Select } from '../../../ui';
@@ -22,6 +22,7 @@ import { ErrorState } from '../../../ui/ErrorState';
 
 export const StudentOpportunitiesPage: React.FC = () => {
   useDocumentTitle('Opportunities');
+  const navigate = useNavigate();
   const [opportunities, setOpportunities] = useState<StudentOpportunity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -220,6 +221,7 @@ export const StudentOpportunitiesPage: React.FC = () => {
                   !job.eligible && job.reasons?.length ? job.reasons.join(', ') : null,
                 applied: job.has_applied,
               }}
+              onClick={() => navigate(`/student/opportunities/${job.job_id}`)}
               onApply={() => handleApply(job)}
             />
           ))}
