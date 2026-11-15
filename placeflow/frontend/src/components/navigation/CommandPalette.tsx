@@ -275,13 +275,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto pt-[12vh] px-4 font-sans select-none">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/50 backdrop-blur-2xs transition-opacity"
+        className="fixed inset-0 bg-slate-900/40 backdrop-blur-md transition-opacity duration-160"
         onClick={onClose}
       />
 
-      <div className="relative mx-auto max-w-xl bg-surface rounded-xl shadow-2xl border border-line overflow-hidden transform transition-all">
+      <div className="relative mx-auto max-w-xl bg-surface/95 macos-frosted-popover rounded-xl shadow-macos-window border border-line/80 overflow-hidden macos-sheet-enter">
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 border-b border-line bg-canvas/50">
+        <div className="flex items-center px-4 border-b border-line/70 bg-canvas/60">
           <Search size={18} className="text-ink-muted mr-3 shrink-0" />
           <input
             type="text"

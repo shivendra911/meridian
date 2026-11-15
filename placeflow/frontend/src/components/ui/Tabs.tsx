@@ -34,7 +34,7 @@ export const Tabs: React.FC<TabsProps> = ({
 
   if (variant === 'pill') {
     return (
-      <div className={`flex flex-wrap items-center gap-1 p-1 bg-canvas rounded-lg border border-line select-none ${className}`}>
+      <div className={`flex flex-wrap items-center gap-1 p-1 bg-slate-200/50 rounded-lg border border-line/70 shadow-inner select-none ${className}`}>
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -42,12 +42,12 @@ export const Tabs: React.FC<TabsProps> = ({
             <button
               key={tab.id}
               onClick={() => onChange(tab.id)}
-              className={`flex items-center rounded-md font-medium transition-all duration-150 ${
+              className={`flex items-center rounded-[6px] font-medium transition-all duration-140 macos-press-sm ${
                 sizeStyles[size]
               } ${
                 isActive
-                  ? 'bg-surface text-ink border border-line shadow-none font-semibold'
-                  : 'text-ink-muted hover:text-ink hover:bg-surface/50 border border-transparent'
+                  ? 'bg-surface text-ink font-semibold shadow-xs ring-1 ring-black/5'
+                  : 'text-ink-muted hover:text-ink hover:bg-surface/60 border border-transparent'
               }`}
             >
               {Icon && <Icon size={14} className={isActive ? 'text-brand' : 'text-ink-muted'} />}
@@ -78,7 +78,7 @@ export const Tabs: React.FC<TabsProps> = ({
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className={`flex items-center border-b-2 font-medium transition-all duration-150 relative ${
+            className={`flex items-center border-b-2 font-medium transition-all duration-150 relative macos-press-sm ${
               sizeStyles[size]
             } ${
               isActive

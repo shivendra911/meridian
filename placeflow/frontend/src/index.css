@@ -69,6 +69,27 @@
   background: #CBD5E1;
 }
 
+:root {
+  /* Apple Kinematic Curves */
+  --ease-apple-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-apple-pop: cubic-bezier(0.34, 1.25, 0.64, 1);
+  --ease-apple-snappy: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-apple-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Apple Motion Durations */
+  --dur-instant: 60ms;
+  --dur-micro: 100ms;
+  --dur-snappy: 160ms;
+  --dur-sheet: 180ms;
+  --dur-drawer: 220ms;
+
+  /* macOS Materials & Elevation Shadows */
+  --shadow-macos-window: 0 20px 48px -12px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  --shadow-macos-popover: 0 12px 32px -8px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  --shadow-macos-card: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --shadow-macos-card-hover: 0 6px 16px -4px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(11, 27, 61, 0.2);
+}
+
 /* Reduced-motion accessibility override */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
@@ -76,31 +97,143 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+    transform: none !important;
   }
 }
 
-/* Page content 150ms fade-in transition on route change */
-@keyframes pageFadeIn {
-  from {
+/* Page content spatial elevation dissolve on route change */
+@keyframes macosElevationDissolve {
+  0% {
     opacity: 0;
+    transform: translateY(4px) scale(0.998);
   }
-  to {
+  100% {
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
 .page-content-fade {
-  animation: pageFadeIn 150ms ease-out;
+  animation: macosElevationDissolve var(--dur-snappy) var(--ease-apple-spring);
+  will-change: opacity, transform;
 }
 
-/* Clickable cards: subtle lift and brand border on hover */
+/* macOS Context Menu & Popover entry */
+@keyframes macosMenuPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.macos-menu-pop {
+  animation: macosMenuPop var(--dur-micro) var(--ease-apple-pop);
+  transform-origin: top right;
+  will-change: opacity, transform;
+}
+
+/* macOS Sheet Modal entry */
+@keyframes macosSheetEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.macos-sheet-enter {
+  animation: macosSheetEnter var(--dur-sheet) var(--ease-apple-spring);
+  box-shadow: var(--shadow-macos-window);
+  will-change: opacity, transform;
+}
+
+/* macOS SlideOver Inspector Drawer entry */
+@keyframes macosDrawerSlideIn {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.macos-drawer-enter {
+  animation: macosDrawerSlideIn var(--dur-drawer) var(--ease-apple-spring);
+  will-change: transform;
+}
+
+/* macOS Skeleton Continuous Luminance Wave */
+@keyframes macosLuminanceWave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+  background-size: 200% 100%;
+  animation: macosLuminanceWave 1.6s ease-in-out infinite;
+}
+
+/* Frosted glass materials */
+.macos-frosted {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+}
+
+.macos-frosted-popover {
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+}
+
+/* Tactile micro-press feedback on click */
 @media (prefers-reduced-motion: no-preference) {
+  .macos-press {
+    transition: transform var(--dur-instant) var(--ease-apple-snappy), background-color var(--dur-micro) ease;
+    will-change: transform;
+  }
+  .macos-press:active {
+    transform: scale(0.978) translateY(0.5px);
+  }
+
+  .macos-press-sm {
+    transition: transform var(--dur-instant) var(--ease-apple-snappy), background-color var(--dur-micro) ease;
+    will-change: transform;
+  }
+  .macos-press-sm:active {
+    transform: scale(0.965);
+  }
+
+  .macos-press-card {
+    transition: transform var(--dur-instant) var(--ease-apple-snappy);
+    will-change: transform;
+  }
+  .macos-press-card:active {
+    transform: scale(0.994) translateY(-0.5px);
+  }
+
+  /* Clickable cards: subtle lift and shadow expansion on hover */
   .card-interactive, [data-interactive="true"], .entity-card-clickable {
-    transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+    transition: transform 140ms var(--ease-apple-spring), border-color 140ms ease, box-shadow 140ms var(--ease-apple-spring);
+    will-change: transform, box-shadow;
   }
   .card-interactive:hover, [data-interactive="true"]:hover, .entity-card-clickable:hover {
-    border-color: rgba(11, 27, 61, 0.3) !important;
-    transform: translateY(-1px);
+    border-color: rgba(11, 27, 61, 0.25) !important;
+    box-shadow: var(--shadow-macos-card-hover) !important;
+    transform: translateY(-1.5px);
+  }
+  .card-interactive:active, [data-interactive="true"]:active, .entity-card-clickable:active {
+    transform: scale(0.994) translateY(-0.5px);
   }
 }
 

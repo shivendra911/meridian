@@ -88,7 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               to={item.path}
               onClick={onCloseMobile}
               title={isCollapsed ? item.label : undefined}
-              className={`relative flex items-center h-9 rounded-lg px-3 text-xs font-medium transition-all duration-150 ${
+              className={`relative flex items-center h-9 rounded-lg px-3 text-xs font-medium transition-all duration-150 macos-press-sm ${
                 active
                   ? 'bg-brand/10 text-brand font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:bg-brand before:rounded-r'
                   : 'text-ink/80 hover:bg-canvas hover:text-ink'
@@ -116,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             type="button"
             onClick={onOpenShortcuts}
-            className="flex items-center gap-2 rounded-lg p-2 text-xs text-ink-muted hover:text-ink hover:bg-canvas transition-colors"
+            className="flex items-center gap-2 rounded-lg p-2 text-xs text-ink-muted hover:text-ink hover:bg-canvas transition-colors macos-press-sm"
             title="Keyboard shortcuts (?)"
           >
             <HelpCircle size={15} />
@@ -127,7 +127,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <button
           type="button"
           onClick={onToggleCollapse}
-          className="hidden lg:flex items-center justify-center rounded-lg p-2 text-ink-muted hover:text-ink hover:bg-canvas transition-colors ml-auto"
+          className="hidden lg:flex items-center justify-center rounded-lg p-2 text-ink-muted hover:text-ink hover:bg-canvas transition-colors ml-auto macos-press-sm"
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}

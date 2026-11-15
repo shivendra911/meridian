@@ -48,16 +48,16 @@ export const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-ink/40 backdrop-blur-xs transition-opacity duration-150"
+        className="fixed inset-0 bg-slate-900/40 backdrop-blur-md transition-opacity duration-180"
         onClick={onClose}
       />
 
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className={`relative w-full ${maxWidthStyles[resolvedMaxWidth]} bg-surface rounded-lg shadow-xl border border-line overflow-hidden transition-all duration-150`}
+          className={`relative w-full ${maxWidthStyles[resolvedMaxWidth]} bg-surface rounded-xl shadow-macos-window border border-line/80 overflow-hidden macos-sheet-enter`}
         >
           {/* Header */}
-          <div className="px-6 py-4 border-b border-line bg-surface flex items-start justify-between gap-4">
+          <div className="px-6 py-4 border-b border-line/70 bg-surface/95 macos-frosted flex items-start justify-between gap-4">
             <div>
               {typeof title === 'string' ? (
                 <h3 className="font-semibold text-base text-ink m-0">
@@ -75,7 +75,8 @@ export const Modal: React.FC<ModalProps> = ({
 
             <button
               onClick={onClose}
-              className="text-ink-muted hover:text-ink p-1 rounded-md hover:bg-canvas transition-colors duration-150"
+              className="text-ink-muted hover:text-ink p-1 rounded-md hover:bg-canvas transition-colors duration-150 macos-press-sm"
+              aria-label="Close modal"
             >
               <X size={16} />
             </button>
@@ -86,7 +87,7 @@ export const Modal: React.FC<ModalProps> = ({
 
           {/* Footer */}
           {footer && (
-            <div className="px-6 py-3.5 border-t border-line bg-canvas/40 flex items-center justify-end gap-2.5">
+            <div className="px-6 py-3.5 border-t border-line/70 bg-canvas/60 macos-frosted flex items-center justify-end gap-2.5">
               {footer}
             </div>
           )}

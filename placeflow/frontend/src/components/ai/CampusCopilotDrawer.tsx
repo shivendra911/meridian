@@ -220,10 +220,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex justify-end">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-slate-900/35 backdrop-blur-sm transition-opacity duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -233,7 +233,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
         role="dialog"
         aria-modal="true"
         aria-label="Campus AI Copilot"
-        className="relative z-50 flex h-full w-full max-w-xl flex-col bg-surface shadow-2xl border-l border-line font-sans"
+        className="relative z-50 flex h-full w-full max-w-xl flex-col bg-surface shadow-2xl border-l border-line/80 font-sans macos-drawer-enter"
       >
         {/* Masthead */}
         <div className="flex items-center justify-between border-b border-white/10 bg-brand p-4 text-white">
@@ -256,7 +256,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({ isOpen
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white transition-colors"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white transition-colors macos-press-sm"
             aria-label="Close copilot"
           >
             <X size={18} />

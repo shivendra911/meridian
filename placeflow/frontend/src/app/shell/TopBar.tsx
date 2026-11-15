@@ -18,13 +18,13 @@ export const TopBar: React.FC<TopBarProps> = ({
   onOpenCopilot,
 }) => {
   return (
-    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between border-b border-line bg-surface px-4 lg:px-6">
+    <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center justify-between border-b border-line/70 bg-surface/85 macos-frosted px-4 lg:px-6 transition-colors">
       {/* Left: Hamburger (mobile) + Breadcrumbs */}
       <div className="flex items-center gap-3 min-w-0">
         <button
           type="button"
           onClick={onOpenMobileSidebar}
-          className="lg:hidden flex h-9 w-9 items-center justify-center rounded-lg text-ink-muted hover:bg-slate-100 hover:text-ink focus:outline-none"
+          className="lg:hidden flex h-9 w-9 items-center justify-center rounded-lg text-ink-muted hover:bg-slate-100 hover:text-ink focus:outline-none macos-press"
           aria-label="Open sidebar"
         >
           <Menu size={18} />
@@ -41,13 +41,13 @@ export const TopBar: React.FC<TopBarProps> = ({
         <button
           type="button"
           onClick={onOpenCommandPalette}
-          className="hidden md:flex w-full items-center justify-between h-9 rounded-lg border border-line bg-canvas px-3 text-xs text-ink-muted hover:border-slate-300 hover:bg-white focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-colors"
+          className="hidden md:flex w-full items-center justify-between h-9 rounded-lg border border-line/80 bg-canvas/80 px-3 text-xs text-ink-muted hover:border-slate-300 hover:bg-surface focus:outline-none focus:ring-2 focus:ring-brand focus:border-brand transition-all duration-120 macos-press"
         >
           <div className="flex items-center gap-2 truncate">
             <Search size={14} className="text-slate-400 shrink-0" />
             <span className="truncate">Search students, drives, companies...</span>
           </div>
-          <kbd className="hidden sm:inline-flex items-center rounded border border-line bg-surface px-1.5 py-0.5 text-xs font-mono text-ink-muted">
+          <kbd className="hidden sm:inline-flex items-center rounded border border-line/80 bg-surface px-1.5 py-0.5 text-xs font-mono text-ink-muted shadow-2xs">
             Ctrl K
           </kbd>
         </button>
@@ -56,7 +56,7 @@ export const TopBar: React.FC<TopBarProps> = ({
         <button
           type="button"
           onClick={onOpenCommandPalette}
-          className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg text-ink-muted hover:bg-slate-100 hover:text-ink focus:outline-none ml-auto"
+          className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg text-ink-muted hover:bg-slate-100 hover:text-ink focus:outline-none ml-auto macos-press"
           aria-label="Search"
         >
           <Search size={18} />
@@ -69,13 +69,13 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             type="button"
             onClick={onOpenCopilot}
-            className="flex items-center gap-1.5 rounded-lg border border-line bg-canvas px-2.5 py-1.5 text-xs font-semibold text-brand-red hover:bg-red-50 hover:border-red-200 transition-colors shadow-2xs"
+            className="flex items-center gap-1.5 rounded-lg border border-line/80 bg-canvas/80 px-2.5 py-1.5 text-xs font-semibold text-brand-red hover:bg-red-50 hover:border-red-200 transition-colors shadow-2xs macos-press"
             title="Campus AI Copilot (Ctrl + /)"
             aria-label="Open Campus AI Copilot"
           >
             <Sparkles size={14} className="text-brand-red shrink-0" />
             <span className="hidden sm:inline">Copilot</span>
-            <kbd className="hidden md:inline-flex items-center rounded bg-surface border border-line px-1 py-0.2 text-xs font-mono text-ink-muted">
+            <kbd className="hidden md:inline-flex items-center rounded bg-surface border border-line/80 px-1 py-0.2 text-xs font-mono text-ink-muted">
               Ctrl /
             </kbd>
           </button>
@@ -87,7 +87,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             type="button"
             onClick={onOpenShortcuts}
-            className="hidden sm:flex h-9 w-9 items-center justify-center rounded-lg text-ink-muted hover:bg-slate-100 hover:text-ink focus:outline-none transition-colors"
+            className="hidden sm:flex h-9 w-9 items-center justify-center rounded-lg text-ink-muted hover:bg-slate-100 hover:text-ink focus:outline-none transition-colors macos-press"
             title="Keyboard shortcuts (?)"
             aria-label="Keyboard shortcuts"
           >

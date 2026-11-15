@@ -24,6 +24,11 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
   const [isCopilotOpen, setIsCopilotOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
+  // Instant zero-jank scroll restoration on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
   // Global key bindings: Ctrl+K / Cmd+K, Ctrl+/ and ?
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

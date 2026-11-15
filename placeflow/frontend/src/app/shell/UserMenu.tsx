@@ -52,7 +52,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenShortcuts, className =
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-2 rounded-full p-0.5 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 transition-colors"
+        className="flex items-center gap-2 rounded-full p-0.5 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-1 transition-colors macos-press"
         title="Open user settings & profile"
       >
         <Avatar src={avatarUrl} name={displayName} size={32} />
@@ -64,9 +64,9 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenShortcuts, className =
 
       {/* 280px User Menu Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-line bg-surface p-2 shadow-2xl ring-1 ring-black/5 animate-in fade-in zoom-in-95 duration-100">
+        <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-line/80 bg-surface/95 macos-frosted-popover p-2 shadow-macos-popover macos-menu-pop">
           {/* Mini Profile Card Header */}
-          <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-50/70 border border-line">
+          <div className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-50/70 border border-line/60">
             <Avatar src={avatarUrl} name={displayName} size={40} className="shrink-0" />
             <div className="min-w-0 flex-1">
               <h4 className="text-sm font-semibold leading-tight text-ink truncate m-0">
@@ -88,14 +88,14 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenShortcuts, className =
           </div>
 
           {/* Links Section */}
-          <div className="mt-1.5 space-y-0.5 border-t border-line pt-1.5 text-xs">
+          <div className="mt-1.5 space-y-0.5 border-t border-line/60 pt-1.5 text-xs">
             <button
               type="button"
               onClick={() => {
                 setIsOpen(false);
                 navigate('/account/profile');
               }}
-              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-ink hover:bg-surface-muted transition-colors text-left"
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-ink hover:bg-slate-500/8 active:bg-slate-500/12 transition-colors text-left macos-press-sm"
             >
               <User size={15} className="text-slate-500 shrink-0" />
               <span>View profile</span>
@@ -107,7 +107,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenShortcuts, className =
                 setIsOpen(false);
                 navigate('/account/security');
               }}
-              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-ink hover:bg-surface-muted transition-colors text-left"
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-ink hover:bg-slate-500/8 active:bg-slate-500/12 transition-colors text-left macos-press-sm"
             >
               <Settings size={15} className="text-slate-500 shrink-0" />
               <span>Account settings</span>
@@ -120,7 +120,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenShortcuts, className =
                   setIsOpen(false);
                   onOpenShortcuts();
                 }}
-                className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-ink hover:bg-surface-muted transition-colors text-left"
+                className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-ink hover:bg-slate-500/8 active:bg-slate-500/12 transition-colors text-left macos-press-sm"
               >
                 <div className="flex items-center gap-2.5">
                   <Keyboard size={15} className="text-slate-500 shrink-0" />
@@ -134,11 +134,11 @@ export const UserMenu: React.FC<UserMenuProps> = ({ onOpenShortcuts, className =
           </div>
 
           {/* Sign Out Action */}
-          <div className="mt-1.5 border-t border-line pt-1.5">
+          <div className="mt-1.5 border-t border-line/60 pt-1.5">
             <button
               type="button"
               onClick={handleSignOut}
-              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-rose-700 hover:bg-rose-50 transition-colors text-xs font-medium text-left"
+              className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-rose-700 hover:bg-rose-50 active:bg-rose-100 transition-colors text-xs font-medium text-left macos-press-sm"
             >
               <LogOut size={15} className="text-rose-600 shrink-0" />
               <span>Sign out</span>

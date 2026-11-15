@@ -38,7 +38,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 select-none cursor-pointer border focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none';
+    'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 select-none cursor-pointer border focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none macos-press';
 
   const sizeStyles: Record<ButtonSize, string> = {
     xs: 'text-xs px-2 py-1 gap-1.5 font-medium',

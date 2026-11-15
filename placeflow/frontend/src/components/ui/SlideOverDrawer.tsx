@@ -43,16 +43,16 @@ export const SlideOverDrawer: React.FC<SlideOverDrawerProps> = ({
     <div className="fixed inset-0 z-50 overflow-hidden">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-ink/40 backdrop-blur-xs transition-opacity duration-150"
+        className="fixed inset-0 bg-slate-900/35 backdrop-blur-sm transition-opacity duration-200"
         onClick={onClose}
       />
 
       <div className="fixed inset-y-0 right-0 flex pl-10 max-w-full">
         <div
-          className={`w-screen ${widthStyles[width]} bg-surface shadow-2xl border-l border-line flex flex-col`}
+          className={`w-screen ${widthStyles[width]} bg-surface shadow-2xl border-l border-line/80 flex flex-col macos-drawer-enter`}
         >
           {/* Header */}
-          <div className="px-6 py-4 border-b border-line bg-surface flex items-start justify-between gap-4">
+          <div className="px-6 py-4 border-b border-line/70 bg-surface/95 macos-frosted flex items-start justify-between gap-4">
             <div>
               {typeof title === 'string' ? (
                 <h3 className="font-semibold text-base text-ink m-0">
@@ -70,7 +70,8 @@ export const SlideOverDrawer: React.FC<SlideOverDrawerProps> = ({
 
             <button
               onClick={onClose}
-              className="text-ink-muted hover:text-ink p-1 rounded-md hover:bg-canvas transition-colors duration-150"
+              className="text-ink-muted hover:text-ink p-1 rounded-md hover:bg-canvas transition-colors duration-150 macos-press-sm"
+              aria-label="Close drawer"
             >
               <X size={16} />
             </button>
@@ -81,7 +82,7 @@ export const SlideOverDrawer: React.FC<SlideOverDrawerProps> = ({
 
           {/* Footer */}
           {footer && (
-            <div className="px-6 py-3.5 border-t border-line bg-canvas/40 flex items-center justify-end gap-2.5">
+            <div className="px-6 py-3.5 border-t border-line/70 bg-canvas/60 macos-frosted flex items-center justify-end gap-2.5">
               {footer}
             </div>
           )}

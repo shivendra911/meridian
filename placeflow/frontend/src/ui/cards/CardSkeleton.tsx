@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const Shimmer: React.FC<{ className?: string }> = ({ className = '' }) => (
-  <div className={`animate-pulse rounded bg-slate-200/80 ${className}`} />
+  <div className={`animate-pulse skeleton-shimmer rounded ${className}`} />
 );
 
 export const DriveCardSkeleton: React.FC<{ className?: string }> = ({ className = '' }) => (
