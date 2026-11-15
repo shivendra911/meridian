@@ -15,6 +15,7 @@ const StudentOpportunitiesPage = lazy(() => import('./pages/OpportunitiesPage').
 const StudentApplicationsPage = lazy(() => import('./pages/ApplicationsPage').then((m) => ({ default: m.StudentApplicationsPage })));
 const StudentAcademicsPage = lazy(() => import('./pages/AcademicsPage').then((m) => ({ default: m.StudentAcademicsPage })));
 const StudentProfilePage = lazy(() => import('./pages/ProfilePage').then((m) => ({ default: m.StudentProfilePage })));
+const StudentInboxPage = lazy(() => import('./pages/InboxPage').then((m) => ({ default: m.InboxPage })));
 
 export const StudentRoutes: React.FC = () => {
   return (
@@ -33,6 +34,7 @@ export const StudentRoutes: React.FC = () => {
           <Route path="home" element={<StudentHomePage />} />
           <Route path="opportunities" element={<StudentOpportunitiesPage />} />
           <Route path="applications" element={<StudentApplicationsPage />} />
+          <Route path="inbox" element={<StudentInboxPage />} />
           <Route path="academics" element={<StudentAcademicsPage />} />
           <Route path="profile" element={<StudentProfilePage />} />
           <Route path="*" element={<Navigate to="home" replace />} />

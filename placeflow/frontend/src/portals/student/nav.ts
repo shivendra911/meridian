@@ -5,10 +5,9 @@
  */
 
 import {
-  LayoutDashboard,
   Compass,
-  FileText,
-  GraduationCap,
+  Briefcase,
+  Bell,
   UserCircle,
   LucideIcon,
 } from 'lucide-react';
@@ -24,34 +23,27 @@ export interface StudentNavItem {
 
 export const STUDENT_NAV_ITEMS: StudentNavItem[] = [
   {
-    id: 'student-home',
-    label: 'Home',
+    id: 'student-journey',
+    label: 'Journey',
     path: '/student/home',
-    icon: LayoutDashboard,
-  },
-  {
-    id: 'student-opportunities',
-    label: 'Opportunities',
-    path: '/student/opportunities',
     icon: Compass,
+  },
+  {
+    id: 'student-drives',
+    label: 'Drives',
+    path: '/student/opportunities',
+    icon: Briefcase,
     permission: 'placement.application.create',
   },
   {
-    id: 'student-applications',
-    label: 'My Applications',
-    path: '/student/applications',
-    icon: FileText,
-    permission: 'placement.application.create',
+    id: 'student-inbox',
+    label: 'Inbox',
+    path: '/student/inbox',
+    icon: Bell,
   },
   {
-    id: 'student-academics',
-    label: 'Academics',
-    path: '/student/academics',
-    icon: GraduationCap,
-  },
-  {
-    id: 'student-profile',
-    label: 'Profile & Privacy',
+    id: 'student-me',
+    label: 'Me',
     path: '/student/profile',
     icon: UserCircle,
     permission: 'student.profile.update_self',
