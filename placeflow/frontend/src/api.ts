@@ -551,5 +551,74 @@ export const api = {
         pip_blocked_count: number;
       };
     }>('/v4/ai/quotas/'),
+
+  // Role-Based & User-Specific Copilot API
+  getCopilotContext: () =>
+    request<{
+      persona: {
+        role_code: string;
+        role_label: string;
+        portal: string;
+        title: string;
+        description: string;
+        display_name: string;
+        email: string;
+        department: string;
+        institution_name: string;
+        candidate_id: string;
+        allowed_agents: string[];
+        quick_prompts: string[];
+      };
+      safety_status: {
+        pip_defense: string;
+        dpdp_masking: string;
+        audit_ledger: string;
+      };
+    }>('/copilot/context/'),
+
+  queryCopilot: (query: string, context?: Record<string, any>) =>
+    request<{
+      answer: string;
+      citations: Array<{
+        doc_title: string;
+        version: string;
+        section_heading: string;
+        source_authority: string;
+      }>;
+      groundedness_score: number;
+      trace_id: string;
+      total_tokens: number;
+      suggested_followups: string[];
+      persona: {
+        role_code: string;
+        role_label: string;
+        portal: string;
+        display_name: string;
+        department: string;
+      };
+    }>('/copilot/query/', {
+      method: 'POST',
+      body: JSON.stringify({ query, context }),
+    }),
+
+  executeCopilotAgent: (agentName: string, payload: Record<string, any>) =>
+    request<{
+      agent_name: string;
+      status: string;
+      summary: string;
+      recommendation: Record<string, any>;
+      tool_results: Array<{
+        tool_name: string;
+        risk_tier: string;
+        status: string;
+        requires_human_approval: boolean;
+        approval_token?: string;
+      }>;
+      trace_id: string;
+      caller_persona: string;
+    }>('/copilot/agent/execute/', {
+      method: 'POST',
+      body: JSON.stringify({ agent_name: agentName, payload }),
+    }),
 };
 

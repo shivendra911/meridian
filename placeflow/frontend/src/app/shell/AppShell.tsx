@@ -100,6 +100,7 @@ export const AppShell: React.FC<AppShellProps> = ({ portal, nav, children }) => 
       <CampusCopilotDrawer
         isOpen={isCopilotOpen}
         onClose={() => setIsCopilotOpen(false)}
+        portal={portal}
       />
 
       {/* 5. Keyboard Shortcuts Dialog */}

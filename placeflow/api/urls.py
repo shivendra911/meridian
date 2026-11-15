@@ -51,6 +51,9 @@ urlpatterns = [
     path("people/<str:person_id>/card/", views_account.PersonCardView.as_view(), name="person_card"),
     path("media/avatar/<str:person_id>/", views_account.MediaAvatarServeView.as_view(), name="media_avatar"),
 
+    # Role-Based & User-Specific Campus AI Copilot (Cross-Portal Infrastructure)
+    path("copilot/", include("api.copilot.urls")),
+
     # Namespaced Role-Separated Portals (Phase 3 & Phase 6)
     path("student/", include("api.portals.student.urls")),
     path("tpo/", include("api.portals.tpo.urls")),
