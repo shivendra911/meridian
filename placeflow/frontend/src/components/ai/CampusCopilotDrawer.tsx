@@ -424,6 +424,25 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
+  // Prevent background page scroll bleed / layout glitch when drawer is open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+    };
+  }, [isOpen]);
+
   // Load telemetry when switching to traces mode
   const loadTraces = async () => {
     try {
@@ -562,12 +581,23 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <aside
-      className="fixed inset-y-0 right-0 z-50 w-full max-w-xl bg-canvas border-l border-line shadow-2xl flex flex-col font-sans transition-all duration-300 ease-out"
-      aria-labelledby="copilot-drawer-title"
-      role="dialog"
-      aria-modal="true"
-    >
+    <div className="fixed inset-0 z-[70] overflow-hidden">
+      {/* 1. Backdrop Scrim Overlay (dims & blurs page behind Copilot, prevents mis-clicks, click outside to close) */}
+      <div
+        className="fixed inset-0 bg-slate-950/45 backdrop-blur-xs transition-opacity duration-200 cursor-pointer"
+        onClick={onClose}
+        aria-hidden="true"
+        title="Close copilot"
+      />
+
+      {/* 2. Elevated Copilot Drawer Surface */}
+      <aside
+        className="fixed inset-y-0 right-0 z-[70] w-full max-w-xl bg-surface border-l border-line/90 shadow-2xl flex flex-col font-sans transition-all duration-300 ease-out macos-drawer-enter overscroll-contain select-text"
+        aria-labelledby="copilot-drawer-title"
+        role="dialog"
+        aria-modal="true"
+        onWheel={(e) => e.stopPropagation()}
+      >
       {/* 1. Masthead: Role-Specific Gradient Banner & Identity Bar with Ambient Halo */}
       <div className={`relative overflow-hidden p-4 text-white bg-gradient-to-r ${theme.gradient} border-b border-line/40`}>
         {/* Subtle Ambient Luminescence Glow */}
@@ -677,7 +707,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
             </div>
           </div>
 
-          <div className="space-y-2 mt-2.5 max-h-48 overflow-y-auto pr-1">
+          <div
+            className="space-y-2 mt-2.5 max-h-48 overflow-y-auto pr-1 overscroll-contain"
+            onWheel={(e) => e.stopPropagation()}
+          >
             {shareableAttributes.map((attr) => {
               const checked = isShared(attr.key);
               return (
@@ -732,7 +765,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 
       {/* 4. Context Window Inspector Modal */}
       {contextPreviewOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150">
           <div className="bg-surface rounded-2xl border border-line p-4 max-w-lg w-full shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-line mb-3">
               <div className="flex items-center gap-2">
@@ -749,7 +782,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                 <X size={16} />
               </button>
             </div>
-            <div className="bg-slate-900 text-emerald-400 font-mono text-[11px] p-3 rounded-xl max-h-72 overflow-y-auto whitespace-pre-wrap">
+            <div
+              className="bg-slate-900 text-emerald-400 font-mono text-[11px] p-3 rounded-xl max-h-72 overflow-y-auto whitespace-pre-wrap overscroll-contain"
+              onWheel={(e) => e.stopPropagation()}
+            >
               {`=== USER IDENTITY CONTEXT ===\n`}
               {`Display Name: ${displayName}\n`}
               {`Department: ${department}\n`}
@@ -780,7 +816,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
       )}
 
       {/* 5. Role-Specific Profile Snapshot Card */}
-      <div className="p-3.5 border-b border-line bg-surface/50">
+      <div className="p-3.5 border-b border-line bg-surface">
         {activeLens === 'student' && (
           <div className="rounded-xl border border-indigo-200/80 bg-gradient-to-r from-indigo-50/70 via-purple-50/40 to-slate-50 p-3 shadow-2xs">
             <div className="flex items-center justify-between mb-2">
@@ -1128,7 +1164,10 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
       </div>
 
       {/* 7. Drawer Body Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div
+        className="flex-1 overflow-y-auto p-4 space-y-4 overscroll-contain overscroll-y-contain"
+        onWheel={(e) => e.stopPropagation()}
+      >
         {error && (
           <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800 flex items-start gap-2">
             <AlertTriangle size={15} className="shrink-0 mt-0.5 text-rose-600" />
@@ -2245,6 +2284,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         </span>
       </div>
     </aside>
+  </div>
   );
 };
 

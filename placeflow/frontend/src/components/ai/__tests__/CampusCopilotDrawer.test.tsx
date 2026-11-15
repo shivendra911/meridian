@@ -118,4 +118,20 @@ describe('CampusCopilotDrawer Component', () => {
       expect(screen.getByText('ctc_bracket_analyzer')).toBeTruthy();
     });
   });
+
+  it('locks body scroll when open and unlocks when closed/unmounted', () => {
+    document.body.style.overflow = 'visible';
+    const { unmount } = render(<CampusCopilotDrawer isOpen={true} onClose={vi.fn()} />);
+    expect(document.body.style.overflow).toBe('hidden');
+    unmount();
+    expect(document.body.style.overflow).toBe('visible');
+  });
+
+  it('calls onClose when backdrop overlay is clicked', () => {
+    const handleClose = vi.fn();
+    render(<CampusCopilotDrawer isOpen={true} onClose={handleClose} />);
+    const backdrop = screen.getByTitle('Close copilot');
+    fireEvent.click(backdrop);
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
 });
