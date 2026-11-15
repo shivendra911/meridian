@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import { EmptyState, formatDate } from '../ui';
 import { useTenant } from '../context/TenantContext';
 import { RoleAssignmentWizard } from '../components/iam/RoleAssignmentWizard';
+import { Select } from '../components/ui/Select';
 
 export const IdentityAccessPage: React.FC = () => {
   const { activeTenant, activeInstitution } = useTenant();
@@ -474,32 +475,32 @@ export const IdentityAccessPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Requested Action</label>
-                <select
+                <Select
                   value={simAction}
-                  onChange={(e) => setSimAction(e.target.value)}
-                  className="w-full text-xs p-2 bg-slate-50 border border-slate-200 rounded"
-                >
-                  <option value="student.profile.read">student.profile.read</option>
-                  <option value="student.verification.approve">student.verification.approve</option>
-                  <option value="placement.offer.approve">placement.offer.approve</option>
-                  <option value="placement.offer.record">placement.offer.record</option>
-                  <option value="reports.statutory.sign">reports.statutory.sign</option>
-                  <option value="iam.role.assign">iam.role.assign</option>
-                </select>
+                  onChange={(val) => setSimAction(val)}
+                  options={[
+                    { value: 'student.profile.read', label: 'student.profile.read' },
+                    { value: 'student.verification.approve', label: 'student.verification.approve' },
+                    { value: 'placement.offer.approve', label: 'placement.offer.approve' },
+                    { value: 'placement.offer.record', label: 'placement.offer.record' },
+                    { value: 'reports.statutory.sign', label: 'reports.statutory.sign' },
+                    { value: 'iam.role.assign', label: 'iam.role.assign' },
+                  ]}
+                />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Target Resource Scope</label>
-                <select
+                <Select
                   value={simScopeType}
-                  onChange={(e) => setSimScopeType(e.target.value)}
-                  className="w-full text-xs p-2 bg-slate-50 border border-slate-200 rounded"
-                >
-                  <option value="INSTITUTION">INSTITUTION</option>
-                  <option value="CAMPUS">CAMPUS</option>
-                  <option value="ORGANIZATIONAL_UNIT">ORGANIZATIONAL_UNIT</option>
-                  <option value="SELF">SELF</option>
-                </select>
+                  onChange={(val) => setSimScopeType(val)}
+                  options={[
+                    { value: 'INSTITUTION', label: 'INSTITUTION' },
+                    { value: 'CAMPUS', label: 'CAMPUS' },
+                    { value: 'ORGANIZATIONAL_UNIT', label: 'ORGANIZATIONAL_UNIT' },
+                    { value: 'SELF', label: 'SELF' },
+                  ]}
+                />
               </div>
             </div>
 

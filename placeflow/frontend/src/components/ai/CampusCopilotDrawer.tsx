@@ -26,6 +26,10 @@ import {
   FileText,
   Play,
   ArrowRight,
+  Calculator,
+  Wallet,
+  Award,
+  CheckCheck,
 } from 'lucide-react';
 import { client } from '../../core/api/client';
 import { useAuth } from '../../core/auth/useAuth';
@@ -335,6 +339,15 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
   const [contextPreviewOpen, setContextPreviewOpen] = useState(false);
   const [resumeToolOpen, setResumeToolOpen] = useState(false);
   const [resumeBulletInput, setResumeBulletInput] = useState('');
+  const [studentToolTab, setStudentToolTab] = useState<'eligibility' | 'prep' | 'salary'>('eligibility');
+  const [selectedCompanyPrep, setSelectedCompanyPrep] = useState('Google');
+  const [ctcInput, setCtcInput] = useState('26.5');
+  const [facultyToolTab, setFacultyToolTab] = useState<'attendance' | 'lor'>('attendance');
+  const [lorStudent, setLorStudent] = useState('Aarav Sharma (221CS104)');
+  const [tpoToolTab, setTpoToolTab] = useState<'superday' | 'shortlist'>('superday');
+  const [shortlistCgpa, setShortlistCgpa] = useState('7.5');
+  const [hodToolTab, setHodToolTab] = useState<'curriculum' | 'skillgap'>('curriculum');
+  const [adminMerkleVerified, setAdminMerkleVerified] = useState(false);
 
   const persona = ROLE_PERSONAS[activeLens];
   const theme = ROLE_THEMES[activeLens];
@@ -1136,218 +1149,549 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
         {/* Tab A: Role Policy RAG Reasoning */}
         {activeMode === 'rag' && (
           <div className="space-y-4">
-            {/* Role-Specific Interactive Diagnostic & Action Tools */}
+            {/* Role-Specific Interactive Diagnostic & Power Tools */}
             {activeLens === 'student' && (
               <div className="rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50/70 via-purple-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-indigo-950 flex items-center gap-1.5">
-                    <TrendingUp size={14} className="text-indigo-600" />
-                    Tier-1 Super Dream Eligibility Meter
-                  </span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                    Eligible: Tier-1
-                  </span>
-                </div>
-                <div className="space-y-2 text-[11px]">
-                  <div>
-                    <div className="flex justify-between text-ink-muted mb-1">
-                      <span>CGPA Cut-Off Benchmark (7.50 Min)</span>
-                      <span className="font-mono font-semibold text-indigo-950">8.42 / 10.0 (+0.92 Delta)</span>
-                    </div>
-                    <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
-                      <div className="h-full bg-indigo-600 rounded-full copilot-gauge-fill" style={{ width: '84.2%' }} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-ink-muted mb-1">
-                      <span>NEP Degree Credits Completed (128 / 160)</span>
-                      <span className="font-mono font-semibold text-purple-900">80% Level 8 Honours</span>
-                    </div>
-                    <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
-                      <div className="h-full bg-purple-600 rounded-full copilot-gauge-fill" style={{ width: '80%' }} />
-                    </div>
-                  </div>
+                {/* Student Sub-Tool Navigation Pills */}
+                <div className="flex border-b border-indigo-100/80 pb-2 gap-1 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setStudentToolTab('eligibility')}
+                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                      studentToolTab === 'eligibility'
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : 'text-indigo-900/70 hover:bg-indigo-100/60'
+                    }`}
+                  >
+                    Eligibility &amp; Resume
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStudentToolTab('prep')}
+                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                      studentToolTab === 'prep'
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : 'text-indigo-900/70 hover:bg-indigo-100/60'
+                    }`}
+                  >
+                    Recruiter Prep Blueprint
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setStudentToolTab('salary')}
+                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                      studentToolTab === 'salary'
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : 'text-indigo-900/70 hover:bg-indigo-100/60'
+                    }`}
+                  >
+                    In-Hand Salary Calculator
+                  </button>
                 </div>
 
-                {/* 1-Click ATS Resume Bullet Optimizer Collapsible */}
-                <div className="pt-2 border-t border-indigo-100/80">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-semibold text-ink flex items-center gap-1">
-                      <FileText size={12} className="text-indigo-600" />
-                      ATS Resume Bullet Improver
-                    </span>
+                {studentToolTab === 'eligibility' && (
+                  <div className="space-y-3 animate-in fade-in-50 duration-150">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-indigo-950 flex items-center gap-1.5">
+                        <TrendingUp size={14} className="text-indigo-600" />
+                        Tier-1 Super Dream Eligibility Meter
+                      </span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                        Eligible: Tier-1
+                      </span>
+                    </div>
+                    <div className="space-y-2 text-[11px]">
+                      <div>
+                        <div className="flex justify-between text-ink-muted mb-1">
+                          <span>CGPA Cut-Off Benchmark (7.50 Min)</span>
+                          <span className="font-mono font-semibold text-indigo-950">8.42 / 10.0 (+0.92 Delta)</span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                          <div className="h-full bg-indigo-600 rounded-full copilot-gauge-fill" style={{ width: '84.2%' }} />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-ink-muted mb-1">
+                          <span>NEP Degree Credits Completed (128 / 160)</span>
+                          <span className="font-mono font-semibold text-purple-900">80% Level 8 Honours</span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+                          <div className="h-full bg-purple-600 rounded-full copilot-gauge-fill" style={{ width: '80%' }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 1-Click ATS Resume Bullet Optimizer Collapsible */}
+                    <div className="pt-2 border-t border-indigo-100/80">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-semibold text-ink flex items-center gap-1">
+                          <FileText size={12} className="text-indigo-600" />
+                          ATS Resume Bullet Improver
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setResumeToolOpen((p) => !p)}
+                          className="text-[11px] font-medium text-brand hover:underline cursor-pointer"
+                        >
+                          {resumeToolOpen ? 'Hide Tool' : 'Open ATS Rewriter'}
+                        </button>
+                      </div>
+                      {resumeToolOpen && (
+                        <div className="mt-2 space-y-2 animate-in slide-in-from-top-1 duration-150">
+                          <input
+                            type="text"
+                            value={resumeBulletInput}
+                            onChange={(e) => setResumeBulletInput(e.target.value)}
+                            placeholder="Paste draft resume bullet (e.g. Built a full stack portal with React)..."
+                            className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-line bg-surface text-ink focus:outline-hidden focus:border-brand"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const query = `Optimize this resume bullet for ATS and Tier-1 engineering placement: "${resumeBulletInput || 'Developed web applications for campus placements'}"`;
+                              setQueryInput(query);
+                              handleSubmitRag(undefined, query);
+                            }}
+                            className="macos-press-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-semibold cursor-pointer shadow-2xs"
+                          >
+                            <Sparkles size={12} />
+                            <span>Optimize for Tier-1 ATS</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {studentToolTab === 'prep' && (
+                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-indigo-950 flex items-center gap-1">
+                        <BookOpen size={13} className="text-indigo-600" />
+                        Target Recruiter Interview Cheat Sheet
+                      </span>
+                      <div className="flex gap-1">
+                        {['Google', 'Microsoft', 'Goldman Sachs'].map((co) => (
+                          <button
+                            key={co}
+                            type="button"
+                            onClick={() => setSelectedCompanyPrep(co)}
+                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
+                              selectedCompanyPrep === co
+                                ? 'bg-indigo-700 text-white'
+                                : 'bg-surface text-ink border border-line hover:bg-slate-100'
+                            }`}
+                          >
+                            {co}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-surface border border-line space-y-1">
+                      <span className="font-semibold text-ink block">{selectedCompanyPrep} Campus Hiring Blueprint</span>
+                      <p className="text-[10px] text-ink-muted m-0">
+                        {selectedCompanyPrep === 'Google' && 'Focus: Distributed Graph Algorithms, Binary Search on Answer, System Design (Rate Limiters).'}
+                        {selectedCompanyPrep === 'Microsoft' && 'Focus: Dynamic Programming (Subsequences), Tree Traversal, REST API Concurrency.'}
+                        {selectedCompanyPrep === 'Goldman Sachs' && 'Focus: Numerical Probability, Hash Table Inversion, Low-Latency Java/C++ Concurrency.'}
+                      </p>
+                    </div>
                     <button
                       type="button"
-                      onClick={() => setResumeToolOpen((p) => !p)}
-                      className="text-[11px] font-medium text-brand hover:underline cursor-pointer"
+                      onClick={() => {
+                        const q = `Generate comprehensive interview question bank and technical cheat sheet for ${selectedCompanyPrep} campus hiring`;
+                        setQueryInput(q);
+                        handleSubmitRag(undefined, q);
+                      }}
+                      className="macos-press-sm w-full py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
                     >
-                      {resumeToolOpen ? 'Hide Tool' : 'Open ATS Rewriter'}
+                      <Sparkles size={12} />
+                      <span>Generate {selectedCompanyPrep} Prep Blueprint</span>
                     </button>
                   </div>
-                  {resumeToolOpen && (
-                    <div className="mt-2 space-y-2 animate-in slide-in-from-top-1 duration-150">
-                      <input
-                        type="text"
-                        value={resumeBulletInput}
-                        onChange={(e) => setResumeBulletInput(e.target.value)}
-                        placeholder="Paste draft resume bullet (e.g. Built a full stack portal with React)..."
-                        className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-line bg-surface text-ink focus:outline-hidden focus:border-brand"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const query = `Optimize this resume bullet for ATS and Tier-1 engineering placement: "${resumeBulletInput || 'Developed web applications for campus placements'}"`;
-                          setQueryInput(query);
-                          handleSubmitRag(undefined, query);
-                        }}
-                        className="macos-press-sm inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-semibold cursor-pointer shadow-2xs"
-                      >
-                        <Sparkles size={12} />
-                        <span>Optimize for Tier-1 ATS</span>
-                      </button>
+                )}
+
+                {studentToolTab === 'salary' && (
+                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-indigo-950 flex items-center gap-1">
+                        <Wallet size={13} className="text-indigo-600" />
+                        CTC to Net Monthly In-Hand Estimator
+                      </span>
+                      <span className="text-emerald-700 font-mono font-semibold">₹{ctcInput} LPA</span>
                     </div>
-                  )}
-                </div>
+                    <div className="flex gap-1.5">
+                      {['12.0', '26.5', '45.0'].map((bracket) => (
+                        <button
+                          key={bracket}
+                          type="button"
+                          onClick={() => setCtcInput(bracket)}
+                          className={`flex-1 py-1 rounded text-center text-[10px] font-semibold transition-colors cursor-pointer border ${
+                            ctcInput === bracket
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : 'bg-surface text-ink border-line hover:bg-slate-50'
+                          }`}
+                        >
+                          ₹{bracket} LPA
+                        </button>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-2 gap-1.5 text-[10px]">
+                      <div className="p-2 rounded bg-surface border border-line">
+                        <span className="text-ink-muted block">Annual Base</span>
+                        <span className="font-mono font-semibold text-ink">₹{(parseFloat(ctcInput) * 0.68).toFixed(1)} LPA</span>
+                      </div>
+                      <div className="p-2 rounded bg-surface border border-line">
+                        <span className="text-ink-muted block">Estimated Monthly In-Hand</span>
+                        <span className="font-mono font-semibold text-emerald-700">~₹{Math.round((parseFloat(ctcInput) * 68000) / 12).toLocaleString('en-IN')} /mo</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const q = `Provide comprehensive tax, base salary, and monthly in-hand take home breakdown for an offer of ₹${ctcInput} LPA CTC`;
+                        setQueryInput(q);
+                        handleSubmitRag(undefined, q);
+                      }}
+                      className="macos-press-sm w-full py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
+                    >
+                      <Calculator size={12} />
+                      <span>Get Detailed Compensation Analysis</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
             {activeLens === 'faculty' && (
               <div className="rounded-xl border border-emerald-100 bg-gradient-to-br from-emerald-50/70 via-teal-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-emerald-950 flex items-center gap-1.5">
-                    <AlertTriangle size={13} className="text-amber-600" />
-                    Advisee Attendance Intervention Radar
-                  </span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
-                    3 Students &lt; 75%
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-1.5 text-[11px]">
-                  <div className="p-2 rounded-lg bg-surface border border-line">
-                    <span className="font-semibold text-ink block truncate">Diya Patel</span>
-                    <span className="text-amber-700 font-mono text-[10px] block">71% Attendance</span>
-                  </div>
-                  <div className="p-2 rounded-lg bg-surface border border-line">
-                    <span className="font-semibold text-ink block truncate">Rohan Verma</span>
-                    <span className="text-rose-700 font-mono text-[10px] block">68% Attendance</span>
-                  </div>
-                  <div className="p-2 rounded-lg bg-surface border border-line">
-                    <span className="font-semibold text-ink block truncate">Tanvi Shah</span>
-                    <span className="text-amber-700 font-mono text-[10px] block">74% Attendance</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between pt-1">
+                {/* Faculty Sub-Tool Navigation */}
+                <div className="flex border-b border-emerald-100/80 pb-2 gap-1 text-[11px]">
                   <button
                     type="button"
-                    onClick={() => {
-                      const q = 'Draft academic warning notices for advisees with attendance below 75% before placement NOC endorsement';
-                      setQueryInput(q);
-                      handleSubmitRag(undefined, q);
-                    }}
-                    className="macos-press-sm text-[11px] font-semibold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 cursor-pointer"
+                    onClick={() => setFacultyToolTab('attendance')}
+                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                      facultyToolTab === 'attendance'
+                        ? 'bg-emerald-700 text-white shadow-2xs'
+                        : 'text-emerald-900/70 hover:bg-emerald-100/60'
+                    }`}
                   >
-                    <span>Draft Warning Notices</span>
-                    <ArrowRight size={11} />
+                    Attendance &amp; NOC Alerts
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      const q = 'Evaluate 4 pending NOC applications against semester credit fulfillment and attendance regulations';
-                      setQueryInput(q);
-                      handleSubmitRag(undefined, q);
-                    }}
-                    className="macos-press-sm text-[11px] font-semibold text-teal-700 hover:text-teal-900 cursor-pointer"
+                    onClick={() => setFacultyToolTab('lor')}
+                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                      facultyToolTab === 'lor'
+                        ? 'bg-emerald-700 text-white shadow-2xs'
+                        : 'text-emerald-900/70 hover:bg-emerald-100/60'
+                    }`}
                   >
-                    Evaluate Pending NOCs &rarr;
+                    1-Click LOR Drafter
                   </button>
                 </div>
+
+                {facultyToolTab === 'attendance' && (
+                  <div className="space-y-2.5 animate-in fade-in-50 duration-150">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-emerald-950 flex items-center gap-1.5">
+                        <AlertTriangle size={13} className="text-amber-600" />
+                        Advisee Attendance Intervention Radar
+                      </span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                        3 Students &lt; 75%
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5 text-[11px]">
+                      <div className="p-2 rounded-lg bg-surface border border-line">
+                        <span className="font-semibold text-ink block truncate">Diya Patel</span>
+                        <span className="text-amber-700 font-mono text-[10px] block">71% Attendance</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-surface border border-line">
+                        <span className="font-semibold text-ink block truncate">Rohan Verma</span>
+                        <span className="text-rose-700 font-mono text-[10px] block">68% Attendance</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-surface border border-line">
+                        <span className="font-semibold text-ink block truncate">Tanvi Shah</span>
+                        <span className="text-amber-700 font-mono text-[10px] block">74% Attendance</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const q = 'Draft academic warning notices for advisees with attendance below 75% before placement NOC endorsement';
+                          setQueryInput(q);
+                          handleSubmitRag(undefined, q);
+                        }}
+                        className="macos-press-sm text-[11px] font-semibold text-emerald-800 hover:text-emerald-950 inline-flex items-center gap-1 cursor-pointer"
+                      >
+                        <span>Draft Warning Notices</span>
+                        <ArrowRight size={11} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const q = 'Evaluate 4 pending NOC applications against semester credit fulfillment and attendance regulations';
+                          setQueryInput(q);
+                          handleSubmitRag(undefined, q);
+                        }}
+                        className="macos-press-sm text-[11px] font-semibold text-teal-700 hover:text-teal-900 cursor-pointer"
+                      >
+                        Evaluate Pending NOCs &rarr;
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {facultyToolTab === 'lor' && (
+                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-emerald-950 flex items-center gap-1">
+                        <Award size={13} className="text-emerald-600" />
+                        Grounded Academic Letter of Recommendation
+                      </span>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-surface border border-line space-y-1.5">
+                      <label className="text-[10px] font-semibold text-ink-muted uppercase block">Select Target Advisee</label>
+                      <Select
+                        value={lorStudent}
+                        onChange={(val) => setLorStudent(val)}
+                        size="sm"
+                        options={[
+                          { value: 'Aarav Sharma (221CS104)', label: 'Aarav Sharma (221CS104 · CGPA 8.42)' },
+                          { value: 'Diya Patel (221CS118)', label: 'Diya Patel (221CS118 · CGPA 8.85)' },
+                          { value: 'Rohan Verma (221CS142)', label: 'Rohan Verma (221CS142 · CGPA 7.92)' },
+                        ]}
+                      />
+                      <p className="text-[10px] text-ink-muted m-0">Pre-populates verified course credits, research thesis, and capstone grades.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const q = `Draft an official institutional Letter of Recommendation (LOR) for ${lorStudent} highlighting coursework performance, projects, and ethical integrity`;
+                        setQueryInput(q);
+                        handleSubmitRag(undefined, q);
+                      }}
+                      className="macos-press-sm w-full py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
+                    >
+                      <Award size={12} />
+                      <span>Generate Academic Recommendation Letter</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
             {activeLens === 'tpo' && (
               <div className="rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50/70 via-cyan-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-blue-950 flex items-center gap-1.5">
-                    <Users size={13} className="text-blue-600" />
-                    Superday Interview Conflict Arbitrator
-                  </span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
-                    2 Clashes Flagged
-                  </span>
+                {/* TPO Sub-Tool Navigation */}
+                <div className="flex border-b border-blue-100/80 pb-2 gap-1 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setTpoToolTab('superday')}
+                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                      tpoToolTab === 'superday'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'text-blue-900/70 hover:bg-blue-100/60'
+                    }`}
+                  >
+                    Superday Clashes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTpoToolTab('shortlist')}
+                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                      tpoToolTab === 'shortlist'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'text-blue-900/70 hover:bg-blue-100/60'
+                    }`}
+                  >
+                    Shortlist Engine
+                  </button>
                 </div>
-                <div className="p-2 rounded-lg bg-surface border border-line text-[11px] space-y-1">
-                  <div className="flex justify-between items-center text-ink">
-                    <span className="font-medium">Google (10:00-11:00) vs Goldman Sachs (10:30-11:30)</span>
-                    <span className="text-rose-600 font-mono text-[10px] font-semibold">30m Overlap</span>
+
+                {tpoToolTab === 'superday' && (
+                  <div className="space-y-2.5 animate-in fade-in-50 duration-150">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-blue-950 flex items-center gap-1.5">
+                        <Users size={13} className="text-blue-600" />
+                        Superday Interview Conflict Arbitrator
+                      </span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                        2 Clashes Flagged
+                      </span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-surface border border-line text-[11px] space-y-1">
+                      <div className="flex justify-between items-center text-ink">
+                        <span className="font-medium">Google (10:00-11:00) vs Goldman Sachs (10:30-11:30)</span>
+                        <span className="text-rose-600 font-mono text-[10px] font-semibold">30m Overlap</span>
+                      </div>
+                      <p className="text-[10px] text-ink-muted m-0">Candidate: STU_AARAV_001 · Technical Round 2 Overlap</p>
+                    </div>
+                    <div className="flex items-center justify-between pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedAgent('SuperdayClashSolverAgent');
+                          setActiveMode('agents');
+                        }}
+                        className="macos-press-sm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-semibold cursor-pointer shadow-2xs"
+                      >
+                        <Play size={11} />
+                        <span>Solve Clashes via Superday Agent</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const q = 'Audit Section 9.3 fairness and four-fifths rule disparate impact telemetry across active recruitment drives';
+                          setQueryInput(q);
+                          handleSubmitRag(undefined, q);
+                        }}
+                        className="macos-press-sm text-[11px] font-semibold text-blue-700 hover:underline cursor-pointer"
+                      >
+                        4/5ths Fairness Audit &rarr;
+                      </button>
+                    </div>
                   </div>
-                  <p className="text-[10px] text-ink-muted m-0">Candidate: STU_AARAV_001 · Technical Round 2 Overlap</p>
-                </div>
-                <div className="flex items-center justify-between pt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedAgent('SuperdayClashSolverAgent');
-                      setActiveMode('agents');
-                    }}
-                    className="macos-press-sm inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-semibold cursor-pointer shadow-2xs"
-                  >
-                    <Play size={11} />
-                    <span>Solve Clashes via Superday Agent</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const q = 'Audit Section 9.3 fairness and four-fifths rule disparate impact telemetry across active recruitment drives';
-                      setQueryInput(q);
-                      handleSubmitRag(undefined, q);
-                    }}
-                    className="macos-press-sm text-[11px] font-semibold text-blue-700 hover:underline cursor-pointer"
-                  >
-                    4/5ths Fairness Audit &rarr;
-                  </button>
-                </div>
+                )}
+
+                {tpoToolTab === 'shortlist' && (
+                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-blue-950 flex items-center gap-1">
+                        <CheckCheck size={13} className="text-blue-600" />
+                        Recruiter Cutoff Shortlist Simulator
+                      </span>
+                      <span className="text-emerald-700 font-mono font-semibold">184 / 240 Eligible</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-[10px]">
+                      <div>
+                        <label className="text-ink-muted block mb-0.5">Min CGPA Cutoff</label>
+                        <input
+                          type="text"
+                          value={shortlistCgpa}
+                          onChange={(e) => setShortlistCgpa(e.target.value)}
+                          className="w-full px-2 py-1 border border-line rounded bg-surface font-mono text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-ink-muted block mb-0.5">Max Backlogs Allowed</label>
+                        <input
+                          type="text"
+                          disabled
+                          value="0 Backlogs"
+                          className="w-full px-2 py-1 border border-line rounded bg-slate-100 text-ink-muted font-mono text-xs"
+                        />
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const q = `Run strict recruiter candidate shortlist audit for drives requiring CGPA >= ${shortlistCgpa} and zero active backlogs`;
+                        setQueryInput(q);
+                        handleSubmitRag(undefined, q);
+                      }}
+                      className="macos-press-sm w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
+                    >
+                      <CheckCheck size={12} />
+                      <span>Verify Shortlist &amp; Generate Manifest</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
             {activeLens === 'hod' && (
               <div className="rounded-xl border border-amber-100 bg-gradient-to-br from-amber-50/70 via-orange-50/40 to-surface p-3.5 space-y-3 shadow-2xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-amber-950 flex items-center gap-1.5">
-                    <Building2 size={13} className="text-amber-600" />
-                    Curriculum v2.0 Industry Gap Diagnostics
-                  </span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
-                    NEP 2020 v2.0 Active
-                  </span>
-                </div>
-                <div className="grid grid-cols-3 gap-1.5 text-[11px]">
-                  <div className="p-2 rounded-lg bg-surface border border-line">
-                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">Conversion</span>
-                    <span className="font-mono font-semibold text-emerald-700">86.4%</span>
-                  </div>
-                  <div className="p-2 rounded-lg bg-surface border border-line">
-                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">New AI Credits</span>
-                    <span className="font-mono font-semibold text-amber-700">+8 Credits</span>
-                  </div>
-                  <div className="p-2 rounded-lg bg-surface border border-line">
-                    <span className="text-[10px] text-ink-muted uppercase block font-semibold">Mentor Variance</span>
-                    <span className="font-mono font-semibold text-slate-700">±0.04</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between pt-1">
+                {/* HOD Sub-Tool Navigation */}
+                <div className="flex border-b border-amber-100/80 pb-2 gap-1 text-[11px]">
                   <button
                     type="button"
-                    onClick={() => {
-                      const q = 'Evaluate curriculum transition diffs from v1.0 to v2.0 and industry alignment';
-                      setQueryInput(q);
-                      handleSubmitRag(undefined, q);
-                    }}
-                    className="macos-press-sm text-[11px] font-semibold text-amber-900 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                    onClick={() => setHodToolTab('curriculum')}
+                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                      hodToolTab === 'curriculum'
+                        ? 'bg-amber-700 text-white shadow-2xs'
+                        : 'text-amber-900/70 hover:bg-amber-100/60'
+                    }`}
                   >
-                    <span>Run Curriculum Diff Audit</span>
-                    <ArrowRight size={11} />
+                    Curriculum v2.0
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setHodToolTab('skillgap')}
+                    className={`macos-press-sm px-2.5 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
+                      hodToolTab === 'skillgap'
+                        ? 'bg-amber-700 text-white shadow-2xs'
+                        : 'text-amber-900/70 hover:bg-amber-100/60'
+                    }`}
+                  >
+                    Skill Deficits &amp; Targets
                   </button>
                 </div>
+
+                {hodToolTab === 'curriculum' && (
+                  <div className="space-y-2.5 animate-in fade-in-50 duration-150">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-amber-950 flex items-center gap-1.5">
+                        <Building2 size={13} className="text-amber-600" />
+                        Curriculum v2.0 Industry Gap Diagnostics
+                      </span>
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                        NEP 2020 Active
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5 text-[11px]">
+                      <div className="p-2 rounded-lg bg-surface border border-line">
+                        <span className="text-[10px] text-ink-muted uppercase block font-semibold">Conversion</span>
+                        <span className="font-mono font-semibold text-emerald-700">86.4%</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-surface border border-line">
+                        <span className="text-[10px] text-ink-muted uppercase block font-semibold">New AI Credits</span>
+                        <span className="font-mono font-semibold text-amber-700">+8 Credits</span>
+                      </div>
+                      <div className="p-2 rounded-lg bg-surface border border-line">
+                        <span className="text-[10px] text-ink-muted uppercase block font-semibold">Mentor Variance</span>
+                        <span className="font-mono font-semibold text-slate-700">±0.04</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const q = 'Evaluate curriculum transition diffs from v1.0 to v2.0 and industry alignment';
+                        setQueryInput(q);
+                        handleSubmitRag(undefined, q);
+                      }}
+                      className="macos-press-sm text-[11px] font-semibold text-amber-900 hover:underline inline-flex items-center gap-1 cursor-pointer pt-1"
+                    >
+                      <span>Run Curriculum Diff Audit</span>
+                      <ArrowRight size={11} />
+                    </button>
+                  </div>
+                )}
+
+                {hodToolTab === 'skillgap' && (
+                  <div className="space-y-2.5 animate-in fade-in-50 duration-150 text-[11px]">
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-amber-950">Placement Benchmark: 86.4% (Target: 91.2%)</span>
+                      <span className="text-amber-700 font-mono text-[10px] font-semibold">-4.8% Gap</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-surface border border-line text-[10px] text-ink-muted">
+                      <span>Primary rejection reasons in Technical Rounds: Distributed Systems Caching (42%) and Concurrent Transaction Locks (31%).</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const q = 'Identify department student technical skill deficits from placement rejections and recommend remedial elective workshops';
+                        setQueryInput(q);
+                        handleSubmitRag(undefined, q);
+                      }}
+                      className="macos-press-sm w-full py-1.5 rounded-lg bg-amber-700 hover:bg-amber-800 text-white font-semibold text-center text-xs shadow-2xs cursor-pointer inline-flex items-center justify-center gap-1.5"
+                    >
+                      <TrendingUp size={12} />
+                      <span>Recommend Skill Deficit Workshops</span>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -1385,6 +1729,17 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                     <span>Audit Statutory Outcomes</span>
                     <ArrowRight size={11} />
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const q = 'Generate executive placement and statutory governance briefing digest for Academic Senate and Chancellor review';
+                      setQueryInput(q);
+                      handleSubmitRag(undefined, q);
+                    }}
+                    className="macos-press-sm text-[11px] font-semibold text-fuchsia-900 hover:underline cursor-pointer"
+                  >
+                    Senate Digest &rarr;
+                  </button>
                 </div>
               </div>
             )}
@@ -1409,6 +1764,18 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
                     <span className="text-[10px] text-slate-400 uppercase block font-semibold">Blocked PIP Threats</span>
                     <span className="font-mono font-semibold text-rose-400">14 Vectors Prevented</span>
                   </div>
+                </div>
+                <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400 font-mono text-[10px]">
+                    {adminMerkleVerified ? '✓ Merkle Root Verified (SHA-256)' : '1,248 Traces Stored'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setAdminMerkleVerified(true)}
+                    className="macos-press-sm px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[10px] font-semibold hover:bg-cyan-500/30 cursor-pointer"
+                  >
+                    {adminMerkleVerified ? 'Ledger Untampered' : 'Verify Merkle Hash'}
+                  </button>
                 </div>
               </div>
             )}

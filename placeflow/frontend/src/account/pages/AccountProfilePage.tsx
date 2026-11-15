@@ -17,6 +17,7 @@ import { formatRoleLabel } from '../../core/auth/roleLabels';
 import { ProfileHeader } from '../../ui/cards/ProfileHeader';
 import { formatApiError } from '../../core/api/errors';
 import { Select } from '../../components/ui/Select';
+import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 
 const LOCALE_OPTIONS = [
   { value: 'en-IN', label: 'English (India) - en-IN' },
@@ -126,10 +127,11 @@ export const AccountProfilePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="h-44 rounded-xl border border-line bg-surface p-6 shadow-xs skeleton-shimmer animate-pulse" />
-        <div className="h-64 rounded-xl border border-line bg-surface p-6 shadow-xs skeleton-shimmer animate-pulse" />
-      </div>
+      <MacOsLoadingScreen
+        fullScreen={false}
+        message="Loading Profile Dossier..."
+        description="Decrypting verified student attributes and institutional records"
+      />
     );
   }
 

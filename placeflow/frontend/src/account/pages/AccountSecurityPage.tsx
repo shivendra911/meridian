@@ -13,6 +13,7 @@ import { client } from '../../core/api/client';
 import { accountApi } from '../api';
 import { formatRelative, formatDateTime } from '../../ui/format';
 import { formatApiError } from '../../core/api/errors';
+import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 
 interface SessionItem {
   session_id: string;
@@ -284,10 +285,11 @@ export const AccountSecurityPage: React.FC = () => {
         )}
 
         {loadingSessions ? (
-          <div className="space-y-3">
-            <div className="h-16 rounded-xl bg-slate-100 animate-pulse" />
-            <div className="h-16 rounded-xl bg-slate-100 animate-pulse" />
-          </div>
+          <MacOsLoadingScreen
+            fullScreen={false}
+            message="Auditing Active Sessions..."
+            description="Inspecting device fingerprints and security tokens"
+          />
         ) : sessions.length === 0 ? (
           <p className="text-xs text-ink-muted">No active sessions found.</p>
         ) : (

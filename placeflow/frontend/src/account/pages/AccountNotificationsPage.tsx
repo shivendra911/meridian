@@ -13,6 +13,7 @@ import { useAuth } from '../../core/auth/useAuth';
 import { formatRelative } from '../../ui/format';
 import { formatApiError } from '../../core/api/errors';
 import { Switch } from '../../components/ui/Switch';
+import { MacOsLoadingScreen } from '../../components/ui/MacOsLoadingScreen';
 
 interface NotificationItem {
   notification_id: string;
@@ -230,10 +231,11 @@ export const AccountNotificationsPage: React.FC = () => {
         </div>
 
         {loadingNotifs ? (
-          <div className="space-y-3">
-            <div className="h-16 rounded-xl bg-slate-100 animate-pulse" />
-            <div className="h-16 rounded-xl bg-slate-100 animate-pulse" />
-          </div>
+          <MacOsLoadingScreen
+            fullScreen={false}
+            message="Loading Notifications..."
+            description="Fetching placement events, alerts, and advisories"
+          />
         ) : notifications.length === 0 ? (
           <div className="text-center py-8">
             <Bell size={28} className="text-slate-300 mx-auto mb-2" />

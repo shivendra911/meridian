@@ -20,6 +20,7 @@ import {
   Globe,
   ExternalLink} from 'lucide-react';
 import { InstitutionalOnboardingBuilder } from '../components/institutional/InstitutionalOnboardingBuilder';
+import { Select } from '../components/ui/Select';
 
 interface DirectoryResult {
   directory_id: string;
@@ -234,34 +235,28 @@ export const InstitutionalArchitecturePage: React.FC = () => {
 
         {/* Workspace Switcher */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="bg-slate-50 border border-slate-300 rounded p-2 text-xs">
+          <div className="bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs min-w-[200px]">
             <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Active Tenant Boundary</span>
-            <select
+            <Select
               value={selectedTenantId}
-              onChange={(e) => setSelectedTenantId(e.target.value)}
-              className="bg-white border border-slate-300 rounded px-2.5 py-1 text-xs font-medium text-slate-800"
-            >
-              {tenants.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name} ({t.slug})
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setSelectedTenantId(val)}
+              options={tenants.map((t) => ({
+                value: t.id,
+                label: `${t.name} (${t.slug})`,
+              }))}
+            />
           </div>
 
-          <div className="bg-slate-50 border border-slate-300 rounded p-2 text-xs">
+          <div className="bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs min-w-[240px]">
             <span className="text-xs uppercase font-bold text-slate-400 block mb-1">Active Institution</span>
-            <select
+            <Select
               value={selectedInstId}
-              onChange={(e) => setSelectedInstId(e.target.value)}
-              className="bg-white border border-slate-300 rounded px-2.5 py-1 text-xs font-medium text-slate-800"
-            >
-              {institutions.map((i) => (
-                <option key={i.institution_id} value={i.institution_id}>
-                  {i.display_name} [{i.institution_code}]
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setSelectedInstId(val)}
+              options={institutions.map((i) => ({
+                value: i.institution_id,
+                label: `${i.display_name} [${i.institution_code}]`,
+              }))}
+            />
           </div>
         </div>
       </div>

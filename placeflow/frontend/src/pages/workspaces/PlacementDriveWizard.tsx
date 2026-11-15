@@ -13,6 +13,7 @@ import { api } from '../../api';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
+import { Select } from '../../components/ui/Select';
 import { toast } from 'sonner';
 
 interface PlacementDriveWizardProps {
@@ -240,21 +241,18 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                   Corporate Partner *
                 </label>
                 {companiesList.length > 0 ? (
-                  <select
+                  <Select
                     value={companyId}
-                    onChange={(e) => {
-                      setCompanyId(e.target.value);
-                      const f = companiesList.find((c) => c.company_id === e.target.value);
+                    onChange={(val) => {
+                      setCompanyId(val);
+                      const f = companiesList.find((c) => c.company_id === val);
                       if (f) setCustomCompanyName(f.name);
                     }}
-                    className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
-                  >
-                    {companiesList.map((c) => (
-                      <option key={c.company_id} value={c.company_id}>
-                        {c.name} ({c.company_id})
-                      </option>
-                    ))}
-                  </select>
+                    options={companiesList.map((c) => ({
+                      value: c.company_id,
+                      label: `${c.name} (${c.company_id})`,
+                    }))}
+                  />
                 ) : (
                   <input
                     type="text"
@@ -270,16 +268,16 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 <label className="block text-xs font-medium text-ink mb-1">
                   Opportunity Tier *
                 </label>
-                <select
+                <Select
                   value={tier}
-                  onChange={(e) => setTier(e.target.value)}
-                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
-                >
-                  <option value="SUPER_DREAM">Super Dream (&gt; ₹20 LPA)</option>
-                  <option value="DREAM">Dream (₹10 - ₹20 LPA)</option>
-                  <option value="CORE">Core Engineering (₹7 - ₹12 LPA)</option>
-                  <option value="STANDARD">Regular / Mass Recruit (₹4 - ₹7 LPA)</option>
-                </select>
+                  onChange={(val) => setTier(val)}
+                  options={[
+                    { value: 'SUPER_DREAM', label: 'Super Dream (> ₹20 LPA)' },
+                    { value: 'DREAM', label: 'Dream (₹10 - ₹20 LPA)' },
+                    { value: 'CORE', label: 'Core Engineering (₹7 - ₹12 LPA)' },
+                    { value: 'STANDARD', label: 'Regular / Mass Recruit (₹4 - ₹7 LPA)' },
+                  ]}
+                />
               </div>
             </div>
 
@@ -370,15 +368,15 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                     <label className="block text-xs font-medium text-ink mb-1">
                       Active Backlogs Permitted
                     </label>
-                    <select
-                      value={maxBacklogs}
-                      onChange={(e) => setMaxBacklogs(parseInt(e.target.value, 10))}
-                      className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
-                    >
-                      <option value="0">0 Active Backlogs (Strict Zero)</option>
-                      <option value="1">At most 1 Active Backlog</option>
-                      <option value="2">At most 2 Active Backlogs</option>
-                    </select>
+                    <Select
+                      value={String(maxBacklogs)}
+                      onChange={(val) => setMaxBacklogs(parseInt(val, 10))}
+                      options={[
+                        { value: '0', label: '0 Active Backlogs (Strict Zero)' },
+                        { value: '1', label: 'At most 1 Active Backlog' },
+                        { value: '2', label: 'At most 2 Active Backlogs' },
+                      ]}
+                    />
                   </div>
                 </div>
 
@@ -386,15 +384,15 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                   <label className="block text-xs font-medium text-ink mb-1">
                     Graduating Batch Year
                   </label>
-                  <select
+                  <Select
                     value={targetBatch}
-                    onChange={(e) => setTargetBatch(e.target.value)}
-                    className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink focus:border-brand focus:ring-1 focus:ring-brand"
-                  >
-                    <option value="2027">Batch of 2027 (Active Superday Cohort)</option>
-                    <option value="2026">Batch of 2026 (Graduating / Immediate)</option>
-                    <option value="2028">Batch of 2028 (Pre-Final Internships)</option>
-                  </select>
+                    onChange={(val) => setTargetBatch(val)}
+                    options={[
+                      { value: '2027', label: 'Batch of 2027 (Active Superday Cohort)' },
+                      { value: '2026', label: 'Batch of 2026 (Graduating / Immediate)' },
+                      { value: '2028', label: 'Batch of 2028 (Pre-Final Internships)' },
+                    ]}
+                  />
                 </div>
 
                 <div>
@@ -569,15 +567,15 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 <label className="block text-xs font-medium text-ink mb-1">
                   Superday Time Block
                 </label>
-                <select
+                <Select
                   value={superdaySlot}
-                  onChange={(e) => setSuperdaySlot(e.target.value)}
-                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink"
-                >
-                  <option value="SLOT_A_MORNING">Morning Block A (08:30 - 13:00 IST)</option>
-                  <option value="SLOT_B_AFTERNOON">Afternoon Block B (13:30 - 18:00 IST)</option>
-                  <option value="SLOT_C_FULLDAY">Full Day Exclusive Superday (09:00 - 19:00 IST)</option>
-                </select>
+                  onChange={(val) => setSuperdaySlot(val)}
+                  options={[
+                    { value: 'SLOT_A_MORNING', label: 'Morning Block A (08:30 - 13:00 IST)' },
+                    { value: 'SLOT_B_AFTERNOON', label: 'Afternoon Block B (13:30 - 18:00 IST)' },
+                    { value: 'SLOT_C_FULLDAY', label: 'Full Day Exclusive Superday (09:00 - 19:00 IST)' },
+                  ]}
+                />
               </div>
             </div>
 
@@ -626,15 +624,15 @@ export const PlacementDriveWizard: React.FC<PlacementDriveWizardProps> = ({
                 <label className="block text-xs font-medium text-ink mb-1">
                   Candidate Offer Acceptance Window
                 </label>
-                <select
-                  value={acceptanceDeadlineHours}
-                  onChange={(e) => setAcceptanceDeadlineHours(parseInt(e.target.value, 10))}
-                  className="w-full text-xs border border-line rounded-lg p-2.5 bg-surface text-ink"
-                >
-                  <option value="24">24 Hours (Fast-track Superday)</option>
-                  <option value="48">48 Hours (Standard Placement Policy v3)</option>
-                  <option value="72">72 Hours (Extended Dream Window)</option>
-                </select>
+                <Select
+                  value={String(acceptanceDeadlineHours)}
+                  onChange={(val) => setAcceptanceDeadlineHours(parseInt(val, 10))}
+                  options={[
+                    { value: '24', label: '24 Hours (Fast-track Superday)' },
+                    { value: '48', label: '48 Hours (Standard Placement Policy v3)' },
+                    { value: '72', label: '72 Hours (Extended Dream Window)' },
+                  ]}
+                />
               </div>
             </div>
 

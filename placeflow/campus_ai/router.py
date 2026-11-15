@@ -115,6 +115,49 @@ class MockAIProvider(AIProvider):
                 "• Policy Safeguard: Institutional one-student-one-offer rules apply once acceptance letter is signed.\n"
                 "• Mitigation Protocol: Placement cell counselors notified to confirm candidate binding intent before Superday round."
             )
+        elif "salary" in prompt.lower() or "ctc" in prompt.lower() or "in-hand" in prompt.lower() or "compensation" in prompt.lower() or "breakdown" in prompt.lower():
+            response_text = (
+                "Offer Compensation & In-Hand Breakdown (₹26.5 LPA CTC):\n"
+                "• Annual Base Component: ₹18,00,000 (Monthly Gross: ₹1,50,000)\n"
+                "• First-Year Joining Bonus: ₹3,00,000 (Paid in 2 equal tranches)\n"
+                "• Performance Target Bonus: ₹1,50,000 (Annual milestone appraisal)\n"
+                "• Equity / RSUs: ₹4,00,000 (Vested over 4 years: 25% annual schedule)\n"
+                "• Estimated Net In-Hand Take Home: ~₹1,18,500 / month (after standard ₹75k Section 87A rebate, standard deduction, EPF employee contribution ₹1,800/mo, and income tax TDS)."
+            )
+        elif "question" in prompt.lower() or "interview" in prompt.lower() or "cheat sheet" in prompt.lower() or "prep" in prompt.lower():
+            response_text = (
+                "Recruiter Technical Interview Intelligence & Prep Blueprint:\n"
+                "• Focus Area 1 (Data Structures): Dynamic Programming (Knapsack & Subsequences), Binary Search on Answer, Graph BFS/DFS & Dijkstra (40% weightage).\n"
+                "• Focus Area 2 (System Design): Rate Limiters, URL Shortener, Cache invalidation strategies with Redis & Consistent Hashing (30% weightage).\n"
+                "• Focus Area 3 (Concurrency & DB): PostgreSQL ACID isolation levels, Deadlock avoidance, and thread pooling (20% weightage).\n"
+                "• Core Behavioral (Bar Raiser): STAR format responses on conflict resolution, failure ownership, and trade-off negotiation (10% weightage)."
+            )
+        elif "lor" in prompt.lower() or "recommendation" in prompt.lower():
+            response_text = (
+                "Official Institutional Letter of Recommendation (LOR):\n\n"
+                "TO WHOM IT MAY CONCERN\n\n"
+                "It is my distinct privilege to recommend Aarav Sharma (Roll No: 221CS104) for professional recruitment and advanced academic pursuits. "
+                "Having supervised Aarav across advanced coursework in Distributed Operating Systems and Database Engineering, I rate their analytical rigour in the top 5% of their graduating batch (Current CGPA: 8.42, 128 credits completed). "
+                "Aarav demonstrated exemplary technical acumen in designing high-throughput concurrent systems and microservices architectures with verified proficiency in React, Python, and PostgreSQL.\n\n"
+                "Dr. Suresh Raman\nSenior Associate Professor, Department of Computer Science & Engineering\nNational Institute of Technology"
+            )
+        elif "shortlist" in prompt.lower() or "cutoff" in prompt.lower():
+            response_text = (
+                "Recruiter Eligibility Shortlist Verification Audit:\n"
+                "• Parameter Matrix: CGPA >= 7.50, Active Backlogs = 0, Eligible Branches = ['CSE', 'IT', 'ECE'].\n"
+                "• Pool Size: 240 Registered Batch Candidates.\n"
+                "• Verified Eligible: 184 Candidates (76.7% qualification rate).\n"
+                "• Exclusions: 42 candidates below CGPA threshold, 14 candidates with pending academic standing review.\n"
+                "• Ready for Shortlist Export: CSV and JSON verification manifests generated."
+            )
+        elif "briefing" in prompt.lower() or "chancellor" in prompt.lower() or "senate" in prompt.lower():
+            response_text = (
+                "Executive Placement & Governance Senate Digest (2025-26):\n"
+                "• Overall Institutional Conversion: 86.4% across 8 engineering disciplines (Target: 88.0%).\n"
+                "• Median Compensation: ₹14.2 LPA (North Campus ₹14.8 LPA, South Campus ₹13.6 LPA - 91.8% parity).\n"
+                "• Super Dream (> ₹20 LPA) Share: 28.4% of total placed cohort.\n"
+                "• NBA Criterion 4 Compliance: 92/100 points projected for upcoming accreditation cycle."
+            )
         elif "prerequisite" in prompt.lower():
             response_text = (
                 "CS201 Data Structures requires successful completion of CS101 Introduction "

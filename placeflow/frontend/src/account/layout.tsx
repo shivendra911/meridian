@@ -83,7 +83,7 @@ export const AccountLayout: React.FC = () => {
       <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1 flex flex-col macos-elevation-dissolve">
         {/* Navigation Tabs */}
         <div className="mb-8 overflow-x-auto scrollbar-none">
-          <nav className="inline-flex p-1 bg-slate-200/50 rounded-xl border border-line/70 shadow-inner gap-1 min-w-max" aria-label="Account Settings Tabs">
+          <nav className="inline-flex macos-segmented border border-line/60 gap-1 min-w-max" aria-label="Account Settings Tabs">
             {ACCOUNT_TABS.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -92,9 +92,9 @@ export const AccountLayout: React.FC = () => {
                   to={tab.path}
                   end
                   className={({ isActive }) =>
-                    `macos-press-sm flex items-center gap-2 px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 ${
+                    `macos-press-sm flex items-center gap-2 px-3.5 py-1.5 text-xs rounded-lg transition-all duration-180 ${
                       isActive
-                        ? 'bg-surface text-ink shadow-xs ring-1 ring-black/5 font-semibold'
+                        ? 'macos-segmented-pill text-ink font-semibold'
                         : 'text-ink-muted hover:text-ink hover:bg-surface/50'
                     }`
                   }

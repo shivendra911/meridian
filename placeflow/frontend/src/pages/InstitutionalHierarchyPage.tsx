@@ -16,6 +16,7 @@ import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Tabs } from '../components/ui/Tabs';
 import { SlideOverDrawer } from '../components/ui/SlideOverDrawer';
+import { Select } from '../components/ui/Select';
 import {
   Users,
   GraduationCap,
@@ -376,18 +377,20 @@ export const InstitutionalHierarchyPage: React.FC = () => {
           <div className="bg-white border border-slate-200 rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <span className="text-xs font-semibold text-slate-600">Filter by School Head:</span>
-              <select
-                value={selectedHosFilter}
-                onChange={(e) => setSelectedHosFilter(e.target.value)}
-                className="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-navy-900"
-              >
-                <option value="ALL">All Schools ({hodList.length} Departments)</option>
-                {hosList.map((h) => (
-                  <option key={h.hos_id} value={h.name}>
-                    {h.name} &bull; {h.school}
-                  </option>
-                ))}
-              </select>
+              <div className="min-w-[220px]">
+                <Select
+                  value={selectedHosFilter}
+                  onChange={(val) => setSelectedHosFilter(val)}
+                  size="sm"
+                  options={[
+                    { value: 'ALL', label: `All Schools (${hodList.length} Departments)` },
+                    ...hosList.map((h) => ({
+                      value: h.name,
+                      label: `${h.name} • ${h.school}`,
+                    })),
+                  ]}
+                />
+              </div>
             </div>
             <span className="text-xs text-slate-400 font-mono">
               Showing {filteredHods.length} of {hodList.length} Head of Department portfolios
@@ -489,29 +492,34 @@ export const InstitutionalHierarchyPage: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2 flex-wrap">
-                <select
-                  value={selectedHodFilter}
-                  onChange={(e) => setSelectedHodFilter(e.target.value)}
-                  className="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-navy-900"
-                >
-                  <option value="ALL">All HOD Portfolios</option>
-                  {hodList.map((h) => (
-                    <option key={h.hod_id} value={h.hod_id}>
-                      {h.name} ({h.hod_id})
-                    </option>
-                  ))}
-                </select>
+                <div className="min-w-[180px]">
+                  <Select
+                    value={selectedHodFilter}
+                    onChange={(val) => setSelectedHodFilter(val)}
+                    size="sm"
+                    options={[
+                      { value: 'ALL', label: 'All HOD Portfolios' },
+                      ...hodList.map((h) => ({
+                        value: h.hod_id,
+                        label: `${h.name} (${h.hod_id})`,
+                      })),
+                    ]}
+                  />
+                </div>
 
-                <select
-                  value={facultySort}
-                  onChange={(e) => setFacultySort(e.target.value as any)}
-                  className="text-xs bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 focus:outline-navy-900"
-                >
-                  <option value="mentees_count">Sort: Most Mentees</option>
-                  <option value="action_items_count">Sort: Most Action Items</option>
-                  <option value="completion_rate">Sort: Highest Completion</option>
-                  <option value="form_pending_count">Sort: Most Pending Forms</option>
-                </select>
+                <div className="min-w-[180px]">
+                  <Select
+                    value={facultySort}
+                    onChange={(val) => setFacultySort(val as any)}
+                    size="sm"
+                    options={[
+                      { value: 'mentees_count', label: 'Sort: Most Mentees' },
+                      { value: 'action_items_count', label: 'Sort: Most Action Items' },
+                      { value: 'completion_rate', label: 'Sort: Highest Completion' },
+                      { value: 'form_pending_count', label: 'Sort: Most Pending Forms' },
+                    ]}
+                  />
+                </div>
 
                 {(selectedHodFilter !== 'ALL' || selectedRoleFilter !== 'ALL' || facultySearch) && (
                   <Button
