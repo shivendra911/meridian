@@ -298,8 +298,8 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
 }) => {
   const { me } = useAuth();
 
-  // Determine initial role lens from propPortal or authenticated user
-  const initialLens: RoleLens = ((): RoleLens => {
+  // Authoritative role lens attached strictly to active portal or authenticated profile (no user switching allowed)
+  const activeLens: RoleLens = React.useMemo((): RoleLens => {
     if (propPortal && propPortal in ROLE_PERSONAS) {
       return propPortal as RoleLens;
     }
@@ -314,10 +314,8 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
     if (roleCode === 'HOD') return 'hod';
     if (roleCode === 'EXECUTIVE_LEADER') return 'management';
     return 'student';
-  })();
+  }, [propPortal, me]);
 
-  const [activeLens, setActiveLens] = useState<RoleLens>(initialLens);
-  const [lensDropdownOpen, setLensDropdownOpen] = useState(false);
   const [activeMode, setActiveMode] = useState<CopilotMode>('rag');
   const [queryInput, setQueryInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -580,55 +578,13 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            {/* Interactive Persona Lens Switcher Dropdown */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setLensDropdownOpen((prev) => !prev)}
-                className="macos-press-sm inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-xs text-white font-medium border border-white/15 transition-colors cursor-pointer"
-                title="Switch Persona Lens"
-                aria-haspopup="listbox"
-                aria-expanded={lensDropdownOpen}
-              >
-                <span className="capitalize">{activeLens} Lens</span>
-                <ChevronDown size={12} className={`transition-transform duration-150 ${lensDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {lensDropdownOpen && (
-                <div
-                  role="listbox"
-                  className="absolute right-0 top-full mt-1.5 w-52 rounded-xl border border-line/80 bg-surface text-ink shadow-macos-popover macos-menu-pop p-1 z-50"
-                >
-                  {(Object.keys(ROLE_PERSONAS) as RoleLens[]).map((r) => {
-                    const cfg = ROLE_PERSONAS[r];
-                    const Icon = cfg.icon;
-                    const isSel = r === activeLens;
-                    return (
-                      <button
-                        key={r}
-                        type="button"
-                        role="option"
-                        aria-selected={isSel}
-                        onClick={() => {
-                          setActiveLens(r);
-                          setLensDropdownOpen(false);
-                          setRagResult(null);
-                          setAgentResult(null);
-                        }}
-                        className={`w-full flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg text-xs text-left cursor-pointer transition-colors ${
-                          isSel ? 'bg-brand text-white font-semibold' : 'text-ink hover:bg-slate-100'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 truncate">
-                          <Icon size={13} className={isSel ? 'text-white' : 'text-slate-500'} />
-                          <span className="capitalize">{r}</span>
-                        </div>
-                        {isSel && <Check size={12} className="text-white shrink-0" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+            {/* Verified Profile Role Lock Pill (User Cannot Switch Role) */}
+            <div
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 text-xs text-white font-medium border border-white/15 select-none shadow-2xs"
+              title={`Role locked to verified ${activeLens} profile`}
+            >
+              <Lock size={11} className="text-white/80 shrink-0" />
+              <span className="capitalize">{activeLens} Profile Attached</span>
             </div>
 
             <button
@@ -1620,7 +1576,7 @@ export const CampusCopilotDrawer: React.FC<CampusCopilotDrawerProps> = ({
       {/* 8. Bottom Footer Status */}
       <div className="border-t border-line bg-surface px-4 py-2 text-[11px] text-ink-muted flex items-center justify-between">
         <span className="truncate">
-          Grounded with role persona &bull; {displayName} ({activeLens})
+          Grounded with role persona &bull; {displayName} ({activeLens} profile locked)
         </span>
         <span className="text-emerald-700 font-medium shrink-0">
           DPDP 2023 Shield: Active

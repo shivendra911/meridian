@@ -522,10 +522,21 @@ def _get_principal_persona(user, requested_lens: Optional[str] = None) -> Dict[s
     assignments = getattr(user, "assignments", []) or []
     role_code = assignments[0].get("role_code", "STUDENT_MEMBER") if assignments else "STUDENT_MEMBER"
     default_portal = getattr(user, "default_portal", None) or "student"
+    user_portals = set(getattr(user, "portals", []) or [])
+    user_subject = getattr(user, "subject", None) or {}
+    user_profile = getattr(user, "profile", None) or {}
+    is_admin = (
+        getattr(user, "is_superuser", False)
+        or getattr(user, "is_staff", False)
+        or user_subject.get("type") == "admin"
+        or any(a.get("role_code") in ("INSTITUTION_ADMIN", "SUPER_ADMIN") for a in assignments)
+    )
 
     if requested_lens and requested_lens in PORTAL_ROLE_CODE_MAP:
-        role_code = PORTAL_ROLE_CODE_MAP[requested_lens]
-        default_portal = requested_lens
+        # Enforce profile lock: non-admin users cannot switch to a role lens outside their authorized profile/portals
+        if is_admin or not user_portals or requested_lens in user_portals:
+            role_code = PORTAL_ROLE_CODE_MAP[requested_lens]
+            default_portal = requested_lens
 
     persona_config = ROLE_PERSONA_MAP.get(role_code)
     if not persona_config:
@@ -538,12 +549,12 @@ def _get_principal_persona(user, requested_lens: Optional[str] = None) -> Dict[s
     if not persona_config:
         persona_config = ROLE_PERSONA_MAP["STUDENT_MEMBER"]
 
-    profile = getattr(user, "profile", {}) or {}
+    profile = user_profile
     display_name = profile.get("display_name") or getattr(user, "display_name", "Member")
     department = profile.get("department") or "Computer Science & Engineering"
     institution_name = profile.get("institution_name") or "National Institute of Technology"
 
-    subject = getattr(user, "subject", {}) or {}
+    subject = user_subject
     candidate_id = subject.get("id") or getattr(user, "person_id", None) or getattr(user, "account_id", "USR001")
 
     return {

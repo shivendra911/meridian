@@ -120,22 +120,65 @@ def test_copilot_context_endpoint(copilot_client):
     assert len(persona["shareable_attributes"]) >= 4
 
 
-def test_copilot_lens_switching_context(copilot_client):
-    client, _, tenant_id, _ = copilot_client
-    # Switch to faculty lens
+def test_copilot_profile_role_binding_and_switch_prevention(copilot_client):
+    client, db, tenant_id, student_acc = copilot_client
+
+    # 1. Non-admin student attempting to switch to faculty or tpo is disallowed and locked to student profile
     resp_faculty = client.get("/api/copilot/context/?lens=faculty", HTTP_X_TENANT_ID=tenant_id)
     assert resp_faculty.status_code == 200
     fac_data = resp_faculty.json()["persona"]
-    assert fac_data["portal"] == "faculty"
-    assert fac_data["role_code"] == "FACULTY_MENTOR"
-    assert "advisees_count" in fac_data["profile_summary"]
+    assert fac_data["portal"] == "student"  # Locked to student profile! User cannot switch it.
+    assert fac_data["role_code"] == "STUDENT_MEMBER"
 
-    # Switch to tpo lens
     resp_tpo = client.get("/api/copilot/context/?lens=tpo", HTTP_X_TENANT_ID=tenant_id)
     assert resp_tpo.status_code == 200
     tpo_data = resp_tpo.json()["persona"]
-    assert tpo_data["portal"] == "tpo"
-    assert "active_drives_count" in tpo_data["profile_summary"]
+    assert tpo_data["portal"] == "student"  # Locked to student profile!
+
+    # 2. An authorized institutional admin or faculty session attaches to their specific role profile
+    admin_person = db.person_identities.find_one({"primary_email": "admin.copilot@nitk.edu"})
+    if not admin_person:
+        admin_person = create_person_identity(
+            first_name="Admin",
+            last_name="Leader",
+            primary_email="admin.copilot@nitk.edu",
+            db=db,
+        )
+    admin_acc = db.accounts.find_one({"username": "copilot_admin_test"})
+    if not admin_acc:
+        admin_acc = create_account(
+            person_id=admin_person["person_id"],
+            username="copilot_admin_test",
+            password="password123",
+            email="admin.copilot@nitk.edu",
+            account_type="HUMAN",
+            db=db,
+        )
+        assign_role(
+            account_id=admin_acc["account_id"],
+            role_id="role_sys_institution_admin",
+            scope_type="INSTITUTION",
+            scope_id=tenant_id,
+            tenant_id=tenant_id,
+            institution_id=tenant_id,
+            db=db,
+        )
+
+    admin_sess = create_auth_session(
+        account_id=admin_acc["account_id"],
+        tenant_id=tenant_id,
+        institution_id=tenant_id,
+        auth_assurance="AAL1_PASSWORD",
+        db=db,
+    )
+    admin_client = APIClient()
+    admin_client.credentials(HTTP_AUTHORIZATION=f"Bearer {admin_sess['raw_token']}")
+
+    admin_resp = admin_client.get("/api/copilot/context/?lens=admin", HTTP_X_TENANT_ID=tenant_id)
+    assert admin_resp.status_code == 200
+    admin_persona = admin_resp.json()["persona"]
+    assert admin_persona["portal"] == "admin"
+    assert "token_quota_consumed" in admin_persona["profile_summary"]
 
 
 def test_copilot_granular_data_sharing_and_withholding(copilot_client):

@@ -86,22 +86,31 @@ describe('Role-Based & User-Specific Copilot Architecture', () => {
     expect(studentInput).toBeTruthy();
   });
 
-  it('switches persona lens dynamically and updates starter queries and authorized tools', () => {
-    render(<CampusCopilotDrawer isOpen={true} onClose={vi.fn()} portal="student" />);
+  it('attaches copilot strictly to specific role profiles and prevents user switching', () => {
+    // 1. Render student profile portal
+    const { unmount } = render(<CampusCopilotDrawer isOpen={true} onClose={vi.fn()} portal="student" />);
 
-    // Open lens switcher dropdown
-    const lensBtn = screen.getByTitle('Switch Persona Lens');
-    fireEvent.click(lensBtn);
+    // User CANNOT switch persona lens (no dropdown switcher)
+    expect(screen.queryByTitle('Switch Persona Lens')).toBeNull();
+    expect(screen.getByText(/Student Profile Attached/i)).toBeTruthy();
+    expect(screen.getAllByText(/Candidate Career Copilot/i).length).toBeGreaterThanOrEqual(1);
+    unmount();
 
-    // Switch to TPO lens
-    const tpoOption = screen.getByText('tpo');
-    fireEvent.click(tpoOption);
-
-    // Verify TPO persona is active
+    // 2. Render TPO profile portal
+    const { unmount: unmountTpo } = render(<CampusCopilotDrawer isOpen={true} onClose={vi.fn()} portal="tpo" />);
+    expect(screen.queryByTitle('Switch Persona Lens')).toBeNull();
+    expect(screen.getByText(/Tpo Profile Attached/i)).toBeTruthy();
     expect(screen.getAllByText(/Placement Operations Copilot/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Placement Officer')).toBeTruthy();
     expect(screen.getByText(/Suggested Placement Officer Queries/i)).toBeTruthy();
-    expect(screen.getByText(/Classify Microsoft JNF/i)).toBeTruthy();
+    unmountTpo();
+
+    // 3. Render Faculty profile portal
+    render(<CampusCopilotDrawer isOpen={true} onClose={vi.fn()} portal="faculty" />);
+    expect(screen.queryByTitle('Switch Persona Lens')).toBeNull();
+    expect(screen.getByText(/Faculty Profile Attached/i)).toBeTruthy();
+    expect(screen.getAllByText(/Academic Mentorship & Endorsement Copilot/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText('Faculty Advisor')).toBeTruthy();
   });
 
   it('executes role-scoped copilot query via /copilot/query/', async () => {
